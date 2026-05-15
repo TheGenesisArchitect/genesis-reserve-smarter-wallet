@@ -21,7 +21,7 @@ const PRIVY_APP_ID = process.env.NEXT_PUBLIC_PRIVY_APP_ID
 const PRIVY_ENABLED = typeof PRIVY_APP_ID === 'string' && PRIVY_APP_ID.length > 0
 
 const SendPage = dynamic(() => import('../components/SendPage').then((mod) => mod.SendPage), { ssr: false })
-const RecipientBookPanel = dynamic(() => import('../components/RecipientBookPanel').then((mod) => mod.RecipientBookPanel), { ssr: false })
+// RecipientBookPanel is used from within SendPage, not directly in PanelRouter
 const ScheduledSendsPanel = dynamic(() => import('../components/ScheduledSendsPanel').then((mod) => mod.ScheduledSendsPanel), { ssr: false })
 const BatchOperationsPanel = dynamic(() => import('../components/BatchOperationsPanel').then((mod) => mod.BatchOperationsPanel), { ssr: false })
 const ComplianceViewPanel = dynamic(() => import('../components/ComplianceViewPanel').then((mod) => mod.ComplianceViewPanel), { ssr: false })
@@ -30,6 +30,7 @@ const AnalyticsDashboard = dynamic(() => import('../components/AnalyticsDashboar
 const YieldMonitorPanel = dynamic(() => import('../components/YieldMonitorPanel').then((mod) => mod.YieldMonitorPanel), { ssr: false })
 const ConsultiveForecastPanel = dynamic(() => import('../components/ConsultiveForecastPanel').then((mod) => mod.ConsultiveForecastPanel), { ssr: false })
 const AgentUniversePanel = dynamic(() => import('../components/AgentUniversePanel').then((mod) => mod.AgentUniversePanel), { ssr: false })
+const CodexAcademyHub = dynamic(() => import('../components/codex/CodexAcademyHub').then((mod) => mod.CodexAcademyHub), { ssr: false })
 const BridgePanel = dynamic(() => import('../components/BridgePanel').then((mod) => mod.BridgePanel), { ssr: false })
 const SwapPanel = dynamic(() => import('../components/SwapPanel').then((mod) => mod.SwapPanel), { ssr: false })
 const ReceiveFlow = dynamic(() => import('../components/ReceiveFlow').then((mod) => mod.ReceiveFlow), { ssr: false })
@@ -50,7 +51,7 @@ export default function GenesisDashboardPage() {
 
 /* ── Authenticated page ─────────────────────────────────────────────── */
 function GenesisPrivyPage() {
-  const { ready, authenticated, login, logout, user } = usePrivy()
+  const { ready, authenticated, login, logout } = usePrivy()
   const address = useActiveWalletAddress() as `0x${string}` | undefined
   const [activeView, setActiveView] = useState<ViewKey>('home')
   const [selectedAccountId, setSelectedAccountId] = useState<string | undefined>()
@@ -215,6 +216,7 @@ function PanelRouter({
     case 'scheduled': return <div style={panelStyle}><ScheduledSendsPanel accountId={accountId} /></div>
     case 'batch': return <div style={panelStyle}><BatchOperationsPanel accountId={accountId} /></div>
     case 'admin': return <div style={panelStyle}><AdminConsolePanel /></div>
+    case 'academy': return <div style={panelStyle}><CodexAcademyHub /></div>
 
     default:
       return <WalletHome accountId={accountId} onNavigate={onNavigate} />

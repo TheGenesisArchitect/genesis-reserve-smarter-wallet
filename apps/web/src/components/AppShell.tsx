@@ -4,7 +4,7 @@ import { useState, useEffect, type ReactNode } from 'react'
 
 export type ViewKey =
   | 'home' | 'send' | 'deposit' | 'withdraw' | 'receive' | 'card' | 'vaults' | 'activity' | 'settings' | 'bridge' | 'swap'
-  | 'agentic' | 'analytics' | 'yield-monitor' | 'compliance' | 'consultive' | 'scheduled' | 'batch' | 'admin'
+  | 'agentic' | 'analytics' | 'yield-monitor' | 'compliance' | 'consultive' | 'scheduled' | 'batch' | 'admin' | 'academy'
 
 interface AppShellProps {
   activeView: ViewKey
@@ -28,6 +28,7 @@ const CONSUMER_NAV: Array<{ key: ViewKey; label: string; icon: (active: boolean)
   { key: 'vaults', label: 'Vaults', icon: (a) => <VaultIcon active={a} /> },
   { key: 'activity', label: 'Activity', icon: (a) => <ActivityIcon active={a} /> },
   { key: 'yield-monitor', label: 'Yield Monitor', icon: (a) => <ActivityIcon active={a} /> },
+  { key: 'academy', label: 'Academy', icon: (a) => <AcademyIcon active={a} /> },
   { key: 'settings', label: 'Settings', icon: (a) => <SettingsIcon active={a} /> },
 ]
 
@@ -61,8 +62,6 @@ export function AppShell({
     onNavigate(view)
     if (isMobile) setMobileOpen(false)
   }
-
-  const sidebarVisible = !isMobile || mobileOpen
 
   return (
     <div style={{
@@ -469,6 +468,16 @@ function BridgeIcon({ active }: { active: boolean }) {
       <path d="M4 12h16M4 12c0-4 3-7 8-7s8 3 8 7" />
       <path d="M8 12v4M12 12v4M16 12v4" />
       <path d="M3 16h18" />
+    </svg>
+  )
+}
+
+function AcademyIcon({ active }: { active: boolean }) {
+  const c = active ? '#00D4AA' : 'rgba(245,240,232,0.45)'
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+      <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
     </svg>
   )
 }
