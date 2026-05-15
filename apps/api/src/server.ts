@@ -1,6 +1,6 @@
 ﻿/**
  * src/server.ts
- * Genesis Reserve â€” Production API Gateway
+ * Genesis Reserve — Production API Gateway
  *
  * Entry point for all external API traffic. Enforces:
  *   - API key authentication (partners) + JWT (operators)
@@ -21,15 +21,15 @@ import { createHash } from 'crypto';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-import { TreasuryService, TreasuryMode } from './';
-import { ComplianceService } from './';
-import { LedgerService } from './';
-import { AdminService } from './';
-import { PrivyAuthService } from './';
-import { WalletIdentityService } from './';
-import { checkDbHealth, query } from './';
+import { TreasuryService, TreasuryMode } from './treasury/treasury.service';
+import { ComplianceService } from './treasury/compliance.service';
+import { LedgerService } from './ledger/ledger.service';
+import { AdminService } from './admin/admin.service';
+import { PrivyAuthService } from './auth/privy-auth.service';
+import { WalletIdentityService } from './auth/wallet-identity.service';
+import { checkDbHealth, query } from './config/db';
 
-// â”€â”€â”€ LOGGER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── LOGGER ──────────────────────────────────────────────────────────────────
 const logger = pino({
   level: process.env.LOG_LEVEL || 'info',
   transport: process.env.NODE_ENV !== 'production'
@@ -37,7 +37,7 @@ const logger = pino({
     : undefined,
 });
 
-// â”€â”€â”€ ERROR TYPES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── ERROR TYPES ─────────────────────────────────────────────────────────────
 class ApiError extends Error {
   constructor(
     public status: number,
@@ -90,7 +90,7 @@ const mapTreasuryError = (err: unknown): ApiError | undefined => {
   return undefined;
 };
 
-// â”€â”€â”€ MIDDLEWARE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── MIDDLEWARE ──────────────────────────────────────────────────────────────
 
 /** Validate Idempotency-Key header on state-changing requests */
 const requireIdempotencyKey = (req: Request, _res: Response, next: NextFunction) => {
@@ -420,11 +420,11 @@ const validateAccountId = (req: Request, _res: Response, next: NextFunction) => 
   next();
 };
 
-// â”€â”€â”€ SERVICES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-// â”€â”€â”€ WEBHOOKS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-import { onfidoWebhookHandler } from './';
-import { chainalysisWebhookHandler } from './';
-import { zeroHashWebhookHandler } from './';
+// ─── SERVICES ────────────────────────────────────────────────────────────────
+// ─── WEBHOOKS ─────────────────────────────────────────────────────────────────
+import { onfidoWebhookHandler } from './webhooks/onfido.webhook';
+import { chainalysisWebhookHandler } from './webhooks/chainalysis.webhook';
+import { zeroHashWebhookHandler } from './webhooks/zerohash.webhook';
 
 const treasury = new TreasuryService({
   rpcUrl: process.env.RPC_URL || 'https://arb-sepolia.g.alchemy.com/v2/...',
@@ -436,7 +436,7 @@ const ledger = new LedgerService();
 const compliance = new ComplianceService();
 const admin = new AdminService();
 
-// â”€â”€â”€ APP â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── APP ─────────────────────────────────────────────────────────────────────
 // BigInt serialization: convert to string when JSON.stringify encounters BigInt
 (BigInt.prototype as any).toJSON = function () { return this.toString(); };
 
@@ -474,7 +474,7 @@ const walletRateLimit = rateLimit({
   keyGenerator: (req) => (req as any).authenticatedUserId || (req as any).privyAuth?.providerUserId || req.ip,
 });
 
-// â”€â”€â”€ HEALTH â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── HEALTH ──────────────────────────────────────────────────────────────────
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok', version: '1.0.0', ts: new Date().toISOString() });
 });
@@ -505,7 +505,7 @@ app.get('/ready', async (_req, res) => {
   }
 });
 
-// â”€â”€â”€ TREASURY ROUTES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── TREASURY ROUTES ─────────────────────────────────────────────────────────
 const treasuryRouter = express.Router();
 treasuryRouter.use(authenticateApiKey, partnerRateLimit, authenticatePrivyUserIfPresent);
 
@@ -754,7 +754,7 @@ treasuryRouter.get('/yield/:accountId', validateAccountId, requireOwnedAccountIf
   } catch (e) { next(e); }
 });
 
-// â”€â”€â”€ REMITTANCE ROUTES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── REMITTANCE ROUTES ───────────────────────────────────────────────────────
 const remittanceRouter = express.Router();
 remittanceRouter.use(authenticateApiKey, partnerRateLimit, authenticatePrivyUserIfPresent);
 
@@ -811,7 +811,7 @@ remittanceRouter.get('/order/:orderId', async (req, res, next) => {
   } catch (e) { next(e); }
 });
 
-// â”€â”€â”€ RECIPIENTS ROUTES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── RECIPIENTS ROUTES ────────────────────────────────────────────────────────
 const recipientsRouter = express.Router();
 recipientsRouter.use(authenticateApiKey, partnerRateLimit, authenticatePrivyUserIfPresent);
 
@@ -962,7 +962,7 @@ recipientsRouter.patch('/:recipientId', requireIdempotencyKey, enforceIdempotenc
   } catch (e) { next(e); }
 });
 
-// â”€â”€â”€ LEDGER ROUTES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── LEDGER ROUTES ───────────────────────────────────────────────────────────
 const ledgerRouter = express.Router();
 ledgerRouter.use(authenticateApiKey, partnerRateLimit, authenticatePrivyUserIfPresent);
 
@@ -1031,7 +1031,7 @@ ledgerRouter.post('/reconcile', async (req, res, next) => {
   } catch (e) { next(e); }
 });
 
-// â”€â”€â”€ COMPLIANCE ROUTES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── COMPLIANCE ROUTES ───────────────────────────────────────────────────────
 const complianceRouter = express.Router();
 complianceRouter.use(authenticateApiKey, partnerRateLimit);
 
@@ -1065,7 +1065,7 @@ complianceRouter.post('/screen', requireIdempotencyKey, enforceIdempotency, asyn
   } catch (e) { next(e); }
 });
 
-// â”€â”€â”€ ADMIN ROUTES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── ADMIN ROUTES ────────────────────────────────────────────────────────────
 const adminRouter = express.Router();
 adminRouter.use(authenticateAdminKey, adminRateLimit);
 
@@ -1095,7 +1095,7 @@ adminRouter.get('/feature-flags', async (_req, res, next) => {
   } catch (e) { next(e); }
 });
 
-// â”€â”€â”€ WALLET / PRIVY ROUTES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── WALLET / PRIVY ROUTES ───────────────────────────────────────────────────
 const walletRouter = express.Router();
 walletRouter.use(authenticatePrivyUser, walletRateLimit);
 
@@ -1154,14 +1154,14 @@ walletRouter.get('/accounts/:accountId', validateAccountId, requireOwnedAccount(
   } catch (e) { next(e); }
 });
 
-// â”€â”€â”€ WEBHOOK ROUTES (no auth â€” signature verified inside handlers) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── WEBHOOK ROUTES (no auth — signature verified inside handlers) ────────────
 const rawBodyCapture = (req: any, _res: any, buf: Buffer) => { req.rawBody = buf; };
 
 app.post('/webhooks/onfido', express.json({ verify: rawBodyCapture }), onfidoWebhookHandler);
 app.post('/webhooks/chainalysis', express.json(), chainalysisWebhookHandler);
 app.post('/webhooks/zerohash', express.json({ verify: rawBodyCapture }), zeroHashWebhookHandler);
 
-// â”€â”€â”€ ROUTE MOUNTING â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── ROUTE MOUNTING ──────────────────────────────────────────────────────────
 const v1 = express.Router();
 v1.use('/treasury', treasuryRouter);
 v1.use('/remittance', remittanceRouter);
@@ -1172,7 +1172,7 @@ v1.use('/admin', adminRouter);
 v1.use('/wallets', walletRouter);
 app.use('/v1', v1);
 
-// â”€â”€â”€ GLOBAL ERROR HANDLER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── GLOBAL ERROR HANDLER ────────────────────────────────────────────────────
 app.use((err: any, req: Request, res: Response, _next: NextFunction) => {
   const status = err instanceof ApiError ? err.status : 500;
   const code = err instanceof ApiError ? err.code : 'INTERNAL_ERROR';
@@ -1193,11 +1193,11 @@ app.use((err: any, req: Request, res: Response, _next: NextFunction) => {
   });
 });
 
-// â”€â”€â”€ START â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── START ───────────────────────────────────────────────────────────────────
 const PORT = parseInt(process.env.PORT || '4000');
 app.listen(PORT, () => {
   logger.info({ port: PORT, env: process.env.NODE_ENV || 'development' },
-    'âš¡ Genesis Reserve API Gateway running');
+    '⚡ Genesis Reserve API Gateway running');
 });
 
 export default app;

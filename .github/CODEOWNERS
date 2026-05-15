@@ -1,0 +1,10 @@
+# Default owner for everything
+* @TheGenesisArchitect
+
+# Smart contract changes require explicit review
+apps/api/src/contracts/ @TheGenesisArchitect
+apps/web/src/config/contracts.ts @TheGenesisArchitect
+apps/web/src/abis/ @TheGenesisArchitect
+
+# Database migrations are irreversible — require review
+apps/api/db/migrations/ @TheGenesisArchitect
