@@ -1,0 +1,32 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+.next/
+.next-local/
+
+# Environment — never commit real secrets
+.env
+.env.local
+.env.production
+.env.vercel
+.env.vercel.local
+.env.vercel.fresh
+
+# TypeScript
+*.tsbuildinfo
+
+# Docker volumes (data only, not compose file)
+postgres-data/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/settings.json
+.idea/
+
+# Turbo
+.turbo/

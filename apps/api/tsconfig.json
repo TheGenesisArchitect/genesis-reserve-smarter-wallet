@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    "target":           "ES2022",
+    "module":           "commonjs",
+    "lib":              ["ES2022"],
+    "outDir":           "./dist",
+    "rootDir":          "./",
+    "strict":           true,
+    "esModuleInterop":  true,
+    "resolveJsonModule": true,
+    "skipLibCheck":     true,
+    "forceConsistentCasingInFileNames": true,
+    "declaration":      true,
+    "declarationMap":   true,
+    "sourceMap":        true,
+    "noUnusedLocals":   false,
+    "noUnusedParameters": false,
+    "noImplicitAny":    true,
+    "strictNullChecks": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata":  true,
+    "paths": {
+      "@genesis/contracts/*": ["./src/contracts/*"],
+      "@genesis/config/*":    ["./src/config/*"]
+    }
+  },
+  "include": [
+    "src/**/*.ts",
+    "scripts/**/*.ts",
+    "tests/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "artifacts",
+    "cache",
+    "**/*.test.ts"
+  ]
+}

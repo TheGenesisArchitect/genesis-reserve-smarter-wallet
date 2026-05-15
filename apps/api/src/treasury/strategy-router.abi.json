@@ -1,0 +1,39 @@
+[
+  { "name": "getYieldSnapshot", "type": "function", "stateMutability": "view", "inputs": [],
+    "outputs": [
+      { "name": "totalDeployed",     "type": "uint256" },
+      { "name": "blendedApyBps",     "type": "uint256" },
+      { "name": "lastHarvestTime",   "type": "uint256" },
+      { "name": "nextHarvestTime",   "type": "uint256" },
+      { "name": "totalYieldAccrued", "type": "uint256" }
+    ]},
+  { "name": "getStrategyAllocations", "type": "function", "stateMutability": "view", "inputs": [],
+    "outputs": [{ "name": "allocations", "type": "tuple[]", "components": [
+      { "name": "adapter",       "type": "address" },
+      { "name": "name",          "type": "string"  },
+      { "name": "deployedUsdc",  "type": "uint256" },
+      { "name": "maxBps",        "type": "uint256" },
+      { "name": "currentBps",    "type": "uint256" },
+      { "name": "riskScore",     "type": "uint256" },
+      { "name": "liquidityBand", "type": "uint8"   },
+      { "name": "isActive",      "type": "bool"    }
+    ]}]},
+  { "name": "getEpochState", "type": "function", "stateMutability": "view", "inputs": [],
+    "outputs": [
+      { "name": "epochNumber",    "type": "uint256" },
+      { "name": "epochStartTime", "type": "uint256" },
+      { "name": "epochDuration",  "type": "uint256" },
+      { "name": "harvestCount",   "type": "uint256" }
+    ]},
+  { "name": "isCircuitBreakerActive", "type": "function", "stateMutability": "view",
+    "inputs": [], "outputs": [{ "name": "active", "type": "bool" }]},
+  { "name": "harvest", "type": "function", "stateMutability": "nonpayable",
+    "inputs": [], "outputs": [{ "name": "yieldUsdc", "type": "uint256" }]},
+  { "name": "YieldHarvested", "type": "event",
+    "inputs": [
+      { "name": "epochNumber",    "type": "uint256", "indexed": true  },
+      { "name": "totalYieldUsdc", "type": "uint256", "indexed": false },
+      { "name": "blendedApyBps",  "type": "uint256", "indexed": false },
+      { "name": "timestamp",      "type": "uint256", "indexed": false }
+    ]}
+]

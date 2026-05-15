@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Genesis Reserve Logo Export</title>
+  <style>
+    body { margin: 0; background: #070707; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; gap: 32px; font-family: sans-serif; }
+    h2 { color: #c9a84c; letter-spacing: 0.2em; font-size: 13px; text-transform: uppercase; margin: 0; }
+    .row { display: flex; align-items: center; gap: 32px; }
+    .box { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+    label { color: rgba(245,240,232,0.4); font-size: 11px; letter-spacing: 0.1em; }
+    canvas { border-radius: 50%; }
+    button {
+      margin-top: 8px; padding: 10px 24px; border-radius: 20px;
+      background: #c9a84c; color: #1a1400; border: none; cursor: pointer;
+      font-size: 12px; letter-spacing: 0.1em; font-weight: 600;
+    }
+    button:hover { background: #e8c96a; }
+    #status { color: #4caf50; font-size: 11px; letter-spacing: 0.08em; display: none; }
+  </style>
+</head>
+<body>
+  <h2>Genesis Reserve — Logo Export</h2>
+
+  <div class="row">
+    <div class="box">
+      <img src="/genesis-logo.svg" width="200" height="200" alt="GR Logo" id="svgImg"/>
+      <label>SVG — 512×512</label>
+    </div>
+    <div class="box">
+      <canvas id="canvas512" width="512" height="512"></canvas>
+      <label>PNG 512×512 (Privy dashboard)</label>
+      <button onclick="downloadPNG(512)">Download PNG 512×512</button>
+    </div>
+    <div class="box">
+      <canvas id="canvas256" width="256" height="256"></canvas>
+      <label>PNG 256×256</label>
+      <button onclick="downloadPNG(256)">Download PNG 256×256</button>
+    </div>
+  </div>
+
+  <p id="status">✓ Downloaded successfully</p>
+
+  <script>
+    const svgUrl = '/genesis-logo.svg'
+
+    function renderToCanvas(canvasId, size) {
+      const canvas = document.getElementById(canvasId)
+      const ctx = canvas.getContext('2d')
+      const img = new Image()
+      img.onload = () => {
+        ctx.clearRect(0, 0, size, size)
+        ctx.drawImage(img, 0, 0, size, size)
+      }
+      img.src = svgUrl
+    }
+
+    renderToCanvas('canvas512', 512)
+    renderToCanvas('canvas256', 256)
+
+    function downloadPNG(size) {
+      const canvasId = size === 512 ? 'canvas512' : 'canvas256'
+      const canvas = document.getElementById(canvasId)
+      const link = document.createElement('a')
+      link.download = `genesis-logo-${size}.png`
+      link.href = canvas.toDataURL('image/png')
+      link.click()
+      document.getElementById('status').style.display = 'block'
+      setTimeout(() => document.getElementById('status').style.display = 'none', 3000)
+    }
+  </script>
+</body>
+</html>

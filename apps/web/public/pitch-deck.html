@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Genesis Reserve — Investor Pitch 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@300;400;500;600&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#020305;--bg0:#040608;--bg1:#070B10;--bg2:#0D1117;--bg3:#141B22;--bg4:#1C2530;--bg5:#242E3D;
+  --gold:#C9A84C;--gold2:#E8CB6E;--gold-d:#8A6E2A;--gold-dd:#5A4618;
+  --gold-10:rgba(201,168,76,.10);--gold-20:rgba(201,168,76,.20);--gold-30:rgba(201,168,76,.30);
+  --teal:#00D4AA;--teal-10:rgba(0,212,170,.10);--teal-20:rgba(0,212,170,.20);--teal-30:rgba(0,212,170,.30);
+  --violet:#9B6DFF;--violet-10:rgba(155,109,255,.10);--violet-20:rgba(155,109,255,.20);
+  --green:#1ABF6A;--green-10:rgba(26,191,106,.10);--green-20:rgba(26,191,106,.20);
+  --blue:#4A9EFF;--blue-10:rgba(74,158,255,.10);--blue-20:rgba(74,158,255,.20);
+  --red:#E84040;--red-10:rgba(232,64,64,.10);--red-20:rgba(232,64,64,.20);
+  --text:#F5F0E8;--muted:#7A7670;--border:rgba(255,255,255,.06);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;background:var(--bg);font-family:'Sora',sans-serif;color:var(--text);overflow:hidden}
+.deck{position:fixed;inset:0;overflow:hidden}
+
+/* Global geometric grid overlay */
+.geo-grid{position:fixed;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,.013) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.013) 1px,transparent 1px);
+  background-size:56px 56px;pointer-events:none;z-index:0}
+
+/* SLIDES — 3D perspective transitions */
+.slide{
+  position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:48px 80px;opacity:0;
+  transform:perspective(1400px) rotateY(-8deg) translateZ(-60px);
+  transition:opacity .65s cubic-bezier(.4,0,.2,1),transform .65s cubic-bezier(.4,0,.2,1),filter .65s cubic-bezier(.4,0,.2,1);
+  pointer-events:none;z-index:1;
+}
+.slide.active{opacity:1;transform:perspective(1400px) rotateY(0deg) translateZ(0);filter:blur(0);pointer-events:all}
+.slide.exit{opacity:0;transform:perspective(1400px) rotateY(8deg) translateZ(-60px);filter:blur(2px)}
+
+/* Per-slide atmosphere gradients */
+.slide::before{content:'';position:absolute;inset:0;pointer-events:none;z-index:0}
+#s1::before{background:radial-gradient(ellipse 90% 60% at 50% -5%,rgba(201,168,76,.16) 0%,transparent 65%)}
+#s2::before{background:radial-gradient(ellipse 70% 55% at -5% 35%,rgba(232,64,64,.14) 0%,transparent 60%)}
+#s3::before{background:radial-gradient(ellipse 70% 55% at 50% 50%,rgba(0,212,170,.07) 0%,transparent 65%)}
+#s4::before{background:radial-gradient(ellipse 60% 55% at 5% 50%,rgba(74,158,255,.09) 0%,transparent 60%)}
+#s5::before{background:radial-gradient(ellipse 60% 55% at 95% 50%,rgba(155,109,255,.10) 0%,transparent 60%)}
+#s6::before{background:radial-gradient(ellipse 65% 45% at 85% 15%,rgba(0,212,170,.10) 0%,transparent 60%)}
+#s7::before{background:radial-gradient(ellipse 55% 55% at 15% 50%,rgba(201,168,76,.09) 0%,transparent 60%)}
+#s8::before{background:radial-gradient(ellipse 65% 55% at 50% 110%,rgba(74,158,255,.09) 0%,transparent 65%)}
+#s9::before{background:radial-gradient(ellipse 65% 55% at 50% 85%,rgba(26,191,106,.09) 0%,transparent 65%)}
+#s10::before{background:radial-gradient(ellipse 80% 45% at 50% -5%,rgba(201,168,76,.09) 0%,transparent 60%)}
+#s11::before{background:radial-gradient(ellipse 75% 55% at 50% 105%,rgba(201,168,76,.12) 0%,transparent 65%)}
+
+/* Bring all slide content above ::before atmosphere */
+.slide>*{position:relative;z-index:1}
+
+/* NAV */
+.nav-dots{position:fixed;bottom:48px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:100}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--muted);border:none;cursor:pointer;transition:all .3s}
+.dot.active{background:var(--gold);width:20px;border-radius:3px}
+.nav-arrow{position:fixed;top:50%;transform:translateY(-50%);background:var(--gold-10);border:1px solid var(--gold-30);color:var(--gold);width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;z-index:100;transition:all .2s}
+.nav-arrow:hover{background:var(--gold-20)}
+.nav-arrow.prev{left:20px}.nav-arrow.next{right:20px}
+.progress-bar{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--gold-dd),var(--gold2));transition:width .5s ease;z-index:100}
+.slide-counter{position:fixed;top:20px;right:24px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);z-index:100;letter-spacing:.05em}
+
+/* TYPOGRAPHY — Cormorant Garamond design system */
+.hd{
+  font-family:'Cormorant Garamond',serif;font-weight:300;
+  font-size:clamp(30px,4.2vw,60px);letter-spacing:.28em;
+  background:linear-gradient(135deg,var(--gold2) 0%,var(--gold) 45%,var(--gold-d) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  line-height:1.1;text-align:center;text-transform:uppercase;
+}
+.h1{
+  font-family:'Cormorant Garamond',serif;font-weight:400;
+  font-size:clamp(20px,2.8vw,40px);color:var(--gold2);letter-spacing:.10em;
+  text-align:center;text-transform:uppercase;
+}
+.h2{
+  font-family:'Cormorant Garamond',serif;font-weight:300;font-style:italic;
+  font-size:clamp(13px,1.5vw,18px);color:var(--gold);letter-spacing:.04em;
+}
+.glyph{font-family:'Cormorant Garamond',serif;font-weight:300;color:var(--gold);line-height:1}
+.muted{color:var(--muted);font-size:clamp(12px,1.3vw,15px)}
+.mono{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--gold)}
+.rule{width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:14px auto}
+.pill{display:inline-flex;align-items:center;gap:6px;background:var(--gold-10);border:1px solid var(--gold-30);border-radius:20px;padding:4px 12px;font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--gold);letter-spacing:.08em;text-transform:uppercase}
+.badge-g{display:inline-flex;align-items:center;gap:5px;background:var(--green-10);border:1px solid var(--green-20);border-radius:20px;padding:4px 12px;font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--green)}
+.banner{
+  font-family:'Cormorant Garamond',serif;font-weight:300;font-style:italic;
+  font-size:clamp(13px,1.5vw,18px);color:rgba(201,168,76,.72);
+  letter-spacing:.04em;line-height:1.7;text-align:center;
+  padding:14px 24px;margin:14px auto;
+  border-top:1px solid rgba(201,168,76,.14);border-bottom:1px solid rgba(201,168,76,.14);
+  max-width:680px;
+}
+
+/* ── LOGO SEAL ── */
+.logo-seal{
+  border-radius:50%;overflow:hidden;flex-shrink:0;
+  box-shadow:0 0 0 1px rgba(201,168,76,.15),0 0 28px rgba(201,168,76,.22),0 0 60px rgba(201,168,76,.09);
+  display:flex;align-items:center;justify-content:center;
+}
+.logo-seal img{width:100%;height:100%;display:block;border-radius:50%}
+
+/* ── DECK FOOTER ── */
+.deck-footer{
+  position:fixed;bottom:0;left:0;right:0;z-index:200;
+  padding:5px 28px 6px;
+  display:flex;flex-direction:column;align-items:center;gap:1px;
+  background:rgba(2,3,5,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border-top:1px solid rgba(255,255,255,.05);
+}
+.footer-line{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:rgba(210,205,198,.72);letter-spacing:.04em;text-align:center;white-space:nowrap}
+.footer-line span{color:rgba(201,168,76,.85)}
+
+/* Card shimmer helper — reusable top-border shimmer line */
+.shimmer-card{position:relative;overflow:hidden}
+.shimmer-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.30),transparent)}
+
+/* STAGGER — design system spring easing + delays */
+.stagger>*{opacity:0;transform:translateY(16px);transition:opacity .5s cubic-bezier(.4,0,.2,1),transform .5s cubic-bezier(.34,1.56,.64,1)}
+.slide.active .stagger>*{opacity:1;transform:translateY(0)}
+.slide.active .stagger>*:nth-child(1){transition-delay:.10s}
+.slide.active .stagger>*:nth-child(2){transition-delay:.22s}
+.slide.active .stagger>*:nth-child(3){transition-delay:.34s}
+.slide.active .stagger>*:nth-child(4){transition-delay:.46s}
+.slide.active .stagger>*:nth-child(5){transition-delay:.58s}
+.slide.active .stagger>*:nth-child(6){transition-delay:.70s}
+.slide.active .stagger>*:nth-child(7){transition-delay:.82s}
+.slide.active .stagger>*:nth-child(8){transition-delay:.94s}
+
+/* ═══ SLIDE 1 — COVER ═══ */
+.cover-content{position:relative;z-index:1;text-align:center;display:flex;flex-direction:column;align-items:center;gap:16px}
+.cover-tagline{font-family:'Cormorant Garamond',serif;font-weight:300;font-style:italic;font-size:clamp(14px,1.7vw,22px);color:var(--text);letter-spacing:.06em}
+.cover-sub{font-size:clamp(12px,1.2vw,14px);color:var(--muted);max-width:480px;line-height:1.8}
+.cover-badges{display:flex;gap:10px;margin-top:4px;flex-wrap:wrap;justify-content:center}
+canvas.particles{position:absolute;inset:0;z-index:0}
+
+/* ═══ SLIDE 2 — PROBLEM ═══ */
+.prob-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:28px;align-items:start;width:100%;max-width:900px}
+.prob-col{border-radius:20px;padding:24px;background:rgba(232,64,64,.03);border:1px solid rgba(232,64,64,.16);position:relative;overflow:hidden}
+.prob-col::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(232,64,64,.30),transparent)}
+.prob-head{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.prob-item{display:flex;align-items:flex-start;gap:8px;margin-bottom:12px;font-size:clamp(12px,1.2vw,13px);color:var(--text);line-height:1.6}
+.vs-col{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+.vs-txt{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:22px;color:var(--gold)}
+
+/* ═══ SLIDE 3 — SOLUTION ═══ */
+.sol-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;width:100%;max-width:860px}
+.sol-card{background:rgba(13,17,23,.85);border:1px solid var(--border);border-radius:24px;padding:24px;
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  transition:border-color .3s cubic-bezier(.4,0,.2,1),transform .3s cubic-bezier(.34,1.56,.64,1);
+  position:relative;overflow:hidden}
+.sol-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.25),transparent)}
+.sol-card:hover{border-color:var(--gold-30);transform:translateY(-3px)}
+.sol-icon{font-size:24px;margin-bottom:10px}
+.sol-title{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:16px;color:var(--gold2);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px}
+.sol-desc{font-size:clamp(11px,1.1vw,13px);color:var(--muted);line-height:1.7}
+
+/* ═══ SLIDE 4 — MOBILE PROTOTYPE ═══ */
+#s4{flex-direction:row;gap:60px;align-items:center}
+.phone-wrap{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:10px}
+.phone{width:230px;height:460px;background:var(--bg1);border-radius:34px;border:2px solid var(--bg5);box-shadow:0 0 0 6px var(--bg0),0 0 0 7px var(--bg4),0 24px 80px rgba(0,0,0,.8),0 0 60px rgba(201,168,76,.1);position:relative;overflow:hidden}
+.phone-notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:90px;height:26px;background:var(--bg0);border-radius:0 0 14px 14px;z-index:10}
+.pscreen{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--bg0);padding:34px 14px 14px;opacity:0;transform:translateX(18px);transition:opacity .5s,transform .5s}
+.pscreen.active{opacity:1;transform:translateX(0)}
+.ph-logo{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:10px;color:var(--gold);letter-spacing:.2em;text-transform:uppercase;text-align:center;margin-bottom:16px;margin-top:2px}
+.ph-title{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:14px;color:var(--gold2);text-align:center;margin-bottom:18px;letter-spacing:.06em}
+.ph-bal-lbl{font-size:9px;color:var(--muted);text-align:center;letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px}
+.ph-bal{font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:700;color:var(--text);text-align:center;margin-bottom:2px}
+.ph-bal-chg{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);text-align:center;margin-bottom:14px}
+.ph-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:14px}
+.ph-act{display:flex;flex-direction:column;align-items:center;gap:3px}
+.ph-act-btn{width:38px;height:38px;border-radius:10px;background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px}
+.ph-act-lbl{font-size:8px;color:var(--muted);text-align:center}
+.ph-vault{background:var(--bg3);border:1px solid var(--gold-20);border-radius:9px;padding:9px}
+.ph-vrow{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px}
+.ph-lbl{font-size:8px;color:var(--muted)}.ph-val{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gold)}
+.ph-btn{display:flex;align-items:center;gap:7px;background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:9px 11px;margin-bottom:7px;font-size:11px;color:var(--text)}
+.ph-btn.primary{background:linear-gradient(135deg,var(--gold-d),var(--gold));border-color:var(--gold);color:var(--bg);font-weight:700;justify-content:center}
+.ph-input{background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:9px 11px;font-size:11px;color:var(--text);margin-bottom:7px;display:flex;justify-content:space-between;align-items:center}
+.ph-input.focus{border-color:var(--gold-30)}
+.ph-send{background:linear-gradient(135deg,var(--gold-d),var(--gold));border-radius:9px;padding:9px;text-align:center;font-size:11px;font-weight:600;color:var(--bg);font-family:'Cormorant Garamond',serif;letter-spacing:.08em;margin-top:7px}
+.ph-qr{width:90px;height:90px;background:var(--text);border-radius:7px;margin:0 auto 10px;position:relative;overflow:hidden}
+.qr-pat{position:absolute;inset:0;background-image:linear-gradient(45deg,#000 25%,transparent 25%),linear-gradient(-45deg,#000 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#000 75%),linear-gradient(-45deg,transparent 75%,#000 75%);background-size:7px 7px;background-position:0 0,0 4px,4px -4px,-4px 0;opacity:.75}
+.ph-addr{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted);text-align:center;word-break:break-all;margin-bottom:8px}
+.ph-copy{background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:7px;text-align:center;font-size:10px;color:var(--gold);margin-bottom:6px}
+.ph-net{background:var(--teal-10);border:1px solid var(--teal-20);border-radius:5px;padding:3px 7px;font-size:8px;color:var(--teal);font-family:'JetBrains Mono',monospace;text-align:center;margin-bottom:9px}
+.sdots{display:flex;justify-content:center;gap:5px}
+.sdot{width:5px;height:5px;border-radius:50%;background:var(--bg5);transition:all .3s}
+.sdot.active{background:var(--gold);width:14px;border-radius:3px}
+.proto-info{flex:1;display:flex;flex-direction:column;gap:16px;max-width:380px}
+.proto-step{display:flex;gap:12px;align-items:flex-start}
+.proto-num{width:26px;height:26px;border-radius:50%;background:var(--gold-10);border:1px solid var(--gold-30);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold);flex-shrink:0}
+.proto-step h4{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:15px;color:var(--gold2);margin-bottom:2px;letter-spacing:.04em}
+.proto-step p{font-size:12px;color:var(--muted);line-height:1.6}
+
+/* ═══ SLIDE 5 — CARD ═══ */
+#s5{flex-direction:row;gap:56px;align-items:center}
+.card3d-wrap{perspective:1200px;flex-shrink:0}
+.card3d{width:300px;height:188px;position:relative;transform-style:preserve-3d;animation:cardFloat 6s ease-in-out infinite}
+@keyframes cardFloat{0%,100%{transform:rotateY(-9deg) rotateX(5deg) translateY(0)}50%{transform:rotateY(7deg) rotateX(-4deg) translateY(-10px)}}
+.card-face{position:absolute;inset:0;border-radius:20px;display:flex;flex-direction:column;justify-content:space-between;padding:18px 20px}
+.card-front{
+  background:linear-gradient(155deg,#161410 0%,#0c0a08 45%,#181410 100%);
+  border:1px solid rgba(201,168,76,.24);
+  box-shadow:0 0 0 1px rgba(201,168,76,.07),0 28px 72px rgba(0,0,0,.9),0 0 50px rgba(201,168,76,.12);
+  position:relative;overflow:hidden;
+}
+.card-front::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.55),transparent)}
+.card-front::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(201,168,76,.03) 0%,transparent 50%,rgba(201,168,76,.02) 100%);pointer-events:none}
+/* Chip */
+.c-chip{width:36px;height:27px;background:linear-gradient(135deg,#b08018,#e8c55a 40%,#c9a030 60%,#d4a829);border-radius:5px;position:relative;flex-shrink:0}
+.c-chip::before{content:'';position:absolute;inset:5px 4px;border:1px solid rgba(255,210,80,.35);border-radius:2px}
+.c-chip::after{content:'';position:absolute;top:50%;left:4px;right:4px;height:1px;background:rgba(255,210,80,.2);transform:translateY(-50%)}
+/* Brand stack (top right) */
+.c-brand-stack{text-align:right;line-height:1}
+.c-genesis{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:17px;color:var(--gold2);letter-spacing:.24em;text-transform:uppercase;line-height:1.05}
+.c-reserve-lbl{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:7.5px;color:rgba(201,168,76,.7);letter-spacing:.55em;text-transform:uppercase;margin-top:1px}
+/* Center logo on card */
+.card-logo-seal{width:76px;height:76px;border-radius:50%;overflow:hidden;
+  box-shadow:0 0 18px rgba(201,168,76,.32),0 0 40px rgba(201,168,76,.12)}
+.card-logo-seal img{width:100%;height:100%;display:block}
+/* Bottom row */
+.c-holder{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:9px;color:var(--gold);letter-spacing:.16em;text-transform:uppercase}
+.c-visa-block{text-align:right}
+.c-debit-lbl{font-family:'JetBrains Mono',monospace;font-size:6.5px;color:rgba(201,168,76,.55);letter-spacing:.14em;text-transform:uppercase;margin-bottom:1px}
+.c-visa{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:21px;font-weight:600;color:var(--gold2);letter-spacing:-.01em;line-height:1}
+/* Feature list */
+.card-feats{display:flex;flex-direction:column;gap:10px;flex:1;max-width:360px}
+.cfeat{display:flex;align-items:flex-start;gap:12px}
+.cfeat-icon{width:30px;height:30px;border-radius:9px;background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.18);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.cfeat h4{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:14px;color:var(--text);margin-bottom:2px;letter-spacing:.03em}
+.cfeat p{font-size:12px;color:var(--muted);line-height:1.5}
+
+/* ═══ SLIDE 6 — VAULT ═══ */
+.vault-layout{display:grid;grid-template-columns:1fr 1.2fr;gap:36px;width:100%;max-width:960px;align-items:center}
+.vault-flow{display:flex;flex-direction:column;gap:7px;align-items:center}
+.vault-step{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:11px 18px;text-align:center;width:100%;position:relative;overflow:hidden}
+.vault-step::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,212,170,.20),transparent)}
+.vnum{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:2px;letter-spacing:.08em}
+.vlabel{font-size:12px;color:var(--text);font-weight:500}
+.varrow{color:var(--teal);font-size:15px;opacity:.55}
+.protocols{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.proto{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:12px;transition:border-color .3s;position:relative;overflow:hidden}
+.proto::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,212,170,.18),transparent)}
+.proto:hover{border-color:var(--teal-30)}
+.proto.full{grid-column:1/-1}
+.pname{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--teal);margin-bottom:5px;letter-spacing:.06em}
+.papy{font-size:19px;font-weight:700;color:var(--text);font-family:'JetBrains Mono',monospace}
+.ptype{font-size:10px;color:var(--muted);margin-top:1px}
+.apy-bar-bg{background:var(--bg4);border-radius:3px;height:3px;margin-top:7px;overflow:hidden}
+.apy-bar{height:100%;border-radius:3px;background:linear-gradient(90deg,rgba(0,212,170,.4),var(--teal))}
+
+/* ═══ SLIDE 7 — EPOCHS ═══ */
+#s7{flex-direction:row;gap:56px;align-items:center}
+.epoch-wrap{position:relative;width:250px;height:250px;flex-shrink:0}
+.epoch-svg{width:100%;height:100%}
+.epoch-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+.epoch-timer{font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:700;color:var(--gold2)}
+.epoch-lbl{font-size:9px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-top:2px}
+.epoch-info{flex:1;max-width:440px}
+.epoch-event{display:flex;align-items:flex-start;gap:12px;padding:13px 0;border-bottom:1px solid var(--border)}
+.epoch-event:last-child{border-bottom:none}
+.eicon{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.eicon.harvest{background:var(--gold-10);border:1px solid var(--gold-20)}
+.eicon.rebal{background:var(--teal-10);border:1px solid var(--teal-20)}
+.eicon.recon{background:var(--green-10);border:1px solid var(--green-20)}
+.epoch-event h4{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:15px;color:var(--text);margin-bottom:2px;letter-spacing:.03em}
+.epoch-event p{font-size:12px;color:var(--muted);line-height:1.6}
+
+/* ═══ SLIDE 8 — MARKET ═══ */
+.market-wrap{width:100%;max-width:960px}
+.rings-row{display:flex;align-items:flex-end;justify-content:center;gap:48px;margin:20px 0 28px}
+.ring-item{display:flex;flex-direction:column;align-items:center;gap:12px}
+.ring-circle{border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;flex-shrink:0}
+.ring-circle.tam{width:210px;height:210px;background:radial-gradient(circle,rgba(201,168,76,.09),rgba(201,168,76,.02));border:2px solid var(--gold-20);box-shadow:0 0 40px rgba(201,168,76,.07)}
+.ring-circle.sam{width:155px;height:155px;background:radial-gradient(circle,rgba(74,158,255,.10),rgba(74,158,255,.03));border:2px solid rgba(74,158,255,.28);box-shadow:0 0 30px rgba(74,158,255,.07)}
+.ring-circle.som{width:100px;height:100px;background:radial-gradient(circle,rgba(26,191,106,.14),rgba(26,191,106,.04));border:2px solid rgba(26,191,106,.38);box-shadow:0 0 24px rgba(26,191,106,.08)}
+.ring-amt{font-family:'JetBrains Mono',monospace;font-weight:700;line-height:1.1}
+.ring-circle.tam .ring-amt{font-size:20px;color:var(--gold2)}
+.ring-circle.sam .ring-amt{font-size:16px;color:var(--blue)}
+.ring-circle.som .ring-amt{font-size:13px;color:var(--green)}
+.ring-tag{font-size:9px;letter-spacing:.1em;text-transform:uppercase;margin-top:3px;font-family:'JetBrains Mono',monospace}
+.ring-circle.tam .ring-tag{color:var(--gold-d)}.ring-circle.sam .ring-tag{color:rgba(74,158,255,.65)}.ring-circle.som .ring-tag{color:rgba(26,191,106,.65)}
+.ring-desc{font-size:10px;color:var(--muted);text-align:center;max-width:90px;line-height:1.5}
+.mkt-segs{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.mkt-seg{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:16px;position:relative;overflow:hidden}
+.mkt-seg::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent)}
+.mkt-seg-lbl{font-size:9px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:7px;font-family:'JetBrains Mono',monospace}
+.mkt-seg h4{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:14px;color:var(--text);margin-bottom:4px;letter-spacing:.03em}
+.mkt-seg p{font-size:11px;color:var(--muted);line-height:1.6}
+
+/* ═══ SLIDE 9 — REVENUE ═══ */
+.rev-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;width:100%;max-width:940px}
+.rev-stream{background:var(--bg2);border:1px solid var(--border);border-radius:24px;padding:24px;backdrop-filter:blur(14px);position:relative;overflow:hidden}
+.rev-stream::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent)}
+.rev-stream.s1{border-color:var(--gold-20)}.rev-stream.s1::before{background:linear-gradient(90deg,transparent,rgba(201,168,76,.28),transparent)}
+.rev-stream.s2{border-color:var(--green-20)}.rev-stream.s2::before{background:linear-gradient(90deg,transparent,rgba(26,191,106,.28),transparent)}
+.sicon{font-size:26px;margin-bottom:10px}
+.stitle{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:16px;color:var(--gold2);letter-spacing:.06em;text-transform:uppercase;margin-bottom:7px}
+.sdesc{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:14px}
+.rev-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px}
+.rev-row:last-child{border-bottom:none}
+.rev-amt{font-family:'JetBrains Mono',monospace;color:var(--gold);font-weight:600}
+.rev-amt.g{color:var(--green)}
+.calc-box{grid-column:1/-1;background:var(--bg2);border:1px solid var(--gold-20);border-radius:24px;padding:20px 28px;position:relative;overflow:hidden}
+.calc-box::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.38),transparent)}
+.calc-lbl{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}
+.calc-row{display:flex;align-items:center;gap:16px}
+input[type=range].slider{flex:1;-webkit-appearance:none;height:4px;border-radius:2px;outline:none;background:linear-gradient(90deg,var(--gold) 2%,var(--bg5) 2%);cursor:pointer}
+input[type=range].slider::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 4px var(--gold-10)}
+.aum-val{font-family:'JetBrains Mono',monospace;font-size:17px;color:var(--text);min-width:90px;text-align:right}
+.calc-out{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px}
+.calc-stat{text-align:center}
+.cstat-val{font-family:'JetBrains Mono',monospace;font-size:21px;font-weight:700;color:var(--gold2)}
+.cstat-val.g{color:var(--green)}
+.cstat-lbl{font-size:10px;color:var(--muted);margin-top:2px}
+
+/* ═══ SLIDE 10 — TRACTION ═══ */
+.tract-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;width:100%;max-width:880px}
+.tract-col{background:var(--bg2);border:1px solid var(--border);border-radius:24px;padding:22px;position:relative;overflow:hidden}
+.tract-col::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent)}
+.tract-col.built{border-color:var(--green-20)}.tract-col.built::before{background:linear-gradient(90deg,transparent,rgba(26,191,106,.28),transparent)}
+.tract-col.unlock{border-color:var(--gold-20)}.tract-col.unlock::before{background:linear-gradient(90deg,transparent,rgba(201,168,76,.28),transparent)}
+.tract-head{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:15px;letter-spacing:.07em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:7px}
+.tract-head.g{color:var(--green)}.tract-head.au{color:var(--gold)}
+.titem{display:flex;align-items:flex-start;gap:7px;margin-bottom:9px;font-size:12px;color:var(--text);line-height:1.5}
+.chk{color:var(--green);font-size:11px;flex-shrink:0;margin-top:1px}
+.arr{color:var(--gold);font-size:11px;flex-shrink:0;margin-top:1px}
+
+/* ═══ SLIDE 11 — ASK ═══ */
+.ask-grid{display:grid;grid-template-columns:1fr 1fr;gap:36px;width:100%;max-width:940px;align-items:start}
+.ask-box{text-align:center;padding:28px;background:var(--bg2);border:1px solid var(--gold-20);border-radius:24px;margin-bottom:20px;position:relative;overflow:hidden}
+.ask-box::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.48),transparent)}
+.ask-lbl{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-bottom:7px}
+.ask-amt{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(40px,5.5vw,70px);background:linear-gradient(135deg,var(--gold2),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:.06em}
+.ask-stage{font-size:12px;color:var(--muted);margin-top:5px}
+.donut-wrap{position:relative;width:150px;height:150px;margin:0 auto 18px}
+.donut-wrap svg{width:100%;height:100%}
+.donut-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+.donut-tot{font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:700;color:var(--text)}
+.donut-lbl{font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em}
+.legend{display:flex;flex-direction:column;gap:7px}
+.leg-item{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--text)}
+.leg-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.leg-amt{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold)}
+.mile-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mile-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:13px;position:relative;overflow:hidden}
+.mile-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.15),transparent)}
+.mile-period{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--gold-d);letter-spacing:.1em;text-transform:uppercase;margin-bottom:7px}
+.mile-item{font-size:11px;color:var(--text);margin-bottom:3px;display:flex;align-items:center;gap:5px}
+.mile-item::before{content:'✦';color:var(--gold-d);font-size:7px}
+.contact-row{display:flex;gap:12px;justify-content:center;margin-top:14px;flex-wrap:wrap}
+.cpill{background:var(--bg2);border:1px solid var(--border);border-radius:18px;padding:7px 16px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="deck">
+<div class="geo-grid"></div>
+
+<!-- ═══════════════════ SLIDE 1 — COVER ═══════════════════ -->
+<div class="slide active" id="s1">
+  <canvas class="particles" id="pc"></canvas>
+  <div class="cover-content">
+    <div class="logo-seal" style="width:92px;height:92px">
+      <img src="/genesis-logo.png" alt="Genesis Reserve"
+        onerror="this.parentElement.innerHTML='<span class=\'glyph\' style=\'font-size:76px;opacity:.92\'>◈</span>'">
+    </div>
+    <div class="hd">GENESIS RESERVE</div>
+    <div class="rule"></div>
+    <div class="cover-tagline">The Sovereign Smart Wallet</div>
+    <div class="cover-sub">Programmable Treasury &nbsp;·&nbsp; Real-World Spending<br>Yield on Every Dollar — Every 15 Minutes</div>
+    <div class="cover-badges">
+      <span class="pill">Investor Presentation</span>
+      <span class="pill">Series Seed · 2026</span>
+      <span class="pill">$500K Ask</span>
+    </div>
+    <div class="banner" style="margin-top:2px;font-size:clamp(12px,1.2vw,15px)">The treasury infrastructure the world has been building toward.</div>
+  </div>
+</div>
+
+<!-- ═══════════════════ SLIDE 2 — PROBLEM ═══════════════════ -->
+<div class="slide" id="s2">
+  <div class="h1" style="margin-bottom:6px">The Broken Status Quo</div>
+  <div class="banner" style="margin:6px auto 20px">"$150 trillion in global savings — earning almost nothing, locked in 1985 infrastructure."</div>
+  <div class="prob-grid">
+    <div class="prob-col">
+      <div class="prob-head"><span style="font-size:20px">🏛️</span><div class="h2" style="color:var(--red);font-style:normal;letter-spacing:.06em;text-transform:uppercase;font-size:12px">Traditional Banking</div></div>
+      <div class="prob-item"><span style="color:var(--red)">✕</span><span>Savings APY 0.01% while inflation runs 3–4%</span></div>
+      <div class="prob-item"><span style="color:var(--red)">✕</span><span>Transfers take 1–3 business days</span></div>
+      <div class="prob-item"><span style="color:var(--red)">✕</span><span>Zero transparency on fund allocation</span></div>
+      <div class="prob-item"><span style="color:var(--red)">✕</span><span>No programmability — you're a passenger</span></div>
+      <div class="prob-item"><span style="color:var(--red)">✕</span><span>Global remittance fees avg 6.5% per transfer</span></div>
+    </div>
+    <div class="vs-col">
+      <div style="flex:1;width:1px;background:linear-gradient(180deg,transparent,var(--border))"></div>
+      <div class="vs-txt">VS</div>
+      <div style="flex:1;width:1px;background:linear-gradient(180deg,var(--border),transparent)"></div>
+    </div>
+    <div class="prob-col">
+      <div class="prob-head"><span style="font-size:20px">⛓️</span><div class="h2" style="color:var(--red);font-style:normal;letter-spacing:.06em;text-transform:uppercase;font-size:12px">Crypto / DeFi</div></div>
+      <div class="prob-item"><span style="color:var(--red)">✕</span><span>Seed phrases, gas fees, bridges — too complex</span></div>
+      <div class="prob-item"><span style="color:var(--red)">✕</span><span>No real-world spending mechanism</span></div>
+      <div class="prob-item"><span style="color:var(--red)">✕</span><span>Yield protocols require deep technical expertise</span></div>
+      <div class="prob-item"><span style="color:var(--red)">✕</span><span>No compliance or consumer protection</span></div>
+      <div class="prob-item"><span style="color:var(--red)">✕</span><span>Volatility risk for everyday users</span></div>
+    </div>
+  </div>
+  <div style="margin-top:22px;text-align:center"><span class="pill">The gap between them is where Genesis Reserve lives</span></div>
+</div>
+
+<!-- ═══════════════════ SLIDE 3 — SOLUTION ═══════════════════ -->
+<div class="slide" id="s3">
+  <div class="h1" style="margin-bottom:5px">One Product. Four Superpowers.</div>
+  <div class="muted" style="text-align:center;margin-bottom:24px">Built for the next 150 million users who want DeFi benefits without the friction.</div>
+  <div class="sol-grid stagger">
+    <div class="sol-card">
+      <div class="sol-icon">📱</div>
+      <div class="sol-title">Smart Wallet</div>
+      <div class="sol-desc">Non-custodial wallet with embedded Privy auth. Login with email, Google, or Apple — no seed phrase. Your keys, your funds.</div>
+    </div>
+    <div class="sol-card">
+      <div class="sol-icon">🏛️</div>
+      <div class="sol-title">Yield Vault</div>
+      <div class="sol-desc">4–11% APY on USDC via ERC-4626 multi-protocol routing across Aave, Morpho, Balancer, Pendle, and Maple — all behind one deposit.</div>
+    </div>
+    <div class="sol-card">
+      <div class="sol-icon">💳</div>
+      <div class="sol-title">Debit Card</div>
+      <div class="sol-desc">Spend directly from your vault. Visa network. Real-time freeze/unfreeze. Push-to-card payouts. Virtual + physical options.</div>
+    </div>
+    <div class="sol-card">
+      <div class="sol-icon">⚙️</div>
+      <div class="sol-title">Treasury Engine</div>
+      <div class="sol-desc">AI-driven rebalancing every 15 minutes. Real-time ledger reconciliation. Compliance-aware routing with OFAC + KYC screening.</div>
+    </div>
+  </div>
+  <div class="rule" style="margin-top:22px"></div>
+  <div class="muted" style="text-align:center;margin-top:10px;font-size:11px">Deployed on Arbitrum · ERC-4626 Standard · Zero Hash Rails · Privy Auth · Circle Card Infrastructure</div>
+</div>
+
+<!-- ═══════════════════ SLIDE 4 — MOBILE PROTOTYPE ═══════════════════ -->
+<div class="slide" id="s4">
+  <div class="phone-wrap">
+    <div class="phone">
+      <div class="phone-notch"></div>
+      <!-- Screen 1: Login -->
+      <div class="pscreen active" id="ps1">
+        <div class="ph-logo">◈ &nbsp;GENESIS RESERVE</div>
+        <div style="text-align:center;margin-bottom:14px">
+          <div class="glyph" style="font-size:36px;opacity:.7">◈</div>
+        </div>
+        <div class="ph-title">Welcome Back</div>
+        <div class="ph-btn"><span>✉️</span><span>Continue with Email</span></div>
+        <div class="ph-btn"><span>🌐</span><span>Continue with Google</span></div>
+        <div class="ph-btn"><span>🍎</span><span>Continue with Apple</span></div>
+        <div class="ph-btn primary" style="margin-top:7px">Connect Wallet</div>
+        <div style="text-align:center;margin-top:10px;font-size:8px;color:var(--muted)">Secured by Privy · Non-Custodial</div>
+      </div>
+      <!-- Screen 2: Home -->
+      <div class="pscreen" id="ps2">
+        <div class="ph-logo">GENESIS RESERVE</div>
+        <div style="font-size:9px;color:var(--muted);text-align:center;margin-bottom:3px">Good morning, Alex ✦</div>
+        <div class="ph-bal-lbl">TOTAL BALANCE</div>
+        <div class="ph-bal">$12,847.32</div>
+        <div class="ph-bal-chg">+$124.18 today (+0.97%) ↑</div>
+        <div class="ph-actions">
+          <div class="ph-act"><div class="ph-act-btn">↑</div><div class="ph-act-lbl">Send</div></div>
+          <div class="ph-act"><div class="ph-act-btn">↓</div><div class="ph-act-lbl">Receive</div></div>
+          <div class="ph-act"><div class="ph-act-btn">+</div><div class="ph-act-lbl">Deposit</div></div>
+          <div class="ph-act"><div class="ph-act-btn">💳</div><div class="ph-act-lbl">Card</div></div>
+        </div>
+        <div class="ph-vault">
+          <div class="ph-vrow"><span class="ph-lbl">Active Vault</span><span class="ph-val">Balanced</span></div>
+          <div class="ph-vrow"><span class="ph-lbl">Current APY</span><span class="ph-val" style="color:var(--green)">7.4%</span></div>
+          <div class="ph-vrow"><span class="ph-lbl">Next Epoch</span><span class="ph-val">8:42 left</span></div>
+        </div>
+      </div>
+      <!-- Screen 3: Send -->
+      <div class="pscreen" id="ps3">
+        <div class="ph-logo">GENESIS RESERVE</div>
+        <div class="ph-title">Send USDC</div>
+        <div class="ph-lbl" style="margin-bottom:3px;font-size:8px">TO</div>
+        <div class="ph-input focus"><span>0x1a2b...3c4d</span><span class="badge-g" style="font-size:7px;padding:2px 5px">✓</span></div>
+        <div class="ph-lbl" style="margin-bottom:3px;font-size:8px">AMOUNT</div>
+        <div class="ph-input"><span style="font-family:'JetBrains Mono',monospace;font-size:15px;color:var(--text)">$500.00</span><span class="ph-lbl">USDC</span></div>
+        <div style="display:flex;justify-content:space-between;margin:3px 0 10px"><span style="font-size:8px;color:var(--muted)">Fee: ~$0.12</span><span style="font-size:8px;color:var(--teal)">⚡ Instant</span></div>
+        <div class="ph-send">CONFIRM SEND</div>
+        <div style="text-align:center;margin-top:7px;font-size:8px;color:var(--muted)">Arbitrum · USDC · ERC-20</div>
+      </div>
+      <!-- Screen 4: Receive -->
+      <div class="pscreen" id="ps4">
+        <div class="ph-logo">GENESIS RESERVE</div>
+        <div class="ph-title">Your Address</div>
+        <div class="ph-net">USDC · Arbitrum</div>
+        <div class="ph-qr"><div class="qr-pat"></div></div>
+        <div class="ph-addr">0x1a2b3c4d5e6f7890<br>abcdef1234567890ab</div>
+        <div class="ph-copy">📋 Copy Address</div>
+        <div class="ph-copy" style="margin-top:5px">↑ Share</div>
+      </div>
+    </div>
+    <div class="sdots">
+      <div class="sdot active" id="sd0"></div><div class="sdot" id="sd1"></div>
+      <div class="sdot" id="sd2"></div><div class="sdot" id="sd3"></div>
+    </div>
+  </div>
+
+  <div class="proto-info stagger">
+    <div>
+      <div class="h1" style="text-align:left;font-size:clamp(16px,2.3vw,32px)">The Complete<br>Mobile Experience</div>
+      <div class="rule" style="margin:10px 0 0 0"></div>
+    </div>
+    <div class="proto-step">
+      <div class="proto-num">1</div>
+      <div><h4>Frictionless Login</h4><p>Email, Google, Apple, or wallet. Privy creates an embedded non-custodial wallet instantly. No seed phrase.</p></div>
+    </div>
+    <div class="proto-step">
+      <div class="proto-num">2</div>
+      <div><h4>Live Wallet Home</h4><p>Real-time balance, daily yield gains, vault status, and epoch countdown — all in one view.</p></div>
+    </div>
+    <div class="proto-step">
+      <div class="proto-num">3</div>
+      <div><h4>Send in Seconds</h4><p>Address verification, amount entry, instant Arbitrum settlement. Network fee under $0.15.</p></div>
+    </div>
+    <div class="proto-step">
+      <div class="proto-num">4</div>
+      <div><h4>Receive Anywhere</h4><p>QR code or address copy. Any USDC sender on Arbitrum can fund your vault directly.</p></div>
+    </div>
+    <div><span class="badge-g">Login to sending in under 90 seconds</span></div>
+  </div>
+</div>
+
+<!-- ═══════════════════ SLIDE 5 — DEBIT CARD ═══════════════════ -->
+<div class="slide" id="s5">
+  <div class="card3d-wrap">
+    <div class="card3d">
+      <div class="card-face card-front">
+        <!-- Row 1: Chip + Brand -->
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div class="c-chip"></div>
+          <div class="c-brand-stack">
+            <div class="c-genesis">GENESIS</div>
+            <div class="c-reserve-lbl">RESERVE</div>
+          </div>
+        </div>
+        <!-- Center: Logo seal -->
+        <div style="display:flex;justify-content:center;align-items:center;flex:1;margin:6px 0 2px">
+          <div class="card-logo-seal">
+            <img src="/genesis-logo.png" alt="GR"
+              onerror="this.style.display='none'">
+          </div>
+        </div>
+        <!-- Row 3: Cardholder + Visa -->
+        <div style="display:flex;justify-content:space-between;align-items:flex-end">
+          <div class="c-holder">ANTHONY BEEDLES</div>
+          <div class="c-visa-block">
+            <div class="c-debit-lbl">DEBIT</div>
+            <div class="c-visa">VISA</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="max-width:390px">
+    <div class="h1" style="text-align:left;margin-bottom:7px;font-size:clamp(16px,2.4vw,34px)">Spend From<br>Your Vault</div>
+    <div class="banner" style="text-align:left;border-left:1px solid rgba(201,168,76,.18);border-top:none;border-bottom:none;padding:8px 16px;margin:0 0 18px;font-size:13px">"Your vault balance is your spending balance. No conversion. No wait. No friction."</div>
+    <div class="card-feats stagger">
+      <div class="cfeat"><div class="cfeat-icon">🛡️</div><div><h4>Spend Worldwide</h4><p>Use anywhere debit cards are accepted. Visa network, real-time authorization.</p></div></div>
+      <div class="cfeat"><div class="cfeat-icon">%</div><div><h4>Earn While You Spend</h4><p>Your vault balance continues earning yield. Every dollar, every 15 minutes.</p></div></div>
+      <div class="cfeat"><div class="cfeat-icon">🔒</div><div><h4>Secure & Private</h4><p>Bank-grade security with full user control. One-tap freeze/unfreeze from the app.</p></div></div>
+      <div class="cfeat"><div class="cfeat-icon">🌐</div><div><h4>Powered by Genesis</h4><p>Backed by the Genesis Reserve yield engine. Virtual + physical options available.</p></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ SLIDE 6 — VAULT & TREASURY ═══════════════════ -->
+<div class="slide" id="s6">
+  <div class="h1" style="margin-bottom:5px">The Yield Engine</div>
+  <div class="muted" style="text-align:center;margin-bottom:20px">Multi-protocol DeFi routing behind a single deposit. Your money, always at work.</div>
+  <div class="vault-layout">
+    <div class="vault-flow stagger">
+      <div class="vault-step" style="border-color:var(--gold-20)"><div class="vnum">01</div><div class="vlabel">User Deposits USDC</div></div>
+      <div class="varrow">↓</div>
+      <div class="vault-step"><div class="vnum">02</div><div class="vlabel">GenesisVault (ERC-4626)</div></div>
+      <div class="varrow">↓</div>
+      <div class="vault-step"><div class="vnum">03</div><div class="vlabel">AI StrategyRouter</div></div>
+      <div class="varrow">↓</div>
+      <div class="vault-step" style="border-color:var(--teal-20)"><div class="vnum">04</div><div class="vlabel" style="color:var(--teal)">Yield Protocols ↗</div></div>
+      <div style="display:flex;gap:7px;margin-top:7px;flex-wrap:wrap">
+        <span class="pill" style="font-size:9px">ERC-4626</span>
+        <span class="pill" style="font-size:9px">Arbitrum</span>
+        <span class="pill" style="font-size:9px">Non-Custodial</span>
+      </div>
+    </div>
+    <div>
+      <div class="protocols stagger">
+        <div class="proto"><div class="pname">AAVE V3</div><div class="papy">4.8%</div><div class="ptype">Lending Protocol</div><div class="apy-bar-bg"><div class="apy-bar" style="width:44%"></div></div></div>
+        <div class="proto"><div class="pname">MORPHO</div><div class="papy">6.3%</div><div class="ptype">Optimized Lending</div><div class="apy-bar-bg"><div class="apy-bar" style="width:57%"></div></div></div>
+        <div class="proto"><div class="pname">BALANCER V3</div><div class="papy">7.9%</div><div class="ptype">Liquidity Pools</div><div class="apy-bar-bg"><div class="apy-bar" style="width:72%"></div></div></div>
+        <div class="proto"><div class="pname">PENDLE</div><div class="papy">9.4%</div><div class="ptype">Yield Tokenization</div><div class="apy-bar-bg"><div class="apy-bar" style="width:86%"></div></div></div>
+        <div class="proto full"><div style="display:flex;justify-content:space-between;align-items:center"><div><div class="pname">MAPLE FINANCE</div><div class="ptype">Institutional Credit</div></div><div class="papy">11.2%</div></div><div class="apy-bar-bg" style="margin-top:7px"><div class="apy-bar" style="width:100%"></div></div></div>
+      </div>
+      <div style="text-align:right;margin-top:9px"><span class="badge-g">Target APY: 4–11% across risk tiers</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ SLIDE 7 — EPOCHS ═══════════════════ -->
+<div class="slide" id="s7">
+  <div class="epoch-wrap">
+    <svg class="epoch-svg" viewBox="0 0 250 250">
+      <circle cx="125" cy="125" r="105" fill="none" stroke="rgba(255,255,255,.04)" stroke-width="20"/>
+      <g stroke="rgba(201,168,76,.20)" stroke-width="1">
+        <line x1="125" y1="22" x2="125" y2="34" transform="rotate(0,125,125)"/>
+        <line x1="125" y1="22" x2="125" y2="34" transform="rotate(24,125,125)"/>
+        <line x1="125" y1="22" x2="125" y2="34" transform="rotate(48,125,125)"/>
+        <line x1="125" y1="22" x2="125" y2="34" transform="rotate(72,125,125)"/>
+        <line x1="125" y1="22" x2="125" y2="34" transform="rotate(96,125,125)"/>
+        <line x1="125" y1="22" x2="125" y2="34" transform="rotate(120,125,125)"/>
+        <line x1="125" y1="22" x2="125" y2="34" transform="rotate(144,125,125)"/>
+        <line x1="125" y1="22" x2="125" y2="34" transform="rotate(168,125,125)"/>
+        <line x1="125" y1="22" x2="125" y2="34" transform="rotate(192,125,125)"/>
+        <line x1="125" y1="22" x2="125" y2="34" transform="rotate(216,125,125)"/>
+        <line x1="125" y1="22" x2="125" y2="34" transform="rotate(240,125,125)"/>
+        <line x1="125" y1="22" x2="125" y2="34" transform="rotate(264,125,125)"/>
+        <line x1="125" y1="22" x2="125" y2="34" transform="rotate(288,125,125)"/>
+        <line x1="125" y1="22" x2="125" y2="34" transform="rotate(312,125,125)"/>
+        <line x1="125" y1="22" x2="125" y2="34" transform="rotate(336,125,125)"/>
+      </g>
+      <circle cx="125" cy="125" r="105" fill="none" stroke="url(#eg)" stroke-width="20"
+        stroke-dasharray="0 659.7" stroke-linecap="round"
+        transform="rotate(-90,125,125)" id="epochArc"/>
+      <circle cx="125" cy="125" r="82" fill="none" stroke="rgba(201,168,76,.07)" stroke-width="1"/>
+      <defs>
+        <linearGradient id="eg" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#5A4618"/>
+          <stop offset="100%" stop-color="#E8CB6E"/>
+        </linearGradient>
+      </defs>
+    </svg>
+    <div class="epoch-center">
+      <div class="epoch-timer" id="epochTimer">14:32</div>
+      <div class="epoch-lbl">Until Next Epoch</div>
+    </div>
+  </div>
+
+  <div class="epoch-info">
+    <div class="h1" style="text-align:left;font-size:clamp(15px,2vw,28px);margin-bottom:4px">Every 15 Minutes,<br>Your Money Compounds</div>
+    <div class="muted" style="margin-bottom:16px;font-size:12px">96 yield cycles per day. Traditional banking: once monthly. We never sleep.</div>
+    <div class="epoch-event">
+      <div class="eicon harvest">⚡</div>
+      <div><h4>Yield Harvest</h4><p>Accrued yield collected from all active protocols. Credited to vault balance in real-time.</p></div>
+    </div>
+    <div class="epoch-event">
+      <div class="eicon rebal">⚖️</div>
+      <div><h4>AI Rebalance</h4><p>StrategyRouter checks live APY across Aave, Morpho, Balancer, Pendle, Maple. Capital moves to highest-yield allocation.</p></div>
+    </div>
+    <div class="epoch-event">
+      <div class="eicon recon">📒</div>
+      <div><h4>Ledger Reconciliation</h4><p>Blockchain state synced with off-chain ledger. Double-entry accounting verified. Discrepancies trigger instant alerts.</p></div>
+    </div>
+    <div class="banner" style="margin-top:14px;font-size:12px;padding:10px 16px">"96 harvest cycles per day vs. traditional banking's monthly settlement. That's the compounding edge."</div>
+  </div>
+</div>
+
+<!-- ═══════════════════ SLIDE 8 — MARKET ═══════════════════ -->
+<div class="slide" id="s8">
+  <div class="h1" style="margin-bottom:5px">Market Opportunity</div>
+  <div class="muted" style="text-align:center;margin-bottom:10px">Three converging segments — all underserved by existing products.</div>
+  <div class="market-wrap">
+    <div class="rings-row">
+      <div class="ring-item">
+        <div class="ring-circle tam">
+          <div class="ring-amt">$150T</div>
+          <div class="ring-tag">TAM</div>
+        </div>
+        <div class="ring-desc">Global Household Savings</div>
+      </div>
+      <div class="ring-item">
+        <div class="ring-circle sam">
+          <div class="ring-amt">$4.2T</div>
+          <div class="ring-tag">SAM</div>
+        </div>
+        <div class="ring-desc">Crypto-Adjacent Users</div>
+      </div>
+      <div class="ring-item">
+        <div class="ring-circle som">
+          <div class="ring-amt">$50B</div>
+          <div class="ring-tag">SOM</div>
+        </div>
+        <div class="ring-desc">Stablecoin Yield Market</div>
+      </div>
+    </div>
+    <div class="mkt-segs stagger">
+      <div class="mkt-seg">
+        <div class="mkt-seg-lbl" style="color:var(--gold)">Segment 01</div>
+        <h4>Crypto-Curious Professionals</h4>
+        <p>Want yield without complexity. Have crypto exposure but can't safely access DeFi. Our largest near-term segment.</p>
+      </div>
+      <div class="mkt-seg">
+        <div class="mkt-seg-lbl" style="color:var(--blue)">Segment 02</div>
+        <h4>HNW Treasury Users</h4>
+        <p>High-net-worth individuals seeking programmable, transparent treasury tools. Premium pricing tolerance.</p>
+      </div>
+      <div class="mkt-seg">
+        <div class="mkt-seg-lbl" style="color:var(--green)">Segment 03</div>
+        <h4>Diaspora / Remittance Senders</h4>
+        <p>$800B annual remittance market paying avg 6.5% in fees. Genesis + Remitation partnership unlocks this corridor.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ SLIDE 9 — REVENUE ═══════════════════ -->
+<div class="slide" id="s9">
+  <div class="h1" style="margin-bottom:5px">Revenue Model</div>
+  <div class="muted" style="text-align:center;margin-bottom:20px">Two compounding streams. We earn when users grow their wealth — zero conflict of interest.</div>
+  <div class="rev-grid">
+    <div class="rev-stream s1">
+      <div class="sicon">⚡</div>
+      <div class="stitle">Transaction Fees</div>
+      <div class="sdesc">Variable per-operation fee. Covers network costs + service margin. Scales directly with volume.</div>
+      <div class="rev-row"><span>Simple transfers</span><span class="rev-amt">$0.25 – $0.75</span></div>
+      <div class="rev-row"><span>Cross-chain / remittance</span><span class="rev-amt">$0.75 – $1.50</span></div>
+      <div class="rev-row"><span>10,000 tx / month</span><span class="rev-amt">~$7,500/mo</span></div>
+      <div class="rev-row"><span>50,000 tx / month</span><span class="rev-amt">~$37,500/mo</span></div>
+    </div>
+    <div class="rev-stream s2">
+      <div class="sicon">🏛️</div>
+      <div class="stitle">Yield Strategy Fee</div>
+      <div class="sdesc">0.25% annually on AUM in yield strategies. Accrues continuously, captured at each epoch harvest.</div>
+      <div class="rev-row"><span>$1M AUM</span><span class="rev-amt g">$208/mo</span></div>
+      <div class="rev-row"><span>$5M AUM</span><span class="rev-amt g">$1,042/mo</span></div>
+      <div class="rev-row"><span>$10M AUM</span><span class="rev-amt g">$2,083/mo</span></div>
+      <div class="rev-row"><span>$50M AUM</span><span class="rev-amt g">$10,417/mo</span></div>
+    </div>
+    <div class="calc-box">
+      <div class="calc-lbl">Revenue Explorer — Drag the Slider</div>
+      <div class="calc-row">
+        <span class="muted" style="font-size:12px;white-space:nowrap">AUM:</span>
+        <input type="range" class="slider" id="aumSlider" min="100000" max="50000000" value="1000000" step="100000">
+        <div class="aum-val" id="aumVal">$1.0M</div>
+      </div>
+      <div class="calc-out">
+        <div class="calc-stat"><div class="cstat-val" id="cTx">$7,500</div><div class="cstat-lbl">Tx Revenue / mo</div></div>
+        <div class="calc-stat"><div class="cstat-val g" id="cYield">$208</div><div class="cstat-lbl">Yield Fee / mo</div></div>
+        <div class="calc-stat"><div class="cstat-val" id="cTotal">$7,708</div><div class="cstat-lbl">Combined / mo</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ SLIDE 10 — TRACTION ═══════════════════ -->
+<div class="slide" id="s10">
+  <div class="h1" style="margin-bottom:5px">Traction &amp; What $500K Unlocks</div>
+  <div class="muted" style="text-align:center;margin-bottom:22px">The foundation is built. The raise funds the go-to-market.</div>
+  <div class="tract-grid">
+    <div class="tract-col built stagger">
+      <div class="tract-head g">✅ Already Built</div>
+      <div class="titem"><span class="chk">✓</span>Smart contracts deployed on Arbitrum mainnet</div>
+      <div class="titem"><span class="chk">✓</span>Full mobile wallet — Login, Send, Receive, Vault, Card</div>
+      <div class="titem"><span class="chk">✓</span>Debit card infrastructure (Circle + Stripe)</div>
+      <div class="titem"><span class="chk">✓</span>KYC/AML scaffolding (Onfido + Chainalysis)</div>
+      <div class="titem"><span class="chk">✓</span>Ledger + idempotency engine</div>
+      <div class="titem"><span class="chk">✓</span>Admin + analytics dashboard</div>
+      <div class="titem"><span class="chk">✓</span>Treasury orchestration + StrategyRouter</div>
+      <div class="titem"><span class="chk">✓</span>Zero Hash + Remitation partnership pipeline</div>
+    </div>
+    <div class="tract-col unlock stagger">
+      <div class="tract-head au">🔓 $500K Unlocks</div>
+      <div class="titem"><span class="arr">→</span>Professional smart contract security audit</div>
+      <div class="titem"><span class="arr">→</span>Live KYC/AML providers (Onfido + Chainalysis)</div>
+      <div class="titem"><span class="arr">→</span>Zero Hash off-ramp execution (live transfers)</div>
+      <div class="titem"><span class="arr">→</span>100 pilot users, $100K supply cap</div>
+      <div class="titem"><span class="arr">→</span>FinCEN MSB registration filed</div>
+      <div class="titem"><span class="arr">→</span>GTM campaign + user acquisition</div>
+      <div class="titem"><span class="arr">→</span>Remitation B2B partnership activation</div>
+      <div class="titem"><span class="arr">→</span>Production monitoring + incident response</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ SLIDE 11 — THE ASK ═══════════════════ -->
+<div class="slide" id="s11">
+  <div class="h1" style="margin-bottom:5px">The Ask</div>
+  <div class="muted" style="text-align:center;margin-bottom:20px">$500,000 to fund the go-to-market launch of Genesis Reserve.</div>
+  <div class="ask-grid">
+    <div>
+      <div class="ask-box">
+        <div class="ask-lbl">Raising</div>
+        <div class="ask-amt">$500K</div>
+        <div class="ask-stage">Pre-Seed / Seed · Genesis Reserve · 2026</div>
+      </div>
+      <div class="donut-wrap">
+        <svg viewBox="0 0 150 150">
+          <circle cx="75" cy="75" r="55" fill="none" stroke="#C9A84C" stroke-width="26"
+            stroke-dasharray="138.2 207.3" stroke-dashoffset="51.8" transform="rotate(-90,75,75)"/>
+          <circle cx="75" cy="75" r="55" fill="none" stroke="#4A9EFF" stroke-width="26"
+            stroke-dasharray="69.1 276.5" stroke-dashoffset="-86.4" transform="rotate(-90,75,75)"/>
+          <circle cx="75" cy="75" r="55" fill="none" stroke="#1ABF6A" stroke-width="26"
+            stroke-dasharray="86.4 259.2" stroke-dashoffset="-155.5" transform="rotate(-90,75,75)"/>
+          <circle cx="75" cy="75" r="55" fill="none" stroke="#8A6E2A" stroke-width="26"
+            stroke-dasharray="51.8 293.8" stroke-dashoffset="-241.8" transform="rotate(-90,75,75)"/>
+          <circle cx="75" cy="75" r="42" fill="var(--bg0)"/>
+        </svg>
+        <div class="donut-center"><div class="donut-tot">$500K</div><div class="donut-lbl">Total</div></div>
+      </div>
+      <div class="legend">
+        <div class="leg-item"><div class="leg-dot" style="background:#C9A84C"></div>Engineering &amp; Audit (40%)<span class="leg-amt">$200K</span></div>
+        <div class="leg-item"><div class="leg-dot" style="background:#4A9EFF"></div>Compliance &amp; Legal (20%)<span class="leg-amt">$100K</span></div>
+        <div class="leg-item"><div class="leg-dot" style="background:#1ABF6A"></div>GTM &amp; Marketing (25%)<span class="leg-amt">$125K</span></div>
+        <div class="leg-item"><div class="leg-dot" style="background:#8A6E2A"></div>Infrastructure &amp; Ops (15%)<span class="leg-amt">$75K</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="h2" style="margin-bottom:14px;font-style:normal;letter-spacing:.08em;text-transform:uppercase;font-size:12px">Expected Milestones</div>
+      <div class="mile-grid">
+        <div class="mile-card"><div class="mile-period">Month 3</div><div class="mile-item">Audit complete</div><div class="mile-item">100 pilot users</div><div class="mile-item">3 yield strategies live</div></div>
+        <div class="mile-card"><div class="mile-period">Month 6</div><div class="mile-item">$1M AUM</div><div class="mile-item">FinCEN MSB filed</div><div class="mile-item">GTM campaign live</div></div>
+        <div class="mile-card"><div class="mile-period">Month 9</div><div class="mile-item">1,000 active users</div><div class="mile-item">Remitation live</div><div class="mile-item">$5M AUM target</div></div>
+        <div class="mile-card"><div class="mile-period">Month 12</div><div class="mile-item">10,000 active users</div><div class="mile-item">$10M AUM</div><div class="mile-item">Series A ready</div></div>
+      </div>
+      <div style="margin-top:20px;padding:18px;background:var(--gold-10);border:1px solid var(--gold-20);border-radius:16px;text-align:center;position:relative;overflow:hidden">
+        <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.45),transparent)"></div>
+        <div class="logo-seal" style="width:36px;height:36px;margin:0 auto 10px;box-shadow:0 0 0 1px rgba(201,168,76,.12),0 0 16px rgba(201,168,76,.15)">
+          <img src="/genesis-logo.png" alt="Genesis Reserve"
+            onerror="this.parentElement.innerHTML='<span class=\'glyph\' style=\'font-size:22px;opacity:.6\'>◈</span>'">
+        </div>
+        <div class="banner" style="border:none;padding:0;margin:0 0 10px;font-size:14px">"Not just a wallet. The treasury layer<br>the world has been waiting for."</div>
+        <div class="contact-row">
+          <span class="cpill">info@genesisreserve.io</span>
+          <span class="cpill">TheGenesisArchitect</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /deck -->
+
+<!-- ── CONFIDENTIALITY FOOTER ── -->
+<footer class="deck-footer">
+  <div class="footer-line">Copyright © 2026 Genesis App, Inc. (d/b/a Genesis Reserve). All rights reserved. &nbsp;·&nbsp; Confidential Information — Do not distribute without permission.</div>
+  <div class="footer-line">For inquiries: <span>info@genesisreserve.io</span> &nbsp;|&nbsp; <span>genesisreserve.app</span></div>
+</footer>
+
+<button class="nav-arrow prev" id="prevBtn">‹</button>
+<button class="nav-arrow next" id="nextBtn">›</button>
+<nav class="nav-dots" id="navDots"></nav>
+<div class="progress-bar" id="pbar"></div>
+<div class="slide-counter" id="sctr">1 / 11</div>
+
+<script>
+// ── Navigation ───────────────────────────────────────────
+const slides = document.querySelectorAll('.slide');
+const TOTAL = slides.length;
+let cur = 0;
+
+function buildDots() {
+  const n = document.getElementById('navDots');
+  for (let i = 0; i < TOTAL; i++) {
+    const d = document.createElement('button');
+    d.className = 'dot' + (i===0?' active':'');
+    d.addEventListener('click', () => goTo(i));
+    n.appendChild(d);
+  }
+}
+
+function goTo(i) {
+  if (i < 0 || i >= TOTAL) return;
+  slides[cur].classList.remove('active');
+  slides[cur].classList.add('exit');
+  const prev = cur;
+  setTimeout(() => slides[prev].classList.remove('exit'), 700);
+  cur = i;
+  slides[cur].classList.add('active');
+  document.querySelectorAll('.dot').forEach((d,j) => d.classList.toggle('active', j===cur));
+  document.getElementById('pbar').style.width = ((cur+1)/TOTAL*100) + '%';
+  document.getElementById('sctr').textContent = (cur+1) + ' / ' + TOTAL;
+}
+
+document.getElementById('prevBtn').addEventListener('click', () => goTo(cur-1));
+document.getElementById('nextBtn').addEventListener('click', () => goTo(cur+1));
+document.addEventListener('keydown', e => {
+  if (e.key==='ArrowRight'||e.key===' ') { e.preventDefault(); goTo(cur+1); }
+  if (e.key==='ArrowLeft') { e.preventDefault(); goTo(cur-1); }
+});
+let tx=0;
+document.addEventListener('touchstart', e => { tx=e.touches[0].clientX; });
+document.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - tx;
+  if (Math.abs(dx)>50) goTo(cur + (dx<0?1:-1));
+});
+
+// ── Phone Screen Cycling ─────────────────────────────────
+const ps = [document.getElementById('ps1'),document.getElementById('ps2'),document.getElementById('ps3'),document.getElementById('ps4')];
+const sd = [document.getElementById('sd0'),document.getElementById('sd1'),document.getElementById('sd2'),document.getElementById('sd3')];
+let psi = 0, pint = null;
+function cyclePhone() {
+  ps[psi].classList.remove('active'); sd[psi].classList.remove('active');
+  psi = (psi+1)%4;
+  ps[psi].classList.add('active'); sd[psi].classList.add('active');
+}
+const s4el = document.getElementById('s4');
+new MutationObserver(() => {
+  if (s4el.classList.contains('active')) {
+    if (!pint) pint = setInterval(cyclePhone, 3000);
+  } else {
+    clearInterval(pint); pint = null;
+  }
+}).observe(s4el, { attributes:true, attributeFilter:['class'] });
+
+// ── Epoch Timer ──────────────────────────────────────────
+let epochSec = Math.floor(Math.random() * 900);
+const epochEl = document.getElementById('epochTimer');
+const epochArc = document.getElementById('epochArc');
+const EPOCH_TOTAL = 900;
+const ARC_CIRC = 2 * Math.PI * 105;
+
+setInterval(() => {
+  if (epochSec <= 0) epochSec = EPOCH_TOTAL;
+  epochSec--;
+  const mm = String(Math.floor(epochSec/60)).padStart(2,'0');
+  const ss = String(epochSec%60).padStart(2,'0');
+  epochEl.textContent = mm + ':' + ss;
+  const elapsed = EPOCH_TOTAL - epochSec;
+  const dashArr = ((elapsed/EPOCH_TOTAL)*ARC_CIRC).toFixed(1);
+  epochArc.setAttribute('stroke-dasharray', dashArr + ' ' + ARC_CIRC.toFixed(1));
+}, 1000);
+
+// ── Revenue Calculator ───────────────────────────────────
+const slider = document.getElementById('aumSlider');
+function fmtM(n) {
+  if (n>=1e6) return '$'+(n/1e6).toFixed(1)+'M';
+  return '$'+(n/1e3).toFixed(0)+'K';
+}
+function updateCalc() {
+  const aum = +slider.value;
+  document.getElementById('aumVal').textContent = fmtM(aum);
+  const txVol = Math.max(1000, Math.floor(aum/100));
+  const txRev = Math.floor(txVol * 0.75);
+  const yRev = Math.floor((aum*0.0025)/12);
+  document.getElementById('cTx').textContent = '$'+txRev.toLocaleString();
+  document.getElementById('cYield').textContent = '$'+yRev.toLocaleString();
+  document.getElementById('cTotal').textContent = '$'+(txRev+yRev).toLocaleString();
+  const pct = ((aum-1e5)/(5e7-1e5)*100).toFixed(1);
+  slider.style.background = `linear-gradient(90deg,var(--gold) ${pct}%,var(--bg5) ${pct}%)`;
+}
+slider.addEventListener('input', updateCalc);
+updateCalc();
+
+// ── Particle Canvas ──────────────────────────────────────
+const cv = document.getElementById('pc');
+const cx = cv.getContext('2d');
+const parts = [];
+function rsz() { cv.width=innerWidth; cv.height=innerHeight; }
+rsz(); window.addEventListener('resize', rsz);
+class P {
+  constructor() { this.init(); this.y=Math.random()*cv.height; }
+  init() {
+    this.x=Math.random()*cv.width;
+    this.y=cv.height+5;
+    this.r=Math.random()*1.8+.4;
+    this.sp=Math.random()*.7+.2;
+    this.op=0; this.mop=Math.random()*.4+.1;
+    this.c=Math.random()>.5?'#C9A84C':'#E8CB6E';
+    this.dx=(Math.random()-.5)*.25;
+  }
+  update() {
+    this.y-=this.sp; this.x+=this.dx;
+    this.op=this.op<this.mop?Math.min(this.op+.004,this.mop):Math.max(this.op-.002,0);
+    if(this.y<-5) this.init();
+  }
+  draw() {
+    cx.save(); cx.globalAlpha=this.op; cx.fillStyle=this.c;
+    cx.beginPath(); cx.arc(this.x,this.y,this.r,0,Math.PI*2); cx.fill(); cx.restore();
+  }
+}
+for(let i=0;i<70;i++) parts.push(new P());
+(function anim() { cx.clearRect(0,0,cv.width,cv.height); parts.forEach(p=>{p.update();p.draw();}); requestAnimationFrame(anim); })();
+
+// ── Init ─────────────────────────────────────────────────
+buildDots();
+document.getElementById('pbar').style.width = (1/TOTAL*100)+'%';
+</script>
+</body>
+</html>
