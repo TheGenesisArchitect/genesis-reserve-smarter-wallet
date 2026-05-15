@@ -4,7 +4,7 @@
 
 **Institutional-grade treasury infrastructure for the stablecoin economy**
 
-[![CI](https://github.com/TheGenesisArchitect/genesis-reserve/actions/workflows/ci.yml/badge.svg)](https://github.com/TheGenesisArchitect/genesis-reserve/actions/workflows/ci.yml)
+[![CI](https://github.com/TheGenesisArchitect/genesis-reserve-smarter-wallet/actions/workflows/ci.yml/badge.svg)](https://github.com/TheGenesisArchitect/genesis-reserve-smarter-wallet/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-gold.svg)](LICENSE)
 [![Network: Arbitrum One](https://img.shields.io/badge/Network-Arbitrum%20One-blue.svg)](https://arbiscan.io/)
 [![Stablecoin: USDC](https://img.shields.io/badge/Stablecoin-USDC-2775CA.svg)](https://www.circle.com/usdc)
@@ -232,5 +232,5 @@ MIT — see [LICENSE](LICENSE)
 ---
 
 <div align="center">
-  <sub>Built by <a href="https://github.com/TheGenesisArchitect">TheGenesisArchitect</a> · Genesis Trust Group</sub>
+  <sub>Built by <a href="https://github.com/TheGenesisArchitect">TheGenesisArchitect</a> · Genesis Trust Group · <a href="https://github.com/TheGenesisArchitect/genesis-reserve-smarter-wallet">github.com/TheGenesisArchitect/genesis-reserve-smarter-wallet</a></sub>
 </div>
