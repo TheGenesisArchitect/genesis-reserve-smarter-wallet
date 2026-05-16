@@ -50,6 +50,30 @@ export interface CodexProtocolEntry {
   historicalContext: string
   /** Plain-language breakdown of organic vs incentive yield component */
   stabilityNote: string
+
+  // ── L3 KPI data — powers visual dashboard ────────────────────────────────
+  /** Historical APY range and current rate (all values as %) */
+  apyRange?: { low: number; mid: number; high: number; current: number }
+  /** 12-month APY history for sparkline chart */
+  apyHistory?: Array<{ label: string; apy: number }>
+  /** Total Value Locked in billions USD */
+  tvlUsdBn?: number
+  /** Safety scores per risk dimension — 10 = maximum safety */
+  riskScores?: {
+    smartContract: number
+    liquidity: number
+    oracle: number
+    governance: number
+    market: number
+  }
+  /** Breakdown of yield by source */
+  yieldComponents?: Array<{ label: string; pct: number; organic: boolean }>
+  /** Security audit firms */
+  auditFirms?: string[]
+  /** Keys of comparable protocols for the peer comparison table */
+  peerKeys?: string[]
+  /** Year protocol launched */
+  launchYear?: number
 }
 
 export interface CodexConceptEntry {

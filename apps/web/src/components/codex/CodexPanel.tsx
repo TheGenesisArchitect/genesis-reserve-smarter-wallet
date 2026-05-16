@@ -4,6 +4,7 @@ import { useState } from 'react'
 import type { CodexProtocolEntry } from '@/lib/codex/types'
 import { YieldTypeBadge } from './YieldTypeBadge'
 import { CodexDeepDive } from './CodexDeepDive'
+import { ApyRangeBar } from './CodexKPIPanel'
 
 interface CodexPanelProps {
   entry: CodexProtocolEntry
@@ -154,6 +155,18 @@ export function CodexPanel({ entry, fullWidth = false, onClose }: CodexPanelProp
       <div style={{ marginBottom: '14px' }}>
         <RiskPill label={entry.plainRiskLabel} />
       </div>
+
+      {/* APY range bar — visible before tapping Go Deeper */}
+      {entry.apyRange && (
+        <ApyRangeBar
+          range={entry.apyRange}
+          tierColor={
+            entry.tier === 'preserve' ? '#00D4AA'
+              : entry.tier === 'grow' ? '#C9A84C'
+              : '#9B6DFF'
+          }
+        />
+      )}
 
       {/* L2 content rows */}
       <InfoRow label="What is it?" text={entry.whatIsIt} />

@@ -45,6 +45,20 @@ export const CODEX_PROTOCOLS: Record<string, CodexProtocolEntry> = {
       'Aave USDC APY has ranged from 1.5% (low demand, 2023 bear) to 12%+ (high leverage demand, 2021 bull). Current rates in the 4-7% range reflect normalized post-rate-hike conditions.',
     stabilityNote:
       'Aave\'s yield is nearly 100% organic — it comes directly from borrower interest, not token incentives. This makes it one of the most stable and predictable yields in DeFi. What you see today is close to what you\'ll earn tomorrow.',
+
+    apyRange: { low: 1.5, mid: 4.8, high: 12.0, current: 5.4 },
+    apyHistory: [
+      { label: 'Jun', apy: 5.8 }, { label: 'Jul', apy: 4.9 }, { label: 'Aug', apy: 4.2 },
+      { label: 'Sep', apy: 4.8 }, { label: 'Oct', apy: 6.5 }, { label: 'Nov', apy: 7.2 },
+      { label: 'Dec', apy: 5.9 }, { label: 'Jan', apy: 5.1 }, { label: 'Feb', apy: 4.7 },
+      { label: 'Mar', apy: 5.3 }, { label: 'Apr', apy: 5.8 }, { label: 'May', apy: 5.4 },
+    ],
+    tvlUsdBn: 15.2,
+    riskScores: { smartContract: 9, liquidity: 10, oracle: 8, governance: 8, market: 7 },
+    yieldComponents: [{ label: 'Borrower Interest', pct: 100, organic: true }],
+    auditFirms: ['Trail of Bits', 'OpenZeppelin', 'Certora'],
+    peerKeys: ['compound', 'spark', 'morpho'],
+    launchYear: 2020,
   },
 
   compound: {
@@ -76,6 +90,23 @@ export const CODEX_PROTOCOLS: Record<string, CodexProtocolEntry> = {
       'Compound USDC has ranged from 2% to 14%+ depending on market conditions. Current 5-6% rates represent the normalized post-Fed-rate-hike era where risk-free rates provide a natural floor.',
     stabilityNote:
       'Compound V3 yields are largely organic. Some chains supplement with COMP rewards — these are disclosed in the protocol and tend to be relatively stable but can change via governance vote.',
+
+    apyRange: { low: 2.0, mid: 5.2, high: 14.0, current: 5.6 },
+    apyHistory: [
+      { label: 'Jun', apy: 6.0 }, { label: 'Jul', apy: 5.1 }, { label: 'Aug', apy: 4.5 },
+      { label: 'Sep', apy: 5.0 }, { label: 'Oct', apy: 6.8 }, { label: 'Nov', apy: 7.5 },
+      { label: 'Dec', apy: 6.2 }, { label: 'Jan', apy: 5.4 }, { label: 'Feb', apy: 5.0 },
+      { label: 'Mar', apy: 5.6 }, { label: 'Apr', apy: 6.1 }, { label: 'May', apy: 5.6 },
+    ],
+    tvlUsdBn: 3.1,
+    riskScores: { smartContract: 9, liquidity: 10, oracle: 8, governance: 8, market: 7 },
+    yieldComponents: [
+      { label: 'Borrower Interest', pct: 85, organic: true },
+      { label: 'COMP Rewards', pct: 15, organic: false },
+    ],
+    auditFirms: ['OpenZeppelin', 'Trail of Bits', 'Gauntlet'],
+    peerKeys: ['aave', 'spark'],
+    launchYear: 2018,
   },
 
   spark: {
@@ -107,6 +138,20 @@ export const CODEX_PROTOCOLS: Record<string, CodexProtocolEntry> = {
       'The Sky Savings Rate has ranged from 1% (2021 low-rate environment) to 8%+ (2023 post-Fed-hike peak). Current 4.5-5% rates reflect the global interest rate environment.',
     stabilityNote:
       'Spark yield is almost entirely organic — set by governance to reflect real-world rates, not token incentives. This makes it the most predictable yield in the Preserve tier. What you see today reflects actual market conditions, not a promotional rate.',
+
+    apyRange: { low: 1.0, mid: 4.5, high: 8.5, current: 5.0 },
+    apyHistory: [
+      { label: 'Jun', apy: 5.0 }, { label: 'Jul', apy: 5.0 }, { label: 'Aug', apy: 4.5 },
+      { label: 'Sep', apy: 4.5 }, { label: 'Oct', apy: 5.0 }, { label: 'Nov', apy: 5.5 },
+      { label: 'Dec', apy: 5.5 }, { label: 'Jan', apy: 5.0 }, { label: 'Feb', apy: 4.5 },
+      { label: 'Mar', apy: 4.5 }, { label: 'Apr', apy: 5.0 }, { label: 'May', apy: 5.0 },
+    ],
+    tvlUsdBn: 4.8,
+    riskScores: { smartContract: 9, liquidity: 10, oracle: 7, governance: 8, market: 8 },
+    yieldComponents: [{ label: 'Sky Savings Rate', pct: 100, organic: true }],
+    auditFirms: ['OpenZeppelin', 'ChainSecurity', 'Trail of Bits'],
+    peerKeys: ['sky', 'aave', 'ondo'],
+    launchYear: 2023,
   },
 
   sky: {
@@ -138,6 +183,20 @@ export const CODEX_PROTOCOLS: Record<string, CodexProtocolEntry> = {
       'Sky SSR has ranged from 1% to 8% since 2019. It is set by governance vote, not market forces, which means changes are announced in advance and move gradually.',
     stabilityNote:
       'Sky yield is 100% organic — no token incentives involved. It is the most transparent yield in DeFi: you can verify the current rate on-chain at any time and it changes only via public governance vote.',
+
+    apyRange: { low: 1.0, mid: 4.5, high: 8.0, current: 4.75 },
+    apyHistory: [
+      { label: 'Jun', apy: 5.0 }, { label: 'Jul', apy: 5.0 }, { label: 'Aug', apy: 4.5 },
+      { label: 'Sep', apy: 4.5 }, { label: 'Oct', apy: 5.0 }, { label: 'Nov', apy: 5.5 },
+      { label: 'Dec', apy: 5.5 }, { label: 'Jan', apy: 4.75 }, { label: 'Feb', apy: 4.5 },
+      { label: 'Mar', apy: 4.5 }, { label: 'Apr', apy: 4.75 }, { label: 'May', apy: 4.75 },
+    ],
+    tvlUsdBn: 3.2,
+    riskScores: { smartContract: 9, liquidity: 10, oracle: 7, governance: 8, market: 8 },
+    yieldComponents: [{ label: 'Sky Savings Rate', pct: 100, organic: true }],
+    auditFirms: ['Trail of Bits', 'OpenZeppelin', 'Runtime Verification'],
+    peerKeys: ['spark', 'ondo'],
+    launchYear: 2019,
   },
 
   ondo: {
@@ -169,6 +228,20 @@ export const CODEX_PROTOCOLS: Record<string, CodexProtocolEntry> = {
       'T-bill yields have ranged from 0.05% (2021 zero-rate era) to 5.5% (2024 peak). Current ~5% rates represent a historically elevated period likely to moderate as rates normalize.',
     stabilityNote:
       'Ondo yield is 100% real-world organic — no DeFi incentives, no token rewards, no protocol fees beyond management. The APY shown is the actual T-bill yield minus Ondo\'s ~0.15% management fee.',
+
+    apyRange: { low: 0.05, mid: 3.5, high: 5.5, current: 5.1 },
+    apyHistory: [
+      { label: 'Jun', apy: 5.2 }, { label: 'Jul', apy: 5.2 }, { label: 'Aug', apy: 5.1 },
+      { label: 'Sep', apy: 5.0 }, { label: 'Oct', apy: 4.8 }, { label: 'Nov', apy: 4.6 },
+      { label: 'Dec', apy: 4.5 }, { label: 'Jan', apy: 4.4 }, { label: 'Feb', apy: 4.3 },
+      { label: 'Mar', apy: 4.2 }, { label: 'Apr', apy: 4.1 }, { label: 'May', apy: 5.1 },
+    ],
+    tvlUsdBn: 0.8,
+    riskScores: { smartContract: 8, liquidity: 6, oracle: 9, governance: 10, market: 9 },
+    yieldComponents: [{ label: 'T-Bill Yield', pct: 100, organic: true }],
+    auditFirms: ['Certora', 'Sherlock', 'OpenZeppelin'],
+    peerKeys: ['spark', 'sky'],
+    launchYear: 2022,
   },
 
   // ── GROW ──────────────────────────────────────────────────────────────────
@@ -202,6 +275,20 @@ export const CODEX_PROTOCOLS: Record<string, CodexProtocolEntry> = {
       'Pendle PT-sUSDe APY has ranged from 7% to 25%+ depending on Ethena funding rates and market demand for fixed yield. Current rates reflect elevated crypto funding conditions.',
     stabilityNote:
       'Pendle PT yield is entirely fixed once you enter — it cannot change during your holding period. This is the ultimate stability: not variable like lending rates, not incentive-dependent, just a fixed return you agreed to upfront.',
+
+    apyRange: { low: 7.0, mid: 14.0, high: 28.0, current: 14.2 },
+    apyHistory: [
+      { label: 'Jun', apy: 12.0 }, { label: 'Jul', apy: 18.5 }, { label: 'Aug', apy: 9.5 },
+      { label: 'Sep', apy: 11.2 }, { label: 'Oct', apy: 22.0 }, { label: 'Nov', apy: 28.0 },
+      { label: 'Dec', apy: 16.5 }, { label: 'Jan', apy: 14.2 }, { label: 'Feb', apy: 11.8 },
+      { label: 'Mar', apy: 15.5 }, { label: 'Apr', apy: 19.2 }, { label: 'May', apy: 14.2 },
+    ],
+    tvlUsdBn: 6.5,
+    riskScores: { smartContract: 7, liquidity: 6, oracle: 8, governance: 9, market: 6 },
+    yieldComponents: [{ label: 'Fixed Yield Lock-in', pct: 100, organic: true }],
+    auditFirms: ['Trail of Bits', 'Ackee', 'Spearbit'],
+    peerKeys: ['notional', 'term'],
+    launchYear: 2021,
   },
 
   morpho: {
@@ -233,6 +320,23 @@ export const CODEX_PROTOCOLS: Record<string, CodexProtocolEntry> = {
       'Morpho curated vaults have consistently outperformed plain Aave/Compound by 2-5 percentage points. Yields range from 5% (quiet markets) to 18%+ (high leverage demand periods).',
     stabilityNote:
       'Morpho yield is primarily organic (borrower demand) but curators may also deploy into incentivized pools. Check your vault\'s breakdown — Gauntlet\'s USDC vault is typically 80%+ organic, which is strong.',
+
+    apyRange: { low: 5.0, mid: 9.5, high: 18.0, current: 9.4 },
+    apyHistory: [
+      { label: 'Jun', apy: 7.2 }, { label: 'Jul', apy: 9.8 }, { label: 'Aug', apy: 6.5 },
+      { label: 'Sep', apy: 7.8 }, { label: 'Oct', apy: 11.5 }, { label: 'Nov', apy: 14.2 },
+      { label: 'Dec', apy: 10.1 }, { label: 'Jan', apy: 8.9 }, { label: 'Feb', apy: 7.5 },
+      { label: 'Mar', apy: 9.2 }, { label: 'Apr', apy: 10.8 }, { label: 'May', apy: 9.4 },
+    ],
+    tvlUsdBn: 5.2,
+    riskScores: { smartContract: 7, liquidity: 8, oracle: 8, governance: 8, market: 6 },
+    yieldComponents: [
+      { label: 'Borrower Interest', pct: 80, organic: true },
+      { label: 'MORPHO Rewards', pct: 20, organic: false },
+    ],
+    auditFirms: ['Trail of Bits', 'Spearbit', 'Dedaub'],
+    peerKeys: ['aave', 'fluid', 'gearbox'],
+    launchYear: 2021,
   },
 
   resolv: {
@@ -264,6 +368,23 @@ export const CODEX_PROTOCOLS: Record<string, CodexProtocolEntry> = {
       'Crypto funding rates have been positive approximately 75-80% of the time historically, with negative periods typically lasting days to weeks. Resolv USR has yielded 7-14% APY in normal market conditions.',
     stabilityNote:
       'Resolv yield is a mix of funding rate payments (sustainable) and RLP incentives (variable). During bull markets, funding rates are strong — 10%+ APY is common. The risk is downside environments where the yield temporarily compresses.',
+
+    apyRange: { low: 0.0, mid: 9.5, high: 16.0, current: 9.5 },
+    apyHistory: [
+      { label: 'Jun', apy: 8.5 }, { label: 'Jul', apy: 12.0 }, { label: 'Aug', apy: 4.2 },
+      { label: 'Sep', apy: 7.5 }, { label: 'Oct', apy: 14.0 }, { label: 'Nov', apy: 16.0 },
+      { label: 'Dec', apy: 11.5 }, { label: 'Jan', apy: 9.5 }, { label: 'Feb', apy: 7.2 },
+      { label: 'Mar', apy: 10.5 }, { label: 'Apr', apy: 13.2 }, { label: 'May', apy: 9.5 },
+    ],
+    tvlUsdBn: 0.4,
+    riskScores: { smartContract: 6, liquidity: 8, oracle: 6, governance: 8, market: 5 },
+    yieldComponents: [
+      { label: 'Funding Rate', pct: 75, organic: true },
+      { label: 'RLP Incentives', pct: 25, organic: false },
+    ],
+    auditFirms: ['Spearbit', 'Cantina', 'Code4rena'],
+    peerKeys: ['ethena'],
+    launchYear: 2024,
   },
 
   maple: {
@@ -295,6 +416,20 @@ export const CODEX_PROTOCOLS: Record<string, CodexProtocolEntry> = {
       'Maple institutional pools have yielded 9-16% APY depending on credit market conditions and crypto leverage demand. Rates tend to be higher during bull markets when trading firms need more capital.',
     stabilityNote:
       'Maple yield is institutional interest — organic and contractually fixed for each loan term. However, loan rates reset between borrowers, so your effective APY can shift when pools rebalance their borrower mix.',
+
+    apyRange: { low: 9.0, mid: 12.0, high: 16.0, current: 11.2 },
+    apyHistory: [
+      { label: 'Jun', apy: 10.5 }, { label: 'Jul', apy: 11.2 }, { label: 'Aug', apy: 10.8 },
+      { label: 'Sep', apy: 11.0 }, { label: 'Oct', apy: 12.5 }, { label: 'Nov', apy: 13.8 },
+      { label: 'Dec', apy: 12.2 }, { label: 'Jan', apy: 11.5 }, { label: 'Feb', apy: 10.9 },
+      { label: 'Mar', apy: 11.4 }, { label: 'Apr', apy: 12.0 }, { label: 'May', apy: 11.2 },
+    ],
+    tvlUsdBn: 0.9,
+    riskScores: { smartContract: 8, liquidity: 5, oracle: 10, governance: 8, market: 6 },
+    yieldComponents: [{ label: 'Loan Interest', pct: 100, organic: true }],
+    auditFirms: ['Spearbit', 'Trail of Bits'],
+    peerKeys: ['term', 'notional'],
+    launchYear: 2021,
   },
 
   fluid: {
@@ -326,6 +461,23 @@ export const CODEX_PROTOCOLS: Record<string, CodexProtocolEntry> = {
       'Fluid USDC yields have ranged from 5% to 14% since launch, averaging above comparable Aave positions. The highest yields occur during high leverage demand combined with active DEX trading volume.',
     stabilityNote:
       'Fluid yield is mixed: base lending rate (organic) plus DEX fee capture (volume-dependent). In high-volume markets, both components are strong. In quiet markets, the DEX fee component drops and lending rate dominates.',
+
+    apyRange: { low: 5.0, mid: 8.5, high: 14.0, current: 8.5 },
+    apyHistory: [
+      { label: 'Jun', apy: 7.0 }, { label: 'Jul', apy: 9.5 }, { label: 'Aug', apy: 5.8 },
+      { label: 'Sep', apy: 7.2 }, { label: 'Oct', apy: 11.0 }, { label: 'Nov', apy: 13.5 },
+      { label: 'Dec', apy: 9.8 }, { label: 'Jan', apy: 8.2 }, { label: 'Feb', apy: 7.0 },
+      { label: 'Mar', apy: 8.8 }, { label: 'Apr', apy: 10.2 }, { label: 'May', apy: 8.5 },
+    ],
+    tvlUsdBn: 1.8,
+    riskScores: { smartContract: 6, liquidity: 9, oracle: 7, governance: 8, market: 6 },
+    yieldComponents: [
+      { label: 'Lending Rate', pct: 70, organic: true },
+      { label: 'DEX Fee Capture', pct: 30, organic: true },
+    ],
+    auditFirms: ['Spearbit', 'Code4rena', 'Cantina'],
+    peerKeys: ['aave', 'morpho'],
+    launchYear: 2024,
   },
 
   notional: {
@@ -357,6 +509,20 @@ export const CODEX_PROTOCOLS: Record<string, CodexProtocolEntry> = {
       'Notional fixed USDC rates have cleared 7-18% at various market conditions. Current 10-14% clearings reflect strong demand for fixed income as crypto leverage cycles continue.',
     stabilityNote:
       'Notional yield is the most stable possible once locked: a contractually fixed rate that cannot change during your holding period. The only variable is what rate you can lock at entry — which is determined by market supply and demand.',
+
+    apyRange: { low: 7.0, mid: 10.5, high: 18.0, current: 10.5 },
+    apyHistory: [
+      { label: 'Jun', apy: 9.5 }, { label: 'Jul', apy: 12.0 }, { label: 'Aug', apy: 8.5 },
+      { label: 'Sep', apy: 10.0 }, { label: 'Oct', apy: 14.5 }, { label: 'Nov', apy: 18.0 },
+      { label: 'Dec', apy: 13.2 }, { label: 'Jan', apy: 11.0 }, { label: 'Feb', apy: 9.5 },
+      { label: 'Mar', apy: 11.5 }, { label: 'Apr', apy: 13.0 }, { label: 'May', apy: 10.5 },
+    ],
+    tvlUsdBn: 0.35,
+    riskScores: { smartContract: 6, liquidity: 6, oracle: 8, governance: 8, market: 6 },
+    yieldComponents: [{ label: 'Fixed Rate', pct: 100, organic: true }],
+    auditFirms: ['ABDK', 'Certora', 'OpenZeppelin'],
+    peerKeys: ['pendle', 'term'],
+    launchYear: 2020,
   },
 
   term: {
@@ -388,6 +554,20 @@ export const CODEX_PROTOCOLS: Record<string, CodexProtocolEntry> = {
       'Term Finance auctions have cleared at 8-20% APY depending on market conditions and term length. Shorter terms (1-week) typically clear lower than longer terms, similar to traditional yield curves.',
     stabilityNote:
       'Term Finance yield is 100% organic — the auction-clearing rate reflects genuine market supply and demand for fixed credit. No token incentives, no protocol subsidies. As pure a market signal as DeFi produces.',
+
+    apyRange: { low: 8.0, mid: 12.5, high: 20.0, current: 12.8 },
+    apyHistory: [
+      { label: 'Jun', apy: 10.5 }, { label: 'Jul', apy: 14.2 }, { label: 'Aug', apy: 9.8 },
+      { label: 'Sep', apy: 11.5 }, { label: 'Oct', apy: 16.8 }, { label: 'Nov', apy: 20.0 },
+      { label: 'Dec', apy: 15.5 }, { label: 'Jan', apy: 12.8 }, { label: 'Feb', apy: 11.0 },
+      { label: 'Mar', apy: 13.5 }, { label: 'Apr', apy: 15.2 }, { label: 'May', apy: 12.8 },
+    ],
+    tvlUsdBn: 0.5,
+    riskScores: { smartContract: 7, liquidity: 4, oracle: 9, governance: 9, market: 7 },
+    yieldComponents: [{ label: 'Auction-Cleared Rate', pct: 100, organic: true }],
+    auditFirms: ['Spearbit', 'Code4rena'],
+    peerKeys: ['notional', 'pendle'],
+    launchYear: 2023,
   },
 
   // ── ACCELERATE ────────────────────────────────────────────────────────────
@@ -421,6 +601,23 @@ export const CODEX_PROTOCOLS: Record<string, CodexProtocolEntry> = {
       'Ethena sUSDe APY has ranged from 4% (muted funding environment) to 35%+ (peak bull market funding). The protocol launched in 2024 bull conditions and average yields have exceeded 15% annually through its operating history.',
     stabilityNote:
       'Ethena yield has two components: staking yield from stETH (organic, ~3-4%) and funding rate payments (variable, 5-30%+). The staking component is stable; the funding component amplifies with market enthusiasm. This mixed structure means even in weak markets you earn meaningful base yield.',
+
+    apyRange: { low: 4.0, mid: 15.0, high: 35.0, current: 15.8 },
+    apyHistory: [
+      { label: 'Jun', apy: 12.5 }, { label: 'Jul', apy: 22.0 }, { label: 'Aug', apy: 6.5 },
+      { label: 'Sep', apy: 11.5 }, { label: 'Oct', apy: 28.5 }, { label: 'Nov', apy: 35.0 },
+      { label: 'Dec', apy: 20.5 }, { label: 'Jan', apy: 15.8 }, { label: 'Feb', apy: 10.2 },
+      { label: 'Mar', apy: 18.5 }, { label: 'Apr', apy: 25.0 }, { label: 'May', apy: 15.8 },
+    ],
+    tvlUsdBn: 5.5,
+    riskScores: { smartContract: 6, liquidity: 8, oracle: 5, governance: 8, market: 3 },
+    yieldComponents: [
+      { label: 'Funding Rate', pct: 75, organic: true },
+      { label: 'Staking Yield', pct: 25, organic: true },
+    ],
+    auditFirms: ['Spearbit', 'Cyfrin', 'Code4rena'],
+    peerKeys: ['resolv', 'gearbox'],
+    launchYear: 2024,
   },
 
   gearbox: {
@@ -452,6 +649,20 @@ export const CODEX_PROTOCOLS: Record<string, CodexProtocolEntry> = {
       'Gearbox passive lending rates have ranged from 8% to 35%+ depending on leveraged strategy demand. Bull markets with high demand for Pendle/Ethena leverage drive rates toward the top of that range.',
     stabilityNote:
       'Gearbox passive lender yield is organic — it is the actual interest paid by leveraged borrowers. No token incentives in the base rate. The yield reflects genuine market demand for leverage, which is highest when opportunities are most plentiful — aligning your incentives with market activity.',
+
+    apyRange: { low: 8.0, mid: 18.0, high: 35.0, current: 18.0 },
+    apyHistory: [
+      { label: 'Jun', apy: 14.0 }, { label: 'Jul', apy: 25.5 }, { label: 'Aug', apy: 8.5 },
+      { label: 'Sep', apy: 13.5 }, { label: 'Oct', apy: 32.0 }, { label: 'Nov', apy: 35.0 },
+      { label: 'Dec', apy: 24.5 }, { label: 'Jan', apy: 18.0 }, { label: 'Feb', apy: 12.5 },
+      { label: 'Mar', apy: 21.5 }, { label: 'Apr', apy: 28.0 }, { label: 'May', apy: 18.0 },
+    ],
+    tvlUsdBn: 0.7,
+    riskScores: { smartContract: 4, liquidity: 7, oracle: 7, governance: 7, market: 2 },
+    yieldComponents: [{ label: 'Leverage Interest', pct: 100, organic: true }],
+    auditFirms: ['ChainSecurity', 'Consensys Diligence', 'Code4rena'],
+    peerKeys: ['ethena', 'morpho'],
+    launchYear: 2021,
   },
 }
 
