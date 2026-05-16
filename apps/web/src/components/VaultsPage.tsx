@@ -479,11 +479,15 @@ export function VaultsPage({ onNavigate, accountId }: { onNavigate?: (v: ViewKey
   const { data: strategyDataGrow, isLoading: isLoadingGrow } = useVaultStrategies('grow', STRATEGY_CHAIN_SCOPE)
   const { data: strategyDataAccelerate, isLoading: isLoadingAccelerate } = useVaultStrategies('accelerate', STRATEGY_CHAIN_SCOPE)
 
-  const strategiesByCategory = useMemo<Record<CategoryKey, VaultStrategySummary[]>>(() => ({
-    preserve: strategyDataPreserve?.strategies ?? [],
-    grow: strategyDataGrow?.strategies ?? [],
-    accelerate: strategyDataAccelerate?.strategies ?? [],
-  }), [strategyDataPreserve?.strategies, strategyDataGrow?.strategies, strategyDataAccelerate?.strategies])
+  const strategiesByCategory = useMemo<Record<CategoryKey, VaultStrategySummary[]>>(() => {
+    const byApy = (arr: VaultStrategySummary[]) =>
+      [...arr].sort((a, b) => Number(b.netApyPct) - Number(a.netApyPct))
+    return {
+      preserve: byApy(strategyDataPreserve?.strategies ?? []),
+      grow:     byApy(strategyDataGrow?.strategies     ?? []),
+      accelerate: byApy(strategyDataAccelerate?.strategies ?? []),
+    }
+  }, [strategyDataPreserve?.strategies, strategyDataGrow?.strategies, strategyDataAccelerate?.strategies])
 
   const normalizedByApyBand = useMemo(() => {
     const merged = [

@@ -144,10 +144,14 @@ export async function GET(request: Request) {
         const effectiveChainScope = Array.from(new Set([...chainScope, ...promotedChains]))
 
         const fallbackStrategies = mergedAll.filter((s) => effectiveChainScope.includes(s.chain))
-        const { ranked: rankedFallback, diagnostics } = selectTopStrategiesForIntentWithDiagnostics(
+        const { ranked: rankedByScoreFallback, diagnostics } = selectTopStrategiesForIntentWithDiagnostics(
             intentTier,
             fallbackStrategies,
             { limit: 6, chainScope: effectiveChainScope }
+        )
+        // Present strategies highest APY first for a natural user flow
+        const rankedFallback = [...rankedByScoreFallback].sort(
+            (a, b) => parseApyPct(b.netApyPct) - parseApyPct(a.netApyPct)
         )
         const recommended = mapIntentRecommendation(intentTier, rankedFallback)
         const sourceUniverseGap = buildSourceUniverseGap(fallbackStrategies, rankedFallback)
@@ -226,17 +230,40 @@ export async function GET(request: Request) {
     // Merge live protocol strategies not already in the DeFrame feed
     const liveProtocols = await fetchLiveProtocolStrategies()
     const deframeIds = new Set(normalized.map((s) => s.strategyId))
-    const mergedNormalized = [...normalized, ...liveProtocols.filter((s) => !deframeIds.has(s.strategyId))]
+    const mergedFromSources = [...normalized, ...liveProtocols.filter((s) => !deframeIds.has(s.strategyId))]
+
+    // Inject fallback strategies for protocols absent from both DeFrame and live feeds.
+    // Guarantees coverage for protocols (e.g. Gearbox) that DeFiLlama may not surface.
+    const KNOWN_PROTOCOL_KEYS = [
+        'gearbox', 'ethena', 'morpho', 'pendle', 'aave', 'compound',
+        'spark', 'sky', 'ondo', 'maple', 'resolv', 'fluid', 'notional', 'term',
+    ]
+    const presentKeys = new Set<string>()
+    for (const s of mergedFromSources) {
+        const p = s.protocol.toLowerCase()
+        for (const key of KNOWN_PROTOCOL_KEYS) {
+            if (p.includes(key)) presentKeys.add(key)
+        }
+    }
+    const fallbackInjections = getFallbackStrategies().filter((fb) => {
+        const fbP = fb.protocol.toLowerCase()
+        const fbKey = KNOWN_PROTOCOL_KEYS.find((k) => fbP.includes(k))
+        return fbKey !== undefined && !presentKeys.has(fbKey)
+    })
+    const mergedNormalized = [...mergedFromSources, ...fallbackInjections]
+
     await enrichPendleMaturity(mergedNormalized)
     const watchlistChainCounts = buildWatchlistChainCounts(mergedNormalized)
     const promotedChains = promotedChainsFromWatchlist(chainScope, watchlistChainCounts)
     const effectiveChainScope = Array.from(new Set([...chainScope, ...promotedChains]))
     const scopedNormalized = mergedNormalized.filter((strategy) => effectiveChainScope.includes(strategy.chain))
 
-    const { ranked, diagnostics } = selectTopStrategiesForIntentWithDiagnostics(intentTier, mergedNormalized, {
+    const { ranked: rankedByScore, diagnostics } = selectTopStrategiesForIntentWithDiagnostics(intentTier, mergedNormalized, {
         limit: 8,
         chainScope: effectiveChainScope,
     })
+    // Present strategies highest APY first for a natural user flow
+    const ranked = [...rankedByScore].sort((a, b) => parseApyPct(b.netApyPct) - parseApyPct(a.netApyPct))
 
     const recommended = mapIntentRecommendation(intentTier, ranked)
     const sourceUniverseGap = buildSourceUniverseGap(mergedNormalized, ranked)
@@ -254,6 +281,7 @@ export async function GET(request: Request) {
                 fetchedCandidates: rawStrategies.length,
                 normalizedCandidates: mergedNormalized.length,
                 liveProtocolsInjected: liveProtocols.filter((s) => !deframeIds.has(s.strategyId)).length,
+                fallbacksInjected: fallbackInjections.length,
                 dedupedCandidates: diagnostics.dedupedCount,
                 requestedChainScope: chainScope,
                 effectiveChainScope,
