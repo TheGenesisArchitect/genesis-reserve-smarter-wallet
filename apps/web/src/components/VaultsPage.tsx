@@ -135,6 +135,7 @@ function StrategyDrillDownCard({
   onExecuteAllocation,
   onExecuteStrategy,
   onClose,
+  isMobile = false,
 }: {
   state: DrillDownState
   analyticsHistory: YieldHistoryPoint[]
@@ -148,6 +149,7 @@ function StrategyDrillDownCard({
   onExecuteAllocation: () => void
   onExecuteStrategy: () => void
   onClose: () => void
+  isMobile?: boolean
 }) {
   const { strategy, category } = state
   const cfg = CATEGORY_CONFIG[category]
@@ -170,6 +172,7 @@ function StrategyDrillDownCard({
 
   // ── Earnings projection ────────────────────────────────────────────
   const [localDeposit, setLocalDeposit] = useState(depositAmount)
+  const [localDepositStr, setLocalDepositStr] = useState(String(depositAmount))
   const earnMonthly  = localDeposit * (liveApy / 100) / 12
   const earnAnnual   = localDeposit * (liveApy / 100)
   const earn5yr      = localDeposit * (Math.pow(1 + liveApy / 100, 5) - 1)
@@ -236,11 +239,7 @@ function StrategyDrillDownCard({
 
   return (
     <div style={{
-      borderRadius: 16,
-      border: `1px solid ${cfg.color}55`,
-      background: 'rgba(8,11,18,0.92)',
-      padding: '20px 20px 16px',
-      marginBottom: 20,
+      padding: '4px 0 16px',
     }}>
 
       {/* ── 1. HEADER ─────────────────────────────────────────────── */}
@@ -317,18 +316,20 @@ function StrategyDrillDownCard({
       </div>
 
       {/* ── 3. EARNINGS CALCULATOR ───────────────────────────────── */}
-      <div style={{ borderRadius: 12, border: '1px solid rgba(255,255,255,0.08)', padding: '14px 16px', marginBottom: 18, background: 'rgba(255,255,255,0.02)' }}>
+      <div style={{ borderTop: '1px solid rgba(255,255,255,0.07)', padding: '18px 0 18px' }}>
         <div style={{ fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(245,240,232,0.45)', marginBottom: 12, fontFamily: "'Tenor Sans', sans-serif" }}>
           Earnings Projection
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
           <span style={{ fontSize: 18, color: 'rgba(245,240,232,0.50)', fontFamily: "'Cormorant Garamond', serif" }}>$</span>
           <input
-            type="number"
-            min={0}
-            value={localDeposit}
+            type="text"
+            inputMode="decimal"
+            value={localDepositStr}
             onChange={(e) => {
-              const v = Math.max(0, Number(e.target.value) || 0)
+              const raw = e.target.value.replace(/[^0-9.]/g, '')
+              setLocalDepositStr(raw)
+              const v = Math.max(0, parseFloat(raw) || 0)
               setLocalDeposit(v)
               onDepositAmountChange(v)
             }}
@@ -373,7 +374,7 @@ function StrategyDrillDownCard({
       </div>
 
       {/* ── 4. APY STABILITY ─────────────────────────────────────── */}
-      <div style={{ borderRadius: 12, border: '1px solid rgba(255,255,255,0.08)', padding: '14px 16px', marginBottom: 18, background: 'rgba(255,255,255,0.02)' }}>
+      <div style={{ borderTop: '1px solid rgba(255,255,255,0.07)', padding: '18px 0 18px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
           <div style={{ fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(245,240,232,0.45)', fontFamily: "'Tenor Sans', sans-serif" }}>APY Stability</div>
           <span style={{ fontSize: 10, color: stabilityColor, background: `${stabilityColor}18`, border: `1px solid ${stabilityColor}40`, borderRadius: 20, padding: '2px 10px', letterSpacing: '0.06em', textTransform: 'uppercase', fontFamily: "'Tenor Sans', sans-serif" }}>
@@ -416,10 +417,10 @@ function StrategyDrillDownCard({
       </div>
 
       {/* ── 5. RISK PROFILE + TREND CHART ────────────────────────── */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 18 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: isMobile ? 0 : 16, borderTop: '1px solid rgba(255,255,255,0.07)', paddingTop: 18, paddingBottom: 4, marginBottom: 0 }}>
 
         {/* Risk profile */}
-        <div style={{ borderRadius: 12, border: '1px solid rgba(255,255,255,0.08)', padding: '14px 16px', background: 'rgba(255,255,255,0.02)' }}>
+        <div style={{ padding: isMobile ? '0 0 18px' : '0' }}>
           <div style={{ fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(245,240,232,0.45)', marginBottom: 12, fontFamily: "'Tenor Sans', sans-serif" }}>
             Safety Profile
           </div>
@@ -454,7 +455,7 @@ function StrategyDrillDownCard({
         </div>
 
         {/* Trend chart */}
-        <div style={{ borderRadius: 12, border: '1px solid rgba(255,255,255,0.08)', padding: '14px 16px', background: 'rgba(255,255,255,0.02)' }}>
+        <div style={{ padding: isMobile ? '18px 0 0' : '0', borderTop: isMobile ? '1px solid rgba(255,255,255,0.07)' : 'none' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
             <div style={{ fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(245,240,232,0.45)', fontFamily: "'Tenor Sans', sans-serif" }}>APY vs Inflation</div>
             <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
@@ -497,16 +498,16 @@ function StrategyDrillDownCard({
             <text x={lastX} y={lastY - 10} textAnchor="middle" fill={cfg.color} fontSize="8" fontWeight="bold">{liveApy.toFixed(1)}%</text>
           </svg>
           <div style={{ fontSize: 10, color: 'rgba(245,240,232,0.30)', marginTop: 4 }}>
-            Source: {analyticsSource}{nextHarvestSeconds !== undefined ? ` · harvest in ${nextHarvestSeconds}s` : ''}
+            Source: {analyticsSource === 'bff' ? 'Live' : analyticsSource === 'on-chain' ? 'On-chain' : analyticsSource}{nextHarvestSeconds !== undefined ? ` · harvest in ${nextHarvestSeconds}s` : ''}
           </div>
         </div>
       </div>
 
       {/* ── 6. PROTOCOL TRUST + YIELD BREAKDOWN ──────────────────── */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 18 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: isMobile ? 0 : 16, borderTop: '1px solid rgba(255,255,255,0.07)', paddingTop: 18, paddingBottom: 4, marginBottom: 14 }}>
 
         {/* Protocol trust */}
-        <div style={{ borderRadius: 12, border: '1px solid rgba(255,255,255,0.08)', padding: '14px 16px', background: 'rgba(255,255,255,0.02)' }}>
+        <div style={{ padding: isMobile ? '0 0 18px' : '0' }}>
           <div style={{ fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(245,240,232,0.45)', marginBottom: 12, fontFamily: "'Tenor Sans', sans-serif" }}>
             Protocol Trust
           </div>
@@ -533,7 +534,7 @@ function StrategyDrillDownCard({
         </div>
 
         {/* Yield breakdown */}
-        <div style={{ borderRadius: 12, border: '1px solid rgba(255,255,255,0.08)', padding: '14px 16px', background: 'rgba(255,255,255,0.02)' }}>
+        <div style={{ padding: isMobile ? '18px 0 0' : '0', borderTop: isMobile ? '1px solid rgba(255,255,255,0.07)' : 'none' }}>
           <div style={{ fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(245,240,232,0.45)', marginBottom: 12, fontFamily: "'Tenor Sans', sans-serif" }}>
             Yield Breakdown
           </div>
@@ -1006,6 +1007,7 @@ export function VaultsPage({ onNavigate, accountId }: { onNavigate?: (v: ViewKey
                       depositAmount={depositAmount}
                       onDepositAmountChange={setDepositAmount}
                       categoryStrategies={opportunities}
+                      isMobile={isMobile}
                       onExecuteAllocation={() => {
                         setSelectedByCategory({ ...selectedByCategory, [category]: drillDown.strategy })
                       }}
