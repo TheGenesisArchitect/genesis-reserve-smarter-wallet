@@ -41,6 +41,7 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Sora',sans-se
 #s2::before{background:radial-gradient(ellipse 70% 55% at 5% 50%,rgba(0,212,170,.10) 0%,transparent 60%)}
 #s3::before{background:radial-gradient(ellipse 65% 50% at 95% 50%,rgba(74,158,255,.09) 0%,transparent 60%)}
 #s4::before{background:radial-gradient(ellipse 65% 55% at 50% 50%,rgba(201,168,76,.07) 0%,transparent 65%)}
+#scapital::before{background:radial-gradient(ellipse 65% 55% at 10% 40%,rgba(201,168,76,.10) 0%,transparent 60%)}
 #s5::before{background:radial-gradient(ellipse 60% 55% at 5% 70%,rgba(155,109,255,.09) 0%,transparent 60%)}
 #s6::before{background:radial-gradient(ellipse 65% 45% at 85% 15%,rgba(26,191,106,.08) 0%,transparent 60%)}
 #s7::before{background:radial-gradient(ellipse 55% 55% at 15% 50%,rgba(74,158,255,.09) 0%,transparent 60%)}
@@ -165,6 +166,35 @@ input[type=range].slider::-webkit-slider-thumb{-webkit-appearance:none;width:18p
 .mo-lbl{font-size:9px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;line-height:1.3}
 .mo-item.surplus{background:var(--green-10);border:1px solid var(--green-20)}
 
+/* ══ SLIDE CAPITAL DEPLOYMENT ══ */
+.deploy-wrap{display:grid;grid-template-columns:1.1fr 0.9fr;gap:22px;width:100%;max-width:980px;align-items:start}
+.deploy-budget{background:var(--bg2);border:1px solid var(--border);border-radius:18px;padding:20px;position:relative;overflow:hidden}
+.deploy-budget::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.25),transparent)}
+.db-title{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-bottom:14px}
+.db-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.db-label{font-size:11px;color:var(--text);width:170px;flex-shrink:0;line-height:1.35}
+.db-bar-wrap{flex:1;background:var(--bg4);border-radius:3px;height:8px;overflow:hidden}
+.db-bar{height:100%;border-radius:3px;transition:width .8s cubic-bezier(.34,1.56,.64,1)}
+.db-amt{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;width:48px;text-align:right;flex-shrink:0}
+.db-total{display:flex;justify-content:space-between;align-items:center;padding:10px 0 0;border-top:1px solid var(--border);margin-top:4px}
+.db-total-lbl{font-size:11px;color:var(--muted)}
+.db-total-val{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:var(--gold2)}
+.deploy-right{display:flex;flex-direction:column;gap:10px}
+.idle-card{background:var(--bg2);border:1px solid var(--gold-20);border-radius:18px;padding:18px;position:relative;overflow:hidden}
+.idle-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.38),transparent)}
+.idle-title{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:15px;color:var(--gold2);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px}
+.idle-desc{font-size:11px;color:var(--muted);line-height:1.65;margin-bottom:12px}
+.idle-timeline{display:flex;flex-direction:column;gap:5px}
+.idle-row{display:flex;align-items:center;gap:8px;font-size:11px}
+.idle-month{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);width:44px;flex-shrink:0}
+.idle-bar-wrap{flex:1;background:var(--bg4);border-radius:2px;height:5px;overflow:hidden}
+.idle-bar{height:100%;border-radius:2px;background:linear-gradient(90deg,rgba(201,168,76,.5),var(--gold));transition:width .8s cubic-bezier(.34,1.56,.64,1)}
+.idle-yield{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);width:72px;text-align:right;flex-shrink:0}
+.idle-total-card{background:var(--green-10);border:1px solid var(--green-20);border-radius:14px;padding:13px 16px;display:flex;justify-content:space-between;align-items:center}
+.itc-lbl{font-size:11px;color:var(--muted);line-height:1.5}
+.itc-val{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:var(--green);text-align:right}
+.itc-sub{font-size:9px;color:var(--muted)}
+
 /* ══ SLIDE 5 — REPAYMENT OPTIONS ══ */
 .repay-wrap{width:100%;max-width:980px}
 .repay-tabs{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;justify-content:center}
@@ -281,17 +311,18 @@ input[type=range].slider::-webkit-slider-thumb{-webkit-appearance:none;width:18p
 .ts-btn:hover{opacity:.88}
 
 /* Output panel */
-.ts-output{background:var(--bg2);border:1px solid var(--gold-20);border-radius:20px;padding:0;position:relative;overflow:hidden;min-height:460px}
+.ts-output{background:var(--bg2);border:1px solid var(--gold-20);border-radius:20px;padding:0;position:relative;overflow:hidden;display:flex;flex-direction:column;max-height:calc(100vh - 220px)}
 .ts-output::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.38),transparent)}
 
 /* Placeholder */
-.ts-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;height:420px;gap:10px;text-align:center;padding:22px}
+.ts-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:360px;gap:10px;text-align:center;padding:22px;flex:1}
 .ts-placeholder-icon{font-size:36px;opacity:.25}
 .ts-placeholder-txt{font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--muted);font-size:14px}
 
 /* Document */
-.ts-doc{display:none;flex-direction:column;gap:0;padding:22px 24px 18px}
+.ts-doc{display:none;flex-direction:column;gap:0;padding:22px 24px 18px;overflow-y:auto;flex:1}
 .ts-doc.visible{display:flex}
+.ts-doc::-webkit-scrollbar{width:4px}.ts-doc::-webkit-scrollbar-track{background:transparent}.ts-doc::-webkit-scrollbar-thumb{background:var(--gold-30);border-radius:2px}
 
 /* Confidentiality strip */
 .ts-conf-strip{background:var(--gold-10);border:1px solid var(--gold-20);border-radius:6px;padding:4px 10px;font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--gold-d);letter-spacing:.14em;text-transform:uppercase;text-align:center;margin-bottom:14px}
@@ -337,24 +368,7 @@ input[type=range].slider::-webkit-slider-thumb{-webkit-appearance:none;width:18p
 .ts-download:hover{border-color:var(--gold-30);background:var(--gold-10)}
 .ts-download.visible{display:block}
 
-/* Print — white document output */
-@media print {
-  body,.deck,.geo-grid,.deck-badge,.nav-arrow,.nav-dots,.progress-bar,.slide-counter,.deck-footer{display:none!important}
-  .ts-output{display:block!important;position:fixed;inset:0;border:none;border-radius:0;background:#fff;padding:48px 64px;overflow:auto}
-  .ts-doc{display:flex!important;color:#1a1a1a}
-  .ts-conf-strip{background:#f5f0e8;border-color:#c9a84c;color:#8a6e2a}
-  .ts-doc-logo{color:#8a6e2a}.ts-doc-title{color:#1a1a1a;-webkit-text-fill-color:#1a1a1a}
-  .ts-doc-meta{color:#666}
-  .ts-prepared{background:#f9f7f2;border-left-color:#c9a84c}
-  .ts-prep-name{color:#1a1a1a;-webkit-text-fill-color:#1a1a1a}.ts-prep-lbl,.ts-prep-type{color:#666}
-  .ts-section-head{color:#8a6e2a;border-bottom-color:rgba(201,168,76,.4)}
-  .ts-doc-key{color:#666}.ts-doc-val{color:#1a1a1a}
-  .ts-doc-val.gold{color:#8a6e2a}.ts-doc-val.green{color:#157a45}.ts-doc-val.teal{color:#006b56}
-  .ts-sig-line{background:#ccc}.ts-sig-party{color:#1a1a1a;-webkit-text-fill-color:#1a1a1a}
-  .ts-sig-role,.ts-sig-date{color:#666}
-  .ts-doc-legal{color:#999;border-top-color:#eee}
-  .ts-download,.ts-placeholder{display:none!important}
-}
+/* No @media print needed — print uses popup window */
 </style>
 </head>
 <body>
@@ -572,6 +586,112 @@ input[type=range].slider::-webkit-slider-thumb{-webkit-appearance:none;width:18p
     <span class="muted" style="font-size:11px">* Engine yield = $500K × 13.2% ÷ 12 = $5,500/mo constant</span>
     <span class="muted" style="font-size:11px">· Loan = $500K @ 6%, 72 months</span>
     <span class="muted" style="font-size:11px">· B2C revenue not included above</span>
+  </div>
+</div>
+
+<!-- ═══════════════════ SLIDE — CAPITAL DEPLOYMENT PLAN ═══════════════════ -->
+<div class="slide" id="scapital">
+  <div class="h1" style="margin-bottom:4px">$500K — Capital Deployment Plan</div>
+  <div class="muted" style="text-align:center;margin-bottom:16px">Phased over 6 months. Idle capital earns 18% in the Accelerate tier — the Treasury Engine funds its own deployment.</div>
+  <div class="deploy-wrap">
+    <!-- Left: Budget Breakdown -->
+    <div class="deploy-budget stagger">
+      <div class="db-title">Working Capital Allocation — 6-Month Runway</div>
+
+      <div class="db-row">
+        <div class="db-label">🏛️ Entity Formation &amp;<br>Legal Structure</div>
+        <div class="db-bar-wrap"><div class="db-bar" style="width:15%;background:linear-gradient(90deg,rgba(201,168,76,.5),var(--gold))"></div></div>
+        <div class="db-amt" style="color:var(--gold)">$75K</div>
+      </div>
+      <div style="font-size:9px;color:var(--muted);margin:-6px 0 8px 180px;line-height:1.4">LLC · Holding Co. · Trust Entity · FinCEN MSB · State registrations</div>
+
+      <div class="db-row">
+        <div class="db-label">🔐 Smart Contract Audit<br>&amp; Security</div>
+        <div class="db-bar-wrap"><div class="db-bar" style="width:16%;background:linear-gradient(90deg,rgba(232,64,64,.4),var(--red))"></div></div>
+        <div class="db-amt" style="color:var(--red)">$80K</div>
+      </div>
+      <div style="font-size:9px;color:var(--muted);margin:-6px 0 8px 180px;line-height:1.4">Tier-1 audit firm · Penetration testing · Bug bounty program</div>
+
+      <div class="db-row">
+        <div class="db-label">⚙️ Enterprise Services<br>&amp; Infrastructure</div>
+        <div class="db-bar-wrap"><div class="db-bar" style="width:19%;background:linear-gradient(90deg,rgba(74,158,255,.4),var(--blue))"></div></div>
+        <div class="db-amt" style="color:var(--blue)">$95K</div>
+      </div>
+      <div style="font-size:9px;color:var(--muted);margin:-6px 0 8px 180px;line-height:1.4">Onfido KYC · Chainalysis AML · Zero Hash · Circle · Privy · Cloud infra</div>
+
+      <div class="db-row">
+        <div class="db-label">💻 Engineering &amp;<br>Operations</div>
+        <div class="db-bar-wrap"><div class="db-bar" style="width:20%;background:linear-gradient(90deg,rgba(155,109,255,.4),var(--violet))"></div></div>
+        <div class="db-amt" style="color:var(--violet)">$100K</div>
+      </div>
+      <div style="font-size:9px;color:var(--muted);margin:-6px 0 8px 180px;line-height:1.4">Core team · Monitoring · DevOps · Incident response · API scaling</div>
+
+      <div class="db-row">
+        <div class="db-label">📣 Viral GTM &amp;<br>Customer Acquisition</div>
+        <div class="db-bar-wrap"><div class="db-bar" style="width:30%;background:linear-gradient(90deg,rgba(26,191,106,.4),var(--green))"></div></div>
+        <div class="db-amt" style="color:var(--green)">$150K</div>
+      </div>
+      <div style="font-size:9px;color:var(--muted);margin:-6px 0 8px 180px;line-height:1.4">Referral engine · Influencer seeding · Paid acquisition · PR &amp; content</div>
+
+      <div class="db-total">
+        <div class="db-total-lbl">Total 6-Month Working Capital</div>
+        <div class="db-total-val">$500,000</div>
+      </div>
+    </div>
+
+    <!-- Right: Idle Capital Strategy -->
+    <div class="deploy-right stagger">
+      <div class="idle-card">
+        <div class="idle-title">⚡ Idle Capital Always Working</div>
+        <div class="idle-desc">Capital is deployed in tranches as each phase activates. Every undeployed dollar sits in the <strong style="color:var(--gold)">Accelerate tier (18% APY)</strong> — Gearbox on Arbitrum. The Treasury Engine self-demonstrates while funding its own deployment.</div>
+        <div class="idle-timeline">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;display:flex;justify-content:space-between"><span>Month</span><span>Idle Capital</span><span>Monthly Yield</span></div>
+          <div class="idle-row">
+            <div class="idle-month">M0</div>
+            <div class="idle-bar-wrap"><div class="idle-bar" style="width:100%"></div></div>
+            <div class="idle-yield">+$7,500</div>
+          </div>
+          <div class="idle-row">
+            <div class="idle-month">M1</div>
+            <div class="idle-bar-wrap"><div class="idle-bar" style="width:85%"></div></div>
+            <div class="idle-yield">+$6,375</div>
+          </div>
+          <div class="idle-row">
+            <div class="idle-month">M2</div>
+            <div class="idle-bar-wrap"><div class="idle-bar" style="width:66%"></div></div>
+            <div class="idle-yield">+$4,950</div>
+          </div>
+          <div class="idle-row">
+            <div class="idle-month">M3</div>
+            <div class="idle-bar-wrap"><div class="idle-bar" style="width:47%"></div></div>
+            <div class="idle-yield">+$3,525</div>
+          </div>
+          <div class="idle-row">
+            <div class="idle-month">M4</div>
+            <div class="idle-bar-wrap"><div class="idle-bar" style="width:28%"></div></div>
+            <div class="idle-yield">+$2,100</div>
+          </div>
+          <div class="idle-row">
+            <div class="idle-month">M5–6</div>
+            <div class="idle-bar-wrap"><div class="idle-bar" style="width:8%"></div></div>
+            <div class="idle-yield">+$600</div>
+          </div>
+        </div>
+      </div>
+      <div class="idle-total-card">
+        <div class="itc-lbl">Treasury yield earned<br>on idle capital during<br>deployment phase</div>
+        <div style="text-align:right">
+          <div class="itc-val">~$25K</div>
+          <div class="itc-sub">6-month earned yield</div>
+          <div class="itc-sub" style="margin-top:3px;color:var(--gold)">Reduces net loan cost by 5%</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <span class="badge-g">Capital Never Sleeps</span>
+        <span class="pill" style="font-size:9px">18% Accelerate Tier</span>
+        <span class="badge-t" style="font-size:9px">Self-Funding Deployment</span>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1164,7 +1284,7 @@ input[type=range].slider::-webkit-slider-thumb{-webkit-appearance:none;width:18p
 <button class="nav-arrow next" id="nextBtn">›</button>
 <nav class="nav-dots" id="navDots"></nav>
 <div class="progress-bar" id="pbar"></div>
-<div class="slide-counter" id="sctr">1 / 10</div>
+<div class="slide-counter" id="sctr">1 / 11</div>
 
 <script>
 // ── Navigation ──────────────────────────────────────────────
@@ -1311,7 +1431,95 @@ document.getElementById('ts-generate').addEventListener('click', () => {
 });
 
 document.getElementById('ts-download').addEventListener('click', () => {
-  window.print();
+  const nameEl   = document.getElementById('td-name');
+  const typeEl   = document.getElementById('td-type');
+  const loanEl   = document.getElementById('td-loan');
+  const aumEl    = document.getElementById('td-aum');
+  const stratEl  = document.getElementById('td-strat');
+  const apyEl    = document.getElementById('td-apy');
+  const repayEl  = document.getElementById('td-repay');
+  const moEl     = document.getElementById('td-monthly');
+  const yrEl     = document.getElementById('td-annual');
+  const sigEl    = document.getElementById('td-sig-name');
+  const dateEl   = document.getElementById('ts-date');
+  const refEl    = document.getElementById('ts-ref');
+
+  const pw = window.open('', '_blank', 'width=820,height=1100,scrollbars=yes');
+  pw.document.write(`<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8">
+<title>Genesis Reserve — Treasury Participation Summary</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Sora',sans-serif;background:#fff;color:#1a1a1a;padding:56px 72px;font-size:12px}
+.conf{background:#f5f0e8;border:1px solid rgba(201,168,76,.4);border-radius:4px;padding:5px 12px;font-family:'JetBrains Mono',monospace;font-size:8px;color:#8a6e2a;letter-spacing:.16em;text-transform:uppercase;text-align:center;margin-bottom:22px}
+.logo{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:11px;color:#8a6e2a;letter-spacing:.30em;text-transform:uppercase;text-align:center;margin-bottom:4px}
+.doc-title{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:26px;color:#1a1a1a;letter-spacing:.10em;text-transform:uppercase;text-align:center;margin-bottom:4px}
+.doc-meta{font-family:'JetBrains Mono',monospace;font-size:9px;color:#888;text-align:center;margin-bottom:20px;display:flex;justify-content:center;gap:16px}
+hr{border:none;border-top:1px solid rgba(201,168,76,.35);margin:16px 0}
+.prep-block{background:#f9f7f2;border-left:3px solid #c9a84c;border-radius:0 6px 6px 0;padding:12px 16px;margin-bottom:18px}
+.prep-lbl{font-family:'JetBrains Mono',monospace;font-size:8px;color:#8a6e2a;letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px}
+.prep-name{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:22px;color:#1a1a1a;letter-spacing:.04em}
+.prep-type{font-size:11px;color:#666;margin-top:2px}
+.section-head{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:#8a6e2a;margin:16px 0 6px;padding-bottom:5px;border-bottom:1px solid rgba(201,168,76,.35)}
+.row{display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-bottom:1px solid #f0ece4;gap:8px}
+.row:last-child{border-bottom:none}
+.row-key{color:#666;font-size:11px}
+.row-val{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:11px;color:#1a1a1a;text-align:right}
+.row-val.gold{color:#8a6e2a}.row-val.green{color:#157a45}.row-val.teal{color:#006b56}
+.sig-block{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:28px;padding-top:18px;border-top:1px solid rgba(201,168,76,.35)}
+.sig-line{height:1px;background:#ccc;margin-bottom:8px}
+.sig-party{font-family:'Cormorant Garamond',serif;font-size:13px;color:#1a1a1a;margin-bottom:2px}
+.sig-role{font-family:'JetBrains Mono',monospace;font-size:8px;color:#888;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
+.sig-date{font-size:10px;color:#aaa}
+.legal{font-size:8px;color:#aaa;line-height:1.7;margin-top:20px;padding-top:12px;border-top:1px solid #eee;text-align:center}
+@media print{body{padding:32px 48px}}
+</style>
+</head><body>
+<div class="conf">Private &amp; Confidential — For Accredited Investors Only</div>
+<div class="logo">◈ &nbsp; Genesis Reserve</div>
+<div class="doc-title">Treasury Participation Summary</div>
+<div class="doc-meta"><span>${dateEl.textContent}</span><span>·</span><span>${refEl.textContent}</span></div>
+<div class="prep-block">
+  <div class="prep-lbl">Prepared For</div>
+  <div class="prep-name">${nameEl.textContent}</div>
+  <div class="prep-type">${typeEl.textContent}</div>
+</div>
+<div class="section-head">Capital Commitment</div>
+<div class="row"><span class="row-key">Working Capital Loan</span><span class="row-val gold">${loanEl.textContent}</span></div>
+<div class="row"><span class="row-key">Institutional AUM</span><span class="row-val gold">${aumEl.textContent}</span></div>
+<div class="row"><span class="row-key">Strategy Allocation</span><span class="row-val">${stratEl.textContent}</span></div>
+<div class="row"><span class="row-key">Target Blended APY</span><span class="row-val">${apyEl.textContent}</span></div>
+<div class="section-head">Investor Returns</div>
+<div class="row"><span class="row-key">Preferred Return Rate</span><span class="row-val green">8.00% per annum</span></div>
+<div class="row"><span class="row-key">Monthly Yield (Preferred)</span><span class="row-val green">${moEl.textContent}</span></div>
+<div class="row"><span class="row-key">Annual Yield (Preferred)</span><span class="row-val green">${yrEl.textContent}</span></div>
+<div class="row"><span class="row-key">Profit Participation</span><span class="row-val teal">50 / 50 on Accelerate above 8%</span></div>
+<div class="section-head">Instrument Structure</div>
+<div class="row"><span class="row-key">Instrument Type</span><span class="row-val">Sr. Secured Loan + Profit Participation Rights</span></div>
+<div class="row"><span class="row-key">Term</span><span class="row-val">72 Months (6 Years)</span></div>
+<div class="row"><span class="row-key">Repayment Structure</span><span class="row-val">${repayEl.textContent}</span></div>
+<div class="row"><span class="row-key">Distribution Frequency</span><span class="row-val">Quarterly</span></div>
+<div class="row"><span class="row-key">Security</span><span class="row-val">First Lien · On-Chain Multi-Sig Vault</span></div>
+<div class="row"><span class="row-key">Eligible Investors</span><span class="row-val">Accredited Individuals · Family Offices</span></div>
+<div class="sig-block">
+  <div>
+    <div class="sig-line"></div>
+    <div class="sig-party">Genesis App, Inc.</div>
+    <div class="sig-role">Authorized Signatory</div>
+    <div class="sig-date">Date: _______________</div>
+  </div>
+  <div>
+    <div class="sig-line"></div>
+    <div class="sig-party">${sigEl.textContent}</div>
+    <div class="sig-role">Authorized Signatory</div>
+    <div class="sig-date">Date: _______________</div>
+  </div>
+</div>
+<div class="legal">For discussion purposes only. This document does not constitute a binding offer or commitment. Final terms are subject to a fully executed agreement between the parties. This instrument represents a debt / yield-participation structure — no equity ownership is implied or conveyed. All investments involve risk. Past performance of DeFi protocols is not indicative of future results. &nbsp;·&nbsp; Genesis App, Inc. &nbsp;·&nbsp; info@genesisreserve.io &nbsp;·&nbsp; genesisreserve.app</div>
+</body></html>`);
+  pw.document.close();
+  pw.onload = () => pw.print();
 });
 
 // ── Particle Canvas (Slide 1) ────────────────────────────────
