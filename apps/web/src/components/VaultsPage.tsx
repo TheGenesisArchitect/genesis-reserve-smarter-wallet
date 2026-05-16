@@ -72,6 +72,13 @@ function strategyToCategory(strategy: VaultStrategySummary): CategoryKey {
   return 'preserve'
 }
 
+/** Categorize a live allocation by its current APY */
+function allocationToCategory(apy: number): CategoryKey {
+  if (apy >= 13) return 'accelerate'
+  if (apy >= 6) return 'grow'
+  return 'preserve'
+}
+
 /**
  * Group strategies by category and return top 3 per category sorted by APY descending
  */
@@ -421,6 +428,8 @@ export function VaultsPage({ onNavigate, accountId }: { onNavigate?: (v: ViewKey
   })
   const [depositAmount, setDepositAmount] = useState(10000)
   const [isMobile, setIsMobile] = useState(false)
+  // strategyId from a YieldMonitorPanel "Allocate →" tap — resolved once strategies load
+  const [pendingStrategyId, setPendingStrategyId] = useState<string | null>(null)
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768)
@@ -429,9 +438,24 @@ export function VaultsPage({ onNavigate, accountId }: { onNavigate?: (v: ViewKey
     return () => window.removeEventListener('resize', check)
   }, [])
 
-  // ── Restore open category from localStorage (once, on mount) ──────
+  // ── Consume pending-tier from YieldMonitorPanel "Allocate →", or restore last open ──
   useEffect(() => {
     try {
+      const rawPending = localStorage.getItem('gr:pending-tier')
+      if (rawPending) {
+        const pending = JSON.parse(rawPending) as {
+          tierKey?: string
+          strategyId?: string | null
+        }
+        const tier = pending.tierKey as CategoryKey | undefined
+        if (tier && ['preserve', 'grow', 'accelerate'].includes(tier)) {
+          setOpenCategory(tier)
+          if (pending.strategyId) setPendingStrategyId(pending.strategyId)
+          localStorage.removeItem('gr:pending-tier')
+          return
+        }
+      }
+      // Normal restore — no inbound alert
       const savedCategory = localStorage.getItem('gr:vault-open-category') as CategoryKey | null
       if (savedCategory && ['preserve', 'grow', 'accelerate'].includes(savedCategory)) {
         setOpenCategory(savedCategory)
@@ -445,6 +469,7 @@ export function VaultsPage({ onNavigate, accountId }: { onNavigate?: (v: ViewKey
       if (openCategory) localStorage.setItem('gr:vault-open-category', openCategory)
     } catch { }
   }, [openCategory])
+
 
   const engine = useYieldEngine()
   const { data: analytics } = useAnalytics(accountId)
@@ -468,6 +493,38 @@ export function VaultsPage({ onNavigate, accountId }: { onNavigate?: (v: ViewKey
     ]
     return topByCategoryFromStrategies(merged)
   }, [strategiesByCategory])
+
+  // ── Resolve a pending strategy once the strategy lists are populated ──
+  useEffect(() => {
+    if (!pendingStrategyId) return
+    const all = [
+      ...strategiesByCategory.preserve,
+      ...strategiesByCategory.grow,
+      ...strategiesByCategory.accelerate,
+    ]
+    if (all.length === 0) return
+    const match = all.find(s => s.strategyId === pendingStrategyId)
+    if (match) {
+      const cat = strategyToCategory(match)
+      setOpenCategory(cat)
+      setSelectedByCategory(prev => ({ ...prev, [cat]: match }))
+      setPendingStrategyId(null)
+    }
+  }, [strategiesByCategory, pendingStrategyId])
+
+  // Map live allocated positions into the correct tier bucket by their current APY
+  const deployedByCategory = useMemo<Record<CategoryKey, StrategyAllocationSummary[]>>(() => {
+    const result: Record<CategoryKey, StrategyAllocationSummary[]> = {
+      preserve: [], grow: [], accelerate: [],
+    }
+    for (const alloc of analytics?.strategyAllocations ?? []) {
+      if (alloc.pct <= 0) continue
+      const deployed = parseAtomicUsdc(alloc.deployedUsdc)
+      if (deployed < 1) continue
+      result[allocationToCategory(alloc.apy)].push(alloc)
+    }
+    return result
+  }, [analytics?.strategyAllocations])
 
   // Auto-select top strategy per category if not already selected
   useEffect(() => {
@@ -640,6 +697,8 @@ export function VaultsPage({ onNavigate, accountId }: { onNavigate?: (v: ViewKey
           const opportunities = (strategiesByCategory[category]?.length ? strategiesByCategory[category] : normalizedByApyBand[category]) || []
           const isOpen = openCategory === category
           const selected = selectedByCategory[category]
+          const deployedPositions = deployedByCategory[category]
+          const totalDeployedUsd = deployedPositions.reduce((sum, a) => sum + parseAtomicUsdc(a.deployedUsdc), 0)
 
           return (
             <div
@@ -692,6 +751,21 @@ export function VaultsPage({ onNavigate, accountId }: { onNavigate?: (v: ViewKey
                       {opportunities.length}
                     </div>
                   </div>
+                  {totalDeployedUsd > 0 && (
+                    <div style={{
+                      padding: '4px 10px',
+                      borderRadius: 20,
+                      background: `${config.color}18`,
+                      border: `1px solid ${config.color}50`,
+                    }}>
+                      <div style={{ fontSize: 9, color: config.color, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 1 }}>Deployed</div>
+                      <div style={{ fontSize: 13, color: config.color, fontFamily: "'Cormorant Garamond', serif", fontWeight: 600 }}>
+                        ${totalDeployedUsd >= 1000
+                          ? `${(totalDeployedUsd / 1000).toFixed(1)}k`
+                          : totalDeployedUsd.toFixed(0)}
+                      </div>
+                    </div>
+                  )}
                   <div style={{
                     width: 24,
                     height: 24,
@@ -727,6 +801,47 @@ export function VaultsPage({ onNavigate, accountId }: { onNavigate?: (v: ViewKey
                       }}
                       onClose={() => setDrillDown(null)}
                     />
+                  )}
+
+                  {/* ── Active Positions ───────────────────────────────── */}
+                  {deployedPositions.length > 0 && (
+                    <div style={{ marginBottom: 20, marginTop: 16 }}>
+                      <div style={{ fontSize: 10, color: config.color, letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <span style={{ width: 6, height: 6, borderRadius: '50%', background: config.color, display: 'inline-block', boxShadow: `0 0 6px ${config.color}` }} />
+                        Active Positions
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                        {deployedPositions.map((pos) => {
+                          const deployedUsd = parseAtomicUsdc(pos.deployedUsdc)
+                          const pctOfCategory = totalDeployedUsd > 0 ? (deployedUsd / totalDeployedUsd) * 100 : 0
+                          return (
+                            <div key={pos.name} style={{
+                              display: 'flex', alignItems: 'center', gap: 12,
+                              padding: '12px 14px',
+                              background: `${config.color}09`,
+                              border: `1px solid ${config.color}30`,
+                              borderLeft: `3px solid ${config.color}`,
+                              borderRadius: 10,
+                            }}>
+                              <div style={{ flex: 1, minWidth: 0 }}>
+                                <div style={{ fontSize: 12, color: '#f5f0e8', fontWeight: 500, marginBottom: 2 }}>{pos.name}</div>
+                                <div style={{ height: 3, borderRadius: 2, background: 'rgba(255,255,255,0.08)', overflow: 'hidden', marginTop: 5 }}>
+                                  <div style={{ height: '100%', borderRadius: 2, background: config.color, width: `${pctOfCategory}%`, transition: 'width 0.4s' }} />
+                                </div>
+                              </div>
+                              <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                                <div style={{ fontSize: 13, color: config.color, fontFamily: "'Cormorant Garamond', serif", fontWeight: 600 }}>
+                                  ${deployedUsd >= 1000 ? `${(deployedUsd / 1000).toFixed(1)}k` : deployedUsd.toFixed(0)}
+                                </div>
+                                <div style={{ fontSize: 10, color: 'rgba(245,240,232,0.45)' }}>
+                                  {pos.apy.toFixed(1)}% APY · {pos.pct.toFixed(0)}% alloc
+                                </div>
+                              </div>
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </div>
                   )}
 
                   <div style={{ marginBottom: 16 }}>
