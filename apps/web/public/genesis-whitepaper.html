@@ -629,6 +629,48 @@ svg.wp-chart{width:100%;height:auto;overflow:visible}
 .code-fn{color:#C9A84C}
 .code-num{color:#1ABF6A}
 
+/* ── LIVE FEED BADGE ─────────────────────────────────────── */
+.live-feed-bar{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  padding:8px 14px;
+  background:rgba(26,191,106,0.06);
+  border:1px solid rgba(26,191,106,0.2);
+  border-radius:8px;
+  margin-bottom:14px;
+  font-size:11px;
+}
+.live-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--green);
+  flex-shrink:0;
+  animation:live-pulse 2s infinite;
+}
+.live-dot.stale{background:var(--gold);animation:none}
+.live-dot.fallback{background:var(--text-muted);animation:none}
+@keyframes live-pulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(26,191,106,0.5)}
+  50%{box-shadow:0 0 0 5px rgba(26,191,106,0)}
+}
+.live-status{font-weight:700;font-family:'JetBrains Mono',monospace;letter-spacing:.06em}
+.live-status.live{color:var(--green)}
+.live-status.fallback{color:var(--text-muted)}
+.live-timestamp{color:var(--text-muted);margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:10px}
+.live-strategy-chips{display:flex;gap:6px;flex-wrap:wrap;width:100%;margin-top:4px}
+.live-chip{
+  display:flex;align-items:center;gap:5px;
+  padding:3px 8px;border-radius:4px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;
+  background:rgba(0,0,0,0.04);border:1px solid var(--border-light);
+  white-space:nowrap;
+}
+.live-chip .chip-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.live-chip.pendle .chip-dot{background:#6B21A8}
+.live-chip.gearbox .chip-dot{background:#E84040}
+.live-chip.aave .chip-dot{background:#B6509E}
+.live-chip.tbill .chip-dot{background:var(--gold)}
+.live-chip .chip-apy{color:var(--green)}
+.live-chip .chip-alloc{color:var(--text-muted);font-size:9px}
+
 /* ── YIELD TOGGLE ────────────────────────────────────────── */
 .yield-toggle-row{
   display:grid;grid-template-columns:repeat(3,1fr);gap:8px;
@@ -1117,6 +1159,14 @@ svg.wp-chart{width:100%;height:auto;overflow:visible}
 
       <div class="diagram-wrap">
         <div class="diagram-title">Perpetual Engine Economics · Yield Scenario Model</div>
+
+        <!-- Live Feed Status Bar -->
+        <div class="live-feed-bar" id="liveFeedBar">
+          <div class="live-dot fallback" id="liveDot"></div>
+          <span class="live-status fallback" id="liveStatus">Loading rates…</span>
+          <span class="live-timestamp" id="liveTimestamp"></span>
+          <div class="live-strategy-chips" id="liveChips"></div>
+        </div>
 
         <!-- Yield Mode Toggle -->
         <div class="yield-toggle-row">
@@ -2077,6 +2127,96 @@ svg.wp-chart{width:100%;height:auto;overflow:visible}
     slider.addEventListener('input', updateCalc);
     updateCalc();
   }
+
+  // ── LIVE STRATEGY RATES FEED ────────────────────────────
+  const PROTOCOL_COLORS = { pendle:'pendle', gearbox:'gearbox', aave:'aave', tbill:'tbill' };
+
+  async function fetchLiveRates() {
+    const dotEl    = document.getElementById('liveDot');
+    const statusEl = document.getElementById('liveStatus');
+    const tsEl     = document.getElementById('liveTimestamp');
+    const chipsEl  = document.getElementById('liveChips');
+    if (!dotEl || !statusEl || !tsEl || !chipsEl) return;
+
+    try {
+      const res = await fetch('/api/gr/rates', { cache: 'no-store' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+
+      const isLive = data.dataSource === 'live';
+      const isPartial = data.dataSource === 'partial';
+
+      // Update dot + status
+      dotEl.className = 'live-dot' + (isLive ? ' live' : isPartial ? ' stale' : ' fallback');
+      statusEl.className = 'live-status' + (isLive ? ' live' : ' fallback');
+      statusEl.textContent = isLive
+        ? '● Live · Strategy Router Feed'
+        : isPartial
+          ? '◑ Partial Live · Some rates static'
+          : '○ Static Fallback · Last known rates';
+
+      // Timestamp
+      const dt = new Date(data.lastUpdated);
+      tsEl.textContent = 'Updated ' + dt.toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+
+      // Strategy chips
+      chipsEl.innerHTML = '';
+      (data.strategies || []).forEach((s) => {
+        const chip = document.createElement('div');
+        chip.className = `live-chip ${s.protocol}`;
+        chip.innerHTML = `
+          <span class="chip-dot"></span>
+          <span>${s.name}</span>
+          <span class="chip-apy">${s.apy.toFixed(2)}%</span>
+          <span class="chip-alloc">${Math.round(s.allocation * 100)}% alloc · ${s.source}</span>`;
+        chipsEl.appendChild(chip);
+      });
+
+      // Update the yield mode buttons with live numbers
+      const btnOpt = document.getElementById('btn-optimized');
+      const btnPeak = document.getElementById('btn-peak');
+      if (btnOpt && data.blendedApy) {
+        const rateEl = btnOpt.querySelector('.yield-btn-rate');
+        if (rateEl) {
+          const spread = Math.max(0, data.blendedApy - 8).toFixed(1);
+          rateEl.textContent = `${data.blendedApy.toFixed(1)}% APY · ${spread}% Spread · LIVE`;
+        }
+        btnOpt.dataset.rate   = String(data.blendedApy / 100);
+        btnOpt.dataset.spread = String(Math.max(0, data.blendedApy - 8) / 100);
+      }
+
+      // Peak = highest single strategy rate
+      if (btnPeak && data.strategies) {
+        const peak = Math.max(...data.strategies.map((s) => s.apy));
+        const peakSpread = Math.max(0, peak - 8);
+        const rateEl = btnPeak.querySelector('.yield-btn-rate');
+        if (rateEl) rateEl.textContent = `Up to ${peak.toFixed(2)}% APY · ${peakSpread.toFixed(1)}% Spread · LIVE`;
+        btnPeak.dataset.rate   = String(peak / 100);
+        btnPeak.dataset.spread = String(peakSpread / 100);
+      }
+
+      // If optimized is active, re-run calc with fresh rate
+      const activeBtn = document.querySelector('.yield-btn.active') as HTMLButtonElement | null;
+      if (activeBtn) {
+        const newRate   = parseFloat(activeBtn.dataset.rate   || '0');
+        const newSpread = parseFloat(activeBtn.dataset.spread || '0');
+        if (newRate > 0) {
+          currentMode = { rate: newRate, spread: newSpread, note: currentMode.note };
+          updateCalc();
+        }
+      }
+
+    } catch (err) {
+      if (statusEl) {
+        statusEl.textContent = '○ Static Fallback · API unavailable';
+        statusEl.className = 'live-status fallback';
+      }
+    }
+  }
+
+  // Fetch on load, refresh every epoch (15 min)
+  fetchLiveRates();
+  setInterval(fetchLiveRates, 15 * 60 * 1000);
 
   // ── ACTIVE TOC HIGHLIGHT ─────────────────────────────────
   const sections = document.querySelectorAll('.wp-section[id]');
