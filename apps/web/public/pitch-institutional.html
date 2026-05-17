@@ -624,20 +624,20 @@ input[type=range].slider::-webkit-slider-thumb{-webkit-appearance:none;width:18p
   <div class="model-wrap">
     <div class="m4-kpi-grid">
       <div class="kpi-card">
-        <div class="kpi-val" style="color:var(--gold2)">13.2%</div>
-        <div class="kpi-lbl">Blended APY</div>
+        <div class="kpi-val" id="m4-monthly" style="color:var(--gold2)">—</div>
+        <div class="kpi-lbl">Engine / Month</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-val" id="m4-daily" style="color:var(--teal)">—</div>
+        <div class="kpi-lbl">Engine / Day</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-val" id="m4-epoch" style="color:var(--violet)">—</div>
+        <div class="kpi-lbl">Engine / Epoch · 15min</div>
       </div>
       <div class="kpi-card">
         <div class="kpi-val" style="color:var(--blue)">8.0%</div>
         <div class="kpi-lbl">Preferred Floor</div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-val" id="m4-grx-yield" style="color:var(--teal)">—</div>
-        <div class="kpi-lbl">$GRX Pool / Mo</div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-val" id="m4-treasury-mo" style="color:var(--green)">—</div>
-        <div class="kpi-lbl">Treasury / Mo</div>
       </div>
     </div>
 
@@ -645,7 +645,7 @@ input[type=range].slider::-webkit-slider-thumb{-webkit-appearance:none;width:18p
       <div class="calc-header">
         <div>
           <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px">Institutional AUM</div>
-          <div style="font-size:10.5px;color:var(--muted)">Genesis 5.2% spread split 40/20/40 across Treasury · $GRX Pool · Operations</div>
+          <div style="font-size:10.5px;color:var(--muted)">13.2% blended APY · 5.2% Genesis spread split 40/20/40 across Treasury · $GRX Pool · Operations</div>
         </div>
         <div class="slider-val" id="aumDisplay">$1.0M</div>
       </div>
@@ -1518,18 +1518,25 @@ function updateModel() {
   const aum      = +slider4.value;
   document.getElementById('aumDisplay').textContent = fmtM(aum);
 
-  const spread   = aum * 0.052 / 12;   // Genesis 5.2% spread / mo
+  // Gross engine output
+  const monthly  = aum * 0.132 / 12;
+  const daily    = aum * 0.132 / 365;
+  const epoch    = daily / 96;          // 96 harvest cycles per day (15-min epochs)
+
+  // Genesis 5.2% spread, split 40/20/40
+  const spread   = aum * 0.052 / 12;
   const treasury = spread * 0.40;
   const pool     = spread * 0.20;
   const ops      = spread * 0.40;
   const grxDist  = pool * 3 * 0.60;    // 60% of quarterly pool to holders
 
-  document.getElementById('m4-grx-yield').textContent   = fmtDollar(pool);
-  document.getElementById('m4-treasury-mo').textContent = fmtDollar(treasury);
-  document.getElementById('m4-treasury').textContent    = fmtDollar(treasury);
-  document.getElementById('m4-pool').textContent        = fmtDollar(pool);
-  document.getElementById('m4-ops').textContent         = fmtDollar(ops);
-  document.getElementById('m4-grx-dist').textContent    = fmtDollar(grxDist) + '/qtr';
+  document.getElementById('m4-monthly').textContent  = fmtDollar(monthly);
+  document.getElementById('m4-daily').textContent    = fmtDollar(daily);
+  document.getElementById('m4-epoch').textContent    = '$' + epoch.toFixed(2);
+  document.getElementById('m4-treasury').textContent = fmtDollar(treasury);
+  document.getElementById('m4-pool').textContent     = fmtDollar(pool);
+  document.getElementById('m4-ops').textContent      = fmtDollar(ops);
+  document.getElementById('m4-grx-dist').textContent = fmtDollar(grxDist) + '/qtr';
 
   const pct = ((aum - 500000) / (5000000 - 500000) * 100).toFixed(1);
   slider4.style.background = `linear-gradient(90deg,var(--gold) ${pct}%,var(--bg5) ${pct}%)`;
