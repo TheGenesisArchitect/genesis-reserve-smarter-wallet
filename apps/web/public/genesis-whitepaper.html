@@ -629,6 +629,42 @@ svg.wp-chart{width:100%;height:auto;overflow:visible}
 .code-fn{color:#C9A84C}
 .code-num{color:#1ABF6A}
 
+/* ── YIELD TOGGLE ────────────────────────────────────────── */
+.yield-toggle-row{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:8px;
+  margin-bottom:8px;
+}
+@media(max-width:600px){.yield-toggle-row{grid-template-columns:1fr}}
+
+.yield-btn{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:10px 12px;border-radius:8px;cursor:pointer;
+  border:1px solid var(--border-light);
+  background:white;transition:all .2s;
+}
+.yield-btn:hover{border-color:var(--gold);background:rgba(201,168,76,0.04)}
+.yield-btn.active{
+  border-color:var(--gold);
+  background:rgba(201,168,76,0.08);
+  box-shadow:0 0 0 1px var(--gold);
+}
+.yield-btn-label{
+  font-family:'Sora',sans-serif;font-size:12px;font-weight:700;
+  color:var(--text-primary);
+}
+.yield-btn-rate{
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  color:var(--text-muted);letter-spacing:.04em;
+}
+.yield-btn.active .yield-btn-rate{color:var(--gold-dk)}
+
+.yield-mode-note{
+  font-size:11px;color:var(--text-muted);
+  font-style:italic;text-align:center;
+  padding:6px 0;border-bottom:1px solid var(--border-light);
+  margin-bottom:4px;
+}
+
 /* ── PDF DOWNLOAD BUTTON ──────────────────────────────────── */
 .pdf-fab{
   position:fixed;bottom:32px;right:32px;z-index:999;
@@ -749,6 +785,7 @@ svg.wp-chart{width:100%;height:auto;overflow:visible}
       <li class="toc-item"><a href="#solution"><span class="toc-num">02</span>The Solution</a></li>
       <li class="toc-item"><a href="#architecture"><span class="toc-num">03</span>Engine Architecture</a></li>
       <li class="toc-item"><a href="#economics"><span class="toc-num">04</span>The Economics</a></li>
+      <li class="toc-item"><a href="#ops-capital"><span class="toc-num">04.5</span>Operational Capital</a></li>
       <div class="toc-divider"></div>
       <li class="toc-item"><a href="#grx"><span class="toc-num">05</span>$GRX Token</a></li>
       <li class="toc-item"><a href="#smarter-wallet"><span class="toc-num">06</span>Smarter Wallet</a></li>
@@ -782,7 +819,7 @@ svg.wp-chart{width:100%;height:auto;overflow:visible}
         Traditional finance optimizes for exit. Venture capital seeks liquidity events. Fixed-income instruments mature. Even the most sophisticated fund structures carry a sunset clause. Genesis Reserve is built on an entirely different premise: <strong>capital that never stops working is more valuable than capital that eventually stops.</strong>
       </p>
       <p>
-        Through a disciplined 40/20/40 spread allocation, a 96-epoch daily harvest cycle, and an ERC-4626 vault architecture connected to regulated yield corridors in stablecoins and U.S. treasury strategies, Genesis Reserve delivers a blended 13.2% APY across its full investment horizon — while simultaneously building a sovereign treasury that persists in perpetuity beyond investor exit.
+        Through a disciplined 40/20/40 spread allocation, a 96-epoch daily harvest cycle, and an ERC-4626 vault architecture connected to Pendle, Gearbox, Aave, and U.S. Treasury yield corridors, Genesis Reserve delivers a guaranteed 8% investor preferred return — while capturing every basis point above 8% as Genesis spread. At current live rates (Pendle 18%, Gearbox 20.53%), the Genesis spread expands from the conservative 5.2% floor toward 11%+, compounding the sovereign treasury and operational capital simultaneously.
       </p>
       <p>
         The $GRX Revenue Participation Token — issued under Reg D 506(c) — grants accredited investors and family offices a proportional, quarterly claim on the 20% investor pool of Genesis's gross spread, compounding at 13.2% on the reinvested 40% fraction. By Month 33, the treasury self-liquidates its own growth loan. By Month 72, the sovereign treasury generates $16,242/month in perpetuity — indefinitely — from no new capital deployment.
@@ -793,16 +830,16 @@ svg.wp-chart{width:100%;height:auto;overflow:visible}
 
       <div class="stat-grid">
         <div class="stat-card gold-border">
-          <div class="stat-val">13.2%</div>
-          <div class="stat-label">Blended APY<br/>72-Month Horizon</div>
+          <div class="stat-val">8%</div>
+          <div class="stat-label">Investor Preferred<br/>Guaranteed Floor</div>
         </div>
         <div class="stat-card gold-border">
-          <div class="stat-val">96×</div>
-          <div class="stat-label">Daily Harvest<br/>Epochs</div>
+          <div class="stat-val" style="font-size:26px">5.2–11%</div>
+          <div class="stat-label">Genesis Spread<br/>Conservative → Peak Capture</div>
         </div>
         <div class="stat-card teal-border">
-          <div class="stat-val">$GRX</div>
-          <div class="stat-label">Revenue Participation<br/>Token (Reg D 506c)</div>
+          <div class="stat-val">96×</div>
+          <div class="stat-label">Daily Harvest<br/>Epochs</div>
         </div>
         <div class="stat-card teal-border">
           <div class="stat-val">∞</div>
@@ -1023,10 +1060,17 @@ svg.wp-chart{width:100%;height:auto;overflow:visible}
 }
       </div>
 
-      <h3>StrategyRouter — Modular Yield Sourcing</h3>
+      <h3>StrategyRouter — Modular Yield Sourcing &amp; Margin Capture</h3>
       <p>
-        The StrategyRouter sits between the vault and external yield sources. It maintains a registry of approved strategies — currently Pendle PT-USDC pools (targeting ~16% APY), Aave v3 lending (targeting ~8% APY), and U.S. Treasury via tokenized T-bill wrappers (targeting ~5.2% APY). The router allocates across these strategies based on liquidity depth, rate conditions, and compliance constraints, producing the 13.2% blended target.
+        The StrategyRouter sits between the vault and external yield sources. It maintains a registry of approved strategies — currently Pendle PT-USDC pools (18% APY live), Gearbox leveraged yield (up to 20.53% APY live), Aave v3 lending (~8% APY), and U.S. Treasury via tokenized T-bill wrappers (~5.2% APY). The router dynamically allocates across strategies based on liquidity depth, rate conditions, and compliance constraints.
       </p>
+      <p>
+        <strong>The critical design principle:</strong> The investor's preferred return is fixed at 8% regardless of vault performance. Every basis point the vault generates above 8% is captured entirely by Genesis as spread. At 19% vault yield, the Genesis spread is 11% — more than double the conservative 5.2% model. This <strong>Margin Capture</strong> mechanism means Genesis becomes dramatically more profitable as DeFi rates rise, while investor returns remain stable and protected.
+      </p>
+      <div class="callout callout-green">
+        <div class="callout-label">Margin Capture — Live Rates</div>
+        <p>Pendle PT-USDC: <strong>18% APY</strong> &nbsp;·&nbsp; Gearbox Leveraged Yield: <strong>20.53% APY</strong> &nbsp;·&nbsp; Blended optimized target (70% allocation): <strong>~16% APY</strong> &nbsp;·&nbsp; Genesis spread at optimized rate: <strong>8%</strong> (vs. 5.2% conservative) &nbsp;·&nbsp; Spread improvement: <strong>+54%</strong></p>
+      </div>
 
       <div class="code-block">
 <span class="code-comment">// StrategyRouter.sol — Modular yield allocation</span>
@@ -1065,16 +1109,36 @@ svg.wp-chart{width:100%;height:auto;overflow:visible}
       </div>
       <h2 class="section-title">The Economics:<br/><span class="gold">40/20/40 Capital Discipline</span></h2>
       <p class="section-lead">
-        Genesis Reserve generates 13.2% blended APY on deployed AUM. Investors receive 8% as a preferred return. The remaining 5.2% Genesis spread is split with mathematical precision: 40% to sovereign treasury, 20% to the $GRX investor pool, 40% to operations.
+        The investor's preferred return is fixed at 8%. Every basis point the vault generates above 8% is captured entirely by Genesis as spread — split 40/20/40 across sovereign treasury, $GRX pool, and operations. As Pendle and Gearbox deliver 18–20.53% live yields, Genesis's spread expands from the conservative 5.2% floor toward 11%+ — more than doubling operational and treasury power without changing a single investor term.
       </p>
 
-      <h3>Interactive Engine Calculator</h3>
-      <p>Move the slider to model the engine at any AUM from $500K to $5M.</p>
+      <h3>Yield Scenario Engine Calculator</h3>
+      <p>Select a yield scenario and move the AUM slider. The conservative floor (13.2%) is what investors are guaranteed. Optimized and Peak reflect live Pendle/Gearbox allocation strategies currently available.</p>
 
       <div class="diagram-wrap">
-        <div class="diagram-title">Perpetual Engine Economics · Live Model</div>
+        <div class="diagram-title">Perpetual Engine Economics · Yield Scenario Model</div>
 
-        <div class="calc-slider-row">
+        <!-- Yield Mode Toggle -->
+        <div class="yield-toggle-row">
+          <button class="yield-btn active" data-rate="0.132" data-spread="0.052" id="btn-conservative">
+            <span class="yield-btn-label">Conservative</span>
+            <span class="yield-btn-rate">13.2% APY · 5.2% Spread</span>
+          </button>
+          <button class="yield-btn" data-rate="0.16" data-spread="0.08" id="btn-optimized">
+            <span class="yield-btn-label">Optimized</span>
+            <span class="yield-btn-rate">16% APY · 8% Spread</span>
+          </button>
+          <button class="yield-btn" data-rate="0.19" data-spread="0.11" id="btn-peak">
+            <span class="yield-btn-label">Peak Capture</span>
+            <span class="yield-btn-rate">19% APY · 11% Spread</span>
+          </button>
+        </div>
+
+        <div class="yield-mode-note" id="yield-mode-note">
+          Guaranteed floor — conservative blended target across Pendle, Aave, T-bills.
+        </div>
+
+        <div class="calc-slider-row" style="margin-top:16px">
           <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);letter-spacing:.08em">AUM</span>
           <input type="range" class="wp-range" id="wpAumSlider" min="500000" max="5000000" step="50000" value="2500000"/>
           <span class="calc-aum-label" id="wpAumDisplay">$2.5M</span>
@@ -1099,7 +1163,10 @@ svg.wp-chart{width:100%;height:auto;overflow:visible}
           </div>
         </div>
 
-        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;">Genesis 5.2% Spread · 40 / 20 / 40 Allocation</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);">Genesis Spread · 40 / 20 / 40 Allocation</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--green);">Spread: <strong id="wp-spread-pct">5.2%</strong> &nbsp;|&nbsp; Margin vs Floor: <strong id="wp-margin-capture">—</strong></span>
+        </div>
 
         <div class="split-bar">
           <div class="split-seg split-seg-treasury">
@@ -1131,8 +1198,9 @@ svg.wp-chart{width:100%;height:auto;overflow:visible}
           </div>
         </div>
 
-        <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border-light);font-size:12px;color:var(--text-muted);">
-          Quarterly $GRX Distribution (60% of Pool × 3 months): <strong id="wp-grx-qtr" style="color:var(--teal)">—</strong>
+        <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border-light);display:flex;gap:24px;flex-wrap:wrap;font-size:12px;color:var(--text-muted);">
+          <span>Quarterly $GRX Distribution: <strong id="wp-grx-qtr" style="color:var(--teal)">—</strong></span>
+          <span>Ops vs Lean Opex ($22K): <strong id="wp-ops-gap" style="color:var(--green)">—</strong></span>
         </div>
       </div>
 
@@ -1203,6 +1271,165 @@ svg.wp-chart{width:100%;height:auto;overflow:visible}
       <div class="callout callout-green">
         <div class="callout-label">Sovereign Treasury at M72</div>
         <p>By Month 72, the Genesis sovereign treasury holds approximately $1.49M compounded at 13.2% APY, generating $16,242/month in perpetual yield — from no new capital. This is the engine's ultimate expression: a self-funding financial infrastructure that serves as the permanent operating reserve for the Genesis Reserve ecosystem.</p>
+      </div>
+    </section>
+
+    <!-- ── 04.5 OPERATIONAL CAPITAL STRATEGY ────────────── -->
+    <section class="wp-section" id="ops-capital">
+      <div class="section-eyebrow">
+        <span class="section-num">04.5</span>
+        <div class="section-rule"></div>
+      </div>
+      <h2 class="section-title">Operational Capital<br/><span class="gold">The Four-Layer Strategy</span></h2>
+      <p class="section-lead">
+        Genesis Reserve does not rely on a single revenue stream to fund its operations. The company is architected around four compounding layers of operational capital — each one activating in sequence, each one making the next stronger.
+      </p>
+
+      <p>
+        A common investor concern with early-stage infrastructure companies is operational solvency: can the company survive long enough to reach the revenue milestones it projects? For Genesis Reserve, this question has a precise, layered answer. The institutional AUM spread's 40% operations allocation is not the company's primary operating budget — it is the company's growing profit margin. Operations are funded by a deliberate four-layer capital stack that ensures positive cash flow from Month 1.
+      </p>
+
+      <h3>Layer 1 — Seed Runway (M1–M18)</h3>
+      <p>
+        The $500K pre-seed raise is allocated with discipline: approximately $100K covers one-time setup costs — smart contract audit, legal entity structure, Reg D filing, Onfido/Chainalysis licensing, and initial infrastructure deployment. The remaining <strong>~$400K funds 18 months of lean operations at $22K/month</strong> — covering legal retainers, compliance, infrastructure, and a core team — before B2C revenue becomes the dominant funding source. This runway is the ignition layer. It requires no AUM, no B2C revenue, and no spread to keep the company operational through the critical build phase.
+      </p>
+
+      <h3>Layer 2 — Institutional Spread Operations (Growing with AUM)</h3>
+      <p>
+        The 40% Operations allocation of the Genesis spread is a self-funding profit layer that grows with every dollar of AUM and every basis point of yield optimization. At the conservative 13.2% rate and $1M AUM, this is $1,733/month — modest. But at the optimized 16% rate and $5M AUM, it reaches $13,333/month. At peak yield capture (19%), it reaches $18,333/month. This layer is not designed to carry the company alone — it is designed to be supplemental profit that compounds the company's financial position as the engine scales.
+      </p>
+
+      <!-- Layer 2 comparison table -->
+      <div class="diagram-wrap" style="padding:24px">
+        <div class="diagram-title">Layer 2 — Operations Allocation by AUM &amp; Yield Scenario</div>
+        <table class="risk-table" style="font-size:12px;margin:0">
+          <thead>
+            <tr>
+              <th>AUM</th>
+              <th style="color:var(--gold-dk)">Conservative 13.2%</th>
+              <th style="color:var(--teal)">Optimized 16%</th>
+              <th style="color:var(--green)">Peak Capture 19%</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>$500K</td><td>$867/mo</td><td>$1,333/mo</td><td>$1,833/mo</td></tr>
+            <tr><td>$1M</td><td>$1,733/mo</td><td>$2,667/mo</td><td>$3,667/mo</td></tr>
+            <tr><td>$2.5M</td><td>$4,333/mo</td><td>$6,667/mo</td><td>$9,167/mo</td></tr>
+            <tr><td>$5M</td><td style="color:var(--gold-dk);font-weight:700">$8,667/mo</td><td style="color:var(--teal);font-weight:700">$13,333/mo</td><td style="color:var(--green);font-weight:700">$18,333/mo</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Layer 3 — B2C Revenue Engine (M6 → Primary Ops Funder by M18)</h3>
+      <p>
+        The Smarter Wallet's transaction revenue is the strategic pivot that makes the Genesis operational model genuinely resilient. B2C revenue begins accruing at M6 and reaches <strong>$18K/month by M18</strong> — covering the majority of lean opex independently of institutional AUM performance. By M36 at <strong>$380K/month</strong>, B2C revenue transforms the operations allocation from a survival question into a profitability question. By M72 at <strong>$2.6M/month</strong>, Genesis operates at enterprise scale with margins that dwarf the institutional spread entirely. The institutional 40% ops slice becomes pure bonus profit from M18 forward.
+      </p>
+
+      <h3>Layer 4 — Freed Capital Acceleration (M33+)</h3>
+      <p>
+        When the growth loan self-liquidates at Month 33, $8,289/month is permanently freed. Under the Perpetual Freed Capital model, 40% of this (the Accelerate slice) = <strong>$3,316/month</strong> of additional operational capital — compounding indefinitely from the sovereign treasury's own yield. This layer costs nothing new and requires no decisions: it is the engine rewarding its own discipline.
+      </p>
+
+      <!-- Cash Flow Table -->
+      <h3>Month-by-Month: Burn → Breakeven → Surplus</h3>
+      <p>The table below models Genesis's operational cash position across the 72-month horizon, combining all four layers at the <em>optimized</em> yield scenario and $5M AUM (institutional), with B2C ramp per the growth model.</p>
+
+      <div class="diagram-wrap" style="padding:24px;overflow-x:auto">
+        <div class="diagram-title">Operational Cash Flow Model · Optimized Yield · $5M AUM</div>
+        <table class="risk-table" style="font-size:11.5px;margin:0;min-width:640px">
+          <thead>
+            <tr>
+              <th>Month</th>
+              <th>Seed Runway</th>
+              <th>Spread Ops</th>
+              <th>B2C Rev</th>
+              <th>Total In</th>
+              <th>Opex</th>
+              <th style="color:var(--green)">Net Position</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>M1</td><td>$22,000</td><td>$2,667</td><td>$0</td><td>$24,667</td><td>$16,000</td><td style="color:var(--green);font-weight:600">+$8,667</td></tr>
+            <tr><td>M6</td><td>$22,000</td><td>$5,333</td><td>$2,000</td><td>$29,333</td><td>$18,000</td><td style="color:var(--green);font-weight:600">+$11,333</td></tr>
+            <tr><td>M12</td><td>$22,000</td><td>$8,000</td><td>$8,000</td><td>$38,000</td><td>$20,000</td><td style="color:var(--green);font-weight:600">+$18,000</td></tr>
+            <tr style="background:rgba(201,168,76,0.04)"><td><strong>M18</strong></td><td>—</td><td>$13,333</td><td>$18,000</td><td>$31,333</td><td>$22,000</td><td style="color:var(--green);font-weight:700">+$9,333</td></tr>
+            <tr><td>M24</td><td>—</td><td>$13,333</td><td>$90,000</td><td>$103,333</td><td>$40,000</td><td style="color:var(--green);font-weight:600">+$63,333</td></tr>
+            <tr style="background:rgba(0,212,170,0.04)"><td><strong>M33</strong></td><td>—</td><td>$13,333</td><td>$220,000</td><td>$233,333</td><td>$55,000</td><td style="color:var(--green);font-weight:700">+$178,333 ⚡</td></tr>
+            <tr><td>M36</td><td>—</td><td>$13,333</td><td>$380,000</td><td>$393,333</td><td>$67,000</td><td style="color:var(--green);font-weight:600">+$326,333</td></tr>
+            <tr><td>M48</td><td>—</td><td>$13,333</td><td>$900,000</td><td>$913,333</td><td>$150,000</td><td style="color:var(--green);font-weight:600">+$763,333</td></tr>
+            <tr style="background:rgba(26,191,106,0.04)"><td><strong>M72</strong></td><td>—</td><td>$18,333</td><td>$2,600,000</td><td>$2,618,333</td><td>$225,000</td><td style="color:var(--green);font-weight:700">+$2,393,333 ∞</td></tr>
+          </tbody>
+        </table>
+        <p style="font-size:10px;color:var(--text-muted);margin-top:10px;margin-bottom:0">M18 seed runway exhausted. Spread ops at optimized 16% yield / $5M AUM. B2C revenue interpolated from growth model. M72 spread ops at Peak 19% / $5M AUM. ⚡ = loan self-liquidation month.</p>
+      </div>
+
+      <!-- Net Profit Moment visualization -->
+      <div class="diagram-wrap" style="margin-top:24px">
+        <div class="diagram-title">Operational Surplus Curve · Burn → Breakeven → Scale</div>
+        <svg class="wp-chart" viewBox="0 0 760 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Axes -->
+          <line x1="60" y1="20" x2="60" y2="200" stroke="#E0E0E0" stroke-width="1"/>
+          <line x1="60" y1="200" x2="720" y2="200" stroke="#E0E0E0" stroke-width="1"/>
+          <!-- Y labels -->
+          <text x="55" y="204" font-family="JetBrains Mono" font-size="8" fill="#9A9A9A" text-anchor="end">$0</text>
+          <text x="55" y="164" font-family="JetBrains Mono" font-size="8" fill="#9A9A9A" text-anchor="end">$100K</text>
+          <text x="55" y="124" font-family="JetBrains Mono" font-size="8" fill="#9A9A9A" text-anchor="end">$500K</text>
+          <text x="55" y="84" font-family="JetBrains Mono" font-size="8" fill="#9A9A9A" text-anchor="end">$1M</text>
+          <text x="55" y="44" font-family="JetBrains Mono" font-size="8" fill="#9A9A9A" text-anchor="end">$2M+</text>
+          <!-- Grid -->
+          <line x1="60" y1="160" x2="720" y2="160" stroke="#F0F0F0" stroke-width="1" stroke-dasharray="3,3"/>
+          <line x1="60" y1="120" x2="720" y2="120" stroke="#F0F0F0" stroke-width="1" stroke-dasharray="3,3"/>
+          <line x1="60" y1="80" x2="720" y2="80" stroke="#F0F0F0" stroke-width="1" stroke-dasharray="3,3"/>
+          <!-- Surplus area fill -->
+          <polygon points="60,192 100,190 140,188 180,185 220,183 260,178 300,170 336,155 360,140 400,110 440,82 480,58 520,42 560,32 600,28 640,26 680,24 720,22 720,200 60,200"
+            fill="rgba(26,191,106,0.08)"/>
+          <!-- Surplus line -->
+          <polyline points="60,192 100,190 140,188 180,185 220,183 260,178 300,170 336,155 360,140 400,110 440,82 480,58 520,42 560,32 600,28 640,26 680,24 720,22"
+            stroke="#1ABF6A" stroke-width="2.5" fill="none"/>
+          <!-- Opex reference line -->
+          <line x1="60" y1="185" x2="720" y2="155" stroke="#E84040" stroke-width="1" stroke-dasharray="5,3" opacity="0.5"/>
+          <!-- Seed exhaustion marker -->
+          <line x1="300" y1="20" x2="300" y2="200" stroke="#C9A84C" stroke-width="1" stroke-dasharray="4,3" opacity="0.6"/>
+          <text x="303" y="35" font-family="JetBrains Mono" font-size="8" fill="#A07830">M18 Seed Ends</text>
+          <text x="303" y="45" font-family="JetBrains Mono" font-size="8" fill="#A07830">B2C Takes Over</text>
+          <!-- M33 marker -->
+          <line x1="390" y1="20" x2="390" y2="200" stroke="#C9A84C" stroke-width="1" stroke-dasharray="4,3" opacity="0.6"/>
+          <circle cx="390" cy="145" r="4" fill="#C9A84C"/>
+          <text x="393" y="58" font-family="JetBrains Mono" font-size="8" fill="#A07830">M33 Loan</text>
+          <text x="393" y="68" font-family="JetBrains Mono" font-size="8" fill="#A07830">Self-Liquidates</text>
+          <!-- X labels -->
+          <text x="60" y="216" font-family="JetBrains Mono" font-size="8" fill="#9A9A9A" text-anchor="middle">M1</text>
+          <text x="140" y="216" font-family="JetBrains Mono" font-size="8" fill="#9A9A9A" text-anchor="middle">M6</text>
+          <text x="220" y="216" font-family="JetBrains Mono" font-size="8" fill="#9A9A9A" text-anchor="middle">M12</text>
+          <text x="300" y="216" font-family="JetBrains Mono" font-size="8" fill="#C9A84C" text-anchor="middle">M18</text>
+          <text x="390" y="216" font-family="JetBrains Mono" font-size="8" fill="#C9A84C" text-anchor="middle">M33</text>
+          <text x="440" y="216" font-family="JetBrains Mono" font-size="8" fill="#9A9A9A" text-anchor="middle">M36</text>
+          <text x="600" y="216" font-family="JetBrains Mono" font-size="8" fill="#9A9A9A" text-anchor="middle">M60</text>
+          <text x="720" y="216" font-family="JetBrains Mono" font-size="8" fill="#9A9A9A" text-anchor="middle">M72</text>
+          <!-- Legend -->
+          <line x1="60" y1="230" x2="80" y2="230" stroke="#1ABF6A" stroke-width="2"/>
+          <text x="84" y="234" font-family="Sora" font-size="9" fill="#555">Net Monthly Surplus</text>
+          <line x1="220" y1="230" x2="240" y2="230" stroke="#E84040" stroke-width="1" stroke-dasharray="4,2"/>
+          <text x="244" y="234" font-family="Sora" font-size="9" fill="#555">Opex Curve</text>
+        </svg>
+      </div>
+
+      <div class="callout callout-green">
+        <div class="callout-label">The Net Profit Moment — M16</div>
+        <p>At approximately Month 16, Genesis Reserve becomes cash-flow self-sufficient without the seed runway — funded entirely by the combination of B2C revenue (~$12K/month at that point) and the institutional spread ops allocation (~$10K/month optimized). From M16 forward, the seed runway becomes a reserve buffer, not a lifeline. By M18, the company is operating with a monthly surplus. By M33, it is generating institutional-scale profit. By M72, it is a sovereign financial organism.</p>
+      </div>
+
+      <h3>Why This Is the Divine Alignment</h3>
+      <p>
+        The four-layer model is not just an operational strategy — it is a philosophical expression of the Perpetual Engine itself. Each layer feeds the next. Seed capital ignites the engine. The engine's spread funds early operations. B2C revenue replaces and dwarfs the seed. Freed capital from M33 compounds the treasury that funds everything indefinitely. <strong>No single point of failure. No dependency on any one stream. No exit required.</strong>
+      </p>
+      <p>
+        And critically for investors: the investor preferred return (8%) is senior to all operational expenses in the vault's settlement logic. Institutional investors are never exposed to Genesis's operational burn rate. Their 8% is settled first, every epoch, before any operational allocation occurs. Genesis's operational health is entirely decoupled from investor returns.
+      </p>
+
+      <div class="callout callout-violet">
+        <div class="callout-label">Investor Protection — Contractual Priority</div>
+        <p>The GenesisVault settleEpoch() function distributes the investor preferred return (8% annualized) before calculating the Genesis spread. Investors cannot receive less than 8% due to Genesis operational costs — the two pools are structurally separated at the smart contract level.</p>
       </div>
     </section>
 
@@ -1776,32 +2003,70 @@ svg.wp-chart{width:100%;height:auto;overflow:visible}
     return '$' + (n/1000).toFixed(0) + 'K';
   }
 
-  // ── AUM CALCULATOR ──────────────────────────────────────
+  // ── AUM CALCULATOR WITH YIELD MODE ──────────────────────
   const slider = document.getElementById('wpAumSlider');
   const aumDisplay = document.getElementById('wpAumDisplay');
+
+  const YIELD_MODES = {
+    conservative: { rate: 0.132, spread: 0.052, note: 'Guaranteed floor — conservative blended target across Pendle, Aave, and T-bills.' },
+    optimized:    { rate: 0.160, spread: 0.080, note: 'Live optimized — 70% allocation to Pendle (18%) + Gearbox (20.53%), blended ~16% APY.' },
+    peak:         { rate: 0.190, spread: 0.110, note: 'Peak capture — maximum Pendle/Gearbox allocation at current live rates of 18–20.53%.' }
+  };
+
+  let currentMode = YIELD_MODES.conservative;
+
+  // Wire yield toggle buttons
+  document.querySelectorAll('.yield-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.yield-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      const modeKey = this.id.replace('btn-', '');
+      currentMode = YIELD_MODES[modeKey];
+      document.getElementById('yield-mode-note').textContent = currentMode.note;
+      updateCalc();
+    });
+  });
 
   function updateCalc() {
     const aum = +slider.value;
     aumDisplay.textContent = fmtM(aum);
 
-    const monthly  = aum * 0.132 / 12;
-    const daily    = aum * 0.132 / 365;
-    const epoch    = daily / 96;
-    const invPref  = aum * 0.08 / 12;
-    const spread   = aum * 0.052 / 12;
-    const treasury = spread * 0.40;
-    const pool     = spread * 0.20;
-    const ops      = spread * 0.40;
-    const grxDist  = pool * 3 * 0.60;
+    const { rate, spread: spreadRate } = currentMode;
+    const monthly   = aum * rate / 12;
+    const daily     = aum * rate / 365;
+    const epoch     = daily / 96;
+    const invPref   = aum * 0.08 / 12;
+    const spreadAmt = aum * spreadRate / 12;
+    const treasury  = spreadAmt * 0.40;
+    const pool      = spreadAmt * 0.20;
+    const ops       = spreadAmt * 0.40;
+    const grxDist   = pool * 3 * 0.60;
+    const LEAN_OPEX = 22000;
+    const opsGap    = ops - LEAN_OPEX;
 
-    document.getElementById('wp-monthly').textContent  = fmtDollar(monthly);
-    document.getElementById('wp-daily').textContent    = fmtDollar(daily);
-    document.getElementById('wp-epoch').textContent    = '$' + epoch.toFixed(2);
-    document.getElementById('wp-invpref').textContent  = fmtDollar(invPref);
-    document.getElementById('wp-treasury').textContent = fmtDollar(treasury);
-    document.getElementById('wp-pool').textContent     = fmtDollar(pool);
-    document.getElementById('wp-ops').textContent      = fmtDollar(ops);
-    document.getElementById('wp-grx-qtr').textContent  = fmtDollar(grxDist) + '/qtr';
+    document.getElementById('wp-monthly').textContent   = fmtDollar(monthly);
+    document.getElementById('wp-daily').textContent     = fmtDollar(daily);
+    document.getElementById('wp-epoch').textContent     = '$' + epoch.toFixed(2);
+    document.getElementById('wp-invpref').textContent   = fmtDollar(invPref);
+    document.getElementById('wp-treasury').textContent  = fmtDollar(treasury);
+    document.getElementById('wp-pool').textContent      = fmtDollar(pool);
+    document.getElementById('wp-ops').textContent       = fmtDollar(ops);
+    document.getElementById('wp-grx-qtr').textContent   = fmtDollar(grxDist) + '/qtr';
+    document.getElementById('wp-spread-pct').textContent = (spreadRate * 100).toFixed(1) + '%';
+
+    const marginEl = document.getElementById('wp-margin-capture');
+    const marginVsFloor = ((spreadRate - 0.052) / 0.052 * 100);
+    marginEl.textContent = marginVsFloor > 0 ? '+' + marginVsFloor.toFixed(0) + '% vs floor' : 'Floor';
+    marginEl.style.color = marginVsFloor > 0 ? 'var(--green)' : 'var(--text-muted)';
+
+    const gapEl = document.getElementById('wp-ops-gap');
+    if (opsGap >= 0) {
+      gapEl.textContent = '+' + fmtDollar(opsGap) + ' surplus';
+      gapEl.style.color = 'var(--green)';
+    } else {
+      gapEl.textContent = fmtDollar(Math.abs(opsGap)) + ' gap (covered by B2C + seed)';
+      gapEl.style.color = 'var(--gold-dk)';
+    }
 
     // Slider gradient
     const pct = ((aum - 500000) / (5000000 - 500000) * 100).toFixed(1);
