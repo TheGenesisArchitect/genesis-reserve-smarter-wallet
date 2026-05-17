@@ -1,0 +1,1791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Genesis Reserve — Perpetual Capital Engine: A New Asset Class Whitepaper</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --gold:#C9A84C;--gold-lt:#E8C96A;--gold-dk:#A07830;
+  --teal:#00D4AA;--green:#1ABF6A;--red:#E84040;--violet:#9B6DFF;
+  --black:#020305;--white:#FFFFFF;
+  --gray-50:#F9F9F9;--gray-100:#F0F0F0;--gray-200:#E0E0E0;
+  --gray-400:#9A9A9A;--gray-600:#555555;--gray-800:#222222;
+  --cover-bg:#020305;
+  --body-bg:#FFFFFF;
+  --text-primary:#111111;--text-secondary:#444444;--text-muted:#777777;
+  --accent-line:#C9A84C;
+  --border-light:#E8E8E8;--border-gold:rgba(201,168,76,0.3);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+html{scroll-behavior:smooth;font-size:16px}
+
+body{
+  font-family:'Sora',sans-serif;
+  background:var(--body-bg);
+  color:var(--text-primary);
+  line-height:1.7;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ── COVER ───────────────────────────────────────────────── */
+#cover{
+  position:relative;
+  min-height:100vh;
+  background:var(--cover-bg);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  overflow:hidden;
+  page-break-after:always;
+}
+
+.cover-bg-grid{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(201,168,76,0.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(201,168,76,0.04) 1px,transparent 1px);
+  background-size:60px 60px;
+  pointer-events:none;
+}
+
+.cover-bg-radial{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse 70% 60% at 50% 40%,rgba(201,168,76,0.08) 0%,transparent 70%);
+  pointer-events:none;
+}
+
+.cover-corner{position:absolute;width:120px;height:120px;opacity:0.25}
+.cover-corner.tl{top:32px;left:32px;border-top:1px solid var(--gold);border-left:1px solid var(--gold)}
+.cover-corner.tr{top:32px;right:32px;border-top:1px solid var(--gold);border-right:1px solid var(--gold)}
+.cover-corner.bl{bottom:32px;left:32px;border-bottom:1px solid var(--gold);border-left:1px solid var(--gold)}
+.cover-corner.br{bottom:32px;right:32px;border-bottom:1px solid var(--gold);border-right:1px solid var(--gold)}
+
+.cover-inner{
+  position:relative;z-index:2;
+  text-align:center;
+  padding:60px 40px;
+  max-width:900px;
+}
+
+.cover-classification{
+  display:inline-block;
+  border:1px solid rgba(201,168,76,0.4);
+  color:var(--gold);
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+  padding:5px 16px;border-radius:2px;
+  margin-bottom:48px;
+}
+
+.cover-logo-mark{
+  display:flex;align-items:center;justify-content:center;gap:14px;
+  margin-bottom:20px;
+}
+
+.cover-logo-emblem{
+  width:52px;height:52px;
+  border:1px solid var(--gold);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(201,168,76,0.06);
+}
+
+.cover-logo-emblem svg{width:28px;height:28px}
+
+.cover-wordmark{
+  font-family:'Cormorant Garamond',serif;
+  font-size:28px;font-weight:300;letter-spacing:.12em;
+  color:var(--white);
+}
+.cover-wordmark span{color:var(--gold)}
+
+.cover-divider{
+  width:80px;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  margin:28px auto;
+}
+
+.cover-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(40px,6vw,72px);
+  font-weight:600;
+  line-height:1.1;
+  color:var(--white);
+  letter-spacing:-.01em;
+  margin-bottom:12px;
+}
+.cover-title span{color:var(--gold)}
+
+.cover-subtitle{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(18px,2.5vw,26px);
+  font-weight:300;
+  font-style:italic;
+  color:rgba(255,255,255,0.55);
+  margin-bottom:48px;
+  letter-spacing:.02em;
+}
+
+.cover-meta-row{
+  display:flex;align-items:center;justify-content:center;
+  gap:32px;flex-wrap:wrap;
+  margin-bottom:48px;
+}
+
+.cover-meta-item{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+}
+.cover-meta-label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;letter-spacing:.14em;text-transform:uppercase;
+  color:rgba(255,255,255,0.35);
+}
+.cover-meta-val{
+  font-size:13px;font-weight:500;color:rgba(255,255,255,0.75);
+}
+
+.cover-sep{width:1px;height:36px;background:rgba(201,168,76,0.2)}
+
+.cover-tagline{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(14px,1.8vw,18px);
+  font-style:italic;
+  color:rgba(201,168,76,0.7);
+  letter-spacing:.06em;
+}
+
+.cover-scroll-hint{
+  position:absolute;bottom:36px;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  opacity:0.35;
+  animation:bounce 2s infinite;
+}
+.cover-scroll-hint span{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--gold);
+}
+
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+
+/* ── LAYOUT ──────────────────────────────────────────────── */
+.wp-layout{
+  display:grid;
+  grid-template-columns:260px 1fr;
+  min-height:100vh;
+  max-width:1400px;
+  margin:0 auto;
+}
+
+/* ── SIDEBAR TOC ─────────────────────────────────────────── */
+.wp-sidebar{
+  position:sticky;top:0;
+  height:100vh;
+  overflow-y:auto;
+  background:#F9F9F9;
+  border-right:1px solid var(--border-light);
+  padding:40px 0 40px;
+  scrollbar-width:thin;
+  scrollbar-color:var(--gold) transparent;
+}
+
+.wp-sidebar::-webkit-scrollbar{width:3px}
+.wp-sidebar::-webkit-scrollbar-thumb{background:var(--gold);border-radius:2px}
+
+.toc-header{
+  padding:0 28px 20px;
+  border-bottom:1px solid var(--border-light);
+  margin-bottom:16px;
+}
+
+.toc-label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--text-muted);
+  margin-bottom:6px;
+}
+
+.toc-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:15px;font-weight:600;
+  color:var(--text-primary);
+  line-height:1.3;
+}
+
+.toc-list{list-style:none;padding:0 16px}
+
+.toc-item a{
+  display:flex;align-items:baseline;gap:10px;
+  padding:6px 12px;
+  border-radius:6px;
+  text-decoration:none;
+  font-size:12px;
+  color:var(--text-muted);
+  transition:all .15s;
+  line-height:1.4;
+}
+
+.toc-item a:hover{background:rgba(201,168,76,0.08);color:var(--text-primary)}
+.toc-item.active a{background:rgba(201,168,76,0.12);color:var(--gold-dk);font-weight:600}
+
+.toc-num{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;color:var(--gold);
+  flex-shrink:0;
+  margin-top:1px;
+}
+
+.toc-divider{height:1px;background:var(--border-light);margin:8px 28px}
+
+/* ── MAIN CONTENT ────────────────────────────────────────── */
+.wp-main{
+  min-width:0;
+  padding:72px 80px 120px;
+}
+
+@media(max-width:1100px){
+  .wp-layout{grid-template-columns:1fr}
+  .wp-sidebar{display:none}
+  .wp-main{padding:48px 32px 80px}
+}
+
+/* ── SECTIONS ────────────────────────────────────────────── */
+.wp-section{
+  max-width:820px;
+  margin-bottom:96px;
+  padding-bottom:72px;
+  border-bottom:1px solid var(--border-light);
+}
+.wp-section:last-child{border-bottom:none}
+
+.section-eyebrow{
+  display:flex;align-items:center;gap:12px;
+  margin-bottom:16px;
+}
+.section-num{
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;font-weight:700;
+  color:var(--gold);
+  letter-spacing:.08em;
+}
+.section-rule{flex:1;height:1px;background:linear-gradient(90deg,var(--gold),transparent);max-width:60px}
+
+.section-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(28px,4vw,44px);
+  font-weight:600;
+  line-height:1.15;
+  color:var(--text-primary);
+  margin-bottom:8px;
+  letter-spacing:-.01em;
+}
+.section-title .gold{color:var(--gold-dk)}
+
+.section-lead{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(16px,1.8vw,20px);
+  font-style:italic;
+  color:var(--text-secondary);
+  margin-bottom:32px;
+  line-height:1.6;
+}
+
+p{
+  font-size:15px;
+  line-height:1.8;
+  color:var(--text-primary);
+  margin-bottom:20px;
+}
+
+h3{
+  font-family:'Cormorant Garamond',serif;
+  font-size:22px;font-weight:600;
+  color:var(--text-primary);
+  margin:40px 0 12px;
+}
+
+h4{
+  font-size:13px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.08em;
+  color:var(--text-secondary);
+  margin:28px 0 10px;
+}
+
+strong{color:var(--text-primary);font-weight:600}
+
+/* ── CALLOUT BOXES ───────────────────────────────────────── */
+.callout{
+  border-left:3px solid var(--gold);
+  background:rgba(201,168,76,0.04);
+  padding:20px 24px;
+  border-radius:0 8px 8px 0;
+  margin:28px 0;
+}
+.callout-teal{border-left-color:var(--teal);background:rgba(0,212,170,0.04)}
+.callout-violet{border-left-color:var(--violet);background:rgba(155,109,255,0.04)}
+.callout-green{border-left-color:var(--green);background:rgba(26,191,106,0.04)}
+
+.callout p{margin-bottom:0}
+.callout .callout-label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:6px;
+}
+.callout-teal .callout-label{color:var(--teal)}
+.callout-violet .callout-label{color:var(--violet)}
+.callout-green .callout-label{color:var(--green)}
+
+/* ── STAT GRID ───────────────────────────────────────────── */
+.stat-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:16px;margin:32px 0;
+}
+
+.stat-card{
+  background:var(--gray-50);
+  border:1px solid var(--border-light);
+  border-radius:12px;
+  padding:20px 18px;
+  text-align:center;
+}
+
+.stat-card.gold-border{border-color:rgba(201,168,76,0.4);background:rgba(201,168,76,0.03)}
+.stat-card.teal-border{border-color:rgba(0,212,170,0.3);background:rgba(0,212,170,0.02)}
+
+.stat-val{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(24px,3vw,36px);
+  font-weight:600;
+  color:var(--gold-dk);
+  line-height:1;
+  margin-bottom:6px;
+}
+.stat-card.teal-border .stat-val{color:var(--teal)}
+.stat-card.green-border .stat-val{color:var(--green)}
+
+.stat-label{
+  font-size:11px;
+  color:var(--text-muted);
+  letter-spacing:.04em;
+  line-height:1.4;
+}
+
+/* ── INTERACTIVE DIAGRAMS ────────────────────────────────── */
+.diagram-wrap{
+  background:var(--gray-50);
+  border:1px solid var(--border-light);
+  border-radius:16px;
+  padding:32px;
+  margin:32px 0;
+  position:relative;
+  overflow:hidden;
+}
+
+.diagram-wrap::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--gold),var(--teal));
+}
+
+.diagram-title{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--text-muted);
+  margin-bottom:20px;
+  display:flex;align-items:center;gap:8px;
+}
+.diagram-title::before{
+  content:'';display:inline-block;width:6px;height:6px;
+  background:var(--gold);border-radius:50%;
+}
+
+/* ── AUM CALCULATOR ──────────────────────────────────────── */
+.calc-slider-row{
+  display:flex;align-items:center;gap:16px;margin-bottom:20px;
+}
+.calc-aum-label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:24px;font-weight:700;
+  color:var(--gold-dk);
+  min-width:90px;
+}
+
+.wp-range{
+  -webkit-appearance:none;appearance:none;
+  width:100%;height:6px;border-radius:3px;
+  background:var(--gray-200);
+  outline:none;cursor:pointer;
+  flex:1;
+}
+.wp-range::-webkit-slider-thumb{
+  -webkit-appearance:none;width:20px;height:20px;border-radius:50%;
+  background:var(--gold);border:2px solid white;
+  box-shadow:0 2px 6px rgba(0,0,0,0.2);
+  cursor:pointer;
+}
+
+.calc-kpi-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:10px;
+  margin-bottom:20px;
+}
+
+@media(max-width:700px){.calc-kpi-grid{grid-template-columns:repeat(2,1fr)}}
+
+.calc-kpi{
+  background:white;border:1px solid var(--border-light);
+  border-radius:10px;padding:14px 12px;text-align:center;
+}
+.calc-kpi-val{
+  font-family:'JetBrains Mono',monospace;
+  font-size:16px;font-weight:700;
+  color:var(--gold-dk);
+  margin-bottom:4px;
+}
+.calc-kpi-lbl{font-size:10px;color:var(--text-muted);letter-spacing:.04em}
+
+/* 40/20/40 Split Bar */
+.split-bar{
+  display:flex;height:56px;border-radius:8px;overflow:hidden;
+  gap:3px;margin:20px 0 8px;
+}
+.split-seg{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+}
+.split-seg-treasury{
+  flex:40;background:rgba(201,168,76,0.12);
+  border:1px solid rgba(201,168,76,0.3);border-radius:8px 0 0 8px;
+}
+.split-seg-pool{
+  flex:20;background:rgba(0,212,170,0.12);
+  border:1px solid rgba(0,212,170,0.3);
+}
+.split-seg-ops{
+  flex:40;background:rgba(155,109,255,0.12);
+  border:1px solid rgba(155,109,255,0.3);border-radius:0 8px 8px 0;
+}
+.split-pct{
+  font-family:'JetBrains Mono',monospace;
+  font-size:14px;font-weight:700;line-height:1;
+}
+.split-seg-treasury .split-pct{color:var(--gold-dk)}
+.split-seg-pool .split-pct{color:var(--teal)}
+.split-seg-ops .split-pct{color:var(--violet)}
+.split-name{font-size:9px;color:var(--text-muted);letter-spacing:.04em;text-align:center;padding:0 4px}
+
+.split-output-row{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:8px 0;
+}
+.split-out{
+  background:white;border:1px solid var(--border-light);
+  border-radius:8px;padding:10px 12px;text-align:center;
+}
+.split-out-val{
+  font-family:'JetBrains Mono',monospace;
+  font-size:13px;font-weight:700;margin-bottom:2px;
+}
+.split-out-treasury .split-out-val{color:var(--gold-dk)}
+.split-out-pool .split-out-val{color:var(--teal)}
+.split-out-ops .split-out-val{color:var(--violet)}
+.split-out-lbl{font-size:9.5px;color:var(--text-muted)}
+
+/* ── SVG CHARTS ──────────────────────────────────────────── */
+svg.wp-chart{width:100%;height:auto;overflow:visible}
+
+/* ── TOKEN DISTRIBUTION ──────────────────────────────────── */
+.token-dist-row{
+  display:grid;grid-template-columns:1fr 1fr;gap:16px;
+  margin:24px 0;
+}
+@media(max-width:600px){.token-dist-row{grid-template-columns:1fr}}
+
+.token-dist-card{
+  background:white;border:1px solid var(--border-light);
+  border-radius:12px;padding:18px;
+}
+.tdc-label{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px}
+.tdc-val{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:var(--teal);margin-bottom:4px}
+.tdc-desc{font-size:12px;color:var(--text-secondary);line-height:1.5}
+
+/* ── TIMELINE ────────────────────────────────────────────── */
+.timeline{position:relative;padding-left:24px;margin:28px 0}
+.timeline::before{
+  content:'';position:absolute;left:0;top:8px;bottom:8px;
+  width:1px;background:linear-gradient(180deg,var(--gold),var(--teal));
+}
+.tl-item{position:relative;margin-bottom:24px}
+.tl-dot{
+  position:absolute;left:-28px;top:4px;
+  width:9px;height:9px;border-radius:50%;
+  background:var(--gold);border:2px solid white;
+  box-shadow:0 0 0 2px var(--gold);
+}
+.tl-item:last-child .tl-dot{background:var(--teal);box-shadow:0 0 0 2px var(--teal)}
+.tl-phase{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:4px;
+}
+.tl-title{font-weight:600;font-size:15px;margin-bottom:4px;color:var(--text-primary)}
+.tl-body{font-size:13px;color:var(--text-secondary);line-height:1.6}
+
+/* ── RISK TABLE ──────────────────────────────────────────── */
+.risk-table{width:100%;border-collapse:collapse;margin:24px 0;font-size:13px}
+.risk-table th{
+  background:var(--gray-100);
+  padding:10px 14px;text-align:left;
+  font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--text-muted);font-weight:700;
+  border-bottom:2px solid var(--border-light);
+}
+.risk-table td{
+  padding:12px 14px;
+  border-bottom:1px solid var(--border-light);
+  vertical-align:top;
+  line-height:1.5;
+}
+.risk-table tr:hover td{background:var(--gray-50)}
+.risk-badge{
+  display:inline-block;padding:2px 8px;border-radius:4px;
+  font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase;
+}
+.risk-low{background:rgba(26,191,106,0.1);color:var(--green)}
+.risk-med{background:rgba(201,168,76,0.12);color:var(--gold-dk)}
+.risk-high{background:rgba(232,64,64,0.1);color:var(--red)}
+
+/* ── EPOCH ANIMATION ─────────────────────────────────────── */
+.epoch-diagram{
+  display:flex;align-items:center;justify-content:center;
+  gap:0;margin:28px 0;position:relative;flex-wrap:wrap;
+}
+
+/* ── FOOTER ──────────────────────────────────────────────── */
+.wp-footer{
+  background:var(--black);
+  color:rgba(255,255,255,0.5);
+  text-align:center;
+  padding:48px 40px;
+  font-size:12px;
+  line-height:1.7;
+}
+.wp-footer .footer-logo{
+  font-family:'Cormorant Garamond',serif;
+  font-size:20px;font-weight:300;letter-spacing:.12em;
+  color:var(--gold);margin-bottom:12px;
+}
+.wp-footer a{color:rgba(201,168,76,0.6);text-decoration:none}
+
+/* ── QUOTE PULL ──────────────────────────────────────────── */
+.pull-quote{
+  border-top:2px solid var(--gold);
+  border-bottom:2px solid var(--gold);
+  padding:24px 0;margin:40px 0;
+  text-align:center;
+}
+.pull-quote p{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(20px,2.5vw,28px);
+  font-style:italic;
+  color:var(--gold-dk);
+  margin:0;line-height:1.4;
+}
+
+/* ── CONTRACT CODE BLOCK ─────────────────────────────────── */
+.code-block{
+  background:#0D0D0D;
+  border:1px solid rgba(201,168,76,0.15);
+  border-radius:10px;
+  padding:24px;
+  margin:24px 0;
+  overflow-x:auto;
+  font-family:'JetBrains Mono',monospace;
+  font-size:12px;
+  line-height:1.7;
+  color:#E2E8F0;
+}
+.code-comment{color:#4B6070}
+.code-keyword{color:#9B6DFF}
+.code-type{color:#00D4AA}
+.code-fn{color:#C9A84C}
+.code-num{color:#1ABF6A}
+
+/* ── PRINT ────────────────────────────────────────────────── */
+@media print{
+  .wp-sidebar{display:none}
+  .wp-layout{grid-template-columns:1fr}
+  .wp-main{padding:40px 60px}
+  #cover{min-height:auto;page-break-after:always}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════
+     COVER
+══════════════════════════════════════════════════════════ -->
+<section id="cover">
+  <div class="cover-bg-grid"></div>
+  <div class="cover-bg-radial"></div>
+  <div class="cover-corner tl"></div>
+  <div class="cover-corner tr"></div>
+  <div class="cover-corner bl"></div>
+  <div class="cover-corner br"></div>
+
+  <div class="cover-inner">
+    <div class="cover-classification">Confidential · For Accredited Investors · Reg D 506(c)</div>
+
+    <div class="cover-logo-mark">
+      <div class="cover-logo-emblem">
+        <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="14,2 26,9 26,21 14,28 2,21 2,9" stroke="#C9A84C" stroke-width="1" fill="none"/>
+          <polygon points="14,7 21,11 21,19 14,23 7,19 7,11" stroke="#C9A84C" stroke-width=".6" fill="rgba(201,168,76,0.08)"/>
+          <circle cx="14" cy="15" r="3" fill="#C9A84C"/>
+        </svg>
+      </div>
+      <div class="cover-wordmark">GENESIS <span>RESERVE</span></div>
+    </div>
+
+    <div class="cover-divider"></div>
+
+    <h1 class="cover-title">Perpetual <span>Capital</span><br/>Engine</h1>
+    <p class="cover-subtitle">A New Asset Class for the Infinite Economy</p>
+
+    <div class="cover-meta-row">
+      <div class="cover-meta-item">
+        <span class="cover-meta-label">Document Type</span>
+        <span class="cover-meta-val">Technical Whitepaper</span>
+      </div>
+      <div class="cover-sep"></div>
+      <div class="cover-meta-item">
+        <span class="cover-meta-label">Version</span>
+        <span class="cover-meta-val">1.0 · May 2026</span>
+      </div>
+      <div class="cover-sep"></div>
+      <div class="cover-meta-item">
+        <span class="cover-meta-label">Blended APY</span>
+        <span class="cover-meta-val">13.2%</span>
+      </div>
+      <div class="cover-sep"></div>
+      <div class="cover-meta-item">
+        <span class="cover-meta-label">Horizon</span>
+        <span class="cover-meta-val">72 Months</span>
+      </div>
+    </div>
+
+    <p class="cover-tagline">"The Future of Finance Is Infinite."</p>
+  </div>
+
+  <div class="cover-scroll-hint">
+    <span>Scroll</span>
+    <svg width="14" height="20" viewBox="0 0 14 20" fill="none">
+      <rect x="1" y="1" width="12" height="18" rx="6" stroke="#C9A84C" stroke-width="1"/>
+      <circle cx="7" cy="6" r="2" fill="#C9A84C"><animate attributeName="cy" values="6;12;6" dur="2s" repeatCount="indefinite"/></circle>
+    </svg>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     BODY LAYOUT
+══════════════════════════════════════════════════════════ -->
+<div class="wp-layout">
+
+  <!-- SIDEBAR TOC -->
+  <nav class="wp-sidebar">
+    <div class="toc-header">
+      <div class="toc-label">Contents</div>
+      <div class="toc-title">Genesis Reserve<br/>Perpetual Capital Engine</div>
+    </div>
+    <ul class="toc-list">
+      <li class="toc-item"><a href="#abstract"><span class="toc-num">00</span>Abstract</a></li>
+      <div class="toc-divider"></div>
+      <li class="toc-item"><a href="#problem"><span class="toc-num">01</span>The Problem</a></li>
+      <li class="toc-item"><a href="#solution"><span class="toc-num">02</span>The Solution</a></li>
+      <li class="toc-item"><a href="#architecture"><span class="toc-num">03</span>Engine Architecture</a></li>
+      <li class="toc-item"><a href="#economics"><span class="toc-num">04</span>The Economics</a></li>
+      <div class="toc-divider"></div>
+      <li class="toc-item"><a href="#grx"><span class="toc-num">05</span>$GRX Token</a></li>
+      <li class="toc-item"><a href="#smarter-wallet"><span class="toc-num">06</span>Smarter Wallet</a></li>
+      <li class="toc-item"><a href="#institutional"><span class="toc-num">07</span>Institutional Use</a></li>
+      <li class="toc-item"><a href="#b2c"><span class="toc-num">08</span>B2C Adoption</a></li>
+      <div class="toc-divider"></div>
+      <li class="toc-item"><a href="#paradigm"><span class="toc-num">09</span>The Paradigm Shift</a></li>
+      <li class="toc-item"><a href="#risk"><span class="toc-num">10</span>Risk Framework</a></li>
+      <li class="toc-item"><a href="#compliance"><span class="toc-num">11</span>Compliance</a></li>
+      <li class="toc-item"><a href="#roadmap"><span class="toc-num">12</span>72-Month Roadmap</a></li>
+      <div class="toc-divider"></div>
+      <li class="toc-item"><a href="#conclusion"><span class="toc-num">13</span>Conclusion</a></li>
+      <li class="toc-item"><a href="#disclaimer"><span class="toc-num">—</span>Disclaimer</a></li>
+    </ul>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main class="wp-main">
+
+    <!-- ── 00 ABSTRACT ─────────────────────────────────── -->
+    <section class="wp-section" id="abstract">
+      <div class="section-eyebrow">
+        <span class="section-num">00</span>
+        <div class="section-rule"></div>
+      </div>
+      <h2 class="section-title">Abstract</h2>
+      <p class="section-lead">
+        Genesis Reserve introduces the world's first Perpetual Capital Engine — a programmable, self-compounding financial infrastructure that converts idle capital into a sovereign, yield-bearing machine with no terminal date.
+      </p>
+      <p>
+        Traditional finance optimizes for exit. Venture capital seeks liquidity events. Fixed-income instruments mature. Even the most sophisticated fund structures carry a sunset clause. Genesis Reserve is built on an entirely different premise: <strong>capital that never stops working is more valuable than capital that eventually stops.</strong>
+      </p>
+      <p>
+        Through a disciplined 40/20/40 spread allocation, a 96-epoch daily harvest cycle, and an ERC-4626 vault architecture connected to regulated yield corridors in stablecoins and U.S. treasury strategies, Genesis Reserve delivers a blended 13.2% APY across its full investment horizon — while simultaneously building a sovereign treasury that persists in perpetuity beyond investor exit.
+      </p>
+      <p>
+        The $GRX Revenue Participation Token — issued under Reg D 506(c) — grants accredited investors and family offices a proportional, quarterly claim on the 20% investor pool of Genesis's gross spread, compounding at 13.2% on the reinvested 40% fraction. By Month 33, the treasury self-liquidates its own growth loan. By Month 72, the sovereign treasury generates $16,242/month in perpetuity — indefinitely — from no new capital deployment.
+      </p>
+      <p>
+        This document describes the mechanics, economics, smart contract architecture, adoption strategy, risk framework, and regulatory posture of the Genesis Reserve Perpetual Capital Engine. It is intended for institutional investors, family offices, regulated partners, and protocol architects who understand that the future of finance is not cyclical — it is infinite.
+      </p>
+
+      <div class="stat-grid">
+        <div class="stat-card gold-border">
+          <div class="stat-val">13.2%</div>
+          <div class="stat-label">Blended APY<br/>72-Month Horizon</div>
+        </div>
+        <div class="stat-card gold-border">
+          <div class="stat-val">96×</div>
+          <div class="stat-label">Daily Harvest<br/>Epochs</div>
+        </div>
+        <div class="stat-card teal-border">
+          <div class="stat-val">$GRX</div>
+          <div class="stat-label">Revenue Participation<br/>Token (Reg D 506c)</div>
+        </div>
+        <div class="stat-card teal-border">
+          <div class="stat-val">∞</div>
+          <div class="stat-label">Sovereign Treasury<br/>Perpetual Horizon</div>
+        </div>
+      </div>
+
+      <div class="callout">
+        <div class="callout-label">Thesis Statement</div>
+        <p>A perpetual capital engine does not ask when it will stop. It is designed to never stop. Every dollar of yield reinvested today compounds the engine's power tomorrow. Genesis Reserve is not a fund. It is a sovereign financial infrastructure — and it belongs to no one's exit timeline.</p>
+      </div>
+    </section>
+
+    <!-- ── 01 THE PROBLEM ──────────────────────────────── -->
+    <section class="wp-section" id="problem">
+      <div class="section-eyebrow">
+        <span class="section-num">01</span>
+        <div class="section-rule"></div>
+      </div>
+      <h2 class="section-title">The Problem:<br/><span class="gold">Idle Capital in a Fragmented World</span></h2>
+      <p class="section-lead">
+        Trillions of dollars sit dormant in checking accounts, money market instruments, and low-yield treasury sweeps — not because their owners lack ambition, but because the infrastructure to do better has never existed for them.
+      </p>
+
+      <h3>The Idle Capital Epidemic</h3>
+      <p>
+        The Federal Reserve estimates that U.S. households and small businesses hold over <strong>$18 trillion</strong> in low-yield or zero-yield deposit accounts. Fortune 500 treasury desks manage billions in overnight repos generating 50–150bps. Family offices park generational wealth in instruments that don't compound with discipline. The problem is not a lack of capital — it is the absence of infrastructure that puts capital to work perpetually.
+      </p>
+      <p>
+        Meanwhile, DeFi protocols generated over $2.4 billion in annualized yield in 2025 — but remained structurally inaccessible to the vast majority of capital holders due to wallet complexity, regulatory ambiguity, counterparty risk, and the simple reality that most people do not understand or trust on-chain finance.
+      </p>
+
+      <h3>The Fragmentation Tax</h3>
+      <p>
+        Today's capital owner faces a fragmented landscape: a brokerage account here, a crypto wallet there, a wire to an offshore structure, a compliance filing somewhere else. Each boundary between these systems costs time, fees, and yield. The remittance corridor — a $700B/year industry — charges 6–8% per transaction. International payroll burns 3–5%. Treasury repatriation can take 3–5 business days and cost tens of thousands in FX drag.
+      </p>
+      <p>
+        The result: capital that should be compounding is instead waiting. Waiting in clearing. Waiting in compliance. Waiting in systems that were not designed to talk to each other. <strong>The fragmentation tax is the single largest destroyer of wealth that no one talks about.</strong>
+      </p>
+
+      <h3>The Exit Imperative</h3>
+      <p>
+        Every conventional financial structure is designed with an endpoint. A 10-year PE fund. A 5-year bond. A 3-year VC round. Even ETFs, while perpetually traded, generate yield for the asset manager — not the compound accumulation of the holder. The capital markets are organized around exits because exits create liquidity events, and liquidity events create fees.
+      </p>
+      <p>
+        Genesis Reserve asks a different question: <strong>What if the exit was never the point?</strong>
+      </p>
+
+      <div class="pull-quote">
+        <p>"The most expensive thing you can do with capital is let it rest."</p>
+      </div>
+
+      <h3>What Is Missing</h3>
+      <p>
+        The market lacks a single integrated infrastructure that: (1) bridges fiat rails to on-chain yield without complexity; (2) operates under regulatory-compliant frameworks accessible to accredited investors; (3) compounds capital at institutional yield rates while distributing returns to token-holders quarterly; and (4) builds a sovereign treasury that outlasts the investment horizon itself.
+      </p>
+      <p>
+        Genesis Reserve was designed to be precisely this infrastructure.
+      </p>
+    </section>
+
+    <!-- ── 02 THE SOLUTION ─────────────────────────────── -->
+    <section class="wp-section" id="solution">
+      <div class="section-eyebrow">
+        <span class="section-num">02</span>
+        <div class="section-rule"></div>
+      </div>
+      <h2 class="section-title">The Solution:<br/><span class="gold">The Perpetual Capital Engine</span></h2>
+      <p class="section-lead">
+        Genesis Reserve is a programmable capital infrastructure that harvests yield across 96 daily epochs, splits it across three disciplined allocations, and compounds the treasury layer in perpetuity — never asking when it will stop.
+      </p>
+
+      <h3>The Core Insight</h3>
+      <p>
+        Most yield-bearing structures are designed for distribution: generate yield, distribute it, repeat until the fund closes. Genesis Reserve is designed for accumulation with distribution as a byproduct. The engine generates 13.2% blended APY on deployed AUM — but only 8% goes to investors as a preferred return. The remaining 5.2% (the Genesis spread) is split 40/20/40 across treasury reinvestment, the investor token pool, and operations. The 40% treasury slice compounds at 13.2% — creating a self-expanding base that funds the engine's own sovereignty.
+      </p>
+
+      <h3>Three Value Streams, One Engine</h3>
+      <p>
+        The Perpetual Capital Engine generates value across three distinct layers simultaneously:
+      </p>
+      <p>
+        <strong>Layer 1 — Investor Preferred Return:</strong> 8% annualized, paid from AUM × yield before the spread split. This is the first-claim return for institutional investors and family offices — predictable, quarterly, and contractually senior to all other allocations.
+      </p>
+      <p>
+        <strong>Layer 2 — $GRX Token Distribution:</strong> 20% of the Genesis 5.2% spread × 60% distribution rate × token share. This is the on-chain, Reg D-compliant revenue participation layer — connecting investors to the growth of the B2C engine as it scales from $18K/mo at M18 to $2.6M/mo at M72.
+      </p>
+      <p>
+        <strong>Layer 3 — Sovereign Treasury:</strong> 40% of the spread continuously reinvested at 13.2% APY. By Month 33, the treasury self-liquidates its growth loan. By Month 72, it generates $16,242/month in perpetuity from its own compounded base — requiring no new capital, no new investors, and no new decisions.
+      </p>
+
+      <div class="callout callout-teal">
+        <div class="callout-label">Defining "Perpetual"</div>
+        <p>A perpetual capital engine is one in which the mechanism of yield generation becomes self-funding before the investment horizon closes. Genesis Reserve achieves this at Month 33 — 39 months before the 72-month horizon — creating a 39-month runway of compounding sovereign capital with zero dependency on new capital inflows.</p>
+      </div>
+
+      <h3>Why Now</h3>
+      <p>
+        The convergence of three forces makes the Perpetual Capital Engine possible in 2026: (1) the maturation of ERC-4626 vault standards enabling programmable, composable yield infrastructure; (2) the emergence of compliant stablecoin rails (Circle USDC, CCTP) that bridge fiat and on-chain at near-zero cost; and (3) regulatory clarity around Reg D tokenized securities that enables the $GRX token to exist within existing law without requiring new legislation.
+      </p>
+      <p>
+        Genesis Reserve did not invent these components. It is the first infrastructure to integrate them into a single, coherent, perpetual system.
+      </p>
+    </section>
+
+    <!-- ── 03 ARCHITECTURE ─────────────────────────────── -->
+    <section class="wp-section" id="architecture">
+      <div class="section-eyebrow">
+        <span class="section-num">03</span>
+        <div class="section-rule"></div>
+      </div>
+      <h2 class="section-title">Engine Architecture &amp;<br/><span class="gold">Smart Contract Design</span></h2>
+      <p class="section-lead">
+        The Perpetual Capital Engine is built on a three-layer smart contract stack: a compliant ERC-4626 vault, a modular StrategyRouter, and an on-chain ComplianceRegistry — harvesting yield across 96 fifteen-minute epochs every 24 hours.
+      </p>
+
+      <h3>The Epoch Model</h3>
+      <p>
+        Traditional DeFi protocols harvest yield opportunistically or daily. Genesis Reserve operates on a <strong>15-minute epoch model</strong> — 96 harvest cycles per 24-hour period. Each epoch triggers a yield accrual event from the active strategy pool, which is logged on-chain, aggregated across the day, and settled into the vault's share price. This high-frequency compounding model outperforms daily compounding by approximately 0.18% annualized at a 13% base rate — a material advantage at institutional AUM.
+      </p>
+
+      <!-- Epoch Diagram -->
+      <div class="diagram-wrap">
+        <div class="diagram-title">96-Epoch Daily Harvest Cycle</div>
+        <svg class="wp-chart" viewBox="0 0 760 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- 24-hour timeline -->
+          <line x1="40" y1="90" x2="720" y2="90" stroke="#E0E0E0" stroke-width="2"/>
+          <!-- Hour markers -->
+          <text x="40" y="110" font-family="JetBrains Mono" font-size="9" fill="#9A9A9A" text-anchor="middle">00:00</text>
+          <text x="208" y="110" font-family="JetBrains Mono" font-size="9" fill="#9A9A9A" text-anchor="middle">06:00</text>
+          <text x="380" y="110" font-family="JetBrains Mono" font-size="9" fill="#9A9A9A" text-anchor="middle">12:00</text>
+          <text x="552" y="110" font-family="JetBrains Mono" font-size="9" fill="#9A9A9A" text-anchor="middle">18:00</text>
+          <text x="720" y="110" font-family="JetBrains Mono" font-size="9" fill="#9A9A9A" text-anchor="middle">24:00</text>
+          <!-- Epoch pulses (96 total, show representative) -->
+          <g id="epoch-pulses">
+            <script>
+            </script>
+          </g>
+          <!-- Draw 32 visible epoch lines (every 3rd of 96 for clarity) -->
+          <line x1="47" y1="75" x2="47" y2="105" stroke="#C9A84C" stroke-width="1" opacity="0.6"/>
+          <line x1="68" y1="75" x2="68" y2="105" stroke="#C9A84C" stroke-width="1" opacity="0.6"/>
+          <line x1="89" y1="75" x2="89" y2="105" stroke="#C9A84C" stroke-width="1" opacity="0.6"/>
+          <line x1="110" y1="75" x2="110" y2="105" stroke="#00D4AA" stroke-width="1.5" opacity="0.9"/>
+          <line x1="131" y1="75" x2="131" y2="105" stroke="#C9A84C" stroke-width="1" opacity="0.6"/>
+          <line x1="152" y1="75" x2="152" y2="105" stroke="#C9A84C" stroke-width="1" opacity="0.6"/>
+          <line x1="173" y1="75" x2="173" y2="105" stroke="#C9A84C" stroke-width="1" opacity="0.6"/>
+          <line x1="194" y1="75" x2="194" y2="105" stroke="#00D4AA" stroke-width="1.5" opacity="0.9"/>
+          <line x1="215" y1="75" x2="215" y2="105" stroke="#C9A84C" stroke-width="1" opacity="0.6"/>
+          <line x1="236" y1="75" x2="236" y2="105" stroke="#C9A84C" stroke-width="1" opacity="0.6"/>
+          <line x1="257" y1="75" x2="257" y2="105" stroke="#C9A84C" stroke-width="1" opacity="0.6"/>
+          <line x1="278" y1="75" x2="278" y2="105" stroke="#00D4AA" stroke-width="1.5" opacity="0.9"/>
+          <line x1="299" y1="75" x2="299" y2="105" stroke="#C9A84C" stroke-width="1" opacity="0.6"/>
+          <line x1="320" y1="75" x2="320" y2="105" stroke="#C9A84C" stroke-width="1" opacity="0.6"/>
+          <line x1="341" y1="75" x2="341" y2="105" stroke="#C9A84C" stroke-width="1" opacity="0.6"/>
+          <line x1="362" y1="75" x2="362" y2="105" stroke="#00D4AA" stroke-width="1.5" opacity="0.9"/>
+          <line x1="383" y1="75" x2="383" y2="105" stroke="#C9A84C" stroke-width="1" opacity="0.6"/>
+          <line x1="404" y1="75" x2="404" y2="105" stroke="#C9A84C" stroke-width="1" opacity="0.6"/>
+          <line x1="425" y1="75" x2="425" y2="105" stroke="#C9A84C" stroke-width="1" opacity="0.6"/>
+          <line x1="446" y1="75" x2="446" y2="105" stroke="#00D4AA" stroke-width="1.5" opacity="0.9"/>
+          <line x1="467" y1="75" x2="467" y2="105" stroke="#C9A84C" stroke-width="1" opacity="0.6"/>
+          <line x1="488" y1="75" x2="488" y2="105" stroke="#C9A84C" stroke-width="1" opacity="0.6"/>
+          <line x1="509" y1="75" x2="509" y2="105" stroke="#C9A84C" stroke-width="1" opacity="0.6"/>
+          <line x1="530" y1="75" x2="530" y2="105" stroke="#00D4AA" stroke-width="1.5" opacity="0.9"/>
+          <line x1="551" y1="75" x2="551" y2="105" stroke="#C9A84C" stroke-width="1" opacity="0.6"/>
+          <line x1="572" y1="75" x2="572" y2="105" stroke="#C9A84C" stroke-width="1" opacity="0.6"/>
+          <line x1="593" y1="75" x2="593" y2="105" stroke="#C9A84C" stroke-width="1" opacity="0.6"/>
+          <line x1="614" y1="75" x2="614" y2="105" stroke="#00D4AA" stroke-width="1.5" opacity="0.9"/>
+          <line x1="635" y1="75" x2="635" y2="105" stroke="#C9A84C" stroke-width="1" opacity="0.6"/>
+          <line x1="656" y1="75" x2="656" y2="105" stroke="#C9A84C" stroke-width="1" opacity="0.6"/>
+          <line x1="677" y1="75" x2="677" y2="105" stroke="#C9A84C" stroke-width="1" opacity="0.6"/>
+          <line x1="698" y1="75" x2="698" y2="105" stroke="#00D4AA" stroke-width="1.5" opacity="0.9"/>
+          <!-- Labels -->
+          <text x="400" y="30" font-family="JetBrains Mono" font-size="10" fill="#C9A84C" text-anchor="middle">96 harvest epochs / 24 hrs · 15-min cadence</text>
+          <rect x="540" y="120" width="12" height="12" fill="#C9A84C" rx="2"/>
+          <text x="556" y="131" font-family="Sora" font-size="10" fill="#555">Yield Harvest</text>
+          <rect x="620" y="120" width="12" height="12" fill="#00D4AA" rx="2"/>
+          <text x="636" y="131" font-family="Sora" font-size="10" fill="#555">Settlement</text>
+        </svg>
+      </div>
+
+      <h3>Smart Contract Stack</h3>
+
+      <div class="callout callout-violet">
+        <div class="callout-label">GenesisVault — ERC-4626</div>
+        <p>The core vault implements ERC-4626 with KYC-gated deposits, share-price accrual on every epoch settlement, and an admin-controlled StrategyRouter hook. Shares are non-transferable until M33 secondary-market activation. Compliant with SEC's digital asset securities guidance.</p>
+      </div>
+
+      <div class="code-block">
+<span class="code-comment">// GenesisVault.sol — Core ERC-4626 with compliance layer</span>
+<span class="code-keyword">contract</span> <span class="code-type">GenesisVault</span> <span class="code-keyword">is</span> ERC4626, AccessControl {
+
+  <span class="code-keyword">bytes32 public constant</span> OPERATOR_ROLE = keccak256(<span class="code-num">"OPERATOR_ROLE"</span>);
+
+  IComplianceRegistry <span class="code-keyword">public</span> compliance;
+  IStrategyRouter     <span class="code-keyword">public</span> strategyRouter;
+
+  <span class="code-comment">// Called every 15-min epoch by the harvest keeper</span>
+  <span class="code-keyword">function</span> <span class="code-fn">settleEpoch</span>(<span class="code-type">uint256</span> yieldAccrued)
+      <span class="code-keyword">external onlyRole</span>(OPERATOR_ROLE)
+  {
+      <span class="code-comment">// Route through 40/20/40 split</span>
+      <span class="code-type">uint256</span> treasury = yieldAccrued * <span class="code-num">40</span> / <span class="code-num">100</span>;
+      <span class="code-type">uint256</span> pool     = yieldAccrued * <span class="code-num">20</span> / <span class="code-num">100</span>;
+      <span class="code-type">uint256</span> ops      = yieldAccrued * <span class="code-num">40</span> / <span class="code-num">100</span>;
+
+      _reinvestTreasury(treasury);
+      grxPool.accrue(pool);
+      opsWallet.transfer(ops);
+  }
+
+  <span class="code-keyword">function</span> <span class="code-fn">deposit</span>(<span class="code-type">uint256</span> assets, <span class="code-type">address</span> receiver)
+      <span class="code-keyword">public override returns</span> (<span class="code-type">uint256</span>)
+  {
+      <span class="code-comment">// Compliance gate — KYC + accredited investor check</span>
+      require(compliance.isApproved(receiver), <span class="code-num">"KYC_REQUIRED"</span>);
+      <span class="code-keyword">return super</span>.deposit(assets, receiver);
+  }
+}
+      </div>
+
+      <h3>StrategyRouter — Modular Yield Sourcing</h3>
+      <p>
+        The StrategyRouter sits between the vault and external yield sources. It maintains a registry of approved strategies — currently Pendle PT-USDC pools (targeting ~16% APY), Aave v3 lending (targeting ~8% APY), and U.S. Treasury via tokenized T-bill wrappers (targeting ~5.2% APY). The router allocates across these strategies based on liquidity depth, rate conditions, and compliance constraints, producing the 13.2% blended target.
+      </p>
+
+      <div class="code-block">
+<span class="code-comment">// StrategyRouter.sol — Modular yield allocation</span>
+<span class="code-keyword">contract</span> <span class="code-type">StrategyRouter</span> <span class="code-keyword">is</span> AccessControl {
+
+  <span class="code-keyword">struct</span> <span class="code-type">Strategy</span> {
+    <span class="code-type">address</span>  adapter;
+    <span class="code-type">uint16</span>   targetBps;   <span class="code-comment">// basis points allocation</span>
+    <span class="code-type">bool</span>     active;
+  }
+
+  Strategy[] <span class="code-keyword">public</span> strategies;
+
+  <span class="code-comment">// Returns blended 7-day APY across active strategies</span>
+  <span class="code-keyword">function</span> <span class="code-fn">blendedAPY</span>() <span class="code-keyword">external view returns</span> (<span class="code-type">uint256</span> bps) {
+    <span class="code-keyword">for</span> (<span class="code-type">uint i</span>; i &lt; strategies.length; i++) {
+      <span class="code-keyword">if</span> (strategies[i].active)
+        bps += IAdapter(strategies[i].adapter).currentAPY()
+               * strategies[i].targetBps / <span class="code-num">10000</span>;
+    }
+  }
+}
+      </div>
+
+      <h3>ComplianceRegistry — On-Chain KYC</h3>
+      <p>
+        Every address that interacts with the GenesisVault must be approved by the ComplianceRegistry. Approval is granted off-chain via Onfido KYC + Chainalysis wallet screening, then written on-chain by a COMPLIANCE_WRITER. This creates an immutable, auditable record of investor eligibility without storing PII on-chain — satisfying both AML/KYC requirements and privacy standards.
+      </p>
+    </section>
+
+    <!-- ── 04 THE ECONOMICS ────────────────────────────── -->
+    <section class="wp-section" id="economics">
+      <div class="section-eyebrow">
+        <span class="section-num">04</span>
+        <div class="section-rule"></div>
+      </div>
+      <h2 class="section-title">The Economics:<br/><span class="gold">40/20/40 Capital Discipline</span></h2>
+      <p class="section-lead">
+        Genesis Reserve generates 13.2% blended APY on deployed AUM. Investors receive 8% as a preferred return. The remaining 5.2% Genesis spread is split with mathematical precision: 40% to sovereign treasury, 20% to the $GRX investor pool, 40% to operations.
+      </p>
+
+      <h3>Interactive Engine Calculator</h3>
+      <p>Move the slider to model the engine at any AUM from $500K to $5M.</p>
+
+      <div class="diagram-wrap">
+        <div class="diagram-title">Perpetual Engine Economics · Live Model</div>
+
+        <div class="calc-slider-row">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);letter-spacing:.08em">AUM</span>
+          <input type="range" class="wp-range" id="wpAumSlider" min="500000" max="5000000" step="50000" value="2500000"/>
+          <span class="calc-aum-label" id="wpAumDisplay">$2.5M</span>
+        </div>
+
+        <div class="calc-kpi-grid">
+          <div class="calc-kpi">
+            <div class="calc-kpi-val" id="wp-monthly">—</div>
+            <div class="calc-kpi-lbl">Gross / Month</div>
+          </div>
+          <div class="calc-kpi">
+            <div class="calc-kpi-val" id="wp-daily">—</div>
+            <div class="calc-kpi-lbl">Gross / Day</div>
+          </div>
+          <div class="calc-kpi">
+            <div class="calc-kpi-val" id="wp-epoch">—</div>
+            <div class="calc-kpi-lbl">Per Epoch (15 min)</div>
+          </div>
+          <div class="calc-kpi">
+            <div class="calc-kpi-val" id="wp-invpref">—</div>
+            <div class="calc-kpi-lbl">Investor Preferred / Mo</div>
+          </div>
+        </div>
+
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;">Genesis 5.2% Spread · 40 / 20 / 40 Allocation</div>
+
+        <div class="split-bar">
+          <div class="split-seg split-seg-treasury">
+            <span class="split-pct">40%</span>
+            <span class="split-name">Treasury</span>
+          </div>
+          <div class="split-seg split-seg-pool">
+            <span class="split-pct">20%</span>
+            <span class="split-name">$GRX Pool</span>
+          </div>
+          <div class="split-seg split-seg-ops">
+            <span class="split-pct">40%</span>
+            <span class="split-name">Operations</span>
+          </div>
+        </div>
+
+        <div class="split-output-row">
+          <div class="split-out split-out-treasury">
+            <div class="split-out-val" id="wp-treasury">—</div>
+            <div class="split-out-lbl">Treasury / Mo</div>
+          </div>
+          <div class="split-out split-out-pool">
+            <div class="split-out-val" id="wp-pool">—</div>
+            <div class="split-out-lbl">$GRX Pool / Mo</div>
+          </div>
+          <div class="split-out split-out-ops">
+            <div class="split-out-val" id="wp-ops">—</div>
+            <div class="split-out-lbl">Operations / Mo</div>
+          </div>
+        </div>
+
+        <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border-light);font-size:12px;color:var(--text-muted);">
+          Quarterly $GRX Distribution (60% of Pool × 3 months): <strong id="wp-grx-qtr" style="color:var(--teal)">—</strong>
+        </div>
+      </div>
+
+      <h3>The 72-Month Compound Curve</h3>
+      <p>
+        The treasury's 40% reinvestment at 13.2% APY creates a compound curve that crosses a critical threshold at Month 33: the accumulated treasury balance exceeds the outstanding growth loan balance, enabling early self-liquidation and freeing $8,289/month in perpetuity into the Perpetual Freed Capital model (20% Preserve / 40% Grow / 40% Accelerate, blending 13.1%).
+      </p>
+
+      <div class="diagram-wrap">
+        <div class="diagram-title">72-Month Treasury Compound Curve · $5M AUM Baseline</div>
+        <svg class="wp-chart" viewBox="0 0 760 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Grid -->
+          <line x1="60" y1="20" x2="60" y2="260" stroke="#E0E0E0" stroke-width="1"/>
+          <line x1="60" y1="260" x2="740" y2="260" stroke="#E0E0E0" stroke-width="1"/>
+          <!-- Y-axis labels -->
+          <text x="55" y="264" font-family="JetBrains Mono" font-size="9" fill="#9A9A9A" text-anchor="end">$0</text>
+          <text x="55" y="204" font-family="JetBrains Mono" font-size="9" fill="#9A9A9A" text-anchor="end">$300K</text>
+          <text x="55" y="144" font-family="JetBrains Mono" font-size="9" fill="#9A9A9A" text-anchor="end">$600K</text>
+          <text x="55" y="84" font-family="JetBrains Mono" font-size="9" fill="#9A9A9A" text-anchor="end">$900K</text>
+          <text x="55" y="24" font-family="JetBrains Mono" font-size="9" fill="#9A9A9A" text-anchor="end">$1.2M</text>
+          <!-- Grid lines -->
+          <line x1="60" y1="200" x2="740" y2="200" stroke="#F0F0F0" stroke-width="1" stroke-dasharray="4,4"/>
+          <line x1="60" y1="140" x2="740" y2="140" stroke="#F0F0F0" stroke-width="1" stroke-dasharray="4,4"/>
+          <line x1="60" y1="80" x2="740" y2="80" stroke="#F0F0F0" stroke-width="1" stroke-dasharray="4,4"/>
+          <!-- X-axis labels -->
+          <text x="60" y="276" font-family="JetBrains Mono" font-size="9" fill="#9A9A9A" text-anchor="middle">M0</text>
+          <text x="160" y="276" font-family="JetBrains Mono" font-size="9" fill="#9A9A9A" text-anchor="middle">M12</text>
+          <text x="260" y="276" font-family="JetBrains Mono" font-size="9" fill="#9A9A9A" text-anchor="middle">M24</text>
+          <text x="336" y="276" font-family="JetBrains Mono" font-size="9" fill="#C9A84C" text-anchor="middle" font-weight="700">M33</text>
+          <text x="360" y="276" font-family="JetBrains Mono" font-size="9" fill="#9A9A9A" text-anchor="middle">M36</text>
+          <text x="460" y="276" font-family="JetBrains Mono" font-size="9" fill="#9A9A9A" text-anchor="middle">M48</text>
+          <text x="560" y="276" font-family="JetBrains Mono" font-size="9" fill="#9A9A9A" text-anchor="middle">M60</text>
+          <text x="740" y="276" font-family="JetBrains Mono" font-size="9" fill="#9A9A9A" text-anchor="middle">M72</text>
+          <!-- Treasury compound curve (gold) — area fill -->
+          <polygon points="60,260 100,252 140,243 180,232 220,218 260,201 300,181 336,162 360,150 400,132 440,110 480,87 520,65 560,48 600,36 640,28 680,22 720,18 740,16 740,260 60,260"
+            fill="rgba(201,168,76,0.08)"/>
+          <polyline points="60,260 100,252 140,243 180,232 220,218 260,201 300,181 336,162 360,150 400,132 440,110 480,87 520,65 560,48 600,36 640,28 680,22 720,18 740,16"
+            stroke="#C9A84C" stroke-width="2.5" fill="none"/>
+          <!-- Loan balance line (red) — declining -->
+          <polyline points="60,220 100,214 140,207 180,200 220,192 260,183 300,173 336,163 360,157 400,140 440,115 480,85 520,50 560,20"
+            stroke="#E84040" stroke-width="1.5" fill="none" stroke-dasharray="6,3" opacity="0.6"/>
+          <!-- M33 crossover vertical marker -->
+          <line x1="336" y1="20" x2="336" y2="260" stroke="#C9A84C" stroke-width="1" stroke-dasharray="4,3" opacity="0.8"/>
+          <circle cx="336" cy="162" r="5" fill="#C9A84C"/>
+          <!-- M33 label -->
+          <rect x="290" y="130" width="92" height="22" rx="4" fill="rgba(201,168,76,0.12)" stroke="rgba(201,168,76,0.4)" stroke-width="1"/>
+          <text x="336" y="145" font-family="JetBrains Mono" font-size="9" fill="#A07830" text-anchor="middle">Loan Self-Liquidates</text>
+          <!-- Sovereign treasury label at M72 -->
+          <rect x="640" y="28" width="96" height="26" rx="4" fill="rgba(0,212,170,0.1)" stroke="rgba(0,212,170,0.3)" stroke-width="1"/>
+          <text x="688" y="39" font-family="JetBrains Mono" font-size="8" fill="#00D4AA" text-anchor="middle">$1.49M Treasury</text>
+          <text x="688" y="50" font-family="JetBrains Mono" font-size="8" fill="#00D4AA" text-anchor="middle">$16,242/mo ∞</text>
+          <!-- Legend -->
+          <line x1="60" y1="292" x2="80" y2="292" stroke="#C9A84C" stroke-width="2"/>
+          <text x="84" y="296" font-family="Sora" font-size="10" fill="#555">Treasury Balance</text>
+          <line x1="200" y1="292" x2="220" y2="292" stroke="#E84040" stroke-width="1.5" stroke-dasharray="4,2"/>
+          <text x="224" y="296" font-family="Sora" font-size="10" fill="#555">Loan Balance</text>
+        </svg>
+      </div>
+
+      <h3>The M33 Inflection Point</h3>
+      <p>
+        Month 33 is the engine's most important milestone. At this point, the accumulated treasury balance (approximately $290K) crosses the remaining loan balance (approximately $265K). Genesis retires the growth loan early, eliminating the monthly debt service and freeing $8,289/month into the Perpetual Freed Capital model.
+      </p>
+      <p>
+        From M33 forward, the engine operates in pure perpetual mode: the treasury compounds its own base, the B2C revenue engine is scaling toward $380K/month by M36, and investor $GRX distributions are growing in step with platform volume. This is the moment the engine becomes fully self-sustaining — not dependent on new capital, new investors, or new decisions.
+      </p>
+
+      <div class="callout callout-green">
+        <div class="callout-label">Sovereign Treasury at M72</div>
+        <p>By Month 72, the Genesis sovereign treasury holds approximately $1.49M compounded at 13.2% APY, generating $16,242/month in perpetual yield — from no new capital. This is the engine's ultimate expression: a self-funding financial infrastructure that serves as the permanent operating reserve for the Genesis Reserve ecosystem.</p>
+      </div>
+    </section>
+
+    <!-- ── 05 $GRX TOKEN ───────────────────────────────── -->
+    <section class="wp-section" id="grx">
+      <div class="section-eyebrow">
+        <span class="section-num">05</span>
+        <div class="section-rule"></div>
+      </div>
+      <h2 class="section-title">The New Asset Class:<br/><span class="gold">$GRX Revenue Participation Token</span></h2>
+      <p class="section-lead">
+        $GRX is not equity. It is not a utility token. It is not a stablecoin. $GRX is a new category of financial instrument: a Reg D 506(c) Revenue Participation Token that grants accredited investors a quarterly claim on the Genesis engine's operating spread — compounding, on-chain, and perpetual.
+      </p>
+
+      <h3>Why $GRX Is a New Asset Class</h3>
+      <p>
+        Traditional securities represent ownership of equity, debt, or real assets. Revenue participation agreements exist in private markets but are illiquid, bespoke, and non-composable. DeFi governance tokens grant voting rights but rarely revenue rights. $GRX is distinct from all three: it carries a contractual revenue participation right (20% of Genesis spread × token share), is issued under existing Reg D securities exemptions, and settles on-chain with quarterly USDC distributions — combining the rights of a revenue-based financing instrument with the transparency of blockchain settlement.
+      </p>
+
+      <div class="token-dist-row">
+        <div class="token-dist-card">
+          <div class="tdc-label">Quarterly Distribution Rate</div>
+          <div class="tdc-val">60%</div>
+          <div class="tdc-desc">60% of each quarter's $GRX pool is distributed to token holders pro-rata. USDC, on-chain, auditable.</div>
+        </div>
+        <div class="token-dist-card">
+          <div class="tdc-label">Quarterly Reinvestment Rate</div>
+          <div class="tdc-val" style="color:var(--gold-dk)">40%</div>
+          <div class="tdc-desc">40% is reinvested into the vault at 13.2% APY — compounding the pool's base for future distributions.</div>
+        </div>
+        <div class="token-dist-card">
+          <div class="tdc-label">Lock-Up Period</div>
+          <div class="tdc-val" style="color:var(--violet)">M1–M32</div>
+          <div class="tdc-desc">Tokens are non-transferable for the first 32 months. Quarterly distributions continue throughout.</div>
+        </div>
+        <div class="token-dist-card">
+          <div class="tdc-label">Secondary Market</div>
+          <div class="tdc-val" style="color:var(--green)">M33+</div>
+          <div class="tdc-desc">ATS-enabled secondary trading activates at M33. Four exit options at M72 including full redemption.</div>
+        </div>
+      </div>
+
+      <h3>Token Economics</h3>
+      <p>
+        $GRX token allocation is proportional to AUM committed. At $1M AUM (20% of the $5M target), the token share is 20%. At $5M, it is 100%. This means early investors who commit larger tranches receive a proportionally larger claim on the growing $GRX pool — including the B2C revenue component that scales the pool by 60× from M18 to M72.
+      </p>
+
+      <div class="diagram-wrap">
+        <div class="diagram-title">$GRX Quarterly Distribution Projection · B2C Revenue Inclusive</div>
+        <svg class="wp-chart" viewBox="0 0 760 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Y axis -->
+          <line x1="80" y1="20" x2="80" y2="220" stroke="#E0E0E0" stroke-width="1"/>
+          <line x1="80" y1="220" x2="720" y2="220" stroke="#E0E0E0" stroke-width="1"/>
+          <!-- Y labels -->
+          <text x="75" y="224" font-family="JetBrains Mono" font-size="8" fill="#9A9A9A" text-anchor="end">$0</text>
+          <text x="75" y="174" font-family="JetBrains Mono" font-size="8" fill="#9A9A9A" text-anchor="end">$25K</text>
+          <text x="75" y="124" font-family="JetBrains Mono" font-size="8" fill="#9A9A9A" text-anchor="end">$50K</text>
+          <text x="75" y="74" font-family="JetBrains Mono" font-size="8" fill="#9A9A9A" text-anchor="end">$75K</text>
+          <text x="75" y="24" font-family="JetBrains Mono" font-size="8" fill="#9A9A9A" text-anchor="end">$100K</text>
+          <!-- Grid -->
+          <line x1="80" y1="170" x2="720" y2="170" stroke="#F0F0F0" stroke-width="1" stroke-dasharray="3,3"/>
+          <line x1="80" y1="120" x2="720" y2="120" stroke="#F0F0F0" stroke-width="1" stroke-dasharray="3,3"/>
+          <line x1="80" y1="70" x2="720" y2="70" stroke="#F0F0F0" stroke-width="1" stroke-dasharray="3,3"/>
+          <!-- Bars: M6, M12, M18, M24, M36, M48, M60, M72 -->
+          <!-- Base spread only bar (gold) at each milestone -->
+          <rect x="100" y="207" width="30" height="13" fill="#C9A84C" rx="2"/>
+          <rect x="180" y="205" width="30" height="15" fill="#C9A84C" rx="2"/>
+          <rect x="260" y="202" width="30" height="18" fill="#C9A84C" rx="2"/>
+          <rect x="340" y="200" width="30" height="20" fill="#C9A84C" rx="2"/>
+          <!-- B2C inclusive bars (teal stacked) -->
+          <rect x="100" y="207" width="30" height="13" fill="#C9A84C" rx="2"/>
+          <rect x="180" y="205" width="30" height="15" fill="#C9A84C" rx="2"/>
+          <rect x="260" y="175" width="30" height="45" fill="#00D4AA" opacity="0.85" rx="2"/>
+          <rect x="260" y="202" width="30" height="18" fill="#C9A84C" rx="2"/>
+          <rect x="340" y="160" width="30" height="60" fill="#00D4AA" opacity="0.85" rx="2"/>
+          <rect x="340" y="200" width="30" height="20" fill="#C9A84C" rx="2"/>
+          <rect x="420" y="100" width="30" height="120" fill="#00D4AA" opacity="0.85" rx="2"/>
+          <rect x="420" y="198" width="30" height="22" fill="#C9A84C" rx="2"/>
+          <rect x="500" y="60" width="30" height="160" fill="#00D4AA" opacity="0.85" rx="2"/>
+          <rect x="500" y="196" width="30" height="24" fill="#C9A84C" rx="2"/>
+          <rect x="580" y="30" width="30" height="190" fill="#00D4AA" opacity="0.85" rx="2"/>
+          <rect x="580" y="194" width="30" height="26" fill="#C9A84C" rx="2"/>
+          <rect x="660" y="22" width="30" height="198" fill="#00D4AA" opacity="0.85" rx="2"/>
+          <rect x="660" y="192" width="30" height="28" fill="#C9A84C" rx="2"/>
+          <!-- X labels -->
+          <text x="115" y="237" font-family="JetBrains Mono" font-size="8" fill="#9A9A9A" text-anchor="middle">M6</text>
+          <text x="195" y="237" font-family="JetBrains Mono" font-size="8" fill="#9A9A9A" text-anchor="middle">M12</text>
+          <text x="275" y="237" font-family="JetBrains Mono" font-size="8" fill="#9A9A9A" text-anchor="middle">M18</text>
+          <text x="355" y="237" font-family="JetBrains Mono" font-size="8" fill="#9A9A9A" text-anchor="middle">M24</text>
+          <text x="435" y="237" font-family="JetBrains Mono" font-size="8" fill="#9A9A9A" text-anchor="middle">M36</text>
+          <text x="515" y="237" font-family="JetBrains Mono" font-size="8" fill="#9A9A9A" text-anchor="middle">M48</text>
+          <text x="595" y="237" font-family="JetBrains Mono" font-size="8" fill="#9A9A9A" text-anchor="middle">M60</text>
+          <text x="675" y="237" font-family="JetBrains Mono" font-size="8" fill="#9A9A9A" text-anchor="middle">M72</text>
+          <!-- Legend -->
+          <rect x="80" y="248" width="12" height="8" fill="#C9A84C" rx="1"/>
+          <text x="96" y="256" font-family="Sora" font-size="9" fill="#555">Base Spread ($5M AUM)</text>
+          <rect x="250" y="248" width="12" height="8" fill="#00D4AA" rx="1"/>
+          <text x="266" y="256" font-family="Sora" font-size="9" fill="#555">+ B2C Revenue Engine</text>
+        </svg>
+      </div>
+
+      <h3>The Four M72 Exit Options</h3>
+      <p>At the 72-month horizon, $GRX holders have four structured exit pathways:</p>
+      <ol style="padding-left:20px;font-size:15px;line-height:2;color:var(--text-primary)">
+        <li><strong>Full Redemption</strong> — Redeem principal + accumulated NAV appreciation at vault share price</li>
+        <li><strong>Distribution Continuation</strong> — Maintain token position, continue receiving quarterly distributions from the sovereign treasury's perpetual yield</li>
+        <li><strong>ATS Secondary Sale</strong> — Transfer tokens to a new accredited investor via the ATS platform at prevailing market price (active from M33)</li>
+        <li><strong>Re-Enrollment</strong> — Roll into a new Genesis Reserve 72-month epoch at prevailing terms</li>
+      </ol>
+    </section>
+
+    <!-- ── 06 SMARTER WALLET ───────────────────────────── -->
+    <section class="wp-section" id="smarter-wallet">
+      <div class="section-eyebrow">
+        <span class="section-num">06</span>
+        <div class="section-rule"></div>
+      </div>
+      <h2 class="section-title">The Smarter Wallet:<br/><span class="gold">DeFi for Main Street</span></h2>
+      <p class="section-lead">
+        The Genesis Smarter Wallet makes the Perpetual Capital Engine accessible to anyone with a phone number. Built on Privy's embedded wallet infrastructure, Circle USDC rails, and Zero Hash's licensed remittance network, it eliminates every traditional barrier between idle cash and institutional yield.
+      </p>
+
+      <h3>The Architecture of Access</h3>
+      <p>
+        The Smarter Wallet is not a crypto wallet. It is a financial product that happens to be powered by blockchain infrastructure — invisible to the end user. A Main Street customer opens the Genesis app, logs in with their email or phone, passes a streamlined KYC, and immediately begins earning. They never see a seed phrase. They never buy ETH for gas. They never approve a smart contract. The wallet is embedded, self-custodied, and non-custodial — but it feels like a bank account that actually works.
+      </p>
+
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-val" style="font-size:22px;color:var(--violet)">Privy</div>
+          <div class="stat-label">Embedded Wallet<br/>Social Login · No Seed Phrase</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" style="font-size:22px;color:var(--teal)">Circle</div>
+          <div class="stat-label">USDC Rails<br/>CCTP Cross-Chain Transfer</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" style="font-size:22px;color:var(--green)">Zero Hash</div>
+          <div class="stat-label">Licensed Remittance<br/>US–MX · US–PH Corridors</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" style="font-size:22px;color:var(--gold-dk)">Onfido</div>
+          <div class="stat-label">KYC / AML<br/>Chainalysis Screening</div>
+        </div>
+      </div>
+
+      <h3>Smarter Wallet Feature Set</h3>
+      <p><strong>Earn:</strong> Deposit any amount via ACH, debit card, or USDC transfer. Funds are swept into the Genesis vault and begin earning at the blended 13.2% rate within one epoch (15 minutes). No minimums. No lock-ups for Main Street users (institutional investors have the 72-month structure).</p>
+      <p><strong>Send:</strong> Send USDC to any phone number globally in under 60 seconds at a fraction of wire transfer cost. Zero Hash handles the licensed cross-border settlement — the user sees a simple send screen. Supported corridors: US→MX, US→PH, expanding to 25 corridors by M36.</p>
+      <p><strong>Receive:</strong> Receive direct deposits, international transfers, and $GRX quarterly distributions — all into the same Smarter Wallet. One interface for all cash flows.</p>
+      <p><strong>Stack:</strong> The Smarter Wallet's viral referral mechanic turns every user into a growth node. Each referral that activates yields a bonus APY boost for both parties — driving the LTV:CAC ratio of 7.6× that underpins the B2C growth engine's projections.</p>
+
+      <h3>Why Institutions Care About Main Street</h3>
+      <p>
+        The B2C engine is not separate from the institutional play — it is the institutional multiplier. Every B2C user who deposits and transacts generates fee revenue that flows into the 40/20/40 split alongside the institutional AUM spread. By Month 36, B2C revenue is projected at $380K/month — adding directly to the $GRX pool, the treasury, and operations. By Month 72, B2C revenue at $2.6M/month dwarfs the institutional AUM spread alone.
+      </p>
+      <p>
+        Institutional investors in $GRX are not just investing in a yield product. They are investing in a consumer growth engine that compounds their returns as it scales. The Smarter Wallet is the flywheel.
+      </p>
+    </section>
+
+    <!-- ── 07 INSTITUTIONAL ────────────────────────────── -->
+    <section class="wp-section" id="institutional">
+      <div class="section-eyebrow">
+        <span class="section-num">07</span>
+        <div class="section-rule"></div>
+      </div>
+      <h2 class="section-title">Institutional Use Case:<br/><span class="gold">Transforming Idle Cash</span></h2>
+      <p class="section-lead">
+        For treasury desks, family offices, and RIAs, Genesis Reserve offers something the market has never provided at scale: a single, compliant instrument that converts idle cash into a perpetually compounding yield engine with institutional-grade transparency and on-chain settlement.
+      </p>
+
+      <h3>The Treasury Desk Problem</h3>
+      <p>
+        A mid-size corporate treasury holds $5M in overnight repos at 5.1% — the Fed funds floor. Their CFO knows they can do better, but compliance requires regulated instruments, audit trails, and counterparty disclosures that most DeFi protocols cannot provide. Their alternative is T-bills at 5.2% — marginally better, but still terminal. They are not building a sovereign treasury. They are parking capital.
+      </p>
+      <p>
+        Genesis Reserve solves this with: (a) on-chain, auditable settlement via ERC-4626; (b) Reg D securities compliance for the $GRX layer; (c) Onfido KYC and Chainalysis screening for AML; (d) a blended 13.2% APY that meaningfully outperforms overnight alternatives; and (e) quarterly USDC distributions that integrate with existing AP/AR workflows.
+      </p>
+
+      <h3>The Family Office Opportunity</h3>
+      <p>
+        Family offices managing $10M–$500M in generational wealth face a unique problem: they need yield, but they also need preservation. The standard 60/40 portfolio generates 7–8% in good years, loses ground to inflation in bad ones, and has no mechanism for building a permanent operating reserve.
+      </p>
+      <p>
+        Genesis Reserve offers family offices a 72-month vehicle that: (a) pays 8% preferred quarterly; (b) compounds 40% of the spread into a sovereign treasury; and (c) builds a $GRX position that captures the upside of the B2C growth engine. At $5M AUM, the M72 $GRX quarterly distribution from B2C revenue alone reaches $944,400/quarter. This is generational compounding at an institutional rate.
+      </p>
+
+      <div class="callout callout-gold" style="border-left-color:var(--gold);background:rgba(201,168,76,0.04)">
+        <div class="callout-label">Key Institutional Terms</div>
+        <p>
+          <strong>Minimum commitment:</strong> $500K &nbsp;|&nbsp;
+          <strong>Target AUM:</strong> $1M–$5M &nbsp;|&nbsp;
+          <strong>Investor preferred return:</strong> 8% APY &nbsp;|&nbsp;
+          <strong>$GRX allocation:</strong> Pro-rata to AUM &nbsp;|&nbsp;
+          <strong>Distribution cadence:</strong> Quarterly USDC &nbsp;|&nbsp;
+          <strong>Lock-up:</strong> M1–M32 (distributions continue) &nbsp;|&nbsp;
+          <strong>Secondary market:</strong> ATS-enabled M33+
+        </p>
+      </div>
+    </section>
+
+    <!-- ── 08 B2C ADOPTION ─────────────────────────────── -->
+    <section class="wp-section" id="b2c">
+      <div class="section-eyebrow">
+        <span class="section-num">08</span>
+        <div class="section-rule"></div>
+      </div>
+      <h2 class="section-title">B2C Adoption Engine:<br/><span class="gold">The Viral Growth Flywheel</span></h2>
+      <p class="section-lead">
+        The Genesis B2C engine converts Main Street users into a network-effect revenue machine — targeting $18K/month by M18, $380K/month by M36, and $2.6M/month by M72, with a measured LTV:CAC ratio of 7.6×.
+      </p>
+
+      <h3>The Four Growth Phases</h3>
+
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-phase">Phase 1 · M1–M6 · Foundation</div>
+          <div class="tl-title">Compliance, Infrastructure, Seed Capital Deployment</div>
+          <div class="tl-body">Pre-seed $500K deployed across legal, compliance (Onfido, Chainalysis), infrastructure (Arbitrum, Vercel, Supabase), and initial working capital. Zero Hash corridors licensed. Privy embedded wallets live. Smart contracts audited and deployed. ~$25K generated from working capital deployed in tranches over 6 months.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-phase">Phase 2 · M6–M18 · Launch</div>
+          <div class="tl-title">Smarter Wallet Public Launch · First B2C Revenue</div>
+          <div class="tl-body">Smarter Wallet launches to waitlist. Referral mechanic activates. First B2C transaction revenue begins accruing. Target: 2,500 active users by M18 generating $18K/month in combined transaction fees and yield management revenue. Institutional AUM engine operating at full speed.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-phase">Phase 3 · M18–M36 · Scale</div>
+          <div class="tl-title">Network Effects · $380K/Month Revenue · M33 Inflection</div>
+          <div class="tl-body">Viral referral flywheel compounds user acquisition. M33 loan self-liquidates — $8,289/month freed into Perpetual Freed Capital model. B2C revenue scales to $380K/month by M36 from 50,000+ active users across US, MX, PH corridors. $GRX distribution grows materially with B2C revenue.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-phase">Phase 4 · M36–M72 · Dominate</div>
+          <div class="tl-title">Sovereign Treasury · $2.6M/Month · Perpetual Mode</div>
+          <div class="tl-body">Genesis operates in sovereign mode. B2C revenue $2.6M/month at M72. Sovereign treasury $1.49M generating $16,242/month perpetually. $GRX secondary market mature and liquid. Four M72 exit options available to all token holders. Engine requires no new capital to continue operating indefinitely.</div>
+        </div>
+      </div>
+
+      <h3>LTV:CAC Mechanics</h3>
+      <p>
+        The 7.6× LTV:CAC ratio is derived from average user tenure (28 months at launch cohort), average monthly revenue per active user ($7.20 blended across yield management, transfer fees, and referral conversion), versus a customer acquisition cost of $26.40 via referral channel dominance. At scale, CAC improves further as organic referrals displace paid acquisition.
+      </p>
+    </section>
+
+    <!-- ── 09 THE PARADIGM SHIFT ──────────────────────── -->
+    <section class="wp-section" id="paradigm">
+      <div class="section-eyebrow">
+        <span class="section-num">09</span>
+        <div class="section-rule"></div>
+      </div>
+      <h2 class="section-title">The Paradigm Shift:<br/><span class="gold">Why This Changes Finance</span></h2>
+      <p class="section-lead">
+        Genesis Reserve is not a better version of existing financial products. It is a different category of financial infrastructure — one that operates on the premise that capital should never stop working, and that the institutions who manage capital should build sovereign power, not just yield.
+      </p>
+
+      <div class="pull-quote">
+        <p>"We are not building a fund. We are building a sovereign financial organism — one that feeds itself, grows itself, and outlives its investors."</p>
+      </div>
+
+      <h3>From Exit to Perpetuity</h3>
+      <p>
+        The 20th century invented the portfolio. The early 21st century invented the protocol. Genesis Reserve invents the engine. A portfolio allocates. A protocol executes. An engine compounds without limit, builds its own power source, and requires no external inputs after ignition. The Perpetual Capital Engine achieves ignition at Month 33. After that, it is self-sustaining.
+      </p>
+
+      <h3>From Opacity to On-Chain Transparency</h3>
+      <p>
+        Every yield accrual, every epoch settlement, every $GRX distribution, and every treasury balance is recorded on-chain. Institutional investors can audit their position in real time — not quarterly, not via a PDF, but via a live on-chain ledger. This is the standard that every FinTech product should meet, and almost none do. Genesis Reserve is the first to build it with institutional Reg D compliance baked in from day one.
+      </p>
+
+      <h3>From Fragmentation to Integration</h3>
+      <p>
+        The Smarter Wallet collapses five fragmented financial services into one interface: savings (yield), payments (USDC send/receive), remittance (Zero Hash corridors), investment (institutional $GRX), and credit (future). This is not financial innovation — it is financial unification. The end of the fragmentation tax.
+      </p>
+
+      <h3>From Main Street to Institution — and Back</h3>
+      <p>
+        The genius of the Genesis flywheel is that Main Street users and institutional investors are not competing for the same product — they are powering each other's returns. Main Street transaction fees grow the $GRX pool. Institutional AUM provides the engine's base yield. The sovereign treasury provides permanent stability. Three stakeholder groups, one compounding machine, zero conflicts of interest.
+      </p>
+    </section>
+
+    <!-- ── 10 RISK FRAMEWORK ───────────────────────────── -->
+    <section class="wp-section" id="risk">
+      <div class="section-eyebrow">
+        <span class="section-num">10</span>
+        <div class="section-rule"></div>
+      </div>
+      <h2 class="section-title">Risk Framework</h2>
+      <p class="section-lead">
+        Genesis Reserve operates with a rigorous, multi-layered risk framework spanning smart contract security, yield source diversification, regulatory compliance, and operational continuity.
+      </p>
+
+      <table class="risk-table">
+        <thead>
+          <tr>
+            <th>Risk Category</th>
+            <th>Description</th>
+            <th>Severity</th>
+            <th>Mitigation</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Smart Contract Risk</strong></td>
+            <td>Vulnerabilities in vault or router contracts could expose deposited funds</td>
+            <td><span class="risk-badge risk-high">High</span></td>
+            <td>Third-party audit (Halborn / OpenZeppelin), multi-sig admin, 48-hour timelock on upgrades, bug bounty program</td>
+          </tr>
+          <tr>
+            <td><strong>Yield Source Concentration</strong></td>
+            <td>Over-allocation to single protocol (e.g. Pendle) creates single point of failure</td>
+            <td><span class="risk-badge risk-med">Medium</span></td>
+            <td>StrategyRouter enforces maximum 60% single-protocol allocation. T-bill wrapper provides zero-smart-contract-risk floor.</td>
+          </tr>
+          <tr>
+            <td><strong>Stablecoin De-peg</strong></td>
+            <td>USDC de-peg event would affect vault NAV and distribution values</td>
+            <td><span class="risk-badge risk-med">Medium</span></td>
+            <td>USDC holds strongest regulatory positioning of major stablecoins. Circle maintains 1:1 USD reserve. CCTP enables rapid cross-chain rebalancing.</td>
+          </tr>
+          <tr>
+            <td><strong>Regulatory Change</strong></td>
+            <td>SEC reclassification or new digital asset legislation could affect $GRX token structure</td>
+            <td><span class="risk-badge risk-med">Medium</span></td>
+            <td>Reg D 506(c) issued under existing securities law. Token structure designed for maximum regulatory flexibility. Outside counsel engaged for continuous monitoring.</td>
+          </tr>
+          <tr>
+            <td><strong>KYC/AML Failure</strong></td>
+            <td>Sanctioned actor bypasses compliance screening</td>
+            <td><span class="risk-badge risk-med">Medium</span></td>
+            <td>Onfido real-time KYC + Chainalysis wallet screening on every deposit. ComplianceRegistry on-chain. Ongoing monitoring via webhook alerts.</td>
+          </tr>
+          <tr>
+            <td><strong>Yield Rate Compression</strong></td>
+            <td>Market rate compression reduces blended APY below 13.2% target</td>
+            <td><span class="risk-badge risk-low">Low</span></td>
+            <td>StrategyRouter dynamically rebalances across protocols. 13.2% target represents mid-range of current strategy universe. T-bill floor prevents catastrophic compression.</td>
+          </tr>
+          <tr>
+            <td><strong>Operational Continuity</strong></td>
+            <td>Harvest keeper downtime interrupts epoch settlement</td>
+            <td><span class="risk-badge risk-low">Low</span></td>
+            <td>Redundant keeper infrastructure on Gelato Network. Missed epochs settle in next cycle with no loss of accrued yield. PagerDuty alerting with &lt;5 minute response SLA.</td>
+          </tr>
+          <tr>
+            <td><strong>B2C Growth Miss</strong></td>
+            <td>B2C revenue targets not achieved, reducing $GRX pool growth</td>
+            <td><span class="risk-badge risk-low">Low</span></td>
+            <td>$GRX base distribution is funded by institutional AUM spread alone — B2C revenue is additive. Investor preferred return (8%) is unaffected by B2C performance.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ── 11 COMPLIANCE ──────────────────────────────── -->
+    <section class="wp-section" id="compliance">
+      <div class="section-eyebrow">
+        <span class="section-num">11</span>
+        <div class="section-rule"></div>
+      </div>
+      <h2 class="section-title">Regulatory &amp; Compliance<br/><span class="gold">Framework</span></h2>
+      <p class="section-lead">
+        Genesis Reserve is built from the ground up for regulatory compliance — not as an afterthought, but as a competitive moat. Our compliance posture is designed to survive regulatory evolution, not just current rules.
+      </p>
+
+      <h3>$GRX Token — Regulation D 506(c)</h3>
+      <p>
+        The $GRX Revenue Participation Token is issued under SEC Regulation D, Rule 506(c) — the accredited investor exemption that allows general solicitation provided all purchasers are verified accredited investors. This means Genesis Reserve can market $GRX broadly while maintaining full securities compliance. Token holders receive a Form D filing confirmation and quarterly distribution statements for tax purposes.
+      </p>
+
+      <h3>AML/KYC — Onfido + Chainalysis</h3>
+      <p>
+        Every user onboarding to the Genesis ecosystem — institutional or retail — undergoes identity verification via Onfido (government ID + biometric selfie) and wallet screening via Chainalysis (OFAC, sanctions, cluster analysis). This creates a dual-layer compliance gate that satisfies FinCEN's Customer Identification Program requirements and BSA/AML obligations for money services businesses.
+      </p>
+
+      <h3>Remittance Licensing — Zero Hash</h3>
+      <p>
+        All cross-border transfer functionality is powered by Zero Hash, a regulated digital asset infrastructure company holding money transmission licenses in 51 U.S. jurisdictions. Genesis Reserve operates as a technology partner to Zero Hash, not as a money transmitter — eliminating the regulatory burden and licensing cost of direct MSB registration while maintaining full compliance.
+      </p>
+
+      <h3>On-Chain Compliance Registry</h3>
+      <p>
+        The ComplianceRegistry smart contract maintains an auditable, immutable record of all KYC-approved addresses, approval timestamps, and revocation events. Regulators and auditors can independently verify the compliance state of any address that has interacted with the GenesisVault at any point in time — without requiring access to Genesis systems.
+      </p>
+
+      <div class="callout callout-teal">
+        <div class="callout-label">Compliance as Moat</div>
+        <p>Most DeFi protocols treat compliance as friction. Genesis Reserve treats it as infrastructure. The combination of on-chain KYC records, Reg D securities compliance, licensed remittance rails, and real-time AML screening creates a compliance posture that most competitors cannot replicate — and that institutional investors require before committing capital.</p>
+      </div>
+    </section>
+
+    <!-- ── 12 ROADMAP ─────────────────────────────────── -->
+    <section class="wp-section" id="roadmap">
+      <div class="section-eyebrow">
+        <span class="section-num">12</span>
+        <div class="section-rule"></div>
+      </div>
+      <h2 class="section-title">72-Month <span class="gold">Roadmap</span></h2>
+      <p class="section-lead">
+        Six years. Four phases. One sovereign treasury. The Genesis Reserve roadmap is organized around the engine's natural inflection points — not arbitrary calendar milestones.
+      </p>
+
+      <!-- 72-Month Roadmap SVG -->
+      <div class="diagram-wrap">
+        <div class="diagram-title">72-Month Genesis Reserve Roadmap</div>
+        <svg class="wp-chart" viewBox="0 0 760 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Spine -->
+          <line x1="40" y1="100" x2="720" y2="100" stroke="#E0E0E0" stroke-width="2"/>
+          <!-- Phase 1: M0-M6 -->
+          <rect x="40" y="80" width="90" height="40" rx="6" fill="rgba(201,168,76,0.1)" stroke="rgba(201,168,76,0.4)" stroke-width="1"/>
+          <text x="85" y="97" font-family="JetBrains Mono" font-size="8" fill="#A07830" text-anchor="middle">M1–M6</text>
+          <text x="85" y="108" font-family="Sora" font-size="8" fill="#555" text-anchor="middle" font-weight="600">Foundation</text>
+          <!-- Phase 2: M6-M18 -->
+          <rect x="140" y="60" width="180" height="80" rx="6" fill="rgba(0,212,170,0.06)" stroke="rgba(0,212,170,0.3)" stroke-width="1"/>
+          <text x="230" y="90" font-family="JetBrains Mono" font-size="8" fill="#00D4AA" text-anchor="middle">M6–M18</text>
+          <text x="230" y="103" font-family="Sora" font-size="9" fill="#333" text-anchor="middle" font-weight="700">Launch</text>
+          <text x="230" y="117" font-family="Sora" font-size="8" fill="#777" text-anchor="middle">$18K/mo B2C · 2.5K users</text>
+          <!-- Phase 3: M18-M36 -->
+          <rect x="330" y="50" width="180" height="100" rx="6" fill="rgba(26,191,106,0.06)" stroke="rgba(26,191,106,0.3)" stroke-width="1"/>
+          <text x="420" y="83" font-family="JetBrains Mono" font-size="8" fill="#1ABF6A" text-anchor="middle">M18–M36</text>
+          <text x="420" y="97" font-family="Sora" font-size="9" fill="#333" text-anchor="middle" font-weight="700">Scale</text>
+          <text x="420" y="110" font-family="Sora" font-size="8" fill="#777" text-anchor="middle">$380K/mo · 50K users</text>
+          <text x="420" y="122" font-family="JetBrains Mono" font-size="8" fill="#C9A84C" text-anchor="middle">⚡ M33 Loan Self-Liquidates</text>
+          <!-- Phase 4: M36-M72 -->
+          <rect x="520" y="40" width="200" height="120" rx="6" fill="rgba(155,109,255,0.06)" stroke="rgba(155,109,255,0.3)" stroke-width="1"/>
+          <text x="620" y="73" font-family="JetBrains Mono" font-size="8" fill="#9B6DFF" text-anchor="middle">M36–M72</text>
+          <text x="620" y="87" font-family="Sora" font-size="9" fill="#333" text-anchor="middle" font-weight="700">Dominate</text>
+          <text x="620" y="100" font-family="Sora" font-size="8" fill="#777" text-anchor="middle">$2.6M/mo · Sovereign ∞</text>
+          <text x="620" y="113" font-family="Sora" font-size="8" fill="#777" text-anchor="middle">$1.49M Treasury</text>
+          <text x="620" y="126" font-family="JetBrains Mono" font-size="8" fill="#00D4AA" text-anchor="middle">$16,242/mo Perpetual</text>
+          <!-- Timeline dots -->
+          <circle cx="40" cy="100" r="5" fill="#C9A84C"/>
+          <circle cx="140" cy="100" r="5" fill="#00D4AA"/>
+          <circle cx="330" cy="100" r="5" fill="#1ABF6A"/>
+          <circle cx="520" cy="100" r="5" fill="#9B6DFF"/>
+          <circle cx="720" cy="100" r="7" fill="none" stroke="#9B6DFF" stroke-width="2"/>
+          <circle cx="720" cy="100" r="4" fill="#9B6DFF"/>
+          <!-- M labels -->
+          <text x="40" y="170" font-family="JetBrains Mono" font-size="9" fill="#9A9A9A" text-anchor="middle">M0</text>
+          <text x="140" y="170" font-family="JetBrains Mono" font-size="9" fill="#9A9A9A" text-anchor="middle">M6</text>
+          <text x="330" y="170" font-family="JetBrains Mono" font-size="9" fill="#9A9A9A" text-anchor="middle">M18</text>
+          <text x="520" y="170" font-family="JetBrains Mono" font-size="9" fill="#9A9A9A" text-anchor="middle">M36</text>
+          <text x="720" y="170" font-family="JetBrains Mono" font-size="9" fill="#9B6DFF" text-anchor="middle">M72</text>
+        </svg>
+      </div>
+
+      <h3>Key Milestones</h3>
+      <table class="risk-table">
+        <thead><tr><th>Milestone</th><th>Target</th><th>Significance</th></tr></thead>
+        <tbody>
+          <tr><td>Smart Contract Audit</td><td>M3</td><td>Third-party security validation before institutional AUM deployment</td></tr>
+          <tr><td>Institutional AUM Close</td><td>M6</td><td>$500K–$5M committed. Engine at full operating rate.</td></tr>
+          <tr><td>Smarter Wallet Launch</td><td>M6</td><td>B2C engine ignition. Zero Hash corridors live.</td></tr>
+          <tr><td>$GRX First Distribution</td><td>M6</td><td>First quarterly USDC distribution to token holders</td></tr>
+          <tr><td>ATS Secondary Market</td><td>M33</td><td>$GRX becomes liquid. Loan self-liquidates same month.</td></tr>
+          <tr><td>B2C $380K/mo</td><td>M36</td><td>B2C revenue exceeds institutional spread — engine truly dual-powered</td></tr>
+          <tr><td>Sovereign Treasury ∞</td><td>M72</td><td>$1.49M treasury generating $16,242/mo with no new capital required</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ── 13 CONCLUSION ──────────────────────────────── -->
+    <section class="wp-section" id="conclusion">
+      <div class="section-eyebrow">
+        <span class="section-num">13</span>
+        <div class="section-rule"></div>
+      </div>
+      <h2 class="section-title">Conclusion:<br/><span class="gold">The Future of Finance Is Infinite.</span></h2>
+      <p class="section-lead">
+        Genesis Reserve does not ask when the engine will stop. It was designed never to stop.
+      </p>
+      <p>
+        We have described, in technical and economic detail, a programmable capital infrastructure that operates on a premise no existing financial product has fully committed to: that capital should compound forever, that investors should own a piece of a growing revenue engine rather than a shrinking fixed-income schedule, and that the institutions who build such an engine should accumulate sovereign power as a natural byproduct of disciplined operation.
+      </p>
+      <p>
+        The 40/20/40 split is not a marketing concept. It is a mathematical commitment. The 96-epoch daily harvest is not a feature — it is the engine's heartbeat. The M33 inflection point is not a milestone — it is the moment the engine achieves true autonomy. And the sovereign treasury at Month 72 is not a target — it is an inevitability, given disciplined execution.
+      </p>
+      <p>
+        The Smarter Wallet brings this engine to Main Street without complexity, without seed phrases, without confusion. Zero Hash moves money across borders without friction. Privy makes self-custody feel like a bank account. Circle's USDC provides the stable unit of account that connects fiat and on-chain without volatility risk.
+      </p>
+      <p>
+        $GRX gives accredited investors and family offices a new kind of financial instrument — one that grows with the platform, distributes quarterly in USDC, and builds in value as the B2C engine scales from $18K/month to $2.6M/month over six years.
+      </p>
+
+      <div class="pull-quote">
+        <p>"We are the Gold Standard. Not because we say so — but because the mathematics demands it."</p>
+      </div>
+
+      <p>
+        Genesis Reserve is seeking $500K–$5M in institutional commitments to deploy the Perpetual Capital Engine at full scale. Accredited investors, family offices, and RIAs who share the conviction that the future of finance is infinite are invited to engage our team directly.
+      </p>
+
+      <div class="stat-grid" style="margin-top:40px">
+        <div class="stat-card gold-border">
+          <div class="stat-val">$GRX</div>
+          <div class="stat-label">Reg D 506(c)<br/>Revenue Token</div>
+        </div>
+        <div class="stat-card gold-border">
+          <div class="stat-val">13.2%</div>
+          <div class="stat-label">Blended APY<br/>72 Months</div>
+        </div>
+        <div class="stat-card teal-border">
+          <div class="stat-val">M33</div>
+          <div class="stat-label">Loan Self-Liquidates<br/>Sovereign Mode Begins</div>
+        </div>
+        <div class="stat-card teal-border">
+          <div class="stat-val">∞</div>
+          <div class="stat-label">Perpetual Treasury<br/>No Exit Required</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── DISCLAIMER ─────────────────────────────────── -->
+    <section class="wp-section" id="disclaimer" style="margin-bottom:0;border-bottom:none">
+      <div class="section-eyebrow">
+        <span class="section-num" style="color:var(--text-muted)">—</span>
+        <div class="section-rule" style="background:linear-gradient(90deg,var(--gray-400),transparent)"></div>
+      </div>
+      <h2 class="section-title" style="font-size:22px;color:var(--text-secondary)">Legal Disclaimer</h2>
+      <p style="font-size:12px;color:var(--text-muted);line-height:1.8">
+        This whitepaper is provided for informational purposes only and does not constitute an offer to sell or a solicitation of an offer to buy any security. The $GRX Revenue Participation Token is offered solely to accredited investors as defined under Rule 501 of Regulation D under the Securities Act of 1933, as amended, pursuant to an exemption from registration under Rule 506(c) thereof. This document has not been reviewed or approved by the U.S. Securities and Exchange Commission or any other regulatory authority.
+      </p>
+      <p style="font-size:12px;color:var(--text-muted);line-height:1.8">
+        All financial projections, yield estimates, and revenue targets contained herein are forward-looking statements based on current assumptions and market conditions. They are not guarantees of future performance. Actual results may differ materially from projections. Yield rates on DeFi protocols are variable and subject to change. Past performance of underlying protocols does not guarantee future returns.
+      </p>
+      <p style="font-size:12px;color:var(--text-muted);line-height:1.8">
+        Investment in $GRX carries significant risk, including the risk of total loss of invested capital. Prospective investors should consult with their financial, legal, and tax advisors before making any investment decision. Genesis Reserve LLC is not a registered investment advisor, broker-dealer, or money services business. Remittance services are provided through Zero Hash LLC, a licensed money transmitter.
+      </p>
+      <p style="font-size:12px;color:var(--text-muted);line-height:1.8">
+        This document contains confidential and proprietary information. By receiving this whitepaper, the recipient agrees not to reproduce, distribute, or disclose its contents to any third party without the prior written consent of Genesis Reserve LLC. © 2026 Genesis Reserve LLC. All rights reserved.
+      </p>
+    </section>
+
+  </main>
+</div>
+
+<!-- FOOTER -->
+<footer class="wp-footer">
+  <div class="footer-logo">GENESIS RESERVE</div>
+  <p>Perpetual Capital Engine · Whitepaper v1.0 · May 2026</p>
+  <p style="margin-top:8px">$GRX offered under Reg D 506(c) · Accredited Investors Only</p>
+  <p style="margin-top:16px;font-size:11px;opacity:0.5">
+    "The Future of Finance Is Infinite."
+  </p>
+</footer>
+
+<!-- ══════════════════════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════════════════════ -->
+<script>
+(function() {
+  // Format helpers
+  function fmtDollar(n) {
+    if (n >= 1000000) return '$' + (n/1000000).toFixed(2) + 'M';
+    if (n >= 1000)    return '$' + (n/1000).toFixed(1) + 'K';
+    return '$' + n.toFixed(0);
+  }
+  function fmtM(n) {
+    if (n >= 1000000) return '$' + (n/1000000).toFixed(1) + 'M';
+    return '$' + (n/1000).toFixed(0) + 'K';
+  }
+
+  // ── AUM CALCULATOR ──────────────────────────────────────
+  const slider = document.getElementById('wpAumSlider');
+  const aumDisplay = document.getElementById('wpAumDisplay');
+
+  function updateCalc() {
+    const aum = +slider.value;
+    aumDisplay.textContent = fmtM(aum);
+
+    const monthly  = aum * 0.132 / 12;
+    const daily    = aum * 0.132 / 365;
+    const epoch    = daily / 96;
+    const invPref  = aum * 0.08 / 12;
+    const spread   = aum * 0.052 / 12;
+    const treasury = spread * 0.40;
+    const pool     = spread * 0.20;
+    const ops      = spread * 0.40;
+    const grxDist  = pool * 3 * 0.60;
+
+    document.getElementById('wp-monthly').textContent  = fmtDollar(monthly);
+    document.getElementById('wp-daily').textContent    = fmtDollar(daily);
+    document.getElementById('wp-epoch').textContent    = '$' + epoch.toFixed(2);
+    document.getElementById('wp-invpref').textContent  = fmtDollar(invPref);
+    document.getElementById('wp-treasury').textContent = fmtDollar(treasury);
+    document.getElementById('wp-pool').textContent     = fmtDollar(pool);
+    document.getElementById('wp-ops').textContent      = fmtDollar(ops);
+    document.getElementById('wp-grx-qtr').textContent  = fmtDollar(grxDist) + '/qtr';
+
+    // Slider gradient
+    const pct = ((aum - 500000) / (5000000 - 500000) * 100).toFixed(1);
+    slider.style.background = `linear-gradient(90deg,#C9A84C ${pct}%,#E0E0E0 ${pct}%)`;
+  }
+
+  if (slider) {
+    slider.addEventListener('input', updateCalc);
+    updateCalc();
+  }
+
+  // ── ACTIVE TOC HIGHLIGHT ─────────────────────────────────
+  const sections = document.querySelectorAll('.wp-section[id]');
+  const tocLinks = document.querySelectorAll('.toc-item a');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.getAttribute('id');
+        tocLinks.forEach(link => {
+          const item = link.parentElement;
+          if (link.getAttribute('href') === '#' + id) {
+            item.classList.add('active');
+          } else {
+            item.classList.remove('active');
+          }
+        });
+      }
+    });
+  }, { rootMargin: '-20% 0px -60% 0px' });
+
+  sections.forEach(s => observer.observe(s));
+
+})();
+</script>
+</body>
+</html>
