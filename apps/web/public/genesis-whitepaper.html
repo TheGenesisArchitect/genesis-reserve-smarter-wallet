@@ -729,6 +729,159 @@ svg.wp-chart{width:100%;height:auto;overflow:visible}
 }
 .pdf-fab svg{flex-shrink:0}
 
+/* ── PHONE DEMO WIDGET ────────────────────────────────────── */
+.phone-demo-section{
+  display:flex;flex-direction:column;align-items:center;gap:0;
+  margin:44px auto 48px;
+}
+.phone-demo-backdrop{
+  position:relative;
+  background:radial-gradient(ellipse 220px 320px at 50% 50%,rgba(201,168,76,0.07) 0%,transparent 70%);
+  padding:20px 20px 0;
+}
+.phone-frame-link{
+  display:block;text-decoration:none;position:relative;
+}
+.phone-frame{
+  width:248px;height:520px;
+  background:#08090e;
+  border-radius:42px;
+  border:2px solid rgba(201,168,76,0.22);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.05),
+    0 24px 70px rgba(0,0,0,0.55),
+    0 0 90px rgba(201,168,76,0.07);
+  overflow:hidden;
+  position:relative;
+  transition:box-shadow .35s ease,transform .35s ease;
+}
+.phone-frame-link:hover .phone-frame{
+  box-shadow:
+    0 0 0 1px rgba(201,168,76,0.45),
+    0 32px 80px rgba(0,0,0,0.65),
+    0 0 130px rgba(201,168,76,0.18);
+  transform:translateY(-6px) scale(1.015);
+}
+.phone-notch{
+  position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:88px;height:26px;
+  background:#08090e;
+  border-bottom-left-radius:16px;border-bottom-right-radius:16px;
+  z-index:10;
+}
+.phone-status-bar{
+  position:absolute;top:8px;left:0;right:0;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:0 22px;z-index:9;
+}
+.phone-status-time{
+  font-family:'Sora',sans-serif;font-size:9.5px;font-weight:600;
+  color:rgba(255,255,255,0.8);
+}
+.phone-status-icons{
+  display:flex;gap:4px;align-items:center;
+}
+.phone-status-icons span{
+  font-size:8px;color:rgba(255,255,255,0.7);letter-spacing:-0.5px;
+}
+.phone-screen-inner{
+  position:absolute;inset:0;
+  background:linear-gradient(160deg,#050709 0%,#020305 60%);
+  display:flex;flex-direction:column;align-items:center;
+  padding:44px 22px 26px;
+}
+.ps-logo{
+  width:54px;height:54px;border-radius:50%;
+  box-shadow:0 0 28px rgba(201,168,76,0.28),0 0 0 1px rgba(201,168,76,0.18);
+  margin-bottom:10px;margin-top:10px;
+}
+.ps-brand{
+  font-family:'Cormorant Garamond',serif;
+  font-size:12.5px;font-weight:300;
+  letter-spacing:.22em;text-transform:uppercase;
+  color:#fff;margin-bottom:3px;
+}
+.ps-brand em{color:var(--gold);font-style:normal;}
+.ps-tagline{
+  font-family:'Sora',sans-serif;font-size:8.5px;font-weight:400;
+  color:rgba(255,255,255,0.35);letter-spacing:.07em;
+  margin-bottom:22px;
+}
+.ps-welcome{
+  font-family:'Sora',sans-serif;font-size:13px;font-weight:600;
+  color:#fff;text-align:center;margin-bottom:4px;
+}
+.ps-sub{
+  font-family:'Sora',sans-serif;font-size:9px;
+  color:rgba(255,255,255,0.38);text-align:center;margin-bottom:18px;
+}
+.ps-input{
+  width:100%;height:38px;
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:10px;
+  display:flex;align-items:center;padding:0 13px;
+  font-family:'Sora',sans-serif;font-size:9.5px;
+  color:rgba(255,255,255,0.28);margin-bottom:9px;
+}
+.ps-btn{
+  width:100%;height:38px;
+  background:linear-gradient(135deg,#A07830 0%,#C9A84C 100%);
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Sora',sans-serif;font-size:10px;font-weight:600;
+  color:#020305;letter-spacing:.04em;margin-bottom:14px;
+}
+.ps-or-row{
+  display:flex;align-items:center;gap:8px;width:100%;margin-bottom:10px;
+}
+.ps-or-line{flex:1;height:1px;background:rgba(255,255,255,0.08);}
+.ps-or-txt{
+  font-family:'Sora',sans-serif;font-size:8px;
+  color:rgba(255,255,255,0.22);white-space:nowrap;
+}
+.ps-social{
+  width:100%;height:33px;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.09);
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Sora',sans-serif;font-size:9px;
+  color:rgba(255,255,255,0.45);margin-bottom:6px;gap:6px;
+}
+.phone-home-pill{
+  position:absolute;bottom:8px;left:50%;transform:translateX(-50%);
+  width:72px;height:4px;
+  background:rgba(255,255,255,0.18);border-radius:3px;
+}
+/* Ripple overlay on hover */
+.phone-frame-link::after{
+  content:'';
+  position:absolute;inset:0;border-radius:42px;
+  background:rgba(201,168,76,0);
+  transition:background .2s;
+  pointer-events:none;
+}
+.phone-frame-link:hover::after{
+  background:rgba(201,168,76,0.03);
+}
+.phone-tap-cta{
+  display:flex;align-items:center;gap:8px;
+  font-family:'Sora',sans-serif;font-size:11.5px;font-weight:500;
+  color:var(--gold);margin-top:18px;
+  animation:tap-pulse 2.8s ease-in-out infinite;
+}
+@keyframes tap-pulse{
+  0%,100%{opacity:.55;transform:translateY(0)}
+  50%{opacity:1;transform:translateY(-2px)}
+}
+.phone-tap-cta svg{width:14px;height:14px;stroke:var(--gold);}
+.phone-demo-caption{
+  font-family:'Sora',sans-serif;font-size:10px;
+  color:rgba(17,17,17,0.4);text-align:center;
+  margin-top:10px;letter-spacing:.04em;
+}
+
 /* ── PRINT ────────────────────────────────────────────────── */
 @media print{
   .wp-sidebar{display:none}
@@ -1601,6 +1754,47 @@ svg.wp-chart{width:100%;height:auto;overflow:visible}
       <p class="section-lead">
         The Genesis Smarter Wallet makes the Perpetual Capital Engine accessible to anyone with a phone number. Built on Privy's embedded wallet infrastructure, Circle USDC rails, and Zero Hash's licensed remittance network, it eliminates every traditional barrier between idle cash and institutional yield.
       </p>
+
+      <!-- Phone Demo Widget -->
+      <div class="phone-demo-section">
+        <div class="phone-demo-backdrop">
+          <a href="/wallet-demo" target="_blank" class="phone-frame-link" aria-label="Launch Smarter Wallet interactive demo">
+            <div class="phone-frame">
+              <div class="phone-notch"></div>
+              <div class="phone-status-bar">
+                <span class="phone-status-time">9:41</span>
+                <div class="phone-status-icons">
+                  <span>●●●●</span>
+                  <span>WiFi</span>
+                  <span>⬛</span>
+                </div>
+              </div>
+              <div class="phone-screen-inner">
+                <img src="/genesis-logo.png" alt="Genesis Reserve" class="ps-logo" onerror="this.src='/genesis-logo.svg'"/>
+                <div class="ps-brand">GENESIS <em>RESERVE</em></div>
+                <div class="ps-tagline">Perpetual Capital Infrastructure</div>
+                <div class="ps-welcome">Welcome to Genesis</div>
+                <div class="ps-sub">Sign in to your Smarter Wallet</div>
+                <div class="ps-input">📱 Email or phone number</div>
+                <div class="ps-btn">Continue →</div>
+                <div class="ps-or-row">
+                  <div class="ps-or-line"></div>
+                  <div class="ps-or-txt">or continue with</div>
+                  <div class="ps-or-line"></div>
+                </div>
+                <div class="ps-social">🍎 &nbsp;Continue with Apple</div>
+                <div class="ps-social">G &nbsp;Continue with Google</div>
+              </div>
+              <div class="phone-home-pill"></div>
+            </div>
+          </a>
+        </div>
+        <a href="/wallet-demo" target="_blank" class="phone-tap-cta" style="text-decoration:none;">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          Tap to experience the full lifecycle demo
+        </a>
+        <div class="phone-demo-caption">Login · Wallet · Yield · Send · Withdraw — all live infrastructure</div>
+      </div>
 
       <h3>The Architecture of Access</h3>
       <p>
