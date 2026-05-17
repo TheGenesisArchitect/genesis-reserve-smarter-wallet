@@ -404,6 +404,38 @@ input[type=range].slider::-webkit-slider-thumb{-webkit-appearance:none;width:18p
 .rcc-stat{display:flex;justify-content:space-between;align-items:center;font-size:10px;color:var(--muted);padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04)}
 .rcc-stat:last-child{border-bottom:none}
 .rcc-val{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;text-align:right}
+/* ══ SLIDE 2 — PERPETUAL CAPITAL WIN ══ */
+.split-bar-wrap{display:flex;gap:3px;height:48px;border-radius:8px;overflow:hidden;margin-bottom:12px}
+.split-seg{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px}
+.seg-treasury{flex:40;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.3)}
+.seg-pool{flex:20;background:rgba(0,212,170,0.12);border:1px solid rgba(0,212,170,0.3)}
+.seg-ops{flex:40;background:rgba(155,109,255,0.12);border:1px solid rgba(155,109,255,0.3)}
+.seg-pct{font-family:'JetBrains Mono',monospace;font-size:clamp(13px,1.4vw,17px);font-weight:700;line-height:1}
+.seg-treasury .seg-pct{color:var(--gold)}
+.seg-pool .seg-pct{color:var(--teal)}
+.seg-ops .seg-pct{color:var(--violet)}
+.seg-lbl{font-size:clamp(7.5px,0.8vw,9px);color:var(--muted);letter-spacing:.03em;text-align:center;line-height:1.3}
+.win-layers{display:flex;flex-direction:column;gap:7px}
+.wl-card{display:flex;align-items:flex-start;gap:10px;background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:10px 13px}
+.wl-num{font-family:'JetBrains Mono',monospace;font-size:clamp(16px,1.8vw,22px);font-weight:700;line-height:1;opacity:0.55;min-width:22px;padding-top:1px}
+.wl-content{flex:1}
+.wl-title{font-size:clamp(12px,1.25vw,15px);font-weight:600;margin-bottom:2px;letter-spacing:.02em}
+.wl-body{font-size:clamp(10px,1.05vw,12.5px);color:var(--muted);line-height:1.5;margin-bottom:5px}
+.wl-tags{display:flex;gap:5px;flex-wrap:wrap}
+.wl-tag{font-size:clamp(8px,0.85vw,9.5px);border:1px solid;border-radius:4px;padding:2px 6px;letter-spacing:.04em}
+/* ══ SLIDE 4 — PERPETUAL ENGINE MODEL ══ */
+.m4-kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px}
+.split-output-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:8px 0 5px}
+.so-seg{border:1px solid;border-radius:6px;padding:8px 10px;text-align:center}
+.so-lbl{font-size:clamp(8.5px,0.85vw,10px);color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin-bottom:3px}
+.so-val{font-size:clamp(13px,1.4vw,17px);font-weight:700;font-family:'JetBrains Mono',monospace}
+.split-sub-row{display:flex;justify-content:space-between;font-size:clamp(9px,0.9vw,10.5px);color:var(--muted);flex-wrap:wrap;gap:4px;margin-bottom:6px}
+.chart-wrap{border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:10px 12px 6px;background:rgba(0,0,0,0.2)}
+.chart-title{font-size:clamp(8.5px,0.85vw,10px);color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+.engine-chart{width:100%;display:block}
+.chart-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:5px;justify-content:center}
+.cl-item{display:flex;align-items:center;gap:5px;font-size:clamp(9px,0.9vw,10.5px);color:var(--muted)}
+.cl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 </style>
 </head>
 <body>
@@ -433,55 +465,77 @@ input[type=range].slider::-webkit-slider-thumb{-webkit-appearance:none;width:18p
   </div>
 </div>
 
-<!-- ═══════════════════ SLIDE 2 — THE CONCEPT ═══════════════════ -->
+<!-- ═══════════════════ SLIDE 2 — THE PERPETUAL CAPITAL WIN ═══════════════════ -->
 <div class="slide" id="s2">
-  <div class="h1" style="margin-bottom:4px">The Three-Party Win</div>
-  <div class="muted" style="text-align:center;margin-bottom:18px">A capital structure where every stakeholder earns. No conflicts. No hidden fees.</div>
-  <div class="concept-flow stagger">
-    <div class="concept-node inv">
-      <div class="cn-icon">🏦</div>
-      <div class="cn-title">You — The Investor</div>
-      <div class="cn-body">Provide $500K working capital loan at 6%, or commit $1M–$5M as institutional AUM earning 8% preferred return.</div>
-      <div class="cn-stat">8% — 13%+</div>
-      <div class="cn-stat-lbl">Annualized Return</div>
+  <div class="h1" style="margin-bottom:3px">The Perpetual Capital Win</div>
+  <div class="muted" style="text-align:center;margin-bottom:12px;font-style:italic;font-size:clamp(12px,1.2vw,15px)">"You're not buying yield. You own 20% of the engine's revenue — permanently."</div>
+
+  <div class="split-bar-wrap stagger">
+    <div class="split-seg seg-treasury">
+      <div class="seg-pct">40%</div>
+      <div class="seg-lbl">Treasury<br>Reinvestment</div>
     </div>
-    <div class="concept-arrow">
-      <div class="arrow-line"></div>
-      <div class="arrow-txt">Capital<br>flows in</div>
-      <div class="arrow-line"></div>
+    <div class="split-seg seg-pool">
+      <div class="seg-pct">20%</div>
+      <div class="seg-lbl">$GRX Investor<br>Pool</div>
     </div>
-    <div class="concept-node highlight">
-      <div class="cn-icon">⚙️</div>
-      <div class="cn-title">Treasury Engine</div>
-      <div class="cn-body">AI-driven protocol router. Rebalances every 15 minutes across Aave, Morpho, Gearbox, Pendle, Maple. 96 harvest cycles daily.</div>
-      <div class="cn-stat">13.2%</div>
-      <div class="cn-stat-lbl">Blended APY</div>
-    </div>
-    <div class="concept-arrow">
-      <div class="arrow-line"></div>
-      <div class="arrow-txt">Yield<br>flows out</div>
-      <div class="arrow-line"></div>
-    </div>
-    <div class="concept-node gen">
-      <div class="cn-icon">🌐</div>
-      <div class="cn-title">Genesis Reserve</div>
-      <div class="cn-body">Earns the spread between gross protocol yield and investor preferred return. Funds operations, loan service, and B2C growth.</div>
-      <div class="cn-stat">5.2%</div>
-      <div class="cn-stat-lbl">Net Spread</div>
+    <div class="split-seg seg-ops">
+      <div class="seg-pct">40%</div>
+      <div class="seg-lbl">Operations &amp;<br>Loan Service</div>
     </div>
   </div>
-  <div class="three-win stagger" style="margin-top:16px">
+
+  <div class="win-layers stagger">
+    <div class="wl-card">
+      <div class="wl-num" style="color:var(--blue)">01</div>
+      <div class="wl-content">
+        <div class="wl-title" style="color:var(--blue)">8% Preferred Floor</div>
+        <div class="wl-body">Guaranteed cash return on committed AUM, paid quarterly from gross yield — first claim, before Genesis takes its spread. Your floor, regardless of protocol variance.</div>
+        <div class="wl-tags">
+          <span class="wl-tag" style="border-color:rgba(74,158,255,0.4);color:var(--blue)">Guaranteed</span>
+          <span class="wl-tag" style="border-color:rgba(74,158,255,0.4);color:var(--blue)">Quarterly</span>
+          <span class="wl-tag" style="border-color:rgba(74,158,255,0.4);color:var(--blue)">On AUM</span>
+        </div>
+      </div>
+    </div>
+    <div class="wl-card">
+      <div class="wl-num" style="color:var(--teal)">02</div>
+      <div class="wl-content">
+        <div class="wl-title" style="color:var(--teal)">$GRX Pool Participation</div>
+        <div class="wl-body">20% of all Genesis spread revenue, tokenized as $GRX under Reg D 506(c). 60% distributed quarterly — 40% reinvested at 13.2% APY. NAV grows every epoch.</div>
+        <div class="wl-tags">
+          <span class="wl-tag" style="border-color:rgba(0,212,170,0.4);color:var(--teal)">60% Quarterly</span>
+          <span class="wl-tag" style="border-color:rgba(0,212,170,0.4);color:var(--teal)">40% NAV Growth</span>
+          <span class="wl-tag" style="border-color:rgba(0,212,170,0.4);color:var(--teal)">Reg D 506(c)</span>
+        </div>
+      </div>
+    </div>
+    <div class="wl-card">
+      <div class="wl-num" style="color:var(--gold)">03</div>
+      <div class="wl-content">
+        <div class="wl-title" style="color:var(--gold)">M33+ Secondary Liquidity</div>
+        <div class="wl-body">At Month 33, the engine retires its loan early. $GRX unlocks on a compliant ATS — KYC-gated. Trade, hold, or let NAV compound. Four exit options open at M72.</div>
+        <div class="wl-tags">
+          <span class="wl-tag" style="border-color:rgba(201,168,76,0.4);color:var(--gold)">M33 Unlock</span>
+          <span class="wl-tag" style="border-color:rgba(201,168,76,0.4);color:var(--gold)">ATS / DEX</span>
+          <span class="wl-tag" style="border-color:rgba(201,168,76,0.4);color:var(--gold)">4 Exit Options</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="three-win stagger" style="margin-top:10px">
     <div class="win-card">
       <div class="win-dot" style="background:var(--blue)"></div>
-      <div style="font-size:12px;color:var(--text);line-height:1.5"><strong style="color:var(--blue)">Investor:</strong> 8% preferred + profit participation on Accelerate tier. Quarterly distributions. 72-month term.</div>
+      <div style="font-size:clamp(10.5px,1.05vw,12px);color:var(--text);line-height:1.5"><strong style="color:var(--blue)">Investor:</strong> 8% guaranteed floor + growing $GRX distributions + M33 secondary market. No ceiling on NAV appreciation.</div>
     </div>
     <div class="win-card">
       <div class="win-dot" style="background:var(--gold)"></div>
-      <div style="font-size:12px;color:var(--text);line-height:1.5"><strong style="color:var(--gold)">Genesis:</strong> 5.2% spread funds loan repayment + operations. B2C revenue compounds revenue from Month 6.</div>
+      <div style="font-size:clamp(10.5px,1.05vw,12px);color:var(--text);line-height:1.5"><strong style="color:var(--gold)">Genesis:</strong> 40% ops funds growth. 40% treasury compounds to $1.49M sovereign reserve by M72. Unencumbered at M33.</div>
     </div>
     <div class="win-card">
       <div class="win-dot" style="background:var(--green)"></div>
-      <div style="font-size:12px;color:var(--text);line-height:1.5"><strong style="color:var(--green)">Proof:</strong> Capital deployed in the same live engine powering 100K+ users. Transparent on-chain. Real returns.</div>
+      <div style="font-size:clamp(10.5px,1.05vw,12px);color:var(--text);line-height:1.5"><strong style="color:var(--green)">Users:</strong> Smarter Wallet access to the same perpetual engine. B2C revenue compounds the pool from Month 6 onward.</div>
     </div>
   </div>
 </div>
@@ -562,30 +616,36 @@ input[type=range].slider::-webkit-slider-thumb{-webkit-appearance:none;width:18p
   </div>
 </div>
 
-<!-- ═══════════════════ SLIDE 4 — FINANCIAL MODEL ═══════════════════ -->
+<!-- ═══════════════════ SLIDE 4 — THE PERPETUAL ENGINE MODEL ═══════════════════ -->
 <div class="slide" id="s4">
-  <div class="h1" style="margin-bottom:4px">The Financial Model</div>
-  <div class="muted" style="text-align:center;margin-bottom:14px">Drag the slider — see the exact economics at every AUM level.</div>
+  <div class="h1" style="margin-bottom:3px">The Perpetual Engine Model</div>
+  <div class="muted" style="text-align:center;margin-bottom:10px;font-size:clamp(11px,1.1vw,13.5px)">40% builds sovereign reserve · 20% earns investors revenue · 40% funds growth. The engine never stops compounding.</div>
+
   <div class="model-wrap">
-    <div class="model-top">
+    <div class="m4-kpi-grid">
       <div class="kpi-card">
         <div class="kpi-val" style="color:var(--gold2)">13.2%</div>
-        <div class="kpi-lbl">Blended APY Target</div>
+        <div class="kpi-lbl">Blended APY</div>
       </div>
       <div class="kpi-card">
         <div class="kpi-val" style="color:var(--blue)">8.0%</div>
-        <div class="kpi-lbl">Investor Preferred Return</div>
+        <div class="kpi-lbl">Preferred Floor</div>
       </div>
       <div class="kpi-card">
-        <div class="kpi-val" style="color:var(--green)">5.2%</div>
-        <div class="kpi-lbl">Genesis Net Spread</div>
+        <div class="kpi-val" id="m4-grx-yield" style="color:var(--teal)">—</div>
+        <div class="kpi-lbl">$GRX Pool / Mo</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-val" id="m4-treasury-mo" style="color:var(--green)">—</div>
+        <div class="kpi-lbl">Treasury / Mo</div>
       </div>
     </div>
+
     <div class="model-calc">
       <div class="calc-header">
         <div>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px">Institutional AUM</div>
-          <div style="font-size:11px;color:var(--muted)">+ $500K working capital deployed at 13.2% APY by Genesis</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px">Institutional AUM</div>
+          <div style="font-size:10.5px;color:var(--muted)">Genesis 5.2% spread split 40/20/40 across Treasury · $GRX Pool · Operations</div>
         </div>
         <div class="slider-val" id="aumDisplay">$1.0M</div>
       </div>
@@ -594,34 +654,88 @@ input[type=range].slider::-webkit-slider-thumb{-webkit-appearance:none;width:18p
         <input type="range" class="slider" id="aumSlider4" min="500000" max="5000000" value="1000000" step="100000" style="background:linear-gradient(90deg,var(--gold) 10%,var(--bg5) 10%)">
         <span class="muted" style="font-size:11px;white-space:nowrap">$5M</span>
       </div>
-      <div class="model-outputs">
-        <div class="mo-item">
-          <div class="mo-val" id="m-gross" style="color:var(--gold2)">—</div>
-          <div class="mo-lbl">Gross Yield<br>/ Month</div>
+
+      <div class="split-output-row">
+        <div class="so-seg" style="border-color:rgba(201,168,76,0.35)">
+          <div class="so-lbl">40% Treasury</div>
+          <div class="so-val" id="m4-treasury" style="color:var(--gold)">—</div>
+          <div style="font-size:9px;color:var(--muted);margin-top:2px">reinvested / mo</div>
         </div>
-        <div class="mo-item">
-          <div class="mo-val" id="m-inv" style="color:var(--blue)">—</div>
-          <div class="mo-lbl">Investor<br>Preferred / Mo</div>
+        <div class="so-seg" style="border-color:rgba(0,212,170,0.35)">
+          <div class="so-lbl">20% $GRX Pool</div>
+          <div class="so-val" id="m4-pool" style="color:var(--teal)">—</div>
+          <div style="font-size:9px;color:var(--muted);margin-top:2px">tokenized / mo</div>
         </div>
-        <div class="mo-item">
-          <div class="mo-val" id="m-loan" style="color:var(--muted)">$8,289</div>
-          <div class="mo-lbl">Loan Payment<br>/ Month</div>
+        <div class="so-seg" style="border-color:rgba(155,109,255,0.35)">
+          <div class="so-lbl">40% Operations</div>
+          <div class="so-val" id="m4-ops" style="color:var(--violet)">—</div>
+          <div style="font-size:9px;color:var(--muted);margin-top:2px">loan + team / mo</div>
         </div>
-        <div class="mo-item">
-          <div class="mo-val" id="m-engine" style="color:var(--gold)">$5,500</div>
-          <div class="mo-lbl">Engine Yield<br>on $500K</div>
-        </div>
-        <div class="mo-item surplus">
-          <div class="mo-val" id="m-net" style="color:var(--green)">—</div>
-          <div class="mo-lbl">Net to<br>Operations</div>
-        </div>
+      </div>
+      <div class="split-sub-row">
+        <span>Loan: <strong style="color:var(--muted)">$8,289/mo · M33 Engine Unencumbered</strong></span>
+        <span style="color:var(--teal)">$GRX distributed: <strong id="m4-grx-dist">—</strong></span>
       </div>
     </div>
   </div>
-  <div style="margin-top:12px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-    <span class="muted" style="font-size:11px">* Engine yield = $500K × 13.2% ÷ 12 = $5,500/mo constant</span>
-    <span class="muted" style="font-size:11px">· Loan = $500K @ 6%, 72 months</span>
-    <span class="muted" style="font-size:11px">· B2C revenue not included above</span>
+
+  <div class="chart-wrap stagger" style="margin-top:8px">
+    <div class="chart-title">72-Month Engine Trajectory — $5M AUM Scale</div>
+    <svg viewBox="0 0 640 215" class="engine-chart" preserveAspectRatio="xMidYMid meet" style="max-height:148px">
+      <defs>
+        <filter id="glow2">
+          <feGaussianBlur stdDeviation="2.5" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <!-- Grid lines -->
+      <line x1="60" y1="43" x2="620" y2="43" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+      <line x1="60" y1="88" x2="620" y2="88" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+      <line x1="60" y1="133" x2="620" y2="133" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+      <line x1="60" y1="178" x2="620" y2="178" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+      <line x1="60" y1="205" x2="620" y2="205" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+      <!-- Y-axis labels -->
+      <text x="55" y="46" fill="rgba(255,255,255,0.28)" font-size="7.5" text-anchor="end">$1.5M</text>
+      <text x="55" y="91" fill="rgba(255,255,255,0.28)" font-size="7.5" text-anchor="end">$1.1M</text>
+      <text x="55" y="136" fill="rgba(255,255,255,0.28)" font-size="7.5" text-anchor="end">$650K</text>
+      <text x="55" y="181" fill="rgba(255,255,255,0.28)" font-size="7.5" text-anchor="end">$250K</text>
+      <text x="55" y="208" fill="rgba(255,255,255,0.28)" font-size="7.5" text-anchor="end">$0</text>
+      <!-- M33 unencumbered vertical line -->
+      <line x1="317" y1="35" x2="317" y2="205" stroke="rgba(26,191,106,0.55)" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="321" y="42" fill="var(--green)" font-size="7.5" font-weight="700" letter-spacing=".06em">ENGINE FREE · M33</text>
+      <!-- Green zone M33–M72 -->
+      <rect x="317" y="43" width="303" height="162" fill="rgba(26,191,106,0.035)"/>
+      <text x="468" y="196" fill="rgba(26,191,106,0.45)" font-size="7" text-anchor="middle" letter-spacing=".06em">20% PRESERVE · 40% GROW · 40% ACCELERATE</text>
+      <!-- Loan balance (red) — declining M0→M33, then zero -->
+      <polyline points="60,151 153,159 247,167 309,176 317,205"
+        fill="none" stroke="rgba(232,64,64,0.8)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+      <line x1="317" y1="205" x2="620" y2="205" stroke="rgba(232,64,64,0.2)" stroke-width="1" stroke-dasharray="3,4"/>
+      <!-- Treasury balance (gold) — steady then accelerates post-M33 -->
+      <polyline points="60,205 153,193 247,180 309,170 317,174 410,145 527,97 620,44"
+        fill="none" stroke="var(--gold)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow2)"/>
+      <!-- $GRX Pool NAV (teal) -->
+      <polyline points="60,205 153,203 247,200 309,198 317,198 410,192 527,182 620,168"
+        fill="none" stroke="var(--teal)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <!-- M33 crossover dot -->
+      <circle cx="317" cy="174" r="3.5" fill="var(--green)" opacity="0.9"/>
+      <!-- Terminal value labels -->
+      <text x="608" y="42" fill="var(--gold)" font-size="7.5" text-anchor="end" font-weight="700">$1.49M</text>
+      <text x="608" y="165" fill="var(--teal)" font-size="7.5" text-anchor="end">$340K</text>
+      <!-- X-axis month labels -->
+      <text x="60"  y="213" fill="rgba(255,255,255,0.3)" font-size="7.5" text-anchor="middle">M0</text>
+      <text x="153" y="213" fill="rgba(255,255,255,0.3)" font-size="7.5" text-anchor="middle">M12</text>
+      <text x="247" y="213" fill="rgba(255,255,255,0.3)" font-size="7.5" text-anchor="middle">M24</text>
+      <text x="317" y="213" fill="rgba(255,255,255,0.55)" font-size="7.5" text-anchor="middle" font-weight="700">M33</text>
+      <text x="410" y="213" fill="rgba(255,255,255,0.3)" font-size="7.5" text-anchor="middle">M45</text>
+      <text x="527" y="213" fill="rgba(255,255,255,0.3)" font-size="7.5" text-anchor="middle">M60</text>
+      <text x="620" y="213" fill="rgba(255,255,255,0.3)" font-size="7.5" text-anchor="middle">M72</text>
+    </svg>
+    <div class="chart-legend">
+      <div class="cl-item"><span class="cl-dot" style="background:var(--gold)"></span>Treasury Balance</div>
+      <div class="cl-item"><span class="cl-dot" style="background:var(--teal)"></span>$GRX Pool NAV</div>
+      <div class="cl-item"><span class="cl-dot" style="background:var(--red)"></span>Loan Balance</div>
+      <div class="cl-item"><span class="cl-dot" style="background:var(--green);border-radius:2px;width:10px;height:3px"></span>M33 Engine Unencumbered</div>
+    </div>
   </div>
 </div>
 
@@ -1389,8 +1503,6 @@ document.addEventListener('touchend', e => {
 
 // ── Financial Model Calculator (Slide 4) ────────────────────
 const slider4 = document.getElementById('aumSlider4');
-const ENGINE_YIELD = 5500;   // $500K × 13.2% / 12
-const LOAN_PMT    = 8289;    // $500K @ 6%, 72mo
 
 function fmtDollar(n) {
   if (Math.abs(n) >= 1000000) return '$' + (n / 1000000).toFixed(2) + 'M';
@@ -1403,19 +1515,21 @@ function fmtM(n) {
 }
 
 function updateModel() {
-  const aum = +slider4.value;
+  const aum      = +slider4.value;
   document.getElementById('aumDisplay').textContent = fmtM(aum);
-  const gross   = aum * 0.132 / 12;
-  const invPref = aum * 0.08  / 12;
-  const spread  = aum * 0.052 / 12;
-  const net     = spread + ENGINE_YIELD - LOAN_PMT;
 
-  document.getElementById('m-gross').textContent = fmtDollar(gross);
-  document.getElementById('m-inv').textContent   = fmtDollar(invPref);
+  const spread   = aum * 0.052 / 12;   // Genesis 5.2% spread / mo
+  const treasury = spread * 0.40;
+  const pool     = spread * 0.20;
+  const ops      = spread * 0.40;
+  const grxDist  = pool * 3 * 0.60;    // 60% of quarterly pool to holders
 
-  const netEl = document.getElementById('m-net');
-  netEl.textContent = (net >= 0 ? '+' : '') + fmtDollar(net);
-  netEl.style.color = net >= 0 ? 'var(--green)' : 'var(--red)';
+  document.getElementById('m4-grx-yield').textContent   = fmtDollar(pool);
+  document.getElementById('m4-treasury-mo').textContent = fmtDollar(treasury);
+  document.getElementById('m4-treasury').textContent    = fmtDollar(treasury);
+  document.getElementById('m4-pool').textContent        = fmtDollar(pool);
+  document.getElementById('m4-ops').textContent         = fmtDollar(ops);
+  document.getElementById('m4-grx-dist').textContent    = fmtDollar(grxDist) + '/qtr';
 
   const pct = ((aum - 500000) / (5000000 - 500000) * 100).toFixed(1);
   slider4.style.background = `linear-gradient(90deg,var(--gold) ${pct}%,var(--bg5) ${pct}%)`;
