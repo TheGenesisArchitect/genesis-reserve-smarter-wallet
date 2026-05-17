@@ -436,6 +436,17 @@ input[type=range].slider::-webkit-slider-thumb{-webkit-appearance:none;width:18p
 .chart-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:5px;justify-content:center}
 .cl-item{display:flex;align-items:center;gap:5px;font-size:clamp(9px,0.9vw,10.5px);color:var(--muted)}
 .cl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+/* ══ SLIDE 8 — ROADMAP DUAL ENGINE ══ */
+.ph-milestone{background:rgba(26,191,106,0.1);border:1px solid rgba(26,191,106,0.35);border-radius:6px;padding:5px 9px;margin:7px 0 4px;font-size:9.5px;font-weight:700;color:var(--green);letter-spacing:.03em}
+.ph-revenue{border-top:1px solid rgba(255,255,255,0.07);margin-top:7px;padding-top:6px;display:grid;grid-template-columns:auto 1fr;gap:2px 6px}
+.ph-rev-item{font-size:8.5px;color:var(--muted);align-self:center}
+.ph-rev-val{font-size:8.5px;font-family:'JetBrains Mono',monospace;text-align:right;font-weight:600}
+/* ══ SLIDE 10 — TERM SHEET $GRX ══ */
+.ts-grx-proj{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin:5px 0 4px}
+.ts-grx-cell{background:rgba(0,212,170,0.06);border:1px solid rgba(0,212,170,0.2);border-radius:5px;padding:6px 8px;text-align:center}
+.tgc-milestone{font-size:8px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:3px}
+.tgc-val{font-size:12px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--teal)}
+.tgc-sub{font-size:7.5px;color:var(--muted);margin-top:2px}
 </style>
 </head>
 <body>
@@ -1211,74 +1222,85 @@ input[type=range].slider::-webkit-slider-thumb{-webkit-appearance:none;width:18p
 <!-- ═══════════════════ SLIDE 8 — 72-MONTH ROADMAP ═══════════════════ -->
 <div class="slide" id="s8">
   <div class="h1" style="margin-bottom:4px">72-Month Strategic Roadmap</div>
-  <div class="muted" style="text-align:center;margin-bottom:14px">Four phases — from deployment to institutional scale.</div>
+  <div class="muted" style="text-align:center;margin-bottom:14px">Dual-engine compounding — DeFi protocol yield + B2C growth. Both streams feed the 40/20/40 split.</div>
   <div class="roadmap-wrap">
     <div class="roadmap-phases stagger">
       <div class="phase-card phase-1">
-        <div class="ph-label" style="color:var(--gold)">Phase 1 — Months 1–6</div>
+        <div class="ph-label" style="color:var(--gold)">Phase 1 · M1–M6</div>
         <div class="ph-title">Foundation &amp; Proof</div>
-        <div class="ph-months">Treasury Engine fully deployed</div>
-        <div class="ph-item" style="color:var(--muted)">Smart contract audit completed</div>
-        <div class="ph-item" style="color:var(--muted)">$500K working capital deployed</div>
-        <div class="ph-item" style="color:var(--muted)">First 500 pilot users onboarded</div>
-        <div class="ph-item" style="color:var(--muted)">KYC/AML providers live</div>
-        <div class="ph-item" style="color:var(--muted)">FinCEN MSB registration filed</div>
-        <div style="margin-top:10px"><span class="pill" style="font-size:9px">AUM: $1M–$2M</span></div>
+        <div class="ph-months">Engine deployed · Compliance live</div>
+        <div class="ph-item" style="color:var(--muted)">Smart contract audit complete</div>
+        <div class="ph-item" style="color:var(--muted)">KYC / AML + FinCEN MSB live</div>
+        <div class="ph-item" style="color:var(--muted)">500 pilot users onboarded</div>
+        <div class="ph-item" style="color:var(--muted)">$GRX private placement opens</div>
+        <div class="ph-item" style="color:var(--muted)">Institutional AUM: $1M–$2M</div>
+        <div class="ph-revenue">
+          <span class="ph-rev-item">DeFi Protocol</span><span class="ph-rev-val" style="color:var(--gold)">~$8.7K/mo</span>
+          <span class="ph-rev-item">B2C Revenue</span><span class="ph-rev-val" style="color:var(--muted)">Pre-launch</span>
+        </div>
       </div>
       <div class="phase-card phase-2">
-        <div class="ph-label" style="color:var(--teal)">Phase 2 — Months 6–24</div>
+        <div class="ph-label" style="color:var(--teal)">Phase 2 · M6–M18</div>
         <div class="ph-title">Launch &amp; Traction</div>
-        <div class="ph-months">GTM active, first revenues</div>
-        <div class="ph-item" style="color:var(--muted)">100K users by Month 24</div>
-        <div class="ph-item" style="color:var(--muted)">Remitation B2B channel live</div>
-        <div class="ph-item" style="color:var(--muted)">$50M B2C AUM milestone</div>
-        <div class="ph-item" style="color:var(--muted)">Debit card program scaled</div>
-        <div class="ph-item" style="color:var(--muted)">Institutional AUM at $3M</div>
-        <div style="margin-top:10px"><span class="badge-t" style="font-size:9px">Revenue: $200K+/mo</span></div>
+        <div class="ph-months">GTM active · First revenues</div>
+        <div class="ph-item" style="color:var(--muted)">500 → 10K users</div>
+        <div class="ph-item" style="color:var(--muted)">Remitation channel live</div>
+        <div class="ph-item" style="color:var(--muted)">$1M B2C AUM milestone</div>
+        <div class="ph-item" style="color:var(--muted)">$GRX: first quarterly distributions</div>
+        <div class="ph-item" style="color:var(--muted)">Institutional AUM: $3M</div>
+        <div class="ph-revenue">
+          <span class="ph-rev-item">DeFi Protocol</span><span class="ph-rev-val" style="color:var(--gold)">~$13K/mo</span>
+          <span class="ph-rev-item">B2C Revenue</span><span class="ph-rev-val" style="color:var(--teal)">~$18K/mo</span>
+        </div>
       </div>
-      <div class="phase-card phase-3">
-        <div class="ph-label" style="color:var(--violet)">Phase 3 — Months 24–48</div>
+      <div class="phase-card phase-3" style="border-color:rgba(26,191,106,0.35)">
+        <div class="ph-label" style="color:var(--violet)">Phase 3 · M18–M36</div>
         <div class="ph-title">Scale &amp; Series A</div>
-        <div class="ph-months">Institutional expansion</div>
-        <div class="ph-item" style="color:var(--muted)">200K–300K users</div>
+        <div class="ph-months">10K → 200K users · 100K by M24</div>
         <div class="ph-item" style="color:var(--muted)">Series A raise ($5M–$10M)</div>
-        <div class="ph-item" style="color:var(--muted)">Multi-chain vault expansion</div>
-        <div class="ph-item" style="color:var(--muted)">Family office AUM program</div>
-        <div class="ph-item" style="color:var(--muted)">Option D: Loan retired M48</div>
-        <div style="margin-top:10px"><span class="badge-g" style="font-size:9px">Revenue: $1M+/mo</span></div>
+        <div class="ph-item" style="color:var(--muted)">Family office AUM: $3M+</div>
+        <div class="ph-item" style="color:var(--muted)">Institutional AUM: $5M target</div>
+        <div class="ph-milestone">★ M33 — Engine Unencumbered · Loan Retired Early</div>
+        <div class="ph-revenue">
+          <span class="ph-rev-item">DeFi Protocol</span><span class="ph-rev-val" style="color:var(--gold)">~$21.7K/mo</span>
+          <span class="ph-rev-item">B2C Revenue</span><span class="ph-rev-val" style="color:var(--teal)">~$380K/mo</span>
+        </div>
       </div>
       <div class="phase-card phase-4">
-        <div class="ph-label" style="color:var(--green)">Phase 4 — Months 48–72</div>
-        <div class="ph-title">Institutional Scale</div>
-        <div class="ph-months">Market leadership</div>
-        <div class="ph-item" style="color:var(--muted)">500K users, $250M B2C AUM</div>
-        <div class="ph-item" style="color:var(--muted)">Institutional AUM $5M–$20M</div>
+        <div class="ph-label" style="color:var(--green)">Phase 4 · M36–M72</div>
+        <div class="ph-title">Expand &amp; Perpetuate</div>
+        <div class="ph-months">200K → 500K users · Market leadership</div>
+        <div class="ph-item" style="color:var(--muted)">Multi-chain vault expansion</div>
         <div class="ph-item" style="color:var(--muted)">Multi-jurisdiction licensing</div>
-        <div class="ph-item" style="color:var(--muted)">Loan fully retired (all options)</div>
-        <div class="ph-item" style="color:var(--muted)">Series B or profitability path</div>
-        <div style="margin-top:10px"><span class="badge-g" style="font-size:9px">Revenue: $2.6M+/mo</span></div>
+        <div class="ph-item" style="color:var(--muted)">$GRX secondary market active (M33+)</div>
+        <div class="ph-item" style="color:var(--muted)">Sovereign Treasury: $1.49M at M72</div>
+        <div class="ph-item" style="color:var(--muted)">4 exit options open at M72</div>
+        <div class="ph-revenue">
+          <span class="ph-rev-item">DeFi Protocol</span><span class="ph-rev-val" style="color:var(--gold)">~$21.7K/mo</span>
+          <span class="ph-rev-item">B2C Revenue</span><span class="ph-rev-val" style="color:var(--teal)">~$2.6M/mo</span>
+        </div>
       </div>
     </div>
     <div class="roadmap-kpis stagger" style="margin-top:10px">
       <div class="rk-card">
-        <div class="rk-val" style="color:var(--gold2)">$500K</div>
-        <div class="rk-lbl">Working Capital<br>Day 1</div>
+        <div class="rk-val" style="color:var(--teal)">$18K</div>
+        <div class="rk-lbl">B2C Revenue<br>Month 18</div>
       </div>
       <div class="rk-card">
         <div class="rk-val" style="color:var(--blue)">100K</div>
         <div class="rk-lbl">Users<br>Month 24</div>
       </div>
       <div class="rk-card">
-        <div class="rk-val" style="color:var(--teal)">$5M</div>
-        <div class="rk-lbl">Inst. AUM<br>Month 36</div>
+        <div class="rk-val" style="color:var(--green)">M33</div>
+        <div class="rk-lbl">Engine<br>Unencumbered</div>
       </div>
       <div class="rk-card">
-        <div class="rk-val" style="color:var(--green)">$0</div>
-        <div class="rk-lbl">Loan Balance<br>Month 72</div>
+        <div class="rk-val" style="color:var(--gold2)">$1.49M</div>
+        <div class="rk-lbl">Sovereign Treasury<br>Month 72</div>
       </div>
       <div class="rk-card">
         <div class="rk-val" style="color:var(--gold2)">$2.6M</div>
-        <div class="rk-lbl">Monthly Revenue<br>Month 72</div>
+        <div class="rk-lbl">Total Revenue<br>Month 72</div>
       </div>
     </div>
   </div>
@@ -1411,7 +1433,30 @@ input[type=range].slider::-webkit-slider-thumb{-webkit-appearance:none;width:18p
         <div class="ts-doc-row"><span class="ts-doc-key">Preferred Return Rate</span><span class="ts-doc-val green">8.00% per annum</span></div>
         <div class="ts-doc-row"><span class="ts-doc-key">Monthly Yield (Preferred)</span><span class="ts-doc-val green" id="td-monthly">—</span></div>
         <div class="ts-doc-row"><span class="ts-doc-key">Annual Yield (Preferred)</span><span class="ts-doc-val green" id="td-annual">—</span></div>
-        <div class="ts-doc-row"><span class="ts-doc-key">Profit Participation</span><span class="ts-doc-val teal">50 / 50 on Accelerate above 8%</span></div>
+        <div class="ts-doc-row"><span class="ts-doc-key">$GRX Token Participation</span><span class="ts-doc-val teal">20% of All Genesis Revenue · Reg D 506(c)</span></div>
+
+        <!-- Section: $GRX Token Participation -->
+        <div class="ts-section-head">$GRX Token — Projected Quarterly Distributions</div>
+        <div class="ts-doc-row"><span class="ts-doc-key">Token Allocation</span><span class="ts-doc-val teal" id="td-grx-alloc">—</span></div>
+        <div class="ts-doc-row"><span class="ts-doc-key">Lock-up Period</span><span class="ts-doc-val">M1–M32 · Secondary Market Opens M33+</span></div>
+        <div class="ts-grx-proj">
+          <div class="ts-grx-cell">
+            <div class="tgc-milestone">Month 18</div>
+            <div class="tgc-val" id="td-grx-m18">—</div>
+            <div class="tgc-sub">B2C launch · projected / qtr</div>
+          </div>
+          <div class="ts-grx-cell">
+            <div class="tgc-milestone">Month 36</div>
+            <div class="tgc-val" id="td-grx-m36">—</div>
+            <div class="tgc-sub">B2C scale · projected / qtr</div>
+          </div>
+          <div class="ts-grx-cell">
+            <div class="tgc-milestone">Month 72</div>
+            <div class="tgc-val" id="td-grx-m72">—</div>
+            <div class="tgc-sub">Full scale · projected / qtr</div>
+          </div>
+        </div>
+        <div class="ts-doc-row"><span class="ts-doc-key">M72 Exit Options</span><span class="ts-doc-val">A: Redeem NAV · B: Roll Cycle 2 · C: Equity Warrants · D: Hold</span></div>
 
         <!-- Section: Instrument Structure -->
         <div class="ts-section-head">Instrument Structure</div>
@@ -1609,6 +1654,22 @@ document.getElementById('ts-generate').addEventListener('click', () => {
   document.getElementById('td-repay').textContent    = repayShort[repay];
   document.getElementById('td-monthly').textContent  = fmtDollar(monthlyYield) + ' / month';
   document.getElementById('td-annual').textContent   = fmtDollar(annualYield)  + ' / year';
+
+  // $GRX token projections — investor's proportional share of the pool
+  // Assumes full $5M institutional AUM at scale; investor's share = aum / 5M
+  const tokenShare   = Math.min(aum / 5000000, 1.0);
+  const tokenPct     = (tokenShare * 100 % 1 === 0)
+    ? (tokenShare * 100).toFixed(0) : (tokenShare * 100).toFixed(1);
+  const SPREAD_5M    = 5000000 * 0.052 / 12;   // $21,667/mo protocol spread at $5M AUM
+  const B2C_M18      = 18000;
+  const B2C_M36      = 380000;
+  const B2C_M72      = 2600000;
+  const grxQtr = (b2c) => (SPREAD_5M + b2c) * 3 * 0.20 * 0.60 * tokenShare;
+
+  document.getElementById('td-grx-alloc').textContent = tokenPct + '% of $GRX Pool (' + fmtM(aum) + ' of $5M institutional target)';
+  document.getElementById('td-grx-m18').textContent   = fmtDollar(grxQtr(B2C_M18));
+  document.getElementById('td-grx-m36').textContent   = fmtDollar(grxQtr(B2C_M36));
+  document.getElementById('td-grx-m72').textContent   = fmtDollar(grxQtr(B2C_M72));
 
   document.getElementById('ts-placeholder').style.display = 'none';
   document.getElementById('ts-doc').classList.add('visible');
