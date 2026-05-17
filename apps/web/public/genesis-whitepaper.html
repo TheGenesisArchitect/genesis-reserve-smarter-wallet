@@ -94,6 +94,31 @@ body{
   display:block;
 }
 
+.cover-brand{
+  margin-bottom:6px;
+  text-align:center;
+}
+.cover-brand-name{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(22px,3.2vw,38px);
+  font-weight:300;
+  letter-spacing:.28em;
+  text-transform:uppercase;
+  color:var(--white);
+  line-height:1;
+  margin-bottom:6px;
+}
+.cover-brand-name span{
+  color:var(--gold);
+}
+.cover-brand-sub{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  color:rgba(201,168,76,0.5);
+}
+
 .cover-divider{
   width:80px;height:1px;
   background:linear-gradient(90deg,transparent,var(--gold),transparent);
@@ -660,6 +685,11 @@ svg.wp-chart{width:100%;height:auto;overflow:visible}
     <div class="cover-logo-mark">
       <img src="/genesis-logo.png" alt="Genesis Reserve" class="cover-logo-img"
         onerror="this.src='/genesis-logo.svg'"/>
+    </div>
+
+    <div class="cover-brand">
+      <div class="cover-brand-name">GENESIS <span>RESERVE</span></div>
+      <div class="cover-brand-sub">Perpetual Capital Infrastructure</div>
     </div>
 
     <div class="cover-divider"></div>
