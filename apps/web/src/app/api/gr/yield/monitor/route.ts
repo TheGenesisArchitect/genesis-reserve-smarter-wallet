@@ -145,7 +145,7 @@ function reasonForTier(tier: VaultIntentTier, strategy: VaultStrategySummary): s
             {
                 allowedRisks: ['low', 'medium', 'high'],
                 minApyPct: 4,
-                maxApyPct: 50,
+                maxApyPct: 150,
                 allowedLiquidity: ['instant', 'same_day', 'scheduled'],
                 maxFeeBps: 200,
             },

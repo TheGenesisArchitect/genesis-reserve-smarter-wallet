@@ -280,7 +280,7 @@ const VAULT_INTENT_POLICIES: Record<VaultIntentTier, VaultIntentPolicy> = {
             {
                 allowedRisks: ['low', 'medium', 'high'],
                 minApyPct: 4,
-                maxApyPct: 50,
+                maxApyPct: 150,
                 allowedLiquidity: ['instant', 'same_day', 'scheduled'],
                 maxFeeBps: 200,
             },
