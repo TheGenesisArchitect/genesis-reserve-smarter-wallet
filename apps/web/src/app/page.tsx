@@ -8,8 +8,8 @@ import { AppShell, type ViewKey } from '../components/AppShell'
 import { WalletHome } from '../components/WalletHome'
 import { CardPage } from '../components/CardPage'
 import { VaultsPage } from '../components/VaultsPage'
-import { DepositPage } from '../components/DepositPage'
-import { WithdrawPage } from '@/components/WithdrawPage'
+import { FundPage } from '../components/FundPage'
+import { CashOutPage } from '../components/CashOutPage'
 import { ActivityPage } from '../components/ActivityPage'
 import { SettingsPanel } from '../components/SettingsPanel'
 import { GenesisLandingPage } from '../components/GenesisLandingPage'
@@ -176,10 +176,10 @@ function PanelRouter({
       return <SendPage accountId={accountId} />
 
     case 'deposit':
-      return <DepositPage onNavigate={onNavigate} />
+      return <FundPage onNavigate={onNavigate} />
 
     case 'withdraw':
-      return <WithdrawPage onNavigate={onNavigate} />
+      return <CashOutPage onNavigate={onNavigate} />
 
     case 'receive':
       return (

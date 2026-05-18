@@ -20,7 +20,7 @@ const CONSUMER_NAV: Array<{ key: ViewKey; label: string; icon: (active: boolean)
   { key: 'home', label: 'Home', icon: (a) => <HomeIcon active={a} /> },
   { key: 'send', label: 'Send', icon: (a) => <SendIcon active={a} /> },
   { key: 'deposit', label: 'Add Money', icon: (a) => <PlusIcon active={a} /> },
-  { key: 'withdraw', label: 'Withdraw', icon: (a) => <WithdrawIcon active={a} /> },
+  { key: 'withdraw', label: 'Cash Out', icon: (a) => <WithdrawIcon active={a} /> },
   { key: 'receive', label: 'Receive', icon: (a) => <ReceiveIcon active={a} /> },
   { key: 'bridge', label: 'Bridge', icon: (a) => <BridgeIcon active={a} /> },
   { key: 'swap', label: 'Swap', icon: (a) => <SwapNavIcon active={a} /> },

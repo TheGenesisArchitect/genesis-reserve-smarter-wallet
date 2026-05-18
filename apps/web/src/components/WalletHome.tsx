@@ -10,10 +10,7 @@ import { usePortfolioBalances } from '../hooks/usePortfolioBalances'
 import { useVaultPositions } from '../hooks/useVaultPositions'
 import { useYieldEngine } from '../hooks/useYieldEngine'
 import { useActiveWalletAddress } from '../hooks/useActiveWalletAddress'
-import { WithdrawFlow } from './WithdrawFlow'
 import { TapToPayModal } from './TapToPayModal'
-import { AddMoneyModal } from './AddMoneyModal'
-import { PayoutModal } from './PayoutModal'
 import { CHAIN_META } from '../config/contracts'
 import type { LedgerEntry } from '../lib/bff.types'
 import type { ViewKey } from './AppShell'
@@ -219,8 +216,6 @@ export function WalletHome({ accountId, onNavigate }: WalletHomeProps) {
   const [masked, setMasked] = useState(false)
   const [showPortfolio, setShowPortfolio] = useState(true)  // default open
   const [showTapToPay, setShowTapToPay] = useState(false)
-  const [showAddMoney, setShowAddMoney] = useState(false)
-  const [showCashOut, setShowCashOut] = useState(false)
 
   // ── Display name ─────────────────────────────────────────────────────
   const displayName = user?.phone?.number
@@ -560,30 +555,22 @@ export function WalletHome({ accountId, onNavigate }: WalletHomeProps) {
 
           <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
             <div style={{ flex: 1 }}>
-              <ActionButton label="Withdraw" onClick={() => onNavigate('withdraw')} />
+              <ActionButton label="Cash Out" onClick={() => onNavigate('withdraw')} />
             </div>
             <div style={{ flex: 1 }}>
               <ActionButton label="Manage Vaults" onClick={() => onNavigate('vaults')} secondary />
             </div>
           </div>
-
-          {hasPositions && walletAddr && (
-            <div style={{ marginTop: 12 }}>
-              <WithdrawFlow walletAddress={walletAddr} compact onNavigate={onNavigate} onCashOut={(amount) => { setShowCashOut(true) }} />
-            </div>
-          )}
         </SectionPanel>
       )}
 
       {/* ── Quick actions ─────────────────────────────────────────────── */}
       <SectionPanel title="Quick Actions" eyebrow="Transfers & Conversions">
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-          <QuickAction label="Add Money" onClick={() => setShowAddMoney(true)} icon={<PlusQAIcon />} />
-          <QuickAction label="Cash Out" onClick={() => setShowCashOut(true)} icon={<CashOutQAIcon />} />
+          <QuickAction label="Add Money" onClick={() => onNavigate('deposit')} icon={<PlusQAIcon />} />
+          <QuickAction label="Cash Out" onClick={() => onNavigate('withdraw')} icon={<CashOutQAIcon />} />
           <QuickAction label="Send" onClick={() => onNavigate('send')} icon={<SendQAIcon />} />
-          <QuickAction label="Swap"
-            onClick={() => onNavigate('swap')}
-            icon={<SwapQAIcon />} />
+          <QuickAction label="Swap" onClick={() => onNavigate('swap')} icon={<SwapQAIcon />} />
         </div>
       </SectionPanel>
 
@@ -638,26 +625,6 @@ export function WalletHome({ accountId, onNavigate }: WalletHomeProps) {
           </button>
         </div>
       </SectionPanel>
-
-      {/* On-ramp: Add Money (card → USDC) */}
-      {showAddMoney && (
-        <AddMoneyModal
-          accountId={walletAddr ?? 'demo-account'}
-          onClose={() => setShowAddMoney(false)}
-          onSuccess={() => { /* balance will refresh on next poll */ }}
-          onLinkCard={() => onNavigate('card')}
-        />
-      )}
-
-      {/* Off-ramp: Cash Out (USDC → card) */}
-      {showCashOut && (
-        <PayoutModal
-          accountId={walletAddr ?? 'demo-account'}
-          onClose={() => setShowCashOut(false)}
-          onSuccess={() => { /* balance will refresh on next poll */ }}
-          onLinkCard={() => onNavigate('card')}
-        />
-      )}
 
       {/* Tap to Pay modal — triggered from wallet home card section */}
       {showTapToPay && (
