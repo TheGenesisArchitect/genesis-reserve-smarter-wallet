@@ -596,8 +596,37 @@ function StrategyDrillDownCard({
 
       {/* ── 7. CODEX EDUCATION ───────────────────────────────────── */}
       {codexEntry && (
-        <div style={{ marginBottom: 16 }}>
+        <div style={{ marginBottom: 12 }}>
           <CodexChip entry={codexEntry} fullWidth />
+        </div>
+      )}
+
+      {/* ── 7b. RESEARCH LINK ────────────────────────────────────── */}
+      {strategy.poolUrl && (
+        <div style={{ marginBottom: 16 }}>
+          <a
+            href={strategy.poolUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              padding: '9px 14px',
+              borderRadius: 8,
+              border: `1px solid ${cfg.color}30`,
+              background: `${cfg.color}08`,
+              textDecoration: 'none',
+              color: cfg.color,
+              fontSize: 11,
+              fontWeight: 600,
+              fontFamily: "'Sora', sans-serif",
+              letterSpacing: '0.04em',
+            }}
+          >
+            <span style={{ fontSize: 14, lineHeight: 1 }}>↗</span>
+            <span>View Pool — verify APY &amp; pool data independently</span>
+          </a>
         </div>
       )}
 

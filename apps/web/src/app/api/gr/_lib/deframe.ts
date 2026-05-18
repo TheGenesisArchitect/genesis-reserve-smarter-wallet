@@ -318,6 +318,7 @@ const FALLBACK_STRATEGIES: VaultStrategySummary[] = [
         feeBps: 0,
         paused: false,
         availableActions: ['lend', 'withdraw'],
+        poolUrl: 'https://app.aave.com/',
     },
     {
         strategyId: 'fallback-aave-usdc-base',
@@ -333,6 +334,7 @@ const FALLBACK_STRATEGIES: VaultStrategySummary[] = [
         feeBps: 0,
         paused: false,
         availableActions: ['lend', 'withdraw'],
+        poolUrl: 'https://app.aave.com/',
     },
     {
         strategyId: 'fallback-compound-usdc-arbitrum',
@@ -348,6 +350,7 @@ const FALLBACK_STRATEGIES: VaultStrategySummary[] = [
         feeBps: 0,
         paused: false,
         availableActions: ['lend', 'withdraw'],
+        poolUrl: 'https://app.compound.finance/',
     },
     {
         strategyId: 'fallback-spark-usdc-ethereum',
@@ -363,6 +366,7 @@ const FALLBACK_STRATEGIES: VaultStrategySummary[] = [
         feeBps: 0,
         paused: false,
         availableActions: ['lend', 'withdraw'],
+        poolUrl: 'https://app.spark.fi/',
     },
     {
         strategyId: 'fallback-sky-usds-ethereum',
@@ -378,6 +382,7 @@ const FALLBACK_STRATEGIES: VaultStrategySummary[] = [
         feeBps: 0,
         paused: false,
         availableActions: ['lend', 'withdraw'],
+        poolUrl: 'https://app.sky.money/',
     },
     {
         strategyId: 'fallback-ondo-ousg-ethereum',
@@ -393,6 +398,7 @@ const FALLBACK_STRATEGIES: VaultStrategySummary[] = [
         feeBps: 0,
         paused: false,
         availableActions: ['lend', 'withdraw'],
+        poolUrl: 'https://app.ondo.finance/',
     },
 
     // ── Grow ──────────────────────────────────────────────────────────────
@@ -410,6 +416,7 @@ const FALLBACK_STRATEGIES: VaultStrategySummary[] = [
         feeBps: 0,
         paused: false,
         availableActions: ['lend', 'withdraw'],
+        poolUrl: 'https://app.morpho.org/',
     },
     {
         strategyId: 'fallback-pendle-pt-susde-arbitrum',
@@ -425,6 +432,7 @@ const FALLBACK_STRATEGIES: VaultStrategySummary[] = [
         feeBps: 0,
         paused: false,
         availableActions: ['lend', 'withdraw'],
+        poolUrl: 'https://app.pendle.finance/trade/pools',
     },
     {
         strategyId: 'fallback-pendle-pt-usdc-arbitrum',
@@ -440,6 +448,7 @@ const FALLBACK_STRATEGIES: VaultStrategySummary[] = [
         feeBps: 0,
         paused: false,
         availableActions: ['lend', 'withdraw'],
+        poolUrl: 'https://app.pendle.finance/trade/pools',
     },
     {
         strategyId: 'fallback-fluid-usdc-arbitrum',
@@ -455,6 +464,7 @@ const FALLBACK_STRATEGIES: VaultStrategySummary[] = [
         feeBps: 0,
         paused: false,
         availableActions: ['lend', 'withdraw'],
+        poolUrl: 'https://fluid.instadapp.io/',
     },
     {
         strategyId: 'fallback-resolv-usr-arbitrum',
@@ -470,6 +480,7 @@ const FALLBACK_STRATEGIES: VaultStrategySummary[] = [
         feeBps: 0,
         paused: false,
         availableActions: ['lend', 'withdraw'],
+        poolUrl: 'https://resolv.xyz/app',
     },
     {
         strategyId: 'fallback-maple-usdc-cash-arbitrum',
@@ -486,6 +497,7 @@ const FALLBACK_STRATEGIES: VaultStrategySummary[] = [
         paused: false,
         availableActions: ['lend', 'withdraw'],
         accreditationRequired: true,
+        poolUrl: 'https://app.maple.finance/',
     },
     {
         strategyId: 'fallback-notional-usdc-arbitrum',
@@ -501,6 +513,7 @@ const FALLBACK_STRATEGIES: VaultStrategySummary[] = [
         feeBps: 0,
         paused: false,
         availableActions: ['lend', 'withdraw'],
+        poolUrl: 'https://notional.finance/',
     },
     {
         strategyId: 'fallback-term-usdc-arbitrum',
@@ -516,6 +529,7 @@ const FALLBACK_STRATEGIES: VaultStrategySummary[] = [
         feeBps: 0,
         paused: false,
         availableActions: ['lend', 'withdraw'],
+        poolUrl: 'https://www.termfinance.io/',
     },
 
     // ── Accelerate ────────────────────────────────────────────────────────
@@ -533,6 +547,7 @@ const FALLBACK_STRATEGIES: VaultStrategySummary[] = [
         feeBps: 0,
         paused: false,
         availableActions: ['lend', 'withdraw'],
+        poolUrl: 'https://app.ethena.fi/',
     },
     {
         strategyId: 'fallback-gearbox-usdc-arbitrum',
@@ -540,14 +555,15 @@ const FALLBACK_STRATEGIES: VaultStrategySummary[] = [
         protocol: 'Gearbox',
         chain: 'arbitrum',
         chainId: 42161,
-        netApyPct: '18.00',
-        avgApyPct: '16.50',
-        inceptionApyPct: '14.20',
+        netApyPct: '20.53',
+        avgApyPct: '18.40',
+        inceptionApyPct: '16.80',
         riskLevel: 'high',
         liquidityWindow: 'instant',
         feeBps: 0,
         paused: false,
         availableActions: ['lend', 'withdraw'],
+        poolUrl: 'https://app.gearbox.fi/pools',
     },
 ]
 

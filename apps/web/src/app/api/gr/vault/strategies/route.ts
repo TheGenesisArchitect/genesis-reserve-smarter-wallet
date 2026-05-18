@@ -62,6 +62,12 @@ function promotedChainsFromWatchlist(chainScope: string[], chainCounts: Record<s
         .sort()
 }
 
+// All protocols covered by fallback — used for protocol-level dedup in both paths.
+const KNOWN_PROTOCOL_KEYS = [
+    'gearbox', 'ethena', 'morpho', 'pendle', 'aave', 'compound',
+    'spark', 'sky', 'ondo', 'maple', 'resolv', 'fluid', 'notional', 'term',
+] as const
+
 // Protocols we expect DeFrame to supply. Any absent here need a listing request.
 const TARGET_PROTOCOLS = ['pendle', 'maple', 'resolv', 'compound', 'superform', 'ethena'] as const
 
@@ -135,9 +141,22 @@ export async function GET(request: Request) {
             Promise.resolve(getFallbackStrategies()),
             fetchLiveProtocolStrategies(),
         ])
-        // Merge live protocol data over fallback — deduplicated by strategyId
-        const fallbackIds = new Set(fallbackAll.map((s) => s.strategyId))
-        const mergedAll = [...fallbackAll, ...liveProtocols.filter((s) => !fallbackIds.has(s.strategyId))]
+        // Prefer live protocol data over fallback: drop fallback entries for any
+        // protocol already covered by a live strategy (same protocol key, any chain).
+        // This prevents stale hardcoded APYs from competing with live DeFiLlama data.
+        const liveProtocolKeys = new Set<string>()
+        for (const s of liveProtocols) {
+            const p = s.protocol.toLowerCase()
+            for (const key of KNOWN_PROTOCOL_KEYS) {
+                if (p.includes(key)) liveProtocolKeys.add(key)
+            }
+        }
+        const fallbackFiltered = fallbackAll.filter((fb) => {
+            const p = fb.protocol.toLowerCase()
+            const key = KNOWN_PROTOCOL_KEYS.find((k) => p.includes(k))
+            return key === undefined || !liveProtocolKeys.has(key)
+        })
+        const mergedAll = [...liveProtocols, ...fallbackFiltered]
         await enrichPendleMaturity(mergedAll)
         const watchlistChainCounts = buildWatchlistChainCounts(mergedAll)
         const promotedChains = promotedChainsFromWatchlist(chainScope, watchlistChainCounts)
@@ -234,10 +253,6 @@ export async function GET(request: Request) {
 
     // Inject fallback strategies for protocols absent from both DeFrame and live feeds.
     // Guarantees coverage for protocols (e.g. Gearbox) that DeFiLlama may not surface.
-    const KNOWN_PROTOCOL_KEYS = [
-        'gearbox', 'ethena', 'morpho', 'pendle', 'aave', 'compound',
-        'spark', 'sky', 'ondo', 'maple', 'resolv', 'fluid', 'notional', 'term',
-    ]
     const presentKeys = new Set<string>()
     for (const s of mergedFromSources) {
         const p = s.protocol.toLowerCase()
