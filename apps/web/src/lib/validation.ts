@@ -590,6 +590,7 @@ export const VaultStrategySummarySchema = z.object({
     pendleMaturity: PendleMaturityInfoSchema.optional(),
     suppression: StrategySuppressionMetadataSchema.optional(),
     accreditationRequired: z.boolean().optional(),
+    poolUrl: z.string().optional(),
 })
 
 export const VaultStrategiesResponseSchema = z.object({
@@ -717,11 +718,13 @@ export const YieldMonitorAlertReasonSchema = z.enum(['promotable_now'])
 
 export const YieldMonitorAlertSchema = z.object({
     strategyId: z.string(),
+    label: z.string(),
     protocol: z.string(),
     chain: z.string(),
     netApyPct: z.string(),
     promotableTiers: z.array(VaultIntentTierSchema),
     reason: YieldMonitorAlertReasonSchema,
+    poolUrl: z.string().optional(),
 })
 
 export const YieldMonitorGlobalRangeSchema = z.object({

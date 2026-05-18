@@ -82,11 +82,13 @@ function computeAlerts(
 
             byStrategyId.set(strategy.strategyId, {
                 strategyId: strategy.strategyId,
+                label: strategy.label,
                 protocol: strategy.protocol,
                 chain: strategy.chain,
                 netApyPct: strategy.netApyPct,
                 promotableTiers: [tier],
                 reason,
+                poolUrl: strategy.poolUrl,
             })
         }
     }

@@ -608,6 +608,7 @@ export interface VaultStrategySummary {
     pendleMaturity?: PendleMaturityInfo
     suppression?: StrategySuppressionMetadata
     accreditationRequired?: boolean // Maple protocol requirement
+    poolUrl?: string // verifiable link to the pool on the source protocol/aggregator
 }
 
 export interface VaultStrategiesResponse {
@@ -735,11 +736,13 @@ export type YieldMonitorAlertReason = 'promotable_now'
 
 export interface YieldMonitorAlert {
     strategyId: string
+    label: string       // full pool name e.g. "Pendle PT-sUSDe-27MAR2025 (ethereum)"
     protocol: string
     chain: string
     netApyPct: string
     promotableTiers: VaultIntentTier[]
     reason: YieldMonitorAlertReason
+    poolUrl?: string    // direct link to pool on source protocol/aggregator
 }
 
 export interface YieldMonitorGlobalRange {

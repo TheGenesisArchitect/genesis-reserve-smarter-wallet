@@ -108,7 +108,7 @@ function ChainDrawer({
                 tierKey,
                 tierName: tierKey.charAt(0).toUpperCase() + tierKey.slice(1),
                 strategyId: alert.strategyId,
-                strategyLabel: `${alert.protocol} on ${alert.chain}`,
+                strategyLabel: alert.label,
                 tierColor: tierColors[tierKey] ?? '#C9A84C',
                 yieldRange: `${alert.netApyPct}%`,
                 badge: name,
@@ -182,7 +182,7 @@ function ChainDrawer({
                             <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color, marginBottom: 8, fontFamily: "'Tenor Sans', sans-serif" }}>
                                 Why This Chain Yields
                             </div>
-                            <p style={{ fontSize: 13, color: 'rgba(245,240,232,0.80)', fontFamily: "'Cormorant Garamond', serif", lineHeight: 1.65, margin: 0 }}>
+                            <p style={{ fontSize: 12.5, color: 'rgba(245,240,232,0.88)', fontFamily: "'Sora', sans-serif", lineHeight: 1.7, margin: 0, fontWeight: 300 }}>
                                 {chainEntry.yieldContext}
                             </p>
                         </div>
@@ -196,7 +196,7 @@ function ChainDrawer({
                             <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#C9A84C', marginBottom: 8, fontFamily: "'Tenor Sans', sans-serif" }}>
                                 Genesis Advantage
                             </div>
-                            <p style={{ fontSize: 13, color: 'rgba(245,240,232,0.80)', fontFamily: "'Cormorant Garamond', serif", lineHeight: 1.65, margin: 0 }}>
+                            <p style={{ fontSize: 12.5, color: 'rgba(245,240,232,0.88)', fontFamily: "'Sora', sans-serif", lineHeight: 1.7, margin: 0, fontWeight: 300 }}>
                                 {chainEntry.genesisNote}
                             </p>
                         </div>
@@ -210,7 +210,7 @@ function ChainDrawer({
                             <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#E84040', marginBottom: 8, fontFamily: "'Tenor Sans', sans-serif" }}>
                                 Risk Context
                             </div>
-                            <p style={{ fontSize: 13, color: 'rgba(245,240,232,0.80)', fontFamily: "'Cormorant Garamond', serif", lineHeight: 1.65, margin: 0 }}>
+                            <p style={{ fontSize: 12.5, color: 'rgba(245,240,232,0.88)', fontFamily: "'Sora', sans-serif", lineHeight: 1.7, margin: 0, fontWeight: 300 }}>
                                 {chainEntry.riskNote}
                             </p>
                         </div>
@@ -260,19 +260,44 @@ function ChainDrawer({
                                     {/* Strategy header */}
                                     <div style={{
                                         padding: '12px 14px',
-                                        display: 'flex', alignItems: 'center',
+                                        display: 'flex', alignItems: 'flex-start',
                                         justifyContent: 'space-between', gap: 12,
                                     }}>
-                                        <div style={{ minWidth: 0 }}>
+                                        <div style={{ minWidth: 0, flex: 1 }}>
+                                            {/* Pool label — full name from DeFiLlama */}
                                             <div style={{
-                                                fontSize: 14, color: '#f5f0e8',
-                                                fontFamily: "'Cormorant Garamond', serif",
-                                                fontWeight: 500, marginBottom: 6,
+                                                fontSize: 13, color: '#f5f0e8',
+                                                fontFamily: "'Sora', sans-serif",
+                                                fontWeight: 600, marginBottom: 3,
+                                                lineHeight: 1.35,
+                                                wordBreak: 'break-word',
                                             }}>
-                                                {alert.protocol}
-                                                <span style={{ fontSize: 11, color: 'rgba(245,240,232,0.40)', fontFamily: "'Tenor Sans', sans-serif", marginLeft: 6 }}>
-                                                    · USDC
+                                                {alert.label}
+                                            </div>
+                                            {/* Protocol sub-label + optional View Pool link */}
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 7, flexWrap: 'wrap' }}>
+                                                <span style={{ fontSize: 11, color: 'rgba(245,240,232,0.45)', fontFamily: "'Sora', sans-serif" }}>
+                                                    {alert.protocol}
                                                 </span>
+                                                {alert.poolUrl && (
+                                                    <a
+                                                        href={alert.poolUrl}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        style={{
+                                                            fontSize: 10,
+                                                            color,
+                                                            fontFamily: "'Sora', sans-serif",
+                                                            fontWeight: 600,
+                                                            textDecoration: 'none',
+                                                            borderBottom: `1px solid ${color}50`,
+                                                            paddingBottom: 1,
+                                                            whiteSpace: 'nowrap',
+                                                        }}
+                                                    >
+                                                        ↗ View Pool
+                                                    </a>
+                                                )}
                                             </div>
                                             <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
                                                 {alert.promotableTiers.map((tier) => (
@@ -288,7 +313,7 @@ function ChainDrawer({
                                                 }}>
                                                     {alert.netApyPct}%
                                                 </div>
-                                                <div style={{ fontSize: 9, color: 'rgba(245,240,232,0.32)', textTransform: 'uppercase', letterSpacing: '0.10em', fontFamily: "'Tenor Sans', sans-serif" }}>
+                                                <div style={{ fontSize: 9, color: 'rgba(245,240,232,0.32)', textTransform: 'uppercase', letterSpacing: '0.10em', fontFamily: "'Sora', sans-serif" }}>
                                                     APY
                                                 </div>
                                             </div>
@@ -305,7 +330,7 @@ function ChainDrawer({
                                                     fontWeight: 700,
                                                     letterSpacing: '0.10em',
                                                     textTransform: 'uppercase',
-                                                    fontFamily: "'Tenor Sans', sans-serif",
+                                                    fontFamily: "'Sora', sans-serif",
                                                     cursor: 'pointer',
                                                     whiteSpace: 'nowrap',
                                                 }}

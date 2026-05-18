@@ -371,6 +371,7 @@ function buildLlamaStrategies(pools: LlamaPool[]): VaultStrategySummary[] {
                     paused: false,
                     availableActions: ['lend', 'withdraw'],
                     accreditationRequired: cfg.accreditationRequired || undefined,
+                    poolUrl: `https://defillama.com/yields/pool/${pool.pool}`,
                 })
             }
         }
@@ -476,6 +477,7 @@ async function fetchSuperformStrategies(): Promise<VaultStrategySummary[]> {
                     feeBps: 0,
                     paused: v.paused ?? false,
                     availableActions: ['lend', 'withdraw'],
+                    poolUrl: `https://app.superform.xyz/vaults/${vaultId}`,
                 })
             }
         }
