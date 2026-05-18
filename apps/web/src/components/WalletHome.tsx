@@ -12,10 +12,12 @@ import { useYieldEngine } from '../hooks/useYieldEngine'
 import { useActiveWalletAddress } from '../hooks/useActiveWalletAddress'
 import { WithdrawFlow } from './WithdrawFlow'
 import { TapToPayModal } from './TapToPayModal'
+import { AddMoneyModal } from './AddMoneyModal'
+import { PayoutModal } from './PayoutModal'
 import { CHAIN_META } from '../config/contracts'
 import type { LedgerEntry } from '../lib/bff.types'
 import type { ViewKey } from './AppShell'
-import { PANEL_BASE, SectionPanel, StatusPill, ActionButton } from './ds'
+import { PANEL_BASE, SectionPanel, ActionButton } from './ds'
 
 // Display order for portfolio breakdown
 const PORTFOLIO_CHAINS = [
@@ -116,29 +118,6 @@ export function GenesisCard({
   )
 }
 
-/* ── Sparkline ─────────────────────────────────────────────────────────── */
-const SPARK_PTS = [38, 42, 40, 46, 50, 48, 53, 58, 55, 62, 65, 63, 70, 72, 75]
-function Sparkline() {
-  const W = 130, H = 40
-  const min = Math.min(...SPARK_PTS), max = Math.max(...SPARK_PTS)
-  const range = max - min || 1
-  const pts = SPARK_PTS.map((v, i) => {
-    const x = (i / (SPARK_PTS.length - 1)) * W
-    const y = H - ((v - min) / range) * (H - 4) - 2
-    return `${x},${y}`
-  }).join(' ')
-  return (
-    <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} style={{ display: 'block' }}>
-      <defs>
-        <linearGradient id="sparkGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#c9a84c" stopOpacity="0.4" />
-          <stop offset="100%" stopColor="#c9a84c" stopOpacity="1" />
-        </linearGradient>
-      </defs>
-      <polyline points={pts} fill="none" stroke="url(#sparkGrad)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
-}
 
 /* ── Quick-action button ───────────────────────────────────────────────── */
 function QuickAction({ icon, label, onClick, href }: { icon: ReactNode; label: string; onClick?: () => void; href?: string }) {
@@ -240,6 +219,8 @@ export function WalletHome({ accountId, onNavigate }: WalletHomeProps) {
   const [masked, setMasked] = useState(false)
   const [showPortfolio, setShowPortfolio] = useState(true)  // default open
   const [showTapToPay, setShowTapToPay] = useState(false)
+  const [showAddMoney, setShowAddMoney] = useState(false)
+  const [showCashOut, setShowCashOut] = useState(false)
 
   // ── Display name ─────────────────────────────────────────────────────
   const displayName = user?.phone?.number
@@ -588,7 +569,7 @@ export function WalletHome({ accountId, onNavigate }: WalletHomeProps) {
 
           {hasPositions && walletAddr && (
             <div style={{ marginTop: 12 }}>
-              <WithdrawFlow walletAddress={walletAddr} compact onNavigate={onNavigate} />
+              <WithdrawFlow walletAddress={walletAddr} compact onNavigate={onNavigate} onCashOut={(amount) => { setShowCashOut(true) }} />
             </div>
           )}
         </SectionPanel>
@@ -597,14 +578,12 @@ export function WalletHome({ accountId, onNavigate }: WalletHomeProps) {
       {/* ── Quick actions ─────────────────────────────────────────────── */}
       <SectionPanel title="Quick Actions" eyebrow="Transfers & Conversions">
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-          <QuickAction label="Add Money" onClick={() => onNavigate('deposit')} icon={<PlusQAIcon />} />
+          <QuickAction label="Add Money" onClick={() => setShowAddMoney(true)} icon={<PlusQAIcon />} />
+          <QuickAction label="Cash Out" onClick={() => setShowCashOut(true)} icon={<CashOutQAIcon />} />
           <QuickAction label="Send" onClick={() => onNavigate('send')} icon={<SendQAIcon />} />
           <QuickAction label="Swap"
             onClick={() => onNavigate('swap')}
             icon={<SwapQAIcon />} />
-          <QuickAction label="Bridge"
-            onClick={() => onNavigate('bridge')}
-            icon={<BridgeQAIcon />} />
         </div>
       </SectionPanel>
 
@@ -659,6 +638,26 @@ export function WalletHome({ accountId, onNavigate }: WalletHomeProps) {
           </button>
         </div>
       </SectionPanel>
+
+      {/* On-ramp: Add Money (card → USDC) */}
+      {showAddMoney && (
+        <AddMoneyModal
+          accountId={walletAddr ?? 'demo-account'}
+          onClose={() => setShowAddMoney(false)}
+          onSuccess={() => { /* balance will refresh on next poll */ }}
+          onLinkCard={() => onNavigate('card')}
+        />
+      )}
+
+      {/* Off-ramp: Cash Out (USDC → card) */}
+      {showCashOut && (
+        <PayoutModal
+          accountId={walletAddr ?? 'demo-account'}
+          onClose={() => setShowCashOut(false)}
+          onSuccess={() => { /* balance will refresh on next poll */ }}
+          onLinkCard={() => onNavigate('card')}
+        />
+      )}
 
       {/* Tap to Pay modal — triggered from wallet home card section */}
       {showTapToPay && (
@@ -763,6 +762,6 @@ function SendQAIcon() {
 function SwapQAIcon() {
   return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#c9a84c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="17 1 21 5 17 9" /><path d="M3 11V9a4 4 0 0 1 4-4h14" /><polyline points="7 23 3 19 7 15" /><path d="M21 13v2a4 4 0 0 1-4 4H3" /></svg>
 }
-function BridgeQAIcon() {
-  return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#c9a84c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12a8 8 0 0 1 16 0" /><line x1="2" y1="12" x2="22" y2="12" /><line x1="4" y1="12" x2="4" y2="16" /><line x1="20" y1="12" x2="20" y2="16" /></svg>
+function CashOutQAIcon() {
+  return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9B6DFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="5" width="20" height="14" rx="2" /><line x1="2" y1="10" x2="22" y2="10" /></svg>
 }

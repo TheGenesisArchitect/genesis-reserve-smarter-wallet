@@ -11,6 +11,7 @@ interface WithdrawFlowProps {
     walletAddress?: `0x${string}`
     compact?: boolean
     onNavigate?: (v: ViewKey) => void
+    onCashOut?: (amount: string) => void
 }
 
 function toUsdcAtomic(value: string): string {
@@ -60,7 +61,7 @@ function LiquidityBadge({ window: w }: { window: VaultPositionItem['liquidityWin
 // ── Step indicator ─────────────────────────────────────────────────────────────
 type Step = 'select' | 'confirm' | 'processing' | 'success' | 'error'
 
-export function WithdrawFlow({ walletAddress, compact = false, onNavigate }: WithdrawFlowProps) {
+export function WithdrawFlow({ walletAddress, compact = false, onNavigate, onCashOut }: WithdrawFlowProps) {
     const { data: positionsData, isLoading: positionsLoading } = useVaultPositions(walletAddress)
     const withdrawPlanner = useVaultWithdrawPlan()
     const { withdraw, walletUsdcBalance } = useGenesisVault()
@@ -147,9 +148,9 @@ export function WithdrawFlow({ walletAddress, compact = false, onNavigate }: Wit
                         What would you like to do with your USDC?
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                        <button type="button" onClick={() => onNavigate?.('send')}
-                            style={{ padding: '11px 14px', borderRadius: 10, background: 'rgba(201,168,76,0.10)', border: '1px solid rgba(201,168,76,0.28)', color: '#C9A84C', fontSize: 11, fontFamily: "'Sora', sans-serif", fontWeight: 600, cursor: 'pointer', textAlign: 'left', letterSpacing: '0.04em' }}>
-                            → Send to bank or external wallet
+                        <button type="button" onClick={() => onCashOut ? onCashOut(withdrawAmount) : onNavigate?.('send')}
+                            style={{ padding: '11px 14px', borderRadius: 10, background: 'rgba(155,109,255,0.10)', border: '1px solid rgba(155,109,255,0.28)', color: '#9B6DFF', fontSize: 11, fontFamily: "'Sora', sans-serif", fontWeight: 600, cursor: 'pointer', textAlign: 'left', letterSpacing: '0.04em' }}>
+                            → Cash out to your debit card
                         </button>
                         <button type="button" onClick={() => onNavigate?.('deposit')}
                             style={{ padding: '11px 14px', borderRadius: 10, background: 'rgba(0,212,170,0.08)', border: '1px solid rgba(0,212,170,0.22)', color: '#00D4AA', fontSize: 11, fontFamily: "'Sora', sans-serif", fontWeight: 600, cursor: 'pointer', textAlign: 'left', letterSpacing: '0.04em' }}>
