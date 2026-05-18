@@ -1,9 +1,9 @@
 // genesis-privy/src/hooks/useGenesisVault.ts  [FIXED v2]
 // Fixes: batched approve+deposit via smart account, single tx hash state, gasless
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useReadContracts, useWaitForTransactionReceipt } from 'wagmi'
-import { createPublicClient, createWalletClient, custom, encodeFunctionData, parseUnits, formatUnits, maxUint256 } from 'viem'
+import { createPublicClient, createWalletClient, custom, encodeFunctionData, http, parseUnits, formatUnits, maxUint256 } from 'viem'
 import { usePrivy, useWallets } from '@privy-io/react-auth'
 import { ACTIVE_CHAIN, ACTIVE_CONTRACTS, PROTOCOL } from '../config/contracts'
 import { GENESIS_VAULT_ABI, USDC_ABI } from '../abis/vault.abi'
@@ -192,17 +192,37 @@ export function useGenesisVault(): VaultState {
       throw new Error('Wallet not ready. Reconnect wallet and try again.')
     }
 
-    const { walletClient, publicClient } = await getConnectedWallet()
+    const { walletClient } = await getConnectedWallet()
     const assets = parseUnits(usdcAmount, PROTOCOL.USDC_DECIMALS)
 
-    const approveHash = await walletClient.writeContract({
+    // Use a reliable public RPC for receipt polling — Privy's embedded provider
+    // may return before the tx is actually mined, causing the deposit to race
+    // against an unconfirmed approve and revert with "transfer amount exceeds allowance".
+    const reliableClient = createPublicClient({
+      chain: ACTIVE_CHAIN,
+      transport: http('https://arb1.arbitrum.io/rpc'),
+    })
+
+    const currentAllowance = await reliableClient.readContract({
       address: usdcAddress,
       abi: USDC_ABI,
-      functionName: 'approve',
-      args: [vaultAddress, maxUint256],
-      account: resolvedAddress,
-    })
-    await publicClient.waitForTransactionReceipt({ hash: approveHash })
+      functionName: 'allowance',
+      args: [resolvedAddress, vaultAddress],
+    }) as bigint
+
+    if (currentAllowance < assets) {
+      const approveHash = await walletClient.writeContract({
+        address: usdcAddress,
+        abi: USDC_ABI,
+        functionName: 'approve',
+        args: [vaultAddress, maxUint256],
+        account: resolvedAddress,
+      })
+      const approveReceipt = await reliableClient.waitForTransactionReceipt({ hash: approveHash })
+      if (approveReceipt.status !== 'success') {
+        throw new Error('USDC approval failed on-chain. Please try again.')
+      }
+    }
 
     const depositHash = await walletClient.writeContract({
       address: vaultAddress,
