@@ -7,6 +7,8 @@ export interface VaultWithdrawPlanRequest {
     walletAddress: string
     strategyId: string
     amountAtomic: string
+    liquidityWindow?: string
+    maturityDate?: string
 }
 
 export function useVaultWithdrawPlan() {

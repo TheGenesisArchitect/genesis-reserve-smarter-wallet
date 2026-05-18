@@ -17,7 +17,9 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { useYieldEngine } from '../hooks/useYieldEngine'
-import { LiquidityBand } from '../abis/strategy-router.abi'
+import { useVaultPositions } from '../hooks/useVaultPositions'
+import { useActiveWalletAddress } from '../hooks/useActiveWalletAddress'
+import type { VaultPositionItem } from '../lib/bff.types'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -172,14 +174,100 @@ function StrategyDonut({ allocations }: { allocations: Array<{ name: string; pct
   )
 }
 
+// ── Liquidity window config ───────────────────────────────────────────────────
+const LIQ_CFG = {
+  instant:   { label: 'Instant',     color: '#00D4AA', bg: 'rgba(0,212,170,0.10)',  border: 'rgba(0,212,170,0.22)' },
+  same_day:  { label: '24h Queue',   color: '#C9A84C', bg: 'rgba(201,168,76,0.10)', border: 'rgba(201,168,76,0.22)' },
+  scheduled: { label: 'At Maturity', color: '#9B6DFF', bg: 'rgba(155,109,255,0.10)',border: 'rgba(155,109,255,0.22)' },
+}
+
+function PositionCard({ pos, onWithdraw }: { pos: VaultPositionItem; onWithdraw: (id: string) => void }) {
+  const liq = LIQ_CFG[pos.liquidityWindow] ?? LIQ_CFG.instant
+  const isLocked = pos.liquidityWindow === 'scheduled'
+      && pos.pendleMaturity
+      && new Date(pos.pendleMaturity.expiryDate).getTime() > Date.now()
+  const profit = Number(pos.profitUsd)
+
+  return (
+    <div style={{ padding: '12px 14px', borderRadius: 10, background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.07)' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 12, color: '#F0EDE8', marginBottom: 2 }}>{pos.label}</div>
+          <div style={{ fontSize: 10, color: '#5A5650' }}>{pos.protocol} · {pos.chain}</div>
+        </div>
+        <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.07em', textTransform: 'uppercase', padding: '2px 7px', borderRadius: 20, background: liq.bg, border: `1px solid ${liq.border}`, color: liq.color, fontFamily: 'Sora, sans-serif', flexShrink: 0, marginLeft: 8 }}>
+          {liq.label}
+        </span>
+      </div>
+
+      <div style={{ display: 'flex', gap: 12, marginBottom: 10 }}>
+        <div>
+          <div style={{ fontSize: 9, color: '#5A5650', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 2 }}>Balance</div>
+          <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 13, fontWeight: 700, color: '#F0EDE8' }}>
+            ${Number(pos.currentPositionUsd).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          </div>
+        </div>
+        <div>
+          <div style={{ fontSize: 9, color: '#5A5650', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 2 }}>APY</div>
+          <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 13, fontWeight: 700, color: '#C9A84C' }}>{Number(pos.apyPct).toFixed(2)}%</div>
+        </div>
+        <div>
+          <div style={{ fontSize: 9, color: '#5A5650', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 2 }}>Profit</div>
+          <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 13, fontWeight: 700, color: profit >= 0 ? '#18C870' : '#E04040' }}>
+            {profit >= 0 ? '+' : ''}${profit.toFixed(2)}
+          </div>
+        </div>
+      </div>
+
+      {/* Pendle maturity bar */}
+      {pos.pendleMaturity && (
+        <div style={{ marginBottom: 10, padding: '7px 10px', borderRadius: 8, background: 'rgba(155,109,255,0.06)', border: '1px solid rgba(155,109,255,0.18)' }}>
+          <div style={{ fontSize: 10, color: '#9B6DFF', fontWeight: 600, marginBottom: 1 }}>
+            Matures {new Date(pos.pendleMaturity.expiryDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+          </div>
+          <div style={{ fontSize: 9, color: 'rgba(245,240,232,0.45)' }}>
+            {pos.pendleMaturity.daysUntilExpiry > 0
+              ? `${pos.pendleMaturity.daysUntilExpiry} days remaining · full yield paid at maturity`
+              : 'Maturity reached — ready to redeem'}
+          </div>
+        </div>
+      )}
+
+      <button
+        type="button"
+        onClick={() => onWithdraw(pos.strategyId)}
+        disabled={Boolean(isLocked)}
+        style={{
+          width: '100%', padding: '8px 12px', borderRadius: 8,
+          background: isLocked ? 'rgba(155,109,255,0.06)' : `${liq.color}18`,
+          border: `1px solid ${isLocked ? 'rgba(155,109,255,0.18)' : liq.border}`,
+          color: isLocked ? 'rgba(155,109,255,0.4)' : liq.color,
+          fontSize: 10, fontFamily: 'Sora, sans-serif', fontWeight: 700,
+          letterSpacing: '0.08em', textTransform: 'uppercase' as const,
+          cursor: isLocked ? 'not-allowed' : 'pointer',
+        }}
+      >
+        {isLocked
+          ? `Locked · ${pos.pendleMaturity!.daysUntilExpiry}d remaining`
+          : pos.liquidityWindow === 'same_day' ? 'Queue Withdrawal →'
+          : pos.liquidityWindow === 'scheduled' ? 'Redeem at Maturity →'
+          : 'Withdraw Now →'}
+      </button>
+    </div>
+  )
+}
+
 // ── Main Component ────────────────────────────────────────────────────────────
 
 export function YieldEngineDashboard() {
   const engine = useYieldEngine()
+  const walletAddress = useActiveWalletAddress()
+  const { data: positionsData, isLoading: positionsLoading } = useVaultPositions(walletAddress ?? undefined)
   const [epochSeconds, setEpochSeconds] = useState(0)
   const [activeTab, setActiveTab] = useState<'overview' | 'allocation' | 'risk'>('overview')
   const [isMobile, setIsMobile] = useState(false)
   const [lastUpdatedSecs, setLastUpdatedSecs] = useState(0)
+  const [withdrawTarget, setWithdrawTarget] = useState<string | null>(null)
   const lastUpdatedAtRef = useRef(Date.now())
 
   // Live epoch countdown — tick every second
@@ -287,7 +375,41 @@ export function YieldEngineDashboard() {
   )
 
   // ── Allocation tab ────────────────────────────────────────────────────────
+  const userPositions = positionsData?.positions ?? []
+
   const allocationContent = (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+
+      {/* ── My Positions ───────────────────────────────────────────── */}
+      <div style={S.card}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={S.cardLabel}>My Positions</div>
+          {positionsData?.summary && (
+            <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 10, color: '#C9A84C' }}>
+              ${Number(positionsData.summary.totalBalanceUsd).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} total
+            </div>
+          )}
+        </div>
+
+        {positionsLoading ? (
+          <div style={{ fontSize: 11, color: '#5A5650', padding: '8px 0' }}>Loading positions…</div>
+        ) : userPositions.length === 0 ? (
+          <div style={{ fontSize: 11, color: '#5A5650', lineHeight: 1.65, padding: '4px 0' }}>
+            No active vault positions yet. Deposit to start earning yield.
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {userPositions.map(pos => (
+              <PositionCard key={pos.strategyId} pos={pos} onWithdraw={id => {
+                setWithdrawTarget(id)
+                setActiveTab('allocation')
+              }} />
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* ── Protocol allocation breakdown ──────────────────────────── */}
     <div style={S.card}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div style={S.cardLabel}>Strategy Allocations</div>
@@ -343,6 +465,7 @@ export function YieldEngineDashboard() {
           </div>
         ))}
       </div>
+    </div>
     </div>
   )
 

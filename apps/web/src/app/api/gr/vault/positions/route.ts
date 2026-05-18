@@ -7,6 +7,43 @@ function toUsdString(value: unknown): string {
     return '0.00'
 }
 
+type LiquidityWindow = 'instant' | 'same_day' | 'scheduled'
+type RiskLevel = 'low' | 'medium' | 'high'
+
+// Infer liquidity window from DeFrame data + protocol name fallback.
+// Pendle PT, Maple, Term, and Notional are redemption-queue or maturity-locked.
+function inferLiquidityWindow(strategy: Record<string, unknown>): LiquidityWindow {
+    const raw = String(strategy.withdrawalType ?? strategy.liquidityClass ?? strategy.liquidityWindow ?? '').toLowerCase()
+    if (raw === 'instant') return 'instant'
+    if (raw === 'same_day' || raw === 'sameday' || raw === 'delayed') return 'same_day'
+    if (raw === 'scheduled' || raw === 'maturity' || raw === 'fixed') return 'scheduled'
+    // Protocol-based inference
+    const protocol = String(strategy.protocol ?? '').toLowerCase()
+    if (protocol.includes('pendle') || protocol.includes('term') || protocol.includes('notional')) return 'scheduled'
+    if (protocol.includes('maple')) return 'same_day'
+    return 'instant'
+}
+
+function inferRiskLevel(strategy: Record<string, unknown>): RiskLevel {
+    const raw = String(strategy.riskLevel ?? strategy.riskTier ?? '').toLowerCase()
+    if (raw === 'low') return 'low'
+    if (raw === 'high') return 'high'
+    return 'medium'
+}
+
+function extractPendleMaturity(strategy: Record<string, unknown>): { expiryDate: string; daysUntilExpiry: number; yieldLockWarning: boolean } | null {
+    const expiryRaw = strategy.maturityDate ?? strategy.expiryDate ?? strategy.pendleExpiryDate
+    if (!expiryRaw) return null
+    const expiry = new Date(String(expiryRaw))
+    if (isNaN(expiry.getTime())) return null
+    const daysUntilExpiry = Math.ceil((expiry.getTime() - Date.now()) / 86_400_000)
+    return {
+        expiryDate: expiry.toISOString(),
+        daysUntilExpiry,
+        yieldLockWarning: daysUntilExpiry < 30,
+    }
+}
+
 function buildFallbackResponse(walletAddress: string, reason: 'not_configured' | 'upstream_unavailable') {
     return {
         walletAddress,
@@ -78,6 +115,12 @@ export async function GET(request: Request) {
             ? (spot.profit as Record<string, unknown>)
             : {}
 
+        const pendleMaturity = extractPendleMaturity(strategy)
+        const poolId = String(strategy.poolId ?? strategy.pool ?? '')
+        const poolUrl = poolId
+            ? `https://defillama.com/yields/pool/${poolId}`
+            : (String(strategy.poolUrl ?? strategy.url ?? '') || undefined)
+
         return {
             strategyId: String(strategy.id || ''),
             label: `${String(strategy.protocol || 'Protocol')} ${String(strategy.assetName || 'Asset')}`,
@@ -91,7 +134,10 @@ export async function GET(request: Request) {
             apyPct: (Number(spot.apy || 0) * 100).toFixed(2),
             avgApyPct: (Number(spot.avgApy || 0) * 100).toFixed(2),
             inceptionApyPct: (Number(spot.inceptionApy || 0) * 100).toFixed(2),
-            liquidityWindow: 'instant',
+            liquidityWindow: inferLiquidityWindow(strategy),
+            riskLevel: inferRiskLevel(strategy),
+            ...(pendleMaturity ? { pendleMaturity } : {}),
+            ...(poolUrl ? { poolUrl } : {}),
             currentPosition: currentPosition,
         }
     })

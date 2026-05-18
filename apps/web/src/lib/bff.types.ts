@@ -688,6 +688,10 @@ export interface VaultWithdrawPlanResponse {
     scheduledUsd: string
     projectedApyAfterWithdrawPct: string
     estimatedSettlementSeconds: number
+    liquidityWindow: VaultLiquidityWindow
+    canWithdrawNow: boolean
+    lockedUntil: string | null   // ISO date — set for scheduled/maturity-locked positions
+    withdrawalType: 'instant' | 'queued' | 'maturity'
     transactionPlan: VaultTxPlanStep[]
     meta: VaultApiMeta
 }
@@ -715,6 +719,9 @@ export interface VaultPositionItem {
     avgApyPct: string
     inceptionApyPct: string
     liquidityWindow: VaultLiquidityWindow
+    riskLevel: VaultRiskLevel
+    pendleMaturity?: PendleMaturityInfo
+    poolUrl?: string
     currentPosition?: Record<string, unknown>
 }
 

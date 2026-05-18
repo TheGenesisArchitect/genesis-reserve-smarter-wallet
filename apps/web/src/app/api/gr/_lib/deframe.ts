@@ -37,6 +37,7 @@ export interface VaultStrategySummary {
     pendleMaturity?: PendleMaturityInfo
     suppression?: StrategySuppressionMetadata
     accreditationRequired?: boolean
+    poolUrl?: string
 }
 
 type StageRule = {
