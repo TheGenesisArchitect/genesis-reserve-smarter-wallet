@@ -1030,7 +1030,7 @@ svg.wp-chart{width:100%;height:auto;overflow:visible}
         </div>
         <div class="stat-card gold-border">
           <div class="stat-val" style="font-size:26px">5.2–11%</div>
-          <div class="stat-label">Genesis Spread<br/>Conservative → Peak Capture</div>
+          <div class="stat-label">Genesis Spread<br/>Preserve → Accelerate</div>
         </div>
         <div class="stat-card teal-border">
           <div class="stat-val">96×</div>
@@ -1308,7 +1308,7 @@ svg.wp-chart{width:100%;height:auto;overflow:visible}
       </p>
 
       <h3>Yield Scenario Engine Calculator</h3>
-      <p>Select a yield scenario and move the AUM slider. The conservative floor (13.2%) is what investors are guaranteed. Optimized and Peak reflect live Pendle/Gearbox allocation strategies currently available.</p>
+      <p>Select a yield scenario and move the AUM slider. <strong>Preserve</strong> (13.2%) is the guaranteed investor floor. <strong>Grow</strong> and <strong>Accelerate</strong> reflect live Pendle/Gearbox allocation strategies currently available.</p>
 
       <div class="diagram-wrap">
         <div class="diagram-title">Perpetual Engine Economics · Yield Scenario Model</div>
@@ -1323,22 +1323,22 @@ svg.wp-chart{width:100%;height:auto;overflow:visible}
 
         <!-- Yield Mode Toggle -->
         <div class="yield-toggle-row">
-          <button class="yield-btn active" data-rate="0.132" data-spread="0.052" id="btn-conservative">
-            <span class="yield-btn-label">Conservative</span>
+          <button class="yield-btn active" data-rate="0.132" data-spread="0.052" id="btn-preserve">
+            <span class="yield-btn-label">Preserve</span>
             <span class="yield-btn-rate">13.2% APY · 5.2% Spread</span>
           </button>
-          <button class="yield-btn" data-rate="0.16" data-spread="0.08" id="btn-optimized">
-            <span class="yield-btn-label">Optimized</span>
+          <button class="yield-btn" data-rate="0.16" data-spread="0.08" id="btn-grow">
+            <span class="yield-btn-label">Grow</span>
             <span class="yield-btn-rate">16% APY · 8% Spread</span>
           </button>
-          <button class="yield-btn" data-rate="0.19" data-spread="0.11" id="btn-peak">
-            <span class="yield-btn-label">Peak Capture</span>
+          <button class="yield-btn" data-rate="0.19" data-spread="0.11" id="btn-accelerate">
+            <span class="yield-btn-label">Accelerate</span>
             <span class="yield-btn-rate">19% APY · 11% Spread</span>
           </button>
         </div>
 
         <div class="yield-mode-note" id="yield-mode-note">
-          Guaranteed floor — conservative blended target across Pendle, Aave, T-bills.
+          Preserve — guaranteed floor. Stable blended target across Pendle, Aave, and T-bills.
         </div>
 
         <div class="calc-slider-row" style="margin-top:16px">
@@ -1509,9 +1509,9 @@ svg.wp-chart{width:100%;height:auto;overflow:visible}
           <thead>
             <tr>
               <th>AUM</th>
-              <th style="color:var(--gold-dk)">Conservative 13.2%</th>
-              <th style="color:var(--teal)">Optimized 16%</th>
-              <th style="color:var(--green)">Peak Capture 19%</th>
+              <th style="color:var(--gold-dk)">Preserve 13.2%</th>
+              <th style="color:var(--teal)">Grow 16%</th>
+              <th style="color:var(--green)">Accelerate 19%</th>
             </tr>
           </thead>
           <tbody>
@@ -1538,7 +1538,7 @@ svg.wp-chart{width:100%;height:auto;overflow:visible}
       <p>The table below models Genesis's operational cash position across the 72-month horizon, combining all four layers at the <em>optimized</em> yield scenario and $5M AUM (institutional), with B2C ramp per the growth model.</p>
 
       <div class="diagram-wrap" style="padding:24px;overflow-x:auto">
-        <div class="diagram-title">Operational Cash Flow Model · Optimized Yield · $5M AUM</div>
+        <div class="diagram-title">Operational Cash Flow Model · Grow Strategy · $5M AUM</div>
         <table class="risk-table" style="font-size:11.5px;margin:0;min-width:640px">
           <thead>
             <tr>
@@ -1563,7 +1563,7 @@ svg.wp-chart{width:100%;height:auto;overflow:visible}
             <tr style="background:rgba(26,191,106,0.04)"><td><strong>M72</strong></td><td>—</td><td>$18,333</td><td>$2,600,000</td><td>$2,618,333</td><td>$225,000</td><td style="color:var(--green);font-weight:700">+$2,393,333 ∞</td></tr>
           </tbody>
         </table>
-        <p style="font-size:10px;color:var(--text-muted);margin-top:10px;margin-bottom:0">M18 seed runway exhausted. Spread ops at optimized 16% yield / $5M AUM. B2C revenue interpolated from growth model. M72 spread ops at Peak 19% / $5M AUM. ⚡ = loan self-liquidation month.</p>
+        <p style="font-size:10px;color:var(--text-muted);margin-top:10px;margin-bottom:0">M18 seed runway exhausted. Spread ops at Grow 16% yield / $5M AUM. B2C revenue interpolated from growth model. M72 spread ops at Accelerate 19% / $5M AUM. ⚡ = loan self-liquidation month.</p>
       </div>
 
       <!-- Net Profit Moment visualization -->
@@ -2252,12 +2252,12 @@ svg.wp-chart{width:100%;height:auto;overflow:visible}
   const aumDisplay = document.getElementById('wpAumDisplay');
 
   const YIELD_MODES = {
-    conservative: { rate: 0.132, spread: 0.052, note: 'Guaranteed floor — conservative blended target across Pendle, Aave, and T-bills.' },
-    optimized:    { rate: 0.160, spread: 0.080, note: 'Live optimized — 70% allocation to Pendle (18%) + Gearbox (20.53%), blended ~16% APY.' },
-    peak:         { rate: 0.190, spread: 0.110, note: 'Peak capture — maximum Pendle/Gearbox allocation at current live rates of 18–20.53%.' }
+    preserve:    { rate: 0.132, spread: 0.052, note: 'Guaranteed floor — stable blended target across Pendle, Aave, and T-bills. Investor preferred rate secured.' },
+    grow:        { rate: 0.160, spread: 0.080, note: 'Live optimized — 70% allocation to Pendle (18%) + Gearbox (20.53%), blended ~16% APY.' },
+    accelerate:  { rate: 0.190, spread: 0.110, note: 'Maximum capture — full Pendle/Gearbox allocation at current live rates of 18–20.53%.' }
   };
 
-  let currentMode = YIELD_MODES.conservative;
+  let currentMode = YIELD_MODES.preserve;
 
   // Wire yield toggle buttons
   document.querySelectorAll('.yield-btn').forEach(btn => {
@@ -2323,92 +2323,110 @@ svg.wp-chart{width:100%;height:auto;overflow:visible}
   }
 
   // ── LIVE STRATEGY RATES FEED ────────────────────────────
-  const PROTOCOL_COLORS = { pendle:'pendle', gearbox:'gearbox', aave:'aave', tbill:'tbill' };
+  const STATIC_FALLBACK_DATA = {
+    strategies: [
+      { name:'Pendle PT-USDC',  protocol:'pendle',  apy:18.00, allocation:0.40, source:'fallback' },
+      { name:'Gearbox USDC',    protocol:'gearbox', apy:20.53, allocation:0.30, source:'fallback' },
+      { name:'Aave v3 USDC',    protocol:'aave',    apy:8.10,  allocation:0.20, source:'fallback' },
+      { name:'T-bill Wrapper',  protocol:'tbill',   apy:5.20,  allocation:0.10, source:'fallback' },
+    ],
+    blendedApy: 15.50,
+    genesisSpread: 7.50,
+    investorPreferred: 8.0,
+    dataSource: 'fallback' as const,
+    lastUpdated: new Date().toISOString(),
+    cacheHit: false,
+  };
 
-  async function fetchLiveRates() {
+  let ratesRetryTimeout: ReturnType<typeof setTimeout> | null = null;
+
+  function applyRates(data: typeof STATIC_FALLBACK_DATA) {
     const dotEl    = document.getElementById('liveDot');
     const statusEl = document.getElementById('liveStatus');
     const tsEl     = document.getElementById('liveTimestamp');
     const chipsEl  = document.getElementById('liveChips');
     if (!dotEl || !statusEl || !tsEl || !chipsEl) return;
 
-    try {
-      const res = await fetch('/api/gr/rates', { cache: 'no-store' });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
+    const isLive     = data.dataSource === 'live';
+    const isPartial  = data.dataSource === 'partial';
+    const isFallback = data.dataSource === 'fallback';
 
-      const isLive = data.dataSource === 'live';
-      const isPartial = data.dataSource === 'partial';
+    dotEl.className = 'live-dot' + (isLive ? ' live' : isPartial ? ' stale' : ' fallback');
+    statusEl.className = 'live-status' + (isLive ? ' live' : ' fallback');
+    statusEl.textContent = isLive
+      ? '● Live · Strategy Router Feed'
+      : isPartial
+        ? '◑ Partial Live · Some rates static'
+        : '○ Last Known Rates · Refreshing…';
 
-      // Update dot + status
-      dotEl.className = 'live-dot' + (isLive ? ' live' : isPartial ? ' stale' : ' fallback');
-      statusEl.className = 'live-status' + (isLive ? ' live' : ' fallback');
-      statusEl.textContent = isLive
-        ? '● Live · Strategy Router Feed'
-        : isPartial
-          ? '◑ Partial Live · Some rates static'
-          : '○ Static Fallback · Last known rates';
+    const dt = new Date(data.lastUpdated);
+    tsEl.textContent = isFallback ? '' : 'Updated ' + dt.toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
 
-      // Timestamp
-      const dt = new Date(data.lastUpdated);
-      tsEl.textContent = 'Updated ' + dt.toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+    chipsEl.innerHTML = '';
+    (data.strategies || []).forEach((s) => {
+      const chip = document.createElement('div');
+      chip.className = `live-chip ${s.protocol}`;
+      chip.innerHTML = `
+        <span class="chip-dot"></span>
+        <span>${s.name}</span>
+        <span class="chip-apy">${s.apy.toFixed(2)}%</span>
+        <span class="chip-alloc">${Math.round(s.allocation * 100)}% alloc · ${s.source}</span>`;
+      chipsEl.appendChild(chip);
+    });
 
-      // Strategy chips
-      chipsEl.innerHTML = '';
-      (data.strategies || []).forEach((s) => {
-        const chip = document.createElement('div');
-        chip.className = `live-chip ${s.protocol}`;
-        chip.innerHTML = `
-          <span class="chip-dot"></span>
-          <span>${s.name}</span>
-          <span class="chip-apy">${s.apy.toFixed(2)}%</span>
-          <span class="chip-alloc">${Math.round(s.allocation * 100)}% alloc · ${s.source}</span>`;
-        chipsEl.appendChild(chip);
-      });
+    const btnGrow  = document.getElementById('btn-grow') as HTMLButtonElement | null;
+    const btnAccel = document.getElementById('btn-accelerate') as HTMLButtonElement | null;
+    if (btnGrow && data.blendedApy) {
+      const spread = Math.max(0, data.blendedApy - 8).toFixed(1);
+      const rateEl = btnGrow.querySelector('.yield-btn-rate');
+      if (rateEl) rateEl.textContent = `${data.blendedApy.toFixed(1)}% APY · ${spread}% Spread${isLive ? ' · LIVE' : ''}`;
+      btnGrow.dataset.rate   = String(data.blendedApy / 100);
+      btnGrow.dataset.spread = String(Math.max(0, data.blendedApy - 8) / 100);
+    }
+    if (btnAccel && data.strategies) {
+      const peak = Math.max(...data.strategies.map((s) => s.apy));
+      const peakSpread = Math.max(0, peak - 8);
+      const rateEl = btnAccel.querySelector('.yield-btn-rate');
+      if (rateEl) rateEl.textContent = `Up to ${peak.toFixed(2)}% APY · ${peakSpread.toFixed(1)}% Spread${isLive ? ' · LIVE' : ''}`;
+      btnAccel.dataset.rate   = String(peak / 100);
+      btnAccel.dataset.spread = String(peakSpread / 100);
+    }
 
-      // Update the yield mode buttons with live numbers
-      const btnOpt = document.getElementById('btn-optimized');
-      const btnPeak = document.getElementById('btn-peak');
-      if (btnOpt && data.blendedApy) {
-        const rateEl = btnOpt.querySelector('.yield-btn-rate');
-        if (rateEl) {
-          const spread = Math.max(0, data.blendedApy - 8).toFixed(1);
-          rateEl.textContent = `${data.blendedApy.toFixed(1)}% APY · ${spread}% Spread · LIVE`;
-        }
-        btnOpt.dataset.rate   = String(data.blendedApy / 100);
-        btnOpt.dataset.spread = String(Math.max(0, data.blendedApy - 8) / 100);
-      }
-
-      // Peak = highest single strategy rate
-      if (btnPeak && data.strategies) {
-        const peak = Math.max(...data.strategies.map((s) => s.apy));
-        const peakSpread = Math.max(0, peak - 8);
-        const rateEl = btnPeak.querySelector('.yield-btn-rate');
-        if (rateEl) rateEl.textContent = `Up to ${peak.toFixed(2)}% APY · ${peakSpread.toFixed(1)}% Spread · LIVE`;
-        btnPeak.dataset.rate   = String(peak / 100);
-        btnPeak.dataset.spread = String(peakSpread / 100);
-      }
-
-      // If optimized is active, re-run calc with fresh rate
-      const activeBtn = document.querySelector('.yield-btn.active') as HTMLButtonElement | null;
-      if (activeBtn) {
-        const newRate   = parseFloat(activeBtn.dataset.rate   || '0');
-        const newSpread = parseFloat(activeBtn.dataset.spread || '0');
-        if (newRate > 0) {
-          currentMode = { rate: newRate, spread: newSpread, note: currentMode.note };
-          updateCalc();
-        }
-      }
-
-    } catch (err) {
-      if (statusEl) {
-        statusEl.textContent = '○ Static Fallback · API unavailable';
-        statusEl.className = 'live-status fallback';
+    const activeBtn = document.querySelector('.yield-btn.active') as HTMLButtonElement | null;
+    if (activeBtn) {
+      const newRate   = parseFloat(activeBtn.dataset.rate   || '0');
+      const newSpread = parseFloat(activeBtn.dataset.spread || '0');
+      if (newRate > 0) {
+        currentMode = { rate: newRate, spread: newSpread, note: currentMode.note };
+        updateCalc();
       }
     }
   }
 
-  // Fetch on load, refresh every epoch (15 min)
+  async function fetchLiveRates() {
+    const statusEl = document.getElementById('liveStatus');
+    if (ratesRetryTimeout) { clearTimeout(ratesRetryTimeout); ratesRetryTimeout = null; }
+
+    try {
+      const res = await fetch('/api/gr/rates', {
+        cache: 'no-store',
+        signal: AbortSignal.timeout(8000),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+
+      applyRates(data);
+
+    } catch (err) {
+      // Show last-known rates from static fallback — whitepaper stays fully functional
+      applyRates(STATIC_FALLBACK_DATA);
+      // Retry sooner than the normal 15-min epoch
+      ratesRetryTimeout = setTimeout(fetchLiveRates, 30_000);
+    }
+  }
+
+  // Apply static fallback immediately so rates show on first paint, then fetch live
+  applyRates(STATIC_FALLBACK_DATA);
   fetchLiveRates();
   setInterval(fetchLiveRates, 15 * 60 * 1000);
 

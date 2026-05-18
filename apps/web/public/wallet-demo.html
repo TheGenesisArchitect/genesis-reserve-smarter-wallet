@@ -756,14 +756,14 @@ html,body{
           <div class="vault-cards">
             <div class="vault-card" id="vc0" onclick="selectVault(0)">
               <div class="vault-card-top">
-                <div class="vault-card-name">Conservative</div>
+                <div class="vault-card-name">Preserve</div>
                 <div class="vault-card-apy">8.0%</div>
               </div>
               <div class="vault-card-desc">Guaranteed investor preferred rate · Aave + T-bill</div>
             </div>
             <div class="vault-card selected" id="vc1" onclick="selectVault(1)">
               <div class="vault-card-top">
-                <div class="vault-card-name">Optimized</div>
+                <div class="vault-card-name">Grow</div>
                 <div class="vault-card-apy" id="vcApy1">~16.0%</div>
               </div>
               <div class="vault-card-desc">Live blended APY · 70% Pendle + Gearbox allocation</div>
@@ -771,10 +771,10 @@ html,body{
             </div>
             <div class="vault-card" id="vc2" onclick="selectVault(2)">
               <div class="vault-card-top">
-                <div class="vault-card-name">Peak Capture</div>
+                <div class="vault-card-name">Accelerate</div>
                 <div class="vault-card-apy" id="vcApy2">~19.0%</div>
               </div>
-              <div class="vault-card-desc">Maximum Pendle/Gearbox exposure · Higher volatility</div>
+              <div class="vault-card-desc">Maximum Pendle/Gearbox exposure · Full yield capture</div>
             </div>
           </div>
           <div class="screen-btn" style="margin-top:auto;" onclick="navigate(1)">Confirm Strategy →</div>
@@ -957,7 +957,7 @@ const SCREENS = [
   { label:'Fund Wallet',    caption:'Deposit USDC via card, ACH, or USDC transfer. No minimums.' },
   { label:'Confirmed',      caption:'Deposit confirmed on-chain. Vault allocation begins within one 15-min epoch.' },
   { label:'Dashboard',      caption:'Your Smarter Wallet — balance, yield, activity, and quick actions in one view' },
-  { label:'Strategy',       caption:'Choose your risk/yield profile. Conservative floor or maximum capture.' },
+  { label:'Strategy',       caption:'Choose your strategy: Preserve the guaranteed floor, Grow with the blended pool, or Accelerate to maximum yield.' },
   { label:'Pools',          caption:'Live APY data from Pendle, Gearbox, Aave, and T-bill vaults' },
   { label:'Yield Live',     caption:'The Perpetual Capital Engine at work — compounding every 15 minutes' },
   { label:'Send',           caption:'Send to any phone globally via Zero Hash licensed corridors — arrives in ~60 seconds' },
@@ -1108,45 +1108,65 @@ function selectVault(idx) {
   });
 }
 
-// ── Live rates fetch ──────────────────────────────────────
+// ── Static fallback — rates always visible even if API is slow/down ──
+const DEMO_FALLBACK = {
+  strategies: [
+    { protocol:'pendle',  apy:18.00 },
+    { protocol:'gearbox', apy:20.53 },
+    { protocol:'aave',    apy:8.10  },
+    { protocol:'tbill',   apy:5.20  },
+  ],
+  blendedApy: 15.50,
+};
+
+const POOL_ID_MAP = { pendle:'poolPendle', gearbox:'poolGearbox', aave:'poolAave', tbill:'poolTbill' };
+
+function applyDemoRates(data) {
+  liveBlendedApy = data.blendedApy || 15.50;
+  const maxApy = Math.max(...data.strategies.map(s => s.apy));
+
+  data.strategies.forEach(s => {
+    const el = document.getElementById(POOL_ID_MAP[s.protocol]);
+    if (el) el.textContent = s.apy.toFixed(2) + '%';
+  });
+
+  const vc1 = document.getElementById('vcApy1');
+  if (vc1) vc1.textContent = '~' + liveBlendedApy.toFixed(1) + '%';
+  const vc2 = document.getElementById('vcApy2');
+  if (vc2) vc2.textContent = '~' + maxApy.toFixed(1) + '%';
+
+  const dashEl = document.getElementById('dashApyVal');
+  if (dashEl) dashEl.textContent = 'Earning ' + liveBlendedApy.toFixed(1) + '% APY';
+
+  const finalEl = document.getElementById('finalApy');
+  if (finalEl) finalEl.textContent = liveBlendedApy.toFixed(1) + '%';
+
+  const rateEl = document.getElementById('yieldRateLive');
+  if (rateEl) rateEl.textContent = liveBlendedApy.toFixed(1) + '% APY · Live';
+}
+
+let demoRetryTimeout = null;
+
 async function fetchLiveRates() {
+  if (demoRetryTimeout) { clearTimeout(demoRetryTimeout); demoRetryTimeout = null; }
   try {
-    const r = await fetch('/api/gr/rates', { cache:'no-store' });
-    const d = await r.json();
-    liveBlendedApy = d.blendedApy || 13.2;
-    const maxApy = Math.max(...d.strategies.map(s => s.apy));
-
-    // Pool screen
-    d.strategies.forEach(s => {
-      const idMap = { pendle:'poolPendle', gearbox:'poolGearbox', aave:'poolAave', tbill:'poolTbill' };
-      const el = document.getElementById(idMap[s.protocol]);
-      if (el) el.textContent = s.apy.toFixed(2) + '%';
+    const r = await fetch('/api/gr/rates', {
+      cache: 'no-store',
+      signal: AbortSignal.timeout(8000),
     });
-
-    // Vault cards
-    const vc1 = document.getElementById('vcApy1');
-    if (vc1) vc1.textContent = '~' + liveBlendedApy.toFixed(1) + '%';
-    const vc2 = document.getElementById('vcApy2');
-    if (vc2) vc2.textContent = '~' + maxApy.toFixed(1) + '%';
-
-    // Dashboard APY pill
-    const dashEl = document.getElementById('dashApyVal');
-    if (dashEl) dashEl.textContent = 'Earning ' + liveBlendedApy.toFixed(1) + '% APY';
-
-    // Final screen
-    const finalEl = document.getElementById('finalApy');
-    if (finalEl) finalEl.textContent = liveBlendedApy.toFixed(1) + '%';
-
-    // Yield screen rate
-    const rateEl = document.getElementById('yieldRateLive');
-    if (rateEl) rateEl.textContent = liveBlendedApy.toFixed(1) + '% APY · Live';
-
-  } catch(e) { /* fallback values already set */ }
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const d = await r.json();
+    applyDemoRates(d);
+  } catch(e) {
+    // Fallback already applied on init — schedule a retry in 30s
+    demoRetryTimeout = setTimeout(fetchLiveRates, 30_000);
+  }
 }
 
 // ── Init ──────────────────────────────────────────────────
 buildDots();
-fetchLiveRates();
+applyDemoRates(DEMO_FALLBACK);   // instant first paint with known rates
+fetchLiveRates();                // then fetch live; overwrites if successful
 setInterval(fetchLiveRates, 15 * 60 * 1000);
 </script>
 </body>
