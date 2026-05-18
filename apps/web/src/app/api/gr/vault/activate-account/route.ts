@@ -2,11 +2,26 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createPublicClient, createWalletClient, getAddress, http, isAddress } from 'viem'
 import { arbitrum } from 'viem/chains'
 import { privateKeyToAccount } from 'viem/accounts'
+import { CONTRACTS } from '../../../../../config/contracts'
 
 const RPC_URL = process.env.ARBITRUM_RPC_URL || 'https://arb1.arbitrum.io/rpc'
-const GENESIS_VAULT = (process.env.NEXT_PUBLIC_GENESIS_VAULT_ADDRESS || '').trim() as `0x${string}`
-const COMPLIANCE_REGISTRY = (process.env.NEXT_PUBLIC_COMPLIANCE_REGISTRY_ADDRESS || '').trim() as `0x${string}`
+
+// Use contracts.ts as canonical source — env var is override only.
+// This prevents address drift when the env lags behind a redeployment.
+const GENESIS_VAULT = (
+    (process.env.NEXT_PUBLIC_GENESIS_VAULT_ADDRESS || '').trim() || CONTRACTS.GENESIS_VAULT
+) as `0x${string}`
+const COMPLIANCE_REGISTRY = (
+    (process.env.NEXT_PUBLIC_COMPLIANCE_REGISTRY_ADDRESS || '').trim() || CONTRACTS.COMPLIANCE_REGISTRY
+) as `0x${string}`
+
 const OPERATOR_ROLE = '0x97667070c54ef182b0f5858b034beac1b6f3089aa2d3188bb1e8929f4fa9b929' as const // keccak256("OPERATOR_ROLE") — verified on-chain
+
+// Mirror the KYC activate bypass: when the operator key is absent in local/dev,
+// return a soft-bypass so the deposit flow can proceed for testing.
+const VAULT_DEV_BYPASS =
+    process.env.VAULT_ACTIVATION_DEV_BYPASS === 'true' ||
+    process.env.NODE_ENV !== 'production'
 
 const VAULT_ABI = [
     {
@@ -92,6 +107,16 @@ export async function POST(req: NextRequest) {
             || process.env.COMPLIANCE_ADMIN_PRIVATE_KEY
 
         if (!operatorKey) {
+            if (VAULT_DEV_BYPASS) {
+                console.warn('[vault/activate-account] No operator key — returning dev bypass for', rawAddress)
+                return NextResponse.json({
+                    status: 'activated',
+                    mode: 'dev_bypass',
+                    txHash: null,
+                    blockNumber: null,
+                    detail: 'Set GENESIS_VAULT_OPERATOR_PRIVATE_KEY in production to activate on-chain',
+                })
+            }
             return NextResponse.json(
                 {
                     error: 'Vault operator key not configured',
