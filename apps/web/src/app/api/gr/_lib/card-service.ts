@@ -8,7 +8,7 @@ import {
     dbEnabled,
     dbGetCardholder, dbInsertCardholder, dbUpdateCardholder,
     dbGetCard, dbInsertCard, dbListCards, dbUpdateCardStatus, dbUpdateCardControls,
-    dbGetLinkedDebitCard, dbInsertLinkedDebitCard, dbListLinkedDebitCards, dbSetLinkedDebitCardStatus,
+    dbGetLinkedDebitCard, dbInsertLinkedDebitCard, dbListLinkedDebitCards, dbSetLinkedDebitCardStatus, dbUpdateLinkedCardIssuerName,
     dbGetAuthorization, dbInsertAuthorization, dbListAuthorizations,
     dbGetFunding, dbInsertFunding, dbUpdateFundingStatus,
     dbGetPayout, dbInsertPayout, dbUpdatePayoutStatus,
@@ -84,6 +84,7 @@ type LinkedDebitCard = {
     // Required for USDC purchases: circleCreateUsdcPurchase() charges this card and
     // delivers USDC natively on Arbitrum to the user's Privy wallet via CCTP.
     circleCardId?: string | null
+    issuerName?: string | null
     createdAt: string
 }
 
@@ -719,6 +720,7 @@ export async function linkDebitCard(body: any, requestIp?: string) {
         connectedAccountId,
         externalAccountId,
         circleCardId,
+        issuerName: body.issuerName ? String(body.issuerName) : null,
         createdAt: nowIso(),
     }
 
@@ -750,6 +752,22 @@ export async function listLinkedDebitCards(query: URLSearchParams) {
     rows.sort((a, b) => { const d = a.createdAt.localeCompare(b.createdAt); return sort === 'asc' ? d : -d })
     const page = rows.slice(0, limit)
     return { status: 200, body: { data: page, meta: { source: getProcessorSource(), timestamp: nowIso(), nextCursor: rows.length > page.length ? page[page.length - 1]?.id : null } } }
+}
+
+export async function updateLinkedCardIssuerName(linkedCardId: string, issuerName: string) {
+    if (!issuerName || !linkedCardId) {
+        return { status: 400, body: errorBody('invalid_request', 'linkedCardId and issuerName are required.') }
+    }
+    if (dbEnabled()) {
+        const updated = await dbUpdateLinkedCardIssuerName(linkedCardId, issuerName)
+        if (!updated) return { status: 404, body: errorBody('not_found', 'Linked debit card not found.') }
+        return { status: 200, body: { data: updated, meta: { source: 'db', timestamp: nowIso() } } }
+    }
+    const found = getStore().linkedDebitCards.get(linkedCardId)
+    if (!found) return { status: 404, body: errorBody('not_found', 'Linked debit card not found.') }
+    const next = { ...found, issuerName }
+    getStore().linkedDebitCards.set(linkedCardId, next)
+    return { status: 200, body: { data: next, meta: { source: getProcessorSource(), timestamp: nowIso() } } }
 }
 
 export async function unlinkLinkedDebitCard(linkedCardId: string) {

@@ -82,6 +82,7 @@ function mapLinkedDebitCard(row: any) {
         connectedAccountId: row.connected_account_id ?? null,
         externalAccountId: row.external_account_id ?? null,
         circleCardId: row.circle_card_id ?? null,
+        issuerName: row.issuer_name ?? null,
         createdAt: row.created_at instanceof Date ? row.created_at.toISOString() : row.created_at,
     }
 }
@@ -321,6 +322,7 @@ export async function dbInsertLinkedDebitCard(item: {
     connectedAccountId?: string | null
     externalAccountId?: string | null
     circleCardId?: string | null
+    issuerName?: string | null
     createdAt: string
 }) {
     const pool = getPool()
@@ -331,15 +333,26 @@ export async function dbInsertLinkedDebitCard(item: {
           exp_month, exp_year, funding_eligible, payout_eligible, status,
           network_token_ref, processor_token_ref,
           connected_account_id, external_account_id, circle_card_id,
-          created_at, updated_at)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$17)`,
+          issuer_name, created_at, updated_at)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$18)`,
         [item.id, item.accountId, item.cardholderName, item.brand, item.bin ?? null,
         item.last4, item.expMonth, item.expYear, item.fundingEligible, item.payoutEligible,
         item.status, item.networkTokenRef ?? null, item.processorTokenRef ?? null,
         item.connectedAccountId ?? null, item.externalAccountId ?? null,
-        item.circleCardId ?? null, item.createdAt]
+        item.circleCardId ?? null, item.issuerName ?? null, item.createdAt]
     )
     return item
+}
+
+export async function dbUpdateLinkedCardIssuerName(id: string, issuerName: string) {
+    const pool = getPool()
+    if (!pool) return null
+    const { rows } = await pool.query(
+        `UPDATE linked_debit_cards SET issuer_name = $2, updated_at = NOW()
+         WHERE linked_card_id = $1 RETURNING *`,
+        [id, issuerName]
+    )
+    return rows[0] ? mapLinkedDebitCard(rows[0]) : null
 }
 
 export async function dbSetLinkedDebitCardStatus(id: string, status: string) {

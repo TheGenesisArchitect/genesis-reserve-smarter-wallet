@@ -540,6 +540,14 @@ function LinkDebitCardPanel({ onClose, onLinked, accountId, prefetchedClientSecr
     if (!successCard) return
     const finalCard: LinkedCardPayload = { ...successCard, issuerName: selectedIssuer || undefined }
     onLinked(finalCard)
+    // Persist issuerName to the server so it survives across devices
+    if (selectedIssuer && successCard.id) {
+      void fetch(`/api/gr/linked-debit-cards/${encodeURIComponent(successCard.id)}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ issuerName: selectedIssuer }),
+      })
+    }
     setStep('success')
   }
 
@@ -970,7 +978,9 @@ export function CardPage({ onNavigate }: { onNavigate?: (v: ViewKey) => void }) 
     if (activeAccountId) {
       void fetchLinkedCards(activeAccountId).then((linkedCards) => {
         if (linkedCards.length > 0) {
-          setCards((prev) => mergeCardsById(linkedCards, prev).filter((card) => card.id !== DEFAULT_CARD.id || linkedCards.length === 0))
+          // API data is the source of truth — it overwrites stale localStorage fields
+          // (e.g. isLinked, issuerName) so the card renders correctly on every device.
+          setCards((prev) => mergeCardsById(prev, linkedCards).filter((card) => card.id !== DEFAULT_CARD.id || linkedCards.length === 0))
         }
       }).finally(() => setCardsLoaded(true))
     } else {
