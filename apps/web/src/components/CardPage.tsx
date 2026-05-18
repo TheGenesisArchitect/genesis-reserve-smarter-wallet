@@ -1,10 +1,14 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { loadStripe } from '@stripe/stripe-js'
 import { CardElement, Elements, useElements, useStripe } from '@stripe/react-stripe-js'
 import { GenesisCard } from './WalletHome'
-import { SectionPanel, StatusPill, ActionButton, PageHeader } from './ds'
+import { LinkedCardVisual, POPULAR_ISSUERS } from './LinkedCardVisual'
+import type { LinkedCardMeta } from './LinkedCardVisual'
+import { TapToPayModal } from './TapToPayModal'
+import type { TapCard } from './TapToPayModal'
+import { SectionPanel, StatusPill, PageHeader } from './ds'
 import { useActiveWalletAddress } from '../hooks/useActiveWalletAddress'
 import type { ViewKey } from './AppShell'
 
@@ -14,7 +18,7 @@ const stripePromise = stripePublicKey ? loadStripe(stripePublicKey) : null
 /* ── AddCardPanel ─────────────────────────────────────────────────────── */
 type AddCardStep = 'form' | 'submitting' | 'success'
 type CardType = 'virtual' | 'physical'
-type SpendLimit = '$500' | '$1,000' | '$5,000' | '$25,000'
+type SpendLimit = '$0' | '$500' | '$1,000' | '$5,000' | '$25,000'
 
 type AddCardDraft = {
   type: CardType
@@ -274,7 +278,7 @@ function AddCardPanel({ onClose, onCreate }: { onClose: () => void; onCreate: (d
 // Stripe pattern that enables Link, payment method optimization, and
 // Connect integration health checks. Falls back to mounting without a
 // clientSecret when Stripe is unconfigured (mock mode).
-function LinkDebitCardPanelWrapper({ onClose, onLinked, accountId }: { onClose: () => void; onLinked: (card: unknown) => void; accountId: string }) {
+function LinkDebitCardPanelWrapper({ onClose, onLinked, accountId }: { onClose: () => void; onLinked: (card: LinkedCardPayload) => void; accountId: string }) {
   const [clientSecret, setClientSecret] = useState<string | null>(null)
   const [initError, setInitError] = useState<string | null>(null)
 
@@ -348,13 +352,15 @@ async function encryptCircleCardData(publicKeyPem: string, number: string, cvv: 
 }
 
 /* ── Toggle ───────────────────────────────────────────────────────────── */
-function LinkDebitCardPanel({ onClose, onLinked, accountId, prefetchedClientSecret }: { onClose: () => void; onLinked: (card: unknown) => void; accountId: string; prefetchedClientSecret: string | null }) {
+function LinkDebitCardPanel({ onClose, onLinked, accountId, prefetchedClientSecret }: { onClose: () => void; onLinked: (card: LinkedCardPayload) => void; accountId: string; prefetchedClientSecret: string | null }) {
   const stripe = useStripe()
   const elements = useElements()
-  const [step, setStep] = useState<'form' | 'submitting' | 'success'>('form')
+  const [step, setStep] = useState<'form' | 'submitting' | 'issuer' | 'success'>('form')
   const [cardholderName, setCardholderName] = useState('')
   const [error, setError] = useState<string | null>(null)
-  const [successCard, setSuccessCard] = useState<unknown>(null)
+  const [successCard, setSuccessCard] = useState<LinkedCardPayload | null>(null)
+  const [selectedIssuer, setSelectedIssuer] = useState('')
+  const [issuerSearch, setIssuerSearch] = useState('')
   const [usdcEnabled, setUsdcEnabled] = useState(false)
   const [submitting, setSubmitting] = useState(false)
 
@@ -507,9 +513,8 @@ function LinkDebitCardPanel({ onClose, onLinked, accountId, prefetchedClientSecr
       const createData = await createRes.json()
       if (!createRes.ok) throw new Error(createData.error?.message || 'Unable to link debit card.')
 
-      setSuccessCard({ ...createData.data, _circleEnabled: Boolean(circleCardId) })
-      onLinked(createData.data)
-      setStep('success')
+      setSuccessCard({ ...createData.data, _circleEnabled: Boolean(circleCardId) } as LinkedCardPayload)
+      setStep('issuer')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Card linking failed.')
       setStep('form')
@@ -529,7 +534,19 @@ function LinkDebitCardPanel({ onClose, onLinked, accountId, prefetchedClientSecr
     invalid: { color: '#ff8a80', iconColor: '#ff8a80' },
   }
 
-  const circleLinked = (successCard as any)?._circleEnabled === true
+  const circleLinked = Boolean((successCard as any)?._circleEnabled)
+
+  function confirmIssuer() {
+    if (!successCard) return
+    const finalCard: LinkedCardPayload = { ...successCard, issuerName: selectedIssuer || undefined }
+    onLinked(finalCard)
+    setStep('success')
+  }
+
+  // Filtered issuer list for search
+  const filteredIssuers = issuerSearch
+    ? POPULAR_ISSUERS.filter(i => i.displayName.toLowerCase().includes(issuerSearch.toLowerCase()))
+    : POPULAR_ISSUERS
 
   return (
     <>
@@ -564,23 +581,73 @@ function LinkDebitCardPanel({ onClose, onLinked, accountId, prefetchedClientSecr
           <button type="button" onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(245,240,232,0.4)', fontSize: 22, lineHeight: 1, padding: 4 }}>×</button>
         </div>
 
-        {step === 'success' ? (
+        {step === 'issuer' ? (
+          /* ── Issuer selection — captures card visual branding ── */
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+            <div>
+              <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 20, color: '#f5f0e8', marginBottom: 6 }}>Card Linked ✓</div>
+              <div style={{ fontSize: 12, color: 'rgba(245,240,232,0.5)', lineHeight: 1.7 }}>
+                Which bank issued this card? We use this to display your card with its correct colors and style.
+              </div>
+            </div>
+
+            {/* Search */}
+            <input
+              type="text"
+              value={issuerSearch}
+              onChange={e => setIssuerSearch(e.target.value)}
+              placeholder="Search your bank…"
+              style={{ width: '100%', padding: '10px 13px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 10, color: '#f5f0e8', fontSize: 13, fontFamily: "'Tenor Sans', sans-serif", outline: 'none', boxSizing: 'border-box' }}
+            />
+
+            {/* Issuer grid */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 8, maxHeight: 320, overflowY: 'auto' }}>
+              {filteredIssuers.map(issuer => {
+                const isSelected = selectedIssuer === issuer.key
+                return (
+                  <button
+                    key={issuer.key}
+                    type="button"
+                    onClick={() => setSelectedIssuer(isSelected ? '' : issuer.key)}
+                    style={{
+                      padding: '10px 12px', borderRadius: 10,
+                      border: isSelected ? '1px solid rgba(201,168,76,0.55)' : '1px solid rgba(255,255,255,0.08)',
+                      background: isSelected ? 'rgba(201,168,76,0.10)' : 'rgba(255,255,255,0.02)',
+                      cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10,
+                      fontFamily: "'Tenor Sans', sans-serif",
+                    }}
+                  >
+                    <div style={{ width: 10, height: 10, borderRadius: '50%', background: issuer.previewColor, flexShrink: 0, border: '1px solid rgba(255,255,255,0.15)' }} />
+                    <span style={{ fontSize: 11, color: isSelected ? '#c9a84c' : '#f5f0e8', textAlign: 'left', lineHeight: 1.3 }}>{issuer.displayName}</span>
+                  </button>
+                )
+              })}
+            </div>
+
+            <div style={{ display: 'flex', gap: 10 }}>
+              <button type="button" onClick={() => confirmIssuer()}
+                style={{ flex: 1, padding: '12px', borderRadius: 12, background: 'rgba(201,168,76,0.16)', border: '1px solid rgba(201,168,76,0.4)', color: '#c9a84c', fontSize: 12, letterSpacing: '0.1em', fontFamily: "'Tenor Sans', sans-serif", cursor: 'pointer' }}>
+                {selectedIssuer ? 'Confirm' : 'Skip'}
+              </button>
+            </div>
+          </div>
+
+        ) : step === 'success' ? (
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', gap: 18 }}>
             <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'rgba(76,175,80,0.12)', border: '1px solid rgba(76,175,80,0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28 }}>
               ✓
             </div>
             <div>
-              <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22, color: '#f5f0e8', marginBottom: 8 }}>Card Linked</div>
+              <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22, color: '#f5f0e8', marginBottom: 8 }}>Card Ready</div>
               <div style={{ fontSize: 13, color: 'rgba(245,240,232,0.5)', lineHeight: 1.7, maxWidth: 300 }}>
                 {circleLinked
                   ? 'Your card is ready for funding, withdrawals, and USDC purchases via Circle.'
-                  : 'Your debit card is ready for funding and push-to-card withdrawals.'}
+                  : 'Your debit card is ready for funding, withdrawals, and Tap to Pay.'}
               </div>
             </div>
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'center' }}>
               <StatusPill label="Verified" tone="success" />
-              <StatusPill label="Funding Enabled" />
-              <StatusPill label="Payouts Enabled" />
+              <StatusPill label="Tap to Pay" tone="accent" />
               {circleLinked && <StatusPill label="USDC Purchases" tone="accent" />}
             </div>
             <button type="button" onClick={onClose} style={{ marginTop: 8, padding: '11px 28px', background: 'rgba(201,168,76,0.12)', border: '1px solid rgba(201,168,76,0.3)', borderRadius: 10, color: '#c9a84c', fontSize: 12, letterSpacing: '0.1em', fontFamily: "'Tenor Sans', sans-serif", cursor: 'pointer' }}>
@@ -742,6 +809,10 @@ type ManagedCard = {
   brand: string
   frozen: boolean
   controls: { online: boolean; atm: boolean; international: boolean }
+  // linked card fields
+  isLinked?: boolean
+  issuerName?: string
+  funding?: string   // 'debit' | 'credit' | 'prepaid'
 }
 
 type LinkedCardPayload = {
@@ -753,6 +824,8 @@ type LinkedCardPayload = {
   expMonth: number
   expYear: number
   status: string
+  issuerName?: string
+  funding?: string
 }
 
 const CARD_STORAGE_KEY = 'gr:cards:v1'
@@ -775,9 +848,12 @@ function mapLinkedCardToManagedCard(card: LinkedCardPayload): ManagedCard {
     last4: card.last4,
     expiry: `${String(card.expMonth).padStart(2, '0')}/${String(card.expYear).slice(-2)}`,
     cvv: '•••',
-    brand: card.brand.toUpperCase(),
+    brand: card.brand,
     frozen: card.status !== 'verified',
     controls: { online: true, atm: false, international: true },
+    isLinked: true,
+    issuerName: card.issuerName,
+    funding: card.funding ?? 'debit',
   }
 }
 
@@ -822,6 +898,7 @@ const DEFAULT_CARD: ManagedCard = {
   brand: 'VISA',
   frozen: false,
   controls: { online: true, atm: false, international: true },
+  isLinked: false,
 }
 
 function randomDigits(length: number): string {
@@ -859,6 +936,7 @@ export function CardPage({ onNavigate }: { onNavigate?: (v: ViewKey) => void }) 
   const [copied, setCopied] = useState(false)
   const [showAddCard, setShowAddCard] = useState(false)
   const [showLinkCard, setShowLinkCard] = useState(false)
+  const [showTapToPay, setShowTapToPay] = useState(false)
   const activeAccountId = useActiveWalletAddress() ?? 'demo-account'
 
   useEffect(() => {
@@ -902,8 +980,9 @@ export function CardPage({ onNavigate }: { onNavigate?: (v: ViewKey) => void }) 
 
   useEffect(() => {
     if (typeof window === 'undefined') return
+    if (!cardsLoaded) return
     window.localStorage.setItem(getCardStorageKey(activeAccountId), JSON.stringify(cards))
-  }, [cards, activeAccountId])
+  }, [cards, activeAccountId, cardsLoaded])
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -957,6 +1036,21 @@ export function CardPage({ onNavigate }: { onNavigate?: (v: ViewKey) => void }) 
       background: '#070707',
       overflowX: 'hidden',
     }}>
+
+      {/* Tap to Pay modal */}
+      {showTapToPay && (
+        <TapToPayModal
+          cards={cards.map(card => ({
+            id: card.id,
+            isGenesis: !card.isLinked,
+            cardholderName: card.holderName,
+            frozen: card.frozen,
+            linkedMeta: card.isLinked ? { cardholderName: card.holderName, last4: card.last4, expiry: card.expiry, brand: card.brand, funding: card.funding, issuerName: card.issuerName, frozen: card.frozen } : undefined,
+          }))}
+          defaultCardId={activeCard.id}
+          onClose={() => setShowTapToPay(false)}
+        />
+      )}
 
       {/* Add card slide-in panel */}
       {showAddCard && <AddCardPanel onClose={() => setShowAddCard(false)} onCreate={handleCreateCard} />}
@@ -1017,10 +1111,17 @@ export function CardPage({ onNavigate }: { onNavigate?: (v: ViewKey) => void }) 
                   textAlign: 'left',
                 }}
               >
-                <GenesisCard frozen={card.frozen} width={listCardWidth} height={listCardHeight} cardholder={card.holderName} />
+                {card.isLinked ? (
+                  <LinkedCardVisual
+                    card={{ cardholderName: card.holderName, last4: card.last4, expiry: card.expiry, brand: card.brand, funding: card.funding, issuerName: card.issuerName, frozen: card.frozen }}
+                    width={listCardWidth} height={listCardHeight}
+                  />
+                ) : (
+                  <GenesisCard frozen={card.frozen} width={listCardWidth} height={listCardHeight} cardholder={card.holderName} />
+                )}
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 8, padding: '0 4px' }}>
                   <div style={{ fontSize: 11, color: '#f5f0e8', letterSpacing: '0.05em' }}>•••• {card.last4}</div>
-                  <div style={{ fontSize: 10, color: 'rgba(245,240,232,0.45)', textTransform: 'capitalize' }}>{card.type}</div>
+                  <div style={{ fontSize: 10, color: 'rgba(245,240,232,0.45)', textTransform: 'capitalize' }}>{card.isLinked ? (card.funding ?? 'linked') : card.type}</div>
                 </div>
               </button>
             )
@@ -1090,7 +1191,14 @@ export function CardPage({ onNavigate }: { onNavigate?: (v: ViewKey) => void }) 
 
         {/* Card preview */}
         <div style={{ marginBottom: 24 }}>
-          <GenesisCard frozen={frozen} width={detailCardWidth} height={detailCardHeight} cardholder={activeCard.holderName} />
+          {activeCard.isLinked ? (
+            <LinkedCardVisual
+              card={{ cardholderName: activeCard.holderName, last4: activeCard.last4, expiry: activeCard.expiry, brand: activeCard.brand, funding: activeCard.funding, issuerName: activeCard.issuerName, frozen }}
+              width={detailCardWidth} height={detailCardHeight}
+            />
+          ) : (
+            <GenesisCard frozen={frozen} width={detailCardWidth} height={detailCardHeight} cardholder={activeCard.holderName} />
+          )}
         </div>
 
         {/* Copy number button */}
@@ -1185,6 +1293,26 @@ export function CardPage({ onNavigate }: { onNavigate?: (v: ViewKey) => void }) 
           </div>
         </SectionPanel>
 
+        {/* Tap to Pay */}
+        <button
+          type="button"
+          onClick={() => setShowTapToPay(true)}
+          style={{
+            width: '100%', padding: '15px 18px', marginBottom: 10,
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+            background: 'rgba(0,212,170,0.08)',
+            border: '1px solid rgba(0,212,170,0.28)',
+            borderRadius: 14, cursor: 'pointer',
+            color: '#00D4AA',
+            fontSize: 13, letterSpacing: '0.1em', textTransform: 'uppercase',
+            fontFamily: "'Tenor Sans', sans-serif",
+            transition: 'all 0.25s',
+          }}
+        >
+          <NfcIcon />
+          Tap to Pay
+        </button>
+
         {/* Freeze button */}
         <button
           type="button"
@@ -1265,6 +1393,17 @@ function CopyIcon() {
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
       <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
       <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+    </svg>
+  )
+}
+
+function NfcIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <path d="M6 12a6 6 0 0 1 6-6" />
+      <path d="M4 12a8 8 0 0 1 8-8" />
+      <path d="M8.5 12a3.5 3.5 0 0 1 3.5-3.5" />
+      <circle cx="12" cy="12" r="2" fill="currentColor" />
     </svg>
   )
 }

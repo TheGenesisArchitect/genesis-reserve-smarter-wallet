@@ -11,6 +11,7 @@ import { useVaultPositions } from '../hooks/useVaultPositions'
 import { useYieldEngine } from '../hooks/useYieldEngine'
 import { useActiveWalletAddress } from '../hooks/useActiveWalletAddress'
 import { WithdrawFlow } from './WithdrawFlow'
+import { TapToPayModal } from './TapToPayModal'
 import { CHAIN_META } from '../config/contracts'
 import type { LedgerEntry } from '../lib/bff.types'
 import type { ViewKey } from './AppShell'
@@ -238,6 +239,7 @@ export function WalletHome({ accountId, onNavigate }: WalletHomeProps) {
   // ── Balance mask ─────────────────────────────────────────────────────
   const [masked, setMasked] = useState(false)
   const [showPortfolio, setShowPortfolio] = useState(true)  // default open
+  const [showTapToPay, setShowTapToPay] = useState(false)
 
   // ── Display name ─────────────────────────────────────────────────────
   const displayName = user?.phone?.number
@@ -622,7 +624,54 @@ export function WalletHome({ accountId, onNavigate }: WalletHomeProps) {
             <div key={i} style={{ width: i === 0 ? 18 : 6, height: 6, borderRadius: 3, background: i === 0 ? '#c9a84c' : 'rgba(201,168,76,0.22)' }} />
           ))}
         </div>
+
+        {/* Quick Pay row */}
+        <div style={{ display: 'flex', gap: 8, marginTop: 14 }}>
+          <button
+            type="button"
+            onClick={() => setShowTapToPay(true)}
+            style={{
+              flex: 1, padding: '11px 14px',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+              background: 'rgba(0,212,170,0.07)', border: '1px solid rgba(0,212,170,0.22)',
+              borderRadius: 12, cursor: 'pointer', color: '#00D4AA',
+              fontSize: 12, letterSpacing: '0.08em', fontFamily: "'Tenor Sans', sans-serif",
+            }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+              <path d="M6 12a6 6 0 0 1 6-6" /><path d="M4 12a8 8 0 0 1 8-8" /><path d="M8.5 12a3.5 3.5 0 0 1 3.5-3.5" />
+              <circle cx="12" cy="12" r="2" fill="currentColor" />
+            </svg>
+            Tap to Pay
+          </button>
+          <button
+            type="button"
+            onClick={() => onNavigate('card')}
+            style={{
+              flex: 1, padding: '11px 14px',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+              background: 'rgba(201,168,76,0.06)', border: '1px solid rgba(201,168,76,0.18)',
+              borderRadius: 12, cursor: 'pointer', color: 'rgba(201,168,76,0.75)',
+              fontSize: 12, letterSpacing: '0.08em', fontFamily: "'Tenor Sans', sans-serif",
+            }}
+          >
+            Manage Cards
+          </button>
+        </div>
       </SectionPanel>
+
+      {/* Tap to Pay modal — triggered from wallet home card section */}
+      {showTapToPay && (
+        <TapToPayModal
+          cards={[{
+            id: 'home-genesis',
+            isGenesis: true,
+            cardholderName: displayName.replace(/[@+]/g, '').slice(0, 22),
+          }]}
+          defaultCardId="home-genesis"
+          onClose={() => setShowTapToPay(false)}
+        />
+      )}
 
       {/* ── Recent Transactions ───────────────────────────────────────── */}
       <SectionPanel
