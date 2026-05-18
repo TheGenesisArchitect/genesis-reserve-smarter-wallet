@@ -7,6 +7,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import type { Metadata, Viewport } from 'next'
+import { Analytics } from '@vercel/analytics/next'
 import { GenesisProviders } from '../providers'
 import './globals.css'
 
@@ -43,6 +44,7 @@ export default function RootLayout({
         <GenesisProviders>
           {children}
         </GenesisProviders>
+        <Analytics />
       </body>
     </html>
   )
