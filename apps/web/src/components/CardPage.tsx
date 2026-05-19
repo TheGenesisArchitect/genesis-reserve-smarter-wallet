@@ -945,6 +945,8 @@ export function CardPage({ onNavigate }: { onNavigate?: (v: ViewKey) => void }) 
   const [showAddCard, setShowAddCard] = useState(false)
   const [showLinkCard, setShowLinkCard] = useState(false)
   const [showTapToPay, setShowTapToPay] = useState(false)
+  const [removeConfirm, setRemoveConfirm] = useState(false)
+  const [removing, setRemoving] = useState(false)
   const activeAccountId = useActiveWalletAddress() ?? 'demo-account'
 
   useEffect(() => {
@@ -1035,6 +1037,23 @@ export function CardPage({ onNavigate }: { onNavigate?: (v: ViewKey) => void }) 
     navigator.clipboard?.writeText(CARD_NUMBER.replace(/\s/g, '')).catch(() => { })
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
+  }
+
+  // Reset removal confirmation whenever the user switches to a different card
+  useEffect(() => { setRemoveConfirm(false) }, [activeCardId])
+
+  async function handleRemoveCard() {
+    if (!activeCard.isLinked) return
+    setRemoving(true)
+    try {
+      await fetch(`/api/gr/linked-debit-cards/${encodeURIComponent(activeCard.id)}`, { method: 'DELETE' })
+    } catch { /* still remove locally on network error */ }
+    setCards(prev => {
+      const next = prev.filter(c => c.id !== activeCard.id)
+      return next.length > 0 ? next : [DEFAULT_CARD]
+    })
+    setRemoveConfirm(false)
+    setRemoving(false)
   }
 
   return (
@@ -1342,6 +1361,59 @@ export function CardPage({ onNavigate }: { onNavigate?: (v: ViewKey) => void }) 
           <LockIcon frozen={frozen} />
           {frozen ? 'Unfreeze Card' : 'Freeze Card'}
         </button>
+
+        {/* Remove linked card */}
+        {activeCard.isLinked && (
+          <div style={{ marginTop: 10 }}>
+            {!removeConfirm ? (
+              <button
+                type="button"
+                onClick={() => setRemoveConfirm(true)}
+                style={{
+                  width: '100%', padding: '13px 18px',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                  background: 'transparent',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: 14, cursor: 'pointer',
+                  color: 'rgba(245,240,232,0.35)',
+                  fontSize: 12, letterSpacing: '0.08em', textTransform: 'uppercase',
+                  fontFamily: "'Tenor Sans', sans-serif",
+                  transition: 'all 0.2s',
+                }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(232,64,64,0.35)'; e.currentTarget.style.color = 'rgba(232,64,64,0.7)' }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'; e.currentTarget.style.color = 'rgba(245,240,232,0.35)' }}
+              >
+                Remove Card
+              </button>
+            ) : (
+              <div style={{ padding: '16px', borderRadius: 14, background: 'rgba(232,64,64,0.06)', border: '1px solid rgba(232,64,64,0.25)' }}>
+                <div style={{ fontSize: 12, color: 'rgba(245,240,232,0.7)', marginBottom: 14, lineHeight: 1.6 }}>
+                  Remove <strong style={{ color: '#f5f0e8' }}>•••• {activeCard.last4}</strong> from your wallet?
+                  <br />
+                  <span style={{ fontSize: 11, color: 'rgba(245,240,232,0.4)' }}>You can re-link it at any time.</span>
+                </div>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <button
+                    type="button"
+                    onClick={() => setRemoveConfirm(false)}
+                    disabled={removing}
+                    style={{ flex: 1, padding: '10px', borderRadius: 10, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.12)', color: 'rgba(245,240,232,0.6)', fontSize: 11, cursor: 'pointer', fontFamily: "'Tenor Sans', sans-serif" }}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleRemoveCard}
+                    disabled={removing}
+                    style={{ flex: 2, padding: '10px', borderRadius: 10, background: 'rgba(232,64,64,0.18)', border: '1px solid rgba(232,64,64,0.45)', color: '#E84040', fontSize: 11, letterSpacing: '0.08em', cursor: removing ? 'not-allowed' : 'pointer', fontFamily: "'Tenor Sans', sans-serif", opacity: removing ? 0.6 : 1 }}
+                  >
+                    {removing ? 'Removing…' : 'Confirm Remove'}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   )
