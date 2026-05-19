@@ -27,6 +27,7 @@ const CONSUMER_NAV: Array<{ key: ViewKey; label: string; icon: (active: boolean)
   { key: 'card', label: 'Card', icon: (a) => <CardIcon active={a} /> },
   { key: 'vaults', label: 'Vaults', icon: (a) => <VaultIcon active={a} /> },
   { key: 'activity', label: 'Activity', icon: (a) => <ActivityIcon active={a} /> },
+  { key: 'yield-monitor', label: 'Research', icon: (a) => <ResearchIcon active={a} /> },
   { key: 'academy', label: 'Academy', icon: (a) => <AcademyIcon active={a} /> },
   { key: 'settings', label: 'Settings', icon: (a) => <SettingsIcon active={a} /> },
 ]
@@ -477,6 +478,18 @@ function AcademyIcon({ active }: { active: boolean }) {
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
       <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
       <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+    </svg>
+  )
+}
+
+function ResearchIcon({ active }: { active: boolean }) {
+  const c = active ? '#9B6DFF' : 'rgba(245,240,232,0.45)'
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="11" cy="11" r="8" />
+      <line x1="21" y1="21" x2="16.65" y2="16.65" />
+      <line x1="11" y1="8" x2="11" y2="14" />
+      <line x1="8" y1="11" x2="14" y2="11" />
     </svg>
   )
 }

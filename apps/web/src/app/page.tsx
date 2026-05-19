@@ -226,6 +226,7 @@ function PanelRouter({
 /* ── Enterprise tools tray (under Settings) ────────────────────────── */
 const ENTERPRISE_TOOLS: Array<{ key: ViewKey; label: string; desc: string }> = [
   { key: 'analytics', label: 'Yield Engine', desc: 'Strategy center · earnings · projected returns' },
+  { key: 'yield-monitor', label: 'Research Center', desc: 'Live APY intelligence, strategy alerts & market data' },
   { key: 'compliance', label: 'Compliance', desc: 'KYC / AML status & screening' },
   { key: 'scheduled', label: 'Scheduled Sends', desc: 'Recurring remittance setup' },
   { key: 'batch', label: 'Batch Operations', desc: 'Multi-recipient bulk sends' },
