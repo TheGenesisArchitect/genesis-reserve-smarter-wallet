@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { usePrivy } from '@privy-io/react-auth'
 import { arbitrum, base, polygon, optimism, mainnet } from 'viem/chains'
@@ -15,6 +15,9 @@ import { CHAIN_META } from '../config/contracts'
 import type { LedgerEntry } from '../lib/bff.types'
 import type { ViewKey } from './AppShell'
 import { PANEL_BASE, SectionPanel, ActionButton } from './ds'
+import { LinkedCardVisual } from './LinkedCardVisual'
+import { LinkDebitCardPanelWrapper } from './CardPage'
+import type { LinkedCardPayload } from './CardPage'
 
 // Display order for portfolio breakdown
 const PORTFOLIO_CHAINS = [
@@ -116,6 +119,56 @@ export function GenesisCard({
 }
 
 
+/* ── Home card type ───────────────────────────────────────────────────── */
+type HomeLinkedCard = {
+  id: string
+  cardholderName: string
+  brand: string
+  last4: string
+  expiry: string  // MM/YY
+  issuerName?: string
+  funding?: string
+  frozen: boolean
+}
+
+function loadLinkedCardsFromStorage(accountId: string): HomeLinkedCard[] {
+  if (typeof window === 'undefined') return []
+  try {
+    const raw = window.localStorage.getItem(`gr:cards:v1:${accountId.toLowerCase()}`)
+    if (!raw) return []
+    const stored = JSON.parse(raw) as Array<{
+      id: string; holderName: string; isLinked?: boolean
+      brand: string; last4: string; expiry: string
+      issuerName?: string; funding?: string; frozen?: boolean
+    }>
+    return stored.filter(c => c.isLinked).map(c => ({
+      id: c.id,
+      cardholderName: c.holderName,
+      brand: c.brand,
+      last4: c.last4,
+      expiry: c.expiry ?? '01/99',
+      issuerName: c.issuerName,
+      funding: c.funding,
+      frozen: c.frozen ?? false,
+    }))
+  } catch { return [] }
+}
+
+function apiToHomeCard(c: Record<string, unknown>): HomeLinkedCard {
+  const expMonth = String(c.expMonth ?? '1').padStart(2, '0')
+  const expYear = String(c.expYear ?? '2099').slice(-2)
+  return {
+    id: String(c.id),
+    cardholderName: String(c.cardholderName ?? ''),
+    brand: String(c.brand ?? ''),
+    last4: String(c.last4 ?? ''),
+    expiry: `${expMonth}/${expYear}`,
+    issuerName: c.issuerName as string | undefined,
+    funding: c.funding as string | undefined,
+    frozen: false,
+  }
+}
+
 /* ── Quick-action button ───────────────────────────────────────────────── */
 function QuickAction({ icon, label, onClick, href }: { icon: ReactNode; label: string; onClick?: () => void; href?: string }) {
   const [hover, setHover] = useState(false)
@@ -216,6 +269,32 @@ export function WalletHome({ accountId, onNavigate }: WalletHomeProps) {
   const [masked, setMasked] = useState(false)
   const [showPortfolio, setShowPortfolio] = useState(true)  // default open
   const [showTapToPay, setShowTapToPay] = useState(false)
+
+  // ── Linked card carousel ─────────────────────────────────────────────
+  const [linkedCards, setLinkedCards] = useState<HomeLinkedCard[]>([])
+  const [activeCardIdx, setActiveCardIdx] = useState(0)  // 0 = Genesis, 1..n = linked cards
+  const [showLinkCardPanel, setShowLinkCardPanel] = useState(false)
+  const touchStartX = useRef<number | null>(null)
+  const totalCards = 1 + linkedCards.length
+
+  useEffect(() => {
+    if (!walletAddr) return
+    const stored = loadLinkedCardsFromStorage(walletAddr)
+    if (stored.length > 0) setLinkedCards(stored)
+    // Fetch from API and merge (API wins for matching IDs — syncs DB cards to this device)
+    fetch(`/api/gr/linked-debit-cards?accountId=${encodeURIComponent(walletAddr)}`)
+      .then(r => r.json())
+      .then(data => {
+        const apiCards: HomeLinkedCard[] = (data?.data ?? []).map(apiToHomeCard)
+        if (apiCards.length === 0) return
+        setLinkedCards(prev => {
+          const map = new Map(prev.map(c => [c.id, c]))
+          apiCards.forEach(c => map.set(c.id, c))
+          return Array.from(map.values())
+        })
+      })
+      .catch(() => { /* keep localStorage data */ })
+  }, [walletAddr])
 
   // ── Display name ─────────────────────────────────────────────────────
   const displayName = user?.phone?.number
@@ -578,64 +657,136 @@ export function WalletHome({ accountId, onNavigate }: WalletHomeProps) {
       <SectionPanel
         title="Cards"
         eyebrow="Payments"
-        action={<ActionButton label="View all ->" onClick={() => onNavigate('card')} secondary />}
+        action={<ActionButton label="Manage ->" onClick={() => onNavigate('card')} secondary />}
       >
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <div style={{ cursor: 'pointer' }} onClick={() => onNavigate('card')}>
-            <GenesisCard width={340} height={208} cardholder={displayName.replace(/[@+]/g, '').slice(0, 22)} />
+        {/* Card carousel */}
+        <div
+          style={{ position: 'relative', userSelect: 'none' }}
+          onTouchStart={e => { touchStartX.current = e.touches[0].clientX }}
+          onTouchEnd={e => {
+            if (touchStartX.current === null) return
+            const delta = touchStartX.current - e.changedTouches[0].clientX
+            if (delta > 40) setActiveCardIdx(i => Math.min(totalCards - 1, i + 1))
+            else if (delta < -40) setActiveCardIdx(i => Math.max(0, i - 1))
+            touchStartX.current = null
+          }}
+        >
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            {activeCardIdx === 0 ? (
+              <div style={{ cursor: 'pointer' }} onClick={() => onNavigate('card')}>
+                <GenesisCard width={340} height={208} cardholder={displayName.replace(/[@+]/g, '').slice(0, 22)} />
+              </div>
+            ) : (
+              <div style={{ cursor: 'pointer' }} onClick={() => onNavigate('card')}>
+                <LinkedCardVisual
+                  card={{
+                    cardholderName: linkedCards[activeCardIdx - 1].cardholderName,
+                    last4: linkedCards[activeCardIdx - 1].last4,
+                    expiry: linkedCards[activeCardIdx - 1].expiry,
+                    brand: linkedCards[activeCardIdx - 1].brand,
+                    issuerName: linkedCards[activeCardIdx - 1].issuerName,
+                    frozen: linkedCards[activeCardIdx - 1].frozen,
+                  }}
+                  width={340}
+                  height={208}
+                />
+              </div>
+            )}
           </div>
+
+          {/* Prev / next arrows */}
+          {totalCards > 1 && (
+            <>
+              <button type="button"
+                onClick={() => setActiveCardIdx(i => Math.max(0, i - 1))}
+                disabled={activeCardIdx === 0}
+                style={{ position: 'absolute', left: -8, top: '50%', transform: 'translateY(-50%)', width: 32, height: 32, borderRadius: '50%', background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)', color: activeCardIdx === 0 ? 'rgba(245,240,232,0.15)' : 'rgba(245,240,232,0.6)', fontSize: 16, cursor: activeCardIdx === 0 ? 'default' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.15s' }}>
+                ‹
+              </button>
+              <button type="button"
+                onClick={() => setActiveCardIdx(i => Math.min(totalCards - 1, i + 1))}
+                disabled={activeCardIdx === totalCards - 1}
+                style={{ position: 'absolute', right: -8, top: '50%', transform: 'translateY(-50%)', width: 32, height: 32, borderRadius: '50%', background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)', color: activeCardIdx === totalCards - 1 ? 'rgba(245,240,232,0.15)' : 'rgba(245,240,232,0.6)', fontSize: 16, cursor: activeCardIdx === totalCards - 1 ? 'default' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.15s' }}>
+                ›
+              </button>
+            </>
+          )}
         </div>
-        <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginTop: 12 }}>
-          {[0, 1, 2, 3].map(i => (
-            <div key={i} style={{ width: i === 0 ? 18 : 6, height: 6, borderRadius: 3, background: i === 0 ? '#c9a84c' : 'rgba(201,168,76,0.22)' }} />
+
+        {/* Card label under active linked card */}
+        {activeCardIdx > 0 && (
+          <div style={{ textAlign: 'center', marginTop: 8, fontSize: 11, color: 'rgba(245,240,232,0.45)', letterSpacing: '0.06em' }}>
+            {linkedCards[activeCardIdx - 1].issuerName ?? linkedCards[activeCardIdx - 1].brand} •••• {linkedCards[activeCardIdx - 1].last4}
+          </div>
+        )}
+
+        {/* Dot pagination */}
+        <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginTop: activeCardIdx === 0 ? 12 : 8 }}>
+          {Array.from({ length: totalCards }).map((_, i) => (
+            <button key={i} type="button" onClick={() => setActiveCardIdx(i)}
+              style={{ width: i === activeCardIdx ? 18 : 6, height: 6, borderRadius: 3, background: i === activeCardIdx ? '#c9a84c' : 'rgba(201,168,76,0.22)', border: 'none', cursor: 'pointer', padding: 0, transition: 'all 0.2s' }} />
           ))}
         </div>
 
-        {/* Quick Pay row */}
+        {/* Quick actions row */}
         <div style={{ display: 'flex', gap: 8, marginTop: 14 }}>
-          <button
-            type="button"
-            onClick={() => setShowTapToPay(true)}
-            style={{
-              flex: 1, padding: '11px 14px',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-              background: 'rgba(0,212,170,0.07)', border: '1px solid rgba(0,212,170,0.22)',
-              borderRadius: 12, cursor: 'pointer', color: '#00D4AA',
-              fontSize: 12, letterSpacing: '0.08em', fontFamily: "'Tenor Sans', sans-serif",
-            }}
-          >
+          <button type="button" onClick={() => setShowTapToPay(true)}
+            style={{ flex: 1, padding: '11px 14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: 'rgba(0,212,170,0.07)', border: '1px solid rgba(0,212,170,0.22)', borderRadius: 12, cursor: 'pointer', color: '#00D4AA', fontSize: 12, letterSpacing: '0.08em', fontFamily: "'Tenor Sans', sans-serif" }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
               <path d="M6 12a6 6 0 0 1 6-6" /><path d="M4 12a8 8 0 0 1 8-8" /><path d="M8.5 12a3.5 3.5 0 0 1 3.5-3.5" />
               <circle cx="12" cy="12" r="2" fill="currentColor" />
             </svg>
             Tap to Pay
           </button>
-          <button
-            type="button"
-            onClick={() => onNavigate('card')}
-            style={{
-              flex: 1, padding: '11px 14px',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-              background: 'rgba(201,168,76,0.06)', border: '1px solid rgba(201,168,76,0.18)',
-              borderRadius: 12, cursor: 'pointer', color: 'rgba(201,168,76,0.75)',
-              fontSize: 12, letterSpacing: '0.08em', fontFamily: "'Tenor Sans', sans-serif",
-            }}
-          >
-            Manage Cards
+          <button type="button" onClick={() => setShowLinkCardPanel(true)}
+            style={{ flex: 1, padding: '11px 14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, background: 'rgba(201,168,76,0.06)', border: '1px solid rgba(201,168,76,0.18)', borderRadius: 12, cursor: 'pointer', color: 'rgba(201,168,76,0.75)', fontSize: 12, letterSpacing: '0.08em', fontFamily: "'Tenor Sans', sans-serif" }}>
+            + Link Card
           </button>
         </div>
       </SectionPanel>
 
-      {/* Tap to Pay modal — triggered from wallet home card section */}
+      {/* Tap to Pay modal — passes all cards including linked */}
       {showTapToPay && (
         <TapToPayModal
-          cards={[{
-            id: 'home-genesis',
-            isGenesis: true,
-            cardholderName: displayName.replace(/[@+]/g, '').slice(0, 22),
-          }]}
-          defaultCardId="home-genesis"
+          cards={[
+            { id: 'home-genesis', isGenesis: true, cardholderName: displayName.replace(/[@+]/g, '').slice(0, 22), frozen: false },
+            ...linkedCards.map(c => ({
+              id: c.id,
+              isGenesis: false as const,
+              cardholderName: c.cardholderName,
+              frozen: c.frozen,
+              linkedMeta: { cardholderName: c.cardholderName, last4: c.last4, expiry: c.expiry, brand: c.brand, funding: c.funding, issuerName: c.issuerName, frozen: c.frozen },
+            })),
+          ]}
+          defaultCardId={activeCardIdx === 0 ? 'home-genesis' : (linkedCards[activeCardIdx - 1]?.id ?? 'home-genesis')}
           onClose={() => setShowTapToPay(false)}
+        />
+      )}
+
+      {/* Inline card linking panel */}
+      {showLinkCardPanel && walletAddr && (
+        <LinkDebitCardPanelWrapper
+          accountId={walletAddr}
+          onClose={() => setShowLinkCardPanel(false)}
+          onLinked={(card: LinkedCardPayload) => {
+            const newCard: HomeLinkedCard = {
+              id: card.id,
+              cardholderName: card.cardholderName,
+              brand: card.brand,
+              last4: card.last4,
+              expiry: `${String(card.expMonth).padStart(2, '0')}/${String(card.expYear).slice(-2)}`,
+              issuerName: card.issuerName,
+              funding: card.funding,
+              frozen: false,
+            }
+            setLinkedCards(prev => {
+              const map = new Map(prev.map(c => [c.id, c]))
+              map.set(newCard.id, newCard)
+              return Array.from(map.values())
+            })
+            setActiveCardIdx(1 + linkedCards.length) // jump to the new card
+            setShowLinkCardPanel(false)
+          }}
         />
       )}
 
