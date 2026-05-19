@@ -6,6 +6,8 @@ import { LinkedCardVisual } from './LinkedCardVisual'
 import { StatusPill } from './ds'
 import { useActiveWalletAddress } from '../hooks/useActiveWalletAddress'
 import { DepositFlow } from './DepositFlow'
+import { LinkDebitCardPanelWrapper } from './CardPage'
+import type { LinkedCardPayload } from './CardPage'
 import type { ViewKey } from './AppShell'
 
 const stripePublicKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? ''
@@ -40,6 +42,46 @@ function cardExpiry(c: LinkedCard) {
   return `${String(c.expMonth).padStart(2, '0')}/${String(c.expYear).slice(-2)}`
 }
 
+function getLinkedCardsFromStorage(accountId: string): LinkedCard[] {
+  if (typeof window === 'undefined') return []
+  try {
+    const key = `gr:cards:v1:${accountId.toLowerCase()}`
+    const raw = window.localStorage.getItem(key)
+    if (!raw) return []
+    const stored = JSON.parse(raw) as Array<{
+      id: string; holderName: string; isLinked?: boolean
+      brand: string; last4: string; expiry: string
+      issuerName?: string; funding?: string
+    }>
+    return stored
+      .filter(c => c.isLinked)
+      .map(c => {
+        const [mm, yy] = (c.expiry ?? '01/99').split('/')
+        return {
+          id: c.id,
+          cardholderName: c.holderName,
+          brand: c.brand,
+          last4: c.last4,
+          expMonth: parseInt(mm, 10) || 1,
+          expYear: 2000 + (parseInt(yy, 10) || 30),
+          status: 'verified',
+          fundingEligible: true,
+          issuerName: c.issuerName,
+          funding: c.funding,
+        }
+      })
+  } catch {
+    return []
+  }
+}
+
+function mergeLinkedCards(stored: LinkedCard[], api: LinkedCard[]): LinkedCard[] {
+  const map = new Map<string, LinkedCard>()
+  stored.forEach(c => map.set(c.id, c))
+  api.forEach(c => map.set(c.id, c)) // API wins for matching IDs
+  return Array.from(map.values())
+}
+
 export function FundPage({ onNavigate }: { onNavigate: (v: ViewKey) => void }) {
   const accountId = useActiveWalletAddress() ?? 'demo-account'
   const walletAddress = useActiveWalletAddress()
@@ -52,6 +94,7 @@ export function FundPage({ onNavigate }: { onNavigate: (v: ViewKey) => void }) {
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
   const [fundingId, setFundingId] = useState<string | null>(null)
   const [fundingTx, setFundingTx] = useState<any>(null)
+  const [showLinkCard, setShowLinkCard] = useState(false)
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const selectedCard = cards.find(c => c.id === selectedCardId) ?? null
@@ -67,14 +110,21 @@ export function FundPage({ onNavigate }: { onNavigate: (v: ViewKey) => void }) {
     fetch(`/api/gr/linked-debit-cards?accountId=${encodeURIComponent(accountId)}`)
       .then(r => r.json())
       .then(data => {
-        const eligible: LinkedCard[] = (data?.data ?? []).filter(
+        const apiCards: LinkedCard[] = (data?.data ?? []).filter(
           (c: LinkedCard) => c.fundingEligible && c.status === 'verified'
         )
+        const storedCards = getLinkedCardsFromStorage(accountId)
+        const eligible = mergeLinkedCards(storedCards, apiCards)
         setCards(eligible)
         setSelectedCardId(eligible[0]?.id ?? null)
         setStep(eligible.length === 0 ? 'no_cards' : 'pick')
       })
-      .catch(() => setStep('pick'))
+      .catch(() => {
+        const storedCards = getLinkedCardsFromStorage(accountId)
+        setCards(storedCards)
+        setSelectedCardId(storedCards[0]?.id ?? null)
+        setStep(storedCards.length === 0 ? 'no_cards' : 'pick')
+      })
   }, [accountId, mode])
 
   // Poll funding status every 2 s
@@ -129,6 +179,29 @@ export function FundPage({ onNavigate }: { onNavigate: (v: ViewKey) => void }) {
     } catch { setErrorMsg('Network error. Please try again.'); setStep('error') }
   }
 
+  function handleCardLinked(card: LinkedCardPayload) {
+    const newCard: LinkedCard = {
+      id: card.id,
+      cardholderName: card.cardholderName,
+      brand: card.brand,
+      last4: card.last4,
+      expMonth: card.expMonth,
+      expYear: card.expYear,
+      status: card.status,
+      fundingEligible: true,
+      issuerName: card.issuerName,
+      funding: card.funding,
+    }
+    setCards(prev => {
+      const map = new Map(prev.map(c => [c.id, c]))
+      map.set(newCard.id, newCard)
+      return Array.from(map.values())
+    })
+    setSelectedCardId(newCard.id)
+    setShowLinkCard(false)
+    setStep('pick')
+  }
+
   // ── Shared style helpers ────────────────────────────────────────────────────
   const s = {
     label: { fontSize: 10, letterSpacing: '0.14em', color: 'rgba(245,240,232,0.4)', textTransform: 'uppercase' as const, marginBottom: 10 },
@@ -181,7 +254,7 @@ export function FundPage({ onNavigate }: { onNavigate: (v: ViewKey) => void }) {
                   Link a debit card to fund your wallet instantly. Your card is charged in USD and USDC is delivered to your Arbitrum wallet.
                 </div>
               </div>
-              <button type="button" onClick={() => onNavigate('card')}
+              <button type="button" onClick={() => setShowLinkCard(true)}
                 style={{ padding: '12px 28px', background: 'rgba(201,168,76,0.14)', border: '1px solid rgba(201,168,76,0.38)', borderRadius: 12, color: '#c9a84c', fontSize: 12, letterSpacing: '0.1em', fontFamily: "'Tenor Sans', sans-serif", cursor: 'pointer' }}>
                 Link a Card →
               </button>
@@ -217,7 +290,7 @@ export function FundPage({ onNavigate }: { onNavigate: (v: ViewKey) => void }) {
                     )
                   })}
                 </div>
-                <button type="button" onClick={() => onNavigate('card')}
+                <button type="button" onClick={() => setShowLinkCard(true)}
                   style={{ background: 'none', border: 'none', color: 'rgba(245,240,232,0.35)', fontSize: 11, cursor: 'pointer', textDecoration: 'underline', marginTop: 8, padding: 0 }}>
                   + Link another card
                 </button>
@@ -343,6 +416,15 @@ export function FundPage({ onNavigate }: { onNavigate: (v: ViewKey) => void }) {
           )}
 
         </div>
+      )}
+
+      {/* Inline card linking panel */}
+      {showLinkCard && (
+        <LinkDebitCardPanelWrapper
+          accountId={accountId}
+          onClose={() => setShowLinkCard(false)}
+          onLinked={handleCardLinked}
+        />
       )}
     </div>
   )

@@ -5,6 +5,8 @@ import { useVaultPositions } from '../hooks/useVaultPositions'
 import { useGenesisVault } from '../hooks/useGenesisVault'
 import { useActiveWalletAddress } from '../hooks/useActiveWalletAddress'
 import { LinkedCardVisual } from './LinkedCardVisual'
+import { LinkDebitCardPanelWrapper } from './CardPage'
+import type { LinkedCardPayload } from './CardPage'
 import type { ViewKey } from './AppShell'
 
 const FEE_RATE = 0.01
@@ -39,6 +41,46 @@ type CashOutStep =
   | 'payout_polling'   // polling payout status
   | 'success'
   | 'error'
+
+function getLinkedCardsFromStorage(accountId: string): LinkedCard[] {
+  if (typeof window === 'undefined') return []
+  try {
+    const key = `gr:cards:v1:${accountId.toLowerCase()}`
+    const raw = window.localStorage.getItem(key)
+    if (!raw) return []
+    const stored = JSON.parse(raw) as Array<{
+      id: string; holderName: string; isLinked?: boolean
+      brand: string; last4: string; expiry: string
+      issuerName?: string; funding?: string
+    }>
+    return stored
+      .filter(c => c.isLinked)
+      .map(c => {
+        const [mm, yy] = (c.expiry ?? '01/99').split('/')
+        return {
+          id: c.id,
+          cardholderName: c.holderName,
+          brand: c.brand,
+          last4: c.last4,
+          expMonth: parseInt(mm, 10) || 1,
+          expYear: 2000 + (parseInt(yy, 10) || 30),
+          status: 'verified',
+          payoutEligible: true,
+          issuerName: c.issuerName,
+          funding: c.funding,
+        }
+      })
+  } catch {
+    return []
+  }
+}
+
+function mergeLinkedCards(stored: LinkedCard[], api: LinkedCard[]): LinkedCard[] {
+  const map = new Map<string, LinkedCard>()
+  stored.forEach(c => map.set(c.id, c))
+  api.forEach(c => map.set(c.id, c)) // API wins for matching IDs
+  return Array.from(map.values())
+}
 
 function feeFor(n: number) { return n * FEE_RATE + FEE_FIXED }
 function netFor(n: number) { return Math.max(0, n - feeFor(n)) }
@@ -87,6 +129,7 @@ export function CashOutPage({ onNavigate }: { onNavigate: (v: ViewKey) => void }
   const [amount, setAmount] = useState('')
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
   const [payoutId, setPayoutId] = useState<string | null>(null)
+  const [showLinkCard, setShowLinkCard] = useState(false)
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const positions = positionsData?.positions ?? []
@@ -101,19 +144,25 @@ export function CashOutPage({ onNavigate }: { onNavigate: (v: ViewKey) => void }
   const maxAmount = source === 'vault' ? totalVault : walletBalance
   const canContinue = amountNum >= MIN_USDC && amountNum <= maxAmount && selectedCard !== null
 
-  // On mount: fetch cards, then decide starting step once positions also load
+  // On mount: fetch cards (API + localStorage), then decide starting step once positions also load
   useEffect(() => {
     if (!accountId) return
     fetch(`/api/gr/linked-debit-cards?accountId=${encodeURIComponent(accountId)}`)
       .then(r => r.json())
       .then(data => {
-        const eligible: LinkedCard[] = (data?.data ?? []).filter(
+        const apiCards: LinkedCard[] = (data?.data ?? []).filter(
           (c: LinkedCard) => c.payoutEligible && c.status === 'verified'
         )
+        const storedCards = getLinkedCardsFromStorage(accountId)
+        const eligible = mergeLinkedCards(storedCards, apiCards)
         setCards(eligible)
         setSelectedCardId(eligible[0]?.id ?? null)
       })
-      .catch(() => {/* proceed without cards */ })
+      .catch(() => {
+        const storedCards = getLinkedCardsFromStorage(accountId)
+        setCards(storedCards)
+        setSelectedCardId(storedCards[0]?.id ?? null)
+      })
   }, [accountId])
 
   // Decide starting step once both positions and cards are resolved
@@ -149,6 +198,29 @@ export function CashOutPage({ onNavigate }: { onNavigate: (v: ViewKey) => void }
     const timeout = setTimeout(() => { clearInterval(pollRef.current!); setStep('success') }, 30_000)
     return () => { clearInterval(pollRef.current!); clearTimeout(timeout) }
   }, [step, payoutId])
+
+  function handleCardLinked(card: LinkedCardPayload) {
+    const newCard: LinkedCard = {
+      id: card.id,
+      cardholderName: card.cardholderName,
+      brand: card.brand,
+      last4: card.last4,
+      expMonth: card.expMonth,
+      expYear: card.expYear,
+      status: card.status,
+      payoutEligible: true,
+      issuerName: card.issuerName,
+      funding: card.funding,
+    }
+    setCards(prev => {
+      const map = new Map(prev.map(c => [c.id, c]))
+      map.set(newCard.id, newCard)
+      return Array.from(map.values())
+    })
+    setSelectedCardId(newCard.id)
+    setShowLinkCard(false)
+    setStep('pick')
+  }
 
   async function handleCashOut() {
     if (!selectedCard || !canContinue) return
@@ -243,7 +315,7 @@ export function CashOutPage({ onNavigate }: { onNavigate: (v: ViewKey) => void }
                 Link a debit card to receive USD instantly. Your USDC is converted and pushed to your card within minutes.
               </div>
             </div>
-            <button type="button" onClick={() => onNavigate('card')}
+            <button type="button" onClick={() => setShowLinkCard(true)}
               style={{ padding: '12px 28px', background: 'rgba(201,168,76,0.14)', border: '1px solid rgba(201,168,76,0.38)', borderRadius: 12, color: '#c9a84c', fontSize: 12, letterSpacing: '0.1em', fontFamily: "'Tenor Sans', sans-serif", cursor: 'pointer' }}>
               Link a Card →
             </button>
@@ -301,7 +373,7 @@ export function CashOutPage({ onNavigate }: { onNavigate: (v: ViewKey) => void }
                   )
                 })}
               </div>
-              <button type="button" onClick={() => onNavigate('card')}
+              <button type="button" onClick={() => setShowLinkCard(true)}
                 style={{ background: 'none', border: 'none', color: 'rgba(245,240,232,0.35)', fontSize: 11, cursor: 'pointer', textDecoration: 'underline', marginTop: 8, padding: 0 }}>
                 + Link another card
               </button>
@@ -443,6 +515,15 @@ export function CashOutPage({ onNavigate }: { onNavigate: (v: ViewKey) => void }
         )}
 
       </div>
+
+      {/* Inline card linking panel */}
+      {showLinkCard && (
+        <LinkDebitCardPanelWrapper
+          accountId={accountId}
+          onClose={() => setShowLinkCard(false)}
+          onLinked={handleCardLinked}
+        />
+      )}
     </div>
   )
 }

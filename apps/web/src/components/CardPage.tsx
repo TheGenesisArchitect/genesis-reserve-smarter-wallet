@@ -278,7 +278,7 @@ function AddCardPanel({ onClose, onCreate }: { onClose: () => void; onCreate: (d
 // Stripe pattern that enables Link, payment method optimization, and
 // Connect integration health checks. Falls back to mounting without a
 // clientSecret when Stripe is unconfigured (mock mode).
-function LinkDebitCardPanelWrapper({ onClose, onLinked, accountId }: { onClose: () => void; onLinked: (card: LinkedCardPayload) => void; accountId: string }) {
+export function LinkDebitCardPanelWrapper({ onClose, onLinked, accountId }: { onClose: () => void; onLinked: (card: LinkedCardPayload) => void; accountId: string }) {
   const [clientSecret, setClientSecret] = useState<string | null>(null)
   const [initError, setInitError] = useState<string | null>(null)
 
@@ -823,7 +823,7 @@ type ManagedCard = {
   funding?: string   // 'debit' | 'credit' | 'prepaid'
 }
 
-type LinkedCardPayload = {
+export type LinkedCardPayload = {
   id: string
   accountId: string
   cardholderName: string
