@@ -154,6 +154,18 @@ export async function POST(req: NextRequest) {
         const travelRuleRequired = Boolean(compliance?.[6])
 
         if (!complianceActive || kycLevel < 1n) {
+            // In dev/staging the KYC route may have returned a dev bypass without writing
+            // on-chain, so the compliance record is still zero. Skip the gate here too.
+            if (VAULT_DEV_BYPASS) {
+                console.warn('[vault/activate-account] Compliance not active on-chain — returning dev bypass for', rawAddress)
+                return NextResponse.json({
+                    status: 'activated',
+                    mode: 'dev_bypass',
+                    txHash: null,
+                    blockNumber: null,
+                    detail: 'KYC was a dev bypass — skipping vault on-chain activation in non-production',
+                })
+            }
             return NextResponse.json(
                 { status: 'kyc_required', detail: 'Compliance record is not active for this wallet.' },
                 { status: 409 }

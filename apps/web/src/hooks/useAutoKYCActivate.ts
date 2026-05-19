@@ -62,7 +62,7 @@ export function useAutoKYCActivate(addressOverride?: string | null) {
             ?? status
             ?? 'unknown_error'
 
-          const shouldRetry = status === 'compliance_required' || status === 'already_active' || !status
+          const shouldRetry = status === 'kyc_required' || !status
           console.warn('[Vault] Account activation warning:', detail)
 
           if (shouldRetry && attempts < 4) {
