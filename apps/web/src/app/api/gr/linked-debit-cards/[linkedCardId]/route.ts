@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import { ensureNotRateLimited, toResponse, unlinkLinkedDebitCard, updateLinkedCardIssuerName, withIdempotency } from '../../_lib/card-service'
+import { ensureNotRateLimited, toResponse, unlinkLinkedDebitCard, updateLinkedCardCircleId, updateLinkedCardIssuerName, withIdempotency } from '../../_lib/card-service'
 
 type Params = { params: Promise<{ linkedCardId: string }> }
 
@@ -11,6 +11,9 @@ export async function PATCH(request: NextRequest, { params }: Params) {
     const body = await request.json().catch(() => ({}))
     if (body.issuerName !== undefined) {
         return toResponse(updateLinkedCardIssuerName(linkedCardId, String(body.issuerName)))
+    }
+    if (body.circleCardId !== undefined) {
+        return toResponse(updateLinkedCardCircleId(linkedCardId, String(body.circleCardId)))
     }
     const { NextResponse } = await import('next/server')
     return NextResponse.json({ error: { code: 'invalid_request', message: 'No patchable field provided.' } }, { status: 400 })

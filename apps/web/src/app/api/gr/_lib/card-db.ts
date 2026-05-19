@@ -355,6 +355,17 @@ export async function dbUpdateLinkedCardIssuerName(id: string, issuerName: strin
     return rows[0] ? mapLinkedDebitCard(rows[0]) : null
 }
 
+export async function dbUpdateLinkedCardCircleId(id: string, circleCardId: string) {
+    const pool = getPool()
+    if (!pool) return null
+    const { rows } = await pool.query(
+        `UPDATE linked_debit_cards SET circle_card_id = $2, updated_at = NOW()
+         WHERE linked_card_id = $1 RETURNING *`,
+        [id, circleCardId]
+    )
+    return rows[0] ? mapLinkedDebitCard(rows[0]) : null
+}
+
 export async function dbSetLinkedDebitCardStatus(id: string, status: string) {
     const pool = getPool()
     if (!pool) return null

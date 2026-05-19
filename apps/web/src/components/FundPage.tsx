@@ -9,6 +9,7 @@ import { DepositFlow } from './DepositFlow'
 import { LinkDebitCardPanelWrapper } from './CardPage'
 import type { LinkedCardPayload } from './CardPage'
 import type { ViewKey } from './AppShell'
+import { tokenizeWithCircle } from '../lib/circle-tokenize'
 
 const stripePublicKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? ''
 const stripePromise = stripePublicKey ? loadStripe(stripePublicKey) : null
@@ -99,6 +100,12 @@ export function FundPage({ onNavigate }: { onNavigate: (v: ViewKey) => void }) {
   const [viewW, setViewW] = useState(500)
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
+  // "Enable USDC" inline upgrade form (for existing Stripe-only cards)
+  const [usdcUpgradeNum, setUsdcUpgradeNum] = useState('')
+  const [usdcUpgradeCvv, setUsdcUpgradeCvv] = useState('')
+  const [usdcUpgradeStatus, setUsdcUpgradeStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+  const [usdcUpgradeError, setUsdcUpgradeError] = useState<string | null>(null)
+
   useEffect(() => {
     const update = () => setViewW(window.innerWidth)
     update()
@@ -117,7 +124,7 @@ export function FundPage({ onNavigate }: { onNavigate: (v: ViewKey) => void }) {
   const amountNum = parseFloat(amount.replace(/[^0-9.]/g, '')) || 0
   const fee = amountNum >= MIN_USD ? feeFor(amountNum) : 0
   const net = amountNum >= MIN_USD ? netFor(amountNum) : 0
-  const canContinue = amountNum >= MIN_USD && selectedCard !== null
+  const canContinue = amountNum >= MIN_USD && selectedCard !== null && !!selectedCard.circleCardId
 
   // Load linked cards whenever card mode is active
   useEffect(() => {
@@ -201,6 +208,36 @@ export function FundPage({ onNavigate }: { onNavigate: (v: ViewKey) => void }) {
         setStep(tx.status === 'captured' && !tx.circlePaymentId ? 'success' : 'polling')
       }
     } catch { setErrorMsg('Network error. Please try again.'); setStep('error') }
+  }
+
+  async function handleUsdcUpgrade() {
+    if (!selectedCard) return
+    setUsdcUpgradeStatus('loading')
+    setUsdcUpgradeError(null)
+    const circleCardId = await tokenizeWithCircle({
+      cardNumber: usdcUpgradeNum,
+      cvv: usdcUpgradeCvv,
+      expMonth: selectedCard.expMonth,
+      expYear: selectedCard.expYear,
+      cardholderName: selectedCard.cardholderName,
+      accountId,
+    })
+    if (!circleCardId) {
+      setUsdcUpgradeStatus('error')
+      setUsdcUpgradeError('Could not verify card with Circle. Check your card number and CVV, then try again.')
+      return
+    }
+    // Persist circleCardId on the server
+    await fetch(`/api/gr/linked-debit-cards/${encodeURIComponent(selectedCard.id)}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ circleCardId }),
+    })
+    // Update local card list so the badge flips and canContinue unlocks
+    setCards(prev => prev.map(c => c.id === selectedCard.id ? { ...c, circleCardId } : c))
+    setUsdcUpgradeStatus('success')
+    setUsdcUpgradeNum('')
+    setUsdcUpgradeCvv('')
   }
 
   function handleCardLinked(card: LinkedCardPayload) {
@@ -319,6 +356,55 @@ export function FundPage({ onNavigate }: { onNavigate: (v: ViewKey) => void }) {
                   + Link another card
                 </button>
               </div>
+
+              {/* Enable USDC upgrade — shown when selected card has no Circle token */}
+              {selectedCard && !selectedCard.circleCardId && (
+                <div style={{ borderRadius: 14, border: '1px solid rgba(201,168,76,0.28)', background: 'rgba(201,168,76,0.04)', padding: '16px 18px', display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  {usdcUpgradeStatus === 'success' ? (
+                    <div style={{ fontSize: 12, color: '#00D4AA', display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <span>✓</span> USDC delivery enabled — your card is ready.
+                    </div>
+                  ) : (
+                    <>
+                      <div style={{ fontSize: 11, color: 'rgba(245,240,232,0.55)', lineHeight: 1.6 }}>
+                        <span style={{ color: '#c9a84c', fontWeight: 600 }}>Enable USDC delivery</span> — Enter your card details so Circle can route USDC directly to your Arbitrum wallet.
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                        <input
+                          type="text"
+                          inputMode="numeric"
+                          placeholder="Card number"
+                          maxLength={19}
+                          value={usdcUpgradeNum}
+                          onChange={e => setUsdcUpgradeNum(e.target.value.replace(/\D/g, '').slice(0, 16).replace(/(.{4})/g, '$1 ').trim())}
+                          style={{ ...s.input, padding: '11px 14px', fontSize: 14, letterSpacing: '0.08em' }}
+                          disabled={usdcUpgradeStatus === 'loading'}
+                        />
+                        <input
+                          type="text"
+                          inputMode="numeric"
+                          placeholder="CVV"
+                          maxLength={4}
+                          value={usdcUpgradeCvv}
+                          onChange={e => setUsdcUpgradeCvv(e.target.value.replace(/\D/g, '').slice(0, 4))}
+                          style={{ ...s.input, padding: '11px 14px', fontSize: 14, width: '30%', minWidth: 90 }}
+                          disabled={usdcUpgradeStatus === 'loading'}
+                        />
+                      </div>
+                      {usdcUpgradeStatus === 'error' && usdcUpgradeError && (
+                        <div style={{ fontSize: 11, color: '#E84040' }}>{usdcUpgradeError}</div>
+                      )}
+                      <button
+                        type="button"
+                        onClick={handleUsdcUpgrade}
+                        disabled={usdcUpgradeStatus === 'loading' || !usdcUpgradeNum.replace(/\s/g, '') || !usdcUpgradeCvv}
+                        style={{ alignSelf: 'flex-start', padding: '9px 18px', borderRadius: 9, background: 'rgba(201,168,76,0.15)', border: '1px solid rgba(201,168,76,0.38)', color: '#c9a84c', fontSize: 11, letterSpacing: '0.1em', fontFamily: "'Tenor Sans', sans-serif", cursor: 'pointer', opacity: usdcUpgradeStatus === 'loading' ? 0.6 : 1 }}>
+                        {usdcUpgradeStatus === 'loading' ? 'Verifying…' : 'Enable USDC →'}
+                      </button>
+                    </>
+                  )}
+                </div>
+              )}
 
               {/* Amount */}
               <div>

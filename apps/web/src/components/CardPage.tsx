@@ -11,6 +11,7 @@ import type { TapCard } from './TapToPayModal'
 import { SectionPanel, StatusPill, PageHeader } from './ds'
 import { useActiveWalletAddress } from '../hooks/useActiveWalletAddress'
 import type { ViewKey } from './AppShell'
+import { tokenizeWithCircle as tokenizeCard } from '../lib/circle-tokenize'
 
 const stripePublicKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? ''
 const stripePromise = stripePublicKey ? loadStripe(stripePublicKey) : null
@@ -333,23 +334,7 @@ export function LinkDebitCardPanelWrapper({ onClose, onLinked, accountId }: { on
   )
 }
 
-/* ── Circle RSA-OAEP card encryption (browser-side) ──────────────────── */
-// Encrypts { number, cvv } using Circle's RSA public key so raw card data
-// never reaches Genesis servers. Returns base64-encoded ciphertext.
-async function encryptCircleCardData(publicKeyPem: string, number: string, cvv: string): Promise<string> {
-  const pem = publicKeyPem.replace(/-----[^-]+-----/g, '').replace(/\s/g, '')
-  const der = Uint8Array.from(atob(pem), (c) => c.charCodeAt(0))
-  const cryptoKey = await window.crypto.subtle.importKey(
-    'spki',
-    der.buffer,
-    { name: 'RSA-OAEP', hash: 'SHA-256' },
-    false,
-    ['encrypt'],
-  )
-  const data = new TextEncoder().encode(JSON.stringify({ number, cvv }))
-  const encrypted = await window.crypto.subtle.encrypt({ name: 'RSA-OAEP' }, cryptoKey, data)
-  return btoa(String.fromCharCode(...new Uint8Array(encrypted)))
-}
+// encryptCircleCardData and tokenizeCard imported from ../lib/circle-tokenize
 
 /* ── Toggle ───────────────────────────────────────────────────────────── */
 function LinkDebitCardPanel({ onClose, onLinked, accountId, prefetchedClientSecret }: { onClose: () => void; onLinked: (card: LinkedCardPayload) => void; accountId: string; prefetchedClientSecret: string | null }) {
@@ -361,11 +346,12 @@ function LinkDebitCardPanel({ onClose, onLinked, accountId, prefetchedClientSecr
   const [successCard, setSuccessCard] = useState<LinkedCardPayload | null>(null)
   const [selectedIssuer, setSelectedIssuer] = useState('')
   const [issuerSearch, setIssuerSearch] = useState('')
-  const [usdcEnabled, setUsdcEnabled] = useState(false)
+  const [usdcEnabled, setUsdcEnabled] = useState(true)
   const [submitting, setSubmitting] = useState(false)
 
-  // Circle card inputs — only collected when user opts in for USDC purchases.
-  // Data is encrypted with Circle's RSA public key before leaving the browser.
+  // Circle card inputs — collected by default so every linked card gets a circleCardId
+  // enabling USDC purchases. Data is encrypted with Circle's RSA public key before
+  // leaving the browser — raw PAN never touches Genesis servers.
   const [circleCardNumber, setCircleCardNumber] = useState('')
   const [circleExpiry, setCircleExpiry] = useState('')   // MM/YY
   const [circleCvv, setCircleCvv] = useState('')
@@ -384,36 +370,15 @@ function LinkDebitCardPanel({ onClose, onLinked, accountId, prefetchedClientSecr
     return digits.length > 2 ? `${digits.slice(0, 2)}/${digits.slice(2)}` : digits
   }
 
-  // Tokenizes card details with Circle via the backend proxy.
-  // Returns a circleCardId on success, null on any failure (graceful degradation).
   async function tokenizeWithCircle(expMonth: number, expYear: number): Promise<string | null> {
-    try {
-      const keyRes = await fetch('/api/gr/circle/encryption-key')
-      if (!keyRes.ok) return null
-      const { keyId, publicKey } = await keyRes.json()
-      if (!keyId || !publicKey) return null
-
-      const raw = circleCardNumber.replace(/\s/g, '')
-      const encryptedData = await encryptCircleCardData(publicKey, raw, circleCvv)
-
-      const cardRes = await fetch('/api/gr/circle/cards', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          idempotencyKey: `circle_card_${accountId}_${Date.now().toString(36)}`,
-          keyId,
-          encryptedData,
-          expMonth,
-          expYear,
-          billingDetails: { name: cardholderName.trim() },
-        }),
-      })
-      if (!cardRes.ok) return null
-      const { circleCardId } = await cardRes.json()
-      return circleCardId ?? null
-    } catch {
-      return null
-    }
+    return tokenizeCard({
+      cardNumber: circleCardNumber,
+      cvv: circleCvv,
+      expMonth,
+      expYear,
+      cardholderName: cardholderName.trim(),
+      accountId,
+    })
   }
 
   async function handleSubmit() {

@@ -8,7 +8,7 @@ import {
     dbEnabled,
     dbGetCardholder, dbInsertCardholder, dbUpdateCardholder,
     dbGetCard, dbInsertCard, dbListCards, dbUpdateCardStatus, dbUpdateCardControls,
-    dbGetLinkedDebitCard, dbInsertLinkedDebitCard, dbListLinkedDebitCards, dbSetLinkedDebitCardStatus, dbUpdateLinkedCardIssuerName,
+    dbGetLinkedDebitCard, dbInsertLinkedDebitCard, dbListLinkedDebitCards, dbSetLinkedDebitCardStatus, dbUpdateLinkedCardIssuerName, dbUpdateLinkedCardCircleId,
     dbGetAuthorization, dbInsertAuthorization, dbListAuthorizations,
     dbGetFunding, dbInsertFunding, dbUpdateFundingStatus,
     dbGetPayout, dbInsertPayout, dbUpdatePayoutStatus,
@@ -766,6 +766,22 @@ export async function updateLinkedCardIssuerName(linkedCardId: string, issuerNam
     const found = getStore().linkedDebitCards.get(linkedCardId)
     if (!found) return { status: 404, body: errorBody('not_found', 'Linked debit card not found.') }
     const next = { ...found, issuerName }
+    getStore().linkedDebitCards.set(linkedCardId, next)
+    return { status: 200, body: { data: next, meta: { source: getProcessorSource(), timestamp: nowIso() } } }
+}
+
+export async function updateLinkedCardCircleId(linkedCardId: string, circleCardId: string) {
+    if (!circleCardId || !linkedCardId) {
+        return { status: 400, body: errorBody('invalid_request', 'linkedCardId and circleCardId are required.') }
+    }
+    if (dbEnabled()) {
+        const updated = await dbUpdateLinkedCardCircleId(linkedCardId, circleCardId)
+        if (!updated) return { status: 404, body: errorBody('not_found', 'Linked debit card not found.') }
+        return { status: 200, body: { data: updated, meta: { source: 'db', timestamp: nowIso() } } }
+    }
+    const found = getStore().linkedDebitCards.get(linkedCardId)
+    if (!found) return { status: 404, body: errorBody('not_found', 'Linked debit card not found.') }
+    const next = { ...found, circleCardId }
     getStore().linkedDebitCards.set(linkedCardId, next)
     return { status: 200, body: { data: next, meta: { source: getProcessorSource(), timestamp: nowIso() } } }
 }

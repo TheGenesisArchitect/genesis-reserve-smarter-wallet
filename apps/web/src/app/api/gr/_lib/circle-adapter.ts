@@ -67,11 +67,9 @@ export async function circleCreateUsdcPurchase(input: CirclePaymentInput): Promi
     const config = getCircleConfig()
 
     if (!config) {
-        return {
-            status: 'pending',
-            paymentId: `circle_mock_${Date.now().toString(36)}`,
-            transactionHash: null,
-        }
+        // No API key — return null paymentId so FundPage polling exits immediately
+        // rather than waiting forever for an onChainStatus that never arrives.
+        return { status: 'pending', paymentId: null, transactionHash: null }
     }
 
     if (input.amountUsd <= 0) {

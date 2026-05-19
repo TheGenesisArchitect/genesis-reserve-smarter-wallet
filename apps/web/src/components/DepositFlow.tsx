@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { usePrivy } from '@privy-io/react-auth'
 import { loadStripe } from '@stripe/stripe-js'
 import { CardElement, Elements, useElements, useStripe } from '@stripe/react-stripe-js'
@@ -796,8 +796,9 @@ function LinkedCardDepositForm({
   const [loadingCards, setLoadingCards] = useState(true)
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null)
   const [amount, setAmount] = useState('')
-  const [phase, setPhase] = useState<'idle' | 'processing'>('idle')
+  const [phase, setPhase] = useState<'idle' | 'processing' | 'polling'>('idle')
   const [error, setError] = useState('')
+  const cardPollRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const numAmt = parseFloat(amount) || 0
   const canSubmit = numAmt >= 0.50 && !!selectedCardId && phase === 'idle'
@@ -837,6 +838,7 @@ function LinkedCardDepositForm({
           accountId: walletAddress,
           linkedCardId: selectedCardId,
           amount: { amount: numAmt.toFixed(2), currency: 'USD' },
+          ...(walletAddress ? { destinationAddress: walletAddress } : {}),
         }),
       })
 
@@ -858,6 +860,26 @@ function LinkedCardDepositForm({
           setPhase('idle')
           return
         }
+      }
+
+      // If Circle is delivering USDC, poll until confirmed before proceeding
+      if (tx?.circlePaymentId && tx?.onChainStatus === 'pending') {
+        setPhase('polling')
+        const fundingId = tx.id
+        cardPollRef.current = setInterval(async () => {
+          try {
+            const pollRes = await fetch(`/api/gr/funding/${encodeURIComponent(fundingId)}`)
+            const pollData = await pollRes.json()
+            const pollTx = pollData?.data
+            if (!pollTx) return
+            if (pollTx.status === 'failed') {
+              clearInterval(cardPollRef.current!); setError('USDC delivery failed. Contact support.'); setPhase('idle'); return
+            }
+            const done = !pollTx.circlePaymentId || pollTx.onChainStatus !== 'pending'
+            if (done) { clearInterval(cardPollRef.current!); onSuccess(numAmt.toFixed(2), fundingId) }
+          } catch { /* keep polling on transient errors */ }
+        }, 2000)
+        return
       }
 
       onSuccess(numAmt.toFixed(2), tx?.id ?? `FUND-${Date.now().toString(36).toUpperCase()}`)
