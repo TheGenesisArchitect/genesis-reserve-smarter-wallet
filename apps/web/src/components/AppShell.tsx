@@ -27,7 +27,6 @@ const CONSUMER_NAV: Array<{ key: ViewKey; label: string; icon: (active: boolean)
   { key: 'card', label: 'Card', icon: (a) => <CardIcon active={a} /> },
   { key: 'vaults', label: 'Vaults', icon: (a) => <VaultIcon active={a} /> },
   { key: 'activity', label: 'Activity', icon: (a) => <ActivityIcon active={a} /> },
-  { key: 'yield-monitor', label: 'Yield Monitor', icon: (a) => <ActivityIcon active={a} /> },
   { key: 'academy', label: 'Academy', icon: (a) => <AcademyIcon active={a} /> },
   { key: 'settings', label: 'Settings', icon: (a) => <SettingsIcon active={a} /> },
 ]

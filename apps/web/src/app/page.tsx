@@ -225,14 +225,12 @@ function PanelRouter({
 
 /* ── Enterprise tools tray (under Settings) ────────────────────────── */
 const ENTERPRISE_TOOLS: Array<{ key: ViewKey; label: string; desc: string }> = [
-  { key: 'agentic', label: 'Agent Universe', desc: 'ML pipeline management & lifecycle' },
-  { key: 'analytics', label: 'Analytics', desc: 'ROI, strategy breakdown, risk heatmaps' },
-  { key: 'yield-monitor', label: 'Yield Monitor', desc: 'Global APY ranges and promotable strategy alerts' },
+  { key: 'analytics', label: 'Yield Engine', desc: 'Strategy center · earnings · projected returns' },
   { key: 'compliance', label: 'Compliance', desc: 'KYC / AML status & screening' },
-  { key: 'consultive', label: 'Consultive', desc: 'AI forecast & recommendations' },
   { key: 'scheduled', label: 'Scheduled Sends', desc: 'Recurring remittance setup' },
   { key: 'batch', label: 'Batch Operations', desc: 'Multi-recipient bulk sends' },
-  { key: 'admin', label: 'Partner Admin', desc: 'Feature flags & partner controls' },
+  { key: 'academy', label: 'Academy', desc: 'Learn about yield strategies and DeFi' },
+  { key: 'agentic', label: 'Agent Universe', desc: 'ML pipeline management & lifecycle' },
 ]
 
 function EnterpriseMoreSection({ onNavigate }: { onNavigate: (v: ViewKey) => void }) {
