@@ -148,35 +148,38 @@ export function TapToPayModal({ cards, defaultCardId, onClose }: {
             return
         }
 
-        setStep('processing')
         setErrorMsg(null)
 
-        // Create PaymentIntent on server
-        let clientSecret: string
-        try {
-            const res = await fetch('/api/gr/payments/tap-intent', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ amount, description: 'Genesis Reserve — Tap to Pay' }),
-            })
-            const data = await res.json() as { clientSecret?: string; error?: string }
-            if (!data.clientSecret) {
-                setErrorMsg(data.error ?? 'Could not create payment. Check Stripe configuration.')
+        // Update amount BEFORE any await — must stay in user-gesture context
+        pr.update({ total: { label: 'Genesis Reserve', amount: Math.round(amount * 100) } })
+
+        // Wire handler BEFORE calling show() so it's ready when the wallet fires
+        const handlePaymentMethod = async (ev: PaymentRequestPaymentMethodEvent) => {
+            setStep('processing')
+
+            // Create PaymentIntent server-side now that the user confirmed the wallet
+            let clientSecret: string
+            try {
+                const res = await fetch('/api/gr/payments/tap-intent', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ amount, description: 'Genesis Reserve — Tap to Pay' }),
+                })
+                const data = await res.json() as { clientSecret?: string; error?: string }
+                if (!data.clientSecret) {
+                    ev.complete('fail')
+                    setErrorMsg(data.error ?? 'Could not create payment. Check Stripe configuration.')
+                    setStep('failed')
+                    return
+                }
+                clientSecret = data.clientSecret
+            } catch {
+                ev.complete('fail')
+                setErrorMsg('Network error. Please try again.')
                 setStep('failed')
                 return
             }
-            clientSecret = data.clientSecret
-        } catch {
-            setErrorMsg('Network error. Please try again.')
-            setStep('failed')
-            return
-        }
 
-        // Update the payment request amount to match what user entered
-        pr.update({ total: { label: 'Genesis Reserve', amount: Math.round(amount * 100) } })
-
-        // Wire up one-time payment handler
-        const handlePaymentMethod = async (ev: PaymentRequestPaymentMethodEvent) => {
             const { error, paymentIntent } = await stripe.confirmCardPayment(
                 clientSecret,
                 { payment_method: ev.paymentMethod.id },
@@ -210,6 +213,8 @@ export function TapToPayModal({ cards, defaultCardId, onClose }: {
             setStep('cancelled')
         })
 
+        // pr.show() MUST be called synchronously from the click handler — no await before this.
+        // Safari / Apple Pay will silently reject if called after an async break.
         try {
             await pr.show()
         } catch (err) {
@@ -369,7 +374,7 @@ export function TapToPayModal({ cards, defaultCardId, onClose }: {
                             </div>
                         )}
                         <button type="button" onClick={() => { setStep('ready'); setErrorMsg(null) }}
-                            style={{ padding: '10px 24px', borderRadius: 10, background: 'rgba(201,168,76,0.1)', border: '1px solid rgba(201,168,76,0.25)', color: '#c9a84c', fontSize: 12, cursor: 'pointer', fontFamily: "'Tenor Sans', sans-serif', letterSpacing: '0.06em" }}>
+                            style={{ padding: '10px 24px', borderRadius: 10, background: 'rgba(201,168,76,0.1)', border: '1px solid rgba(201,168,76,0.25)', color: '#c9a84c', fontSize: 12, cursor: 'pointer', fontFamily: "'Tenor Sans', sans-serif", letterSpacing: '0.06em' }}>
                             Try Again
                         </button>
                     </>
