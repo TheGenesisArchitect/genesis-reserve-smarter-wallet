@@ -10,6 +10,27 @@ import { GENESIS_VAULT_ABI, USDC_ABI } from '../abis/vault.abi'
 import { useActiveWalletAddress } from './useActiveWalletAddress'
 import { useSmartAccount } from './useSmartAccount'
 
+const RELIABLE_RPC =
+  (typeof process !== 'undefined' && process.env?.NEXT_PUBLIC_ALCHEMY_RPC_URL) ||
+  'https://arb1.arbitrum.io/rpc'
+
+function parseDepositError(err: unknown): Error {
+  const msg = err instanceof Error ? err.message : String(err)
+  if (/InactiveAccount|inactive account/i.test(msg))
+    return new Error('Account not yet activated. Complete identity verification and try again.')
+  if (/InsufficientFunds|insufficient funds/i.test(msg))
+    return new Error('Insufficient USDC balance for this deposit amount.')
+  if (/transfer amount exceeds allowance|ERC20: insufficient allowance/i.test(msg))
+    return new Error('USDC approval expired. Please try again.')
+  if (/ExceedsCap|exceeds.*cap/i.test(msg))
+    return new Error('This deposit would exceed the vault capacity limit.')
+  if (/user rejected|User rejected|ACTION_REJECTED/i.test(msg))
+    return new Error('Transaction was cancelled.')
+  if (/PolicyNotFound|policy.*not found/i.test(msg))
+    return new Error('Account policy not found. Contact support.')
+  return new Error(`Deposit failed: ${msg.slice(0, 140)}`)
+}
+
 interface CachedVaultSnapshot {
   usdcBalance: string
   rawShares: string
@@ -24,6 +45,7 @@ export interface VaultState {
   sharePrice: number
   walletUsdcBalance: string
   totalAUM: string
+  isVaultReady: boolean
   isLoading: boolean
   error: Error | null
   deposit: (usdcAmount: string) => Promise<`0x${string}`>
@@ -64,6 +86,7 @@ export function useGenesisVault(): VaultState {
       { address: usdcAddress, abi: USDC_ABI, functionName: 'balanceOf', args: [resolvedAddress ?? nullAddr] },
       { address: vaultAddress, abi: GENESIS_VAULT_ABI, functionName: 'totalAssets', args: [] },
       { address: vaultAddress, abi: GENESIS_VAULT_ABI, functionName: 'maxWithdraw', args: [resolvedAddress ?? nullAddr] },
+      { address: vaultAddress, abi: GENESIS_VAULT_ABI, functionName: 'policies', args: [resolvedAddress ?? nullAddr] },
     ],
     query: {
       enabled: !!resolvedAddress,
@@ -108,6 +131,9 @@ export function useGenesisVault(): VaultState {
   const walletUsdcFresh = (data?.[2]?.result ?? 0n) as bigint
   const totalAUMRawFresh = (data?.[3]?.result ?? 0n) as bigint
   const maxWithdrawFresh = (data?.[4]?.result ?? 0n) as bigint
+  const policyFresh = (data?.[5]?.result ?? null) as readonly unknown[] | null
+  // policy tuple index 6 = active: bool
+  const isVaultReady = hasFreshResults ? Boolean(policyFresh?.[6]) : false
 
   useEffect(() => {
     if (!hasFreshResults || !snapshotKey || typeof window === 'undefined') return
@@ -200,40 +226,44 @@ export function useGenesisVault(): VaultState {
     // against an unconfirmed approve and revert with "transfer amount exceeds allowance".
     const reliableClient = createPublicClient({
       chain: ACTIVE_CHAIN,
-      transport: http('https://arb1.arbitrum.io/rpc'),
+      transport: http(RELIABLE_RPC),
     })
 
-    const currentAllowance = await reliableClient.readContract({
-      address: usdcAddress,
-      abi: USDC_ABI,
-      functionName: 'allowance',
-      args: [resolvedAddress, vaultAddress],
-    }) as bigint
-
-    if (currentAllowance < assets) {
-      const approveHash = await walletClient.writeContract({
+    try {
+      const currentAllowance = await reliableClient.readContract({
         address: usdcAddress,
         abi: USDC_ABI,
-        functionName: 'approve',
-        args: [vaultAddress, maxUint256],
+        functionName: 'allowance',
+        args: [resolvedAddress, vaultAddress],
+      }) as bigint
+
+      if (currentAllowance < assets) {
+        const approveHash = await walletClient.writeContract({
+          address: usdcAddress,
+          abi: USDC_ABI,
+          functionName: 'approve',
+          args: [vaultAddress, maxUint256],
+          account: resolvedAddress,
+        })
+        const approveReceipt = await reliableClient.waitForTransactionReceipt({ hash: approveHash })
+        if (approveReceipt.status !== 'success') {
+          throw new Error('USDC approval failed on-chain. Please try again.')
+        }
+      }
+
+      const depositHash = await walletClient.writeContract({
+        address: vaultAddress,
+        abi: GENESIS_VAULT_ABI,
+        functionName: 'deposit',
+        args: [assets, resolvedAddress],
         account: resolvedAddress,
       })
-      const approveReceipt = await reliableClient.waitForTransactionReceipt({ hash: approveHash })
-      if (approveReceipt.status !== 'success') {
-        throw new Error('USDC approval failed on-chain. Please try again.')
-      }
+
+      setLatestTxHash(depositHash)
+      return depositHash
+    } catch (err) {
+      throw parseDepositError(err)
     }
-
-    const depositHash = await walletClient.writeContract({
-      address: vaultAddress,
-      abi: GENESIS_VAULT_ABI,
-      functionName: 'deposit',
-      args: [assets, resolvedAddress],
-      account: resolvedAddress,
-    })
-
-    setLatestTxHash(depositHash)
-    return depositHash
   }, [getConnectedWallet, resolvedAddress, usdcAddress, vaultAddress])
 
   const withdrawWithEoa = useCallback(async (usdcAmount: string): Promise<`0x${string}`> => {
@@ -264,21 +294,69 @@ export function useGenesisVault(): VaultState {
     const assets = parseUnits(usdcAmount, PROTOCOL.USDC_DECIMALS)
     const receiver = smartAccount.smartAddress
 
-    const approveData = encodeFunctionData({
-      abi: USDC_ABI, functionName: 'approve',
-      args: [vaultAddress, maxUint256]
-    })
-    const depositData = encodeFunctionData({
-      abi: GENESIS_VAULT_ABI, functionName: 'deposit',
-      args: [assets, receiver]
-    })
+    // Pre-flight: ensure vault policy is active for the smart account receiver.
+    // This is separate from the EOA KYC check — the smart account address needs
+    // its own activation on the vault even when the EOA is already active.
+    const preflight = createPublicClient({ chain: ACTIVE_CHAIN, transport: http(RELIABLE_RPC) })
+    try {
+      const policy = await preflight.readContract({
+        address: vaultAddress,
+        abi: GENESIS_VAULT_ABI,
+        functionName: 'policies',
+        args: [receiver],
+      }) as readonly unknown[]
 
-    const txHash = await smartAccount.sendBatchUserOperation([
-      { to: usdcAddress, data: approveData },
-      { to: vaultAddress, data: depositData },
-    ])
-    setLatestTxHash(txHash)
-    return txHash
+      if (!Boolean(policy?.[6])) {
+        const activateRes = await fetch('/api/gr/vault/activate-account', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ address: receiver }),
+        })
+        const activateData = await activateRes.json().catch(() => ({})) as Record<string, unknown>
+        const nowActive = activateData.status === 'activated' || activateData.status === 'already_active'
+        if (!nowActive) {
+          if (activateData.status === 'kyc_required')
+            throw new Error('KYC verification is required before depositing.')
+          if (activateData.status === 'operator_role_required')
+            throw new Error('Vault operator not configured. Contact support.')
+          if (!activateRes.ok)
+            throw new Error('Account activation failed. Please try again or contact support.')
+        }
+        if (typeof activateData.txHash === 'string') {
+          await preflight.waitForTransactionReceipt({
+            hash: activateData.txHash as `0x${string}`,
+            timeout: 30_000,
+          })
+        }
+      }
+    } catch (err) {
+      if (err instanceof Error && (
+        err.message.includes('KYC') ||
+        err.message.includes('Vault operator') ||
+        err.message.includes('activation failed')
+      )) throw err
+      // RPC read failure — proceed optimistically; vault call will surface the real error
+    }
+
+    try {
+      const approveData = encodeFunctionData({
+        abi: USDC_ABI, functionName: 'approve',
+        args: [vaultAddress, maxUint256]
+      })
+      const depositData = encodeFunctionData({
+        abi: GENESIS_VAULT_ABI, functionName: 'deposit',
+        args: [assets, receiver]
+      })
+
+      const txHash = await smartAccount.sendBatchUserOperation([
+        { to: usdcAddress, data: approveData },
+        { to: vaultAddress, data: depositData },
+      ])
+      setLatestTxHash(txHash)
+      return txHash
+    } catch (err) {
+      throw parseDepositError(err)
+    }
   }, [depositWithEoa, smartAccount, usdcAddress, vaultAddress])
 
   const withdraw = useCallback(async (usdcAmount: string): Promise<`0x${string}`> => {
@@ -299,7 +377,7 @@ export function useGenesisVault(): VaultState {
 
   return {
     usdcBalance, rawShares, sharePrice, walletUsdcBalance, totalAUM,
-    isLoading, error: error as Error | null, deposit, withdraw,
+    isVaultReady, isLoading, error: error as Error | null, deposit, withdraw,
     latestTxHash, isConfirmed, isGasless: smartAccount.isReady, refresh: refetch
   }
 }

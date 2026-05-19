@@ -78,6 +78,24 @@ export const GENESIS_VAULT_ABI = [
     outputs: [{ name: 'maxAssets', type: 'uint256' }],
   },
 
+  // Per-account compliance policy set by vault operator (activateAccount)
+  // index 6 → active: bool  must be true before deposit() succeeds
+  {
+    name: 'policies',
+    type: 'function',
+    stateMutability: 'view',
+    inputs: [{ name: 'account', type: 'address' }],
+    outputs: [
+      { name: 'mode',               type: 'uint8'   },
+      { name: 'liquidBufferBps',    type: 'uint128' },
+      { name: 'maxSingleTxBps',     type: 'uint128' },
+      { name: 'kycLevel',           type: 'uint64'  },
+      { name: 'riskTier',           type: 'uint64'  },
+      { name: 'travelRuleRequired', type: 'bool'    },
+      { name: 'active',             type: 'bool'    },
+    ],
+  },
+
   // Total vault share supply
   {
     name: 'totalSupply',

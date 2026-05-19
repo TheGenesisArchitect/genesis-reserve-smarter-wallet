@@ -1087,7 +1087,7 @@ function USDCWalletDeposit({
   const walletAddress = useActiveWalletAddress() ?? null
   const smartAccount = useSmartAccount()
   const complianceAddress = smartAccount.smartAddress ?? walletAddress
-  const { walletUsdcBalance, deposit } = useGenesisVault()
+  const { walletUsdcBalance, deposit, isVaultReady, isLoading: vaultLoading } = useGenesisVault()
   const { canDeposit, complianceError } = useComplianceGate(complianceAddress)
   useAutoKYCActivate(walletAddress)
   useAutoKYCActivate(smartAccount.smartAddress)
@@ -1102,7 +1102,7 @@ function USDCWalletDeposit({
 
   const walletBal = parseFloat(walletUsdcBalance || '0')
   const numAmt = parseFloat(amount) || 0
-  const canSubmit = numAmt > 0 && numAmt <= walletBal && canDeposit && !!selectedStrategy
+  const canSubmit = numAmt > 0 && numAmt <= walletBal && canDeposit && isVaultReady && !!selectedStrategy
   const canPlan = Boolean(complianceAddress && selectedStrategySummary?.strategyId && numAmt > 0)
 
   useEffect(() => {
@@ -1251,6 +1251,13 @@ function USDCWalletDeposit({
     <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
       {complianceError && (
         <div style={{ padding: '12px 14px', borderRadius: 10, background: 'rgba(229,115,115,0.07)', border: '1px solid rgba(229,115,115,0.2)', fontSize: 12, color: '#e57373' }}>{complianceError}</div>
+      )}
+
+      {canDeposit && !isVaultReady && !vaultLoading && (
+        <div style={{ padding: '10px 14px', borderRadius: 10, background: 'rgba(201,168,76,0.06)', border: '1px solid rgba(201,168,76,0.22)', fontSize: 12, color: '#c9a84c', display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span style={{ fontSize: 14, animation: 'spin 1.6s linear infinite' }}>⚙</span>
+          Finalizing account setup… Your first deposit will be ready shortly.
+        </div>
       )}
 
       <div>
