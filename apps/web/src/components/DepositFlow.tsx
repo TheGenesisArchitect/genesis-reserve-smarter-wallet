@@ -749,6 +749,237 @@ function StripeCardDepositForm({
     </div>
   )
 }
+// ── 2. Linked Card Deposit — charge saved card via Stripe off-session ─────────
+type LinkedCard = {
+  id: string
+  accountId: string
+  cardholderName: string
+  brand: string
+  last4: string
+  expMonth: number
+  expYear: number
+  fundingEligible: boolean
+  status: string
+}
+
+function LinkedCardDeposit({ onSuccess, selectedStrategySummary }: { onSuccess: (amount: string, ref: string) => void; selectedStrategySummary?: VaultStrategySummary }) {
+  const { login, authenticated } = usePrivy()
+  const walletAddress = useActiveWalletAddress()
+  return (
+    <Elements stripe={getCardStripe()}>
+      <LinkedCardDepositForm
+        onSuccess={onSuccess}
+        selectedStrategySummary={selectedStrategySummary}
+        login={login}
+        authenticated={authenticated}
+        walletAddress={walletAddress}
+      />
+    </Elements>
+  )
+}
+
+function LinkedCardDepositForm({
+  onSuccess,
+  selectedStrategySummary,
+  login,
+  authenticated,
+  walletAddress,
+}: {
+  onSuccess: (amount: string, ref: string) => void
+  selectedStrategySummary?: VaultStrategySummary
+  login: () => void
+  authenticated: boolean
+  walletAddress?: `0x${string}`
+}) {
+  const stripe = useStripe()
+  const [cards, setCards] = useState<LinkedCard[]>([])
+  const [loadingCards, setLoadingCards] = useState(true)
+  const [selectedCardId, setSelectedCardId] = useState<string | null>(null)
+  const [amount, setAmount] = useState('')
+  const [phase, setPhase] = useState<'idle' | 'processing'>('idle')
+  const [error, setError] = useState('')
+
+  const numAmt = parseFloat(amount) || 0
+  const canSubmit = numAmt >= 0.50 && !!selectedCardId && phase === 'idle'
+
+  useEffect(() => {
+    if (!walletAddress) { setLoadingCards(false); return }
+    setLoadingCards(true)
+    setCards([])
+    setSelectedCardId(null)
+    fetch(`/api/gr/linked-debit-cards?accountId=${encodeURIComponent(walletAddress)}`)
+      .then(r => r.json())
+      .then(data => {
+        const list: LinkedCard[] = (data?.data ?? []).filter(
+          (c: LinkedCard) => c.status === 'verified' && c.fundingEligible
+        )
+        setCards(list)
+        setSelectedCardId(list[0]?.id ?? null)
+      })
+      .catch(() => {})
+      .finally(() => setLoadingCards(false))
+  }, [walletAddress])
+
+  async function handleCharge() {
+    if (!authenticated) { login(); return }
+    if (!walletAddress || !selectedCardId || numAmt < 0.50) return
+    setError('')
+    setPhase('processing')
+
+    try {
+      const res = await fetch('/api/gr/funding/add-money', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'idempotency-key': `linked-card-${walletAddress}-${Date.now()}`,
+        },
+        body: JSON.stringify({
+          accountId: walletAddress,
+          linkedCardId: selectedCardId,
+          amount: { amount: numAmt.toFixed(2), currency: 'USD' },
+        }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        setError(data?.error?.message || 'Card charge failed. Please try again.')
+        setPhase('idle')
+        return
+      }
+
+      const tx = data?.data
+
+      // Handle Stripe 3DS challenge
+      if (tx?.status === 'requires_action' && tx?.challenge?.clientSecret && stripe) {
+        const result = await stripe.confirmCardPayment(tx.challenge.clientSecret)
+        if (result.error) {
+          setError(result.error.message || '3D Secure verification failed.')
+          setPhase('idle')
+          return
+        }
+      }
+
+      onSuccess(numAmt.toFixed(2), tx?.id ?? `FUND-${Date.now().toString(36).toUpperCase()}`)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unexpected error during charge.')
+      setPhase('idle')
+    }
+  }
+
+  if (!authenticated) {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14, padding: '24px 0', textAlign: 'center' }}>
+        <div style={{ fontSize: 30, opacity: 0.2 }}>💳</div>
+        <div style={{ fontSize: 13, color: 'rgba(245,240,232,0.4)' }}>Connect your wallet to use a linked card</div>
+        <button style={{ ...S.btnGold, width: 'auto', padding: '12px 32px' }} onClick={login}>Connect Wallet</button>
+      </div>
+    )
+  }
+
+  if (loadingCards) return <ProcessingScreen label="Loading your cards…" />
+
+  if (cards.length === 0) {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, padding: '28px 0', textAlign: 'center' }}>
+        <div style={{ width: 56, height: 56, borderRadius: 18, background: 'rgba(201,168,76,0.08)', border: '1px solid rgba(201,168,76,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 26 }}>💳</div>
+        <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 20, fontWeight: 300, color: '#f5f0e8' }}>No Linked Cards</div>
+        <div style={{ fontSize: 12, color: 'rgba(245,240,232,0.42)', lineHeight: 1.8, maxWidth: 260 }}>
+          Link a debit card on the Cards page to deposit funds directly from your bank.
+        </div>
+      </div>
+    )
+  }
+
+  const selectedCard = cards.find(c => c.id === selectedCardId)
+  const fee = numAmt > 0 ? numAmt * 0.029 + 0.30 : 0
+  const net = Math.max(0, numAmt - fee)
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+      <AmountSelector amount={amount} onChange={setAmount} />
+      <YieldPreview amount={numAmt} apyPct={selectedStrategySummary?.netApyPct} />
+
+      <div style={{ ...S.card, padding: '16px 16px 14px' }}>
+        <div style={S.label}>Select Card</div>
+        <div style={{ display: 'grid', gap: 8, marginTop: 4 }}>
+          {cards.map(card => {
+            const active = card.id === selectedCardId
+            const brandLabel = card.brand.charAt(0).toUpperCase() + card.brand.slice(1)
+            return (
+              <button
+                key={card.id}
+                type="button"
+                onClick={() => setSelectedCardId(card.id)}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px',
+                  borderRadius: 12, cursor: 'pointer', textAlign: 'left',
+                  background: active ? 'rgba(201,168,76,0.1)' : 'rgba(255,255,255,0.02)',
+                  border: active ? '1px solid rgba(201,168,76,0.45)' : '1px solid rgba(255,255,255,0.1)',
+                  color: '#f5f0e8',
+                }}
+              >
+                <span style={{ fontSize: 22, color: active ? '#c9a84c' : 'rgba(245,240,232,0.3)', flexShrink: 0 }}>
+                  {card.brand.toLowerCase() === 'mastercard' ? '◉' : '▣'}
+                </span>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 13, fontFamily: "'Tenor Sans', sans-serif" }}>
+                    {brandLabel} ···· {card.last4}
+                  </div>
+                  <div style={{ fontSize: 10, color: 'rgba(245,240,232,0.4)', marginTop: 2 }}>
+                    {card.cardholderName} · {card.expMonth.toString().padStart(2, '0')}/{card.expYear}
+                  </div>
+                </div>
+                {active && <span style={{ fontSize: 14, color: '#c9a84c' }}>✓</span>}
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
+      {numAmt >= 0.50 && (
+        <div style={{ ...S.card, padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: 6 }}>
+          {[
+            { k: 'Charge amount', v: `$${numAmt.toFixed(2)}`, hi: false },
+            { k: 'Processing fee (2.9% + $0.30)', v: `-$${fee.toFixed(2)}`, hi: false, red: true },
+            { k: 'Net deposited', v: `$${net.toFixed(2)}`, hi: true },
+          ].map(r => (
+            <div key={r.k} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: r.hi ? '#f5f0e8' : 'rgba(245,240,232,0.45)' }}>
+              <span>{r.k}</span>
+              <span style={{ fontFamily: "'Tenor Sans', sans-serif", color: r.red ? '#e57373' : undefined }}>{r.v}</span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {error && (
+        <div style={{ padding: '10px 14px', borderRadius: 10, background: 'rgba(229,115,115,0.07)', border: '1px solid rgba(229,115,115,0.2)', fontSize: 12, color: '#e57373' }}>
+          {error}
+        </div>
+      )}
+
+      <button
+        type="button"
+        onClick={handleCharge}
+        disabled={!canSubmit}
+        style={{ ...S.btnGold, opacity: canSubmit ? 1 : 0.4, cursor: canSubmit ? 'pointer' : 'not-allowed' }}
+      >
+        {phase === 'processing'
+          ? 'Processing…'
+          : selectedCard
+            ? numAmt >= 0.50
+              ? `Charge ${selectedCard.brand.charAt(0).toUpperCase() + selectedCard.brand.slice(1)} ···· ${selectedCard.last4} · $${numAmt.toFixed(2)} →`
+              : 'Enter amount ($0.50 minimum)'
+            : 'Select a card to continue'}
+      </button>
+
+      <div style={{ fontSize: 10, color: 'rgba(245,240,232,0.25)', textAlign: 'center', lineHeight: 1.6 }}>
+        Charged via Stripe · Saved card on file · 2.9% + $0.30 processing fee
+      </div>
+    </div>
+  )
+}
+
 function BankTransfer({ onSuccess, selectedStrategySummary }: { onSuccess: (amount: string, ref: string) => void; selectedStrategySummary?: VaultStrategySummary }) {
   const [amount, setAmount] = useState('')
   const [method, setMethod] = useState<'ach' | 'wire'>('ach')
@@ -1288,7 +1519,7 @@ function CCTPDeposit({
 }
 
 // ── DepositFlow (main export) ─────────────────────────────────────────────────
-type Method = 'cctp' | 'card' | 'bank' | 'usdc' | 'crypto'
+type Method = 'cctp' | 'linked-card' | 'card' | 'bank' | 'usdc' | 'crypto'
 const CARD_DEPOSIT_ENABLED = process.env.NEXT_PUBLIC_ENABLE_CARD_DEPOSIT === 'true'
 
 interface DepositFlowProps {
@@ -1297,6 +1528,7 @@ interface DepositFlowProps {
 
 const METHODS: Array<{ key: Method; icon: string; label: string; sub: string; featured?: boolean }> = [
   { key: 'cctp', icon: '⚡', label: 'USDC Transfer', sub: 'Fastest · No minimum', featured: true },
+  { key: 'linked-card', icon: '💳', label: 'Linked Card', sub: 'Saved debit card' },
   { key: 'usdc', icon: '◈', label: 'Arbitrum USDC', sub: 'From your wallet' },
   { key: 'bank', icon: '🏦', label: 'Bank Transfer', sub: 'ACH · Wire' },
   { key: 'crypto', icon: '⇄', label: 'Crypto Swap', sub: 'ETH → USDC' },
@@ -1652,7 +1884,7 @@ export function DepositFlow({ onNavigateSwap }: DepositFlowProps) {
       {/* Method drawer */}
       <MethodDrawer method={method} onChange={setMethod} />
 
-      {(method === 'cctp' || method === 'bank' || method === 'usdc' || (CARD_DEPOSIT_ENABLED && method === 'card')) && (
+      {(method === 'cctp' || method === 'bank' || method === 'usdc' || method === 'linked-card' || (CARD_DEPOSIT_ENABLED && method === 'card')) && (
         <>
           {tierBanner?.strategyLabel && (
             <div style={{ padding: '12px 14px', borderRadius: 12, background: 'rgba(201,168,76,0.06)', border: '1px solid rgba(201,168,76,0.2)' }}>
@@ -1688,6 +1920,7 @@ export function DepositFlow({ onNavigateSwap }: DepositFlowProps) {
           selectedStrategySummary={selectedStrategySummary}
         />
       )}
+      {method === 'linked-card' && <LinkedCardDeposit onSuccess={(amt, ref) => setSuccess({ amount: amt, ref })} selectedStrategySummary={selectedStrategySummary} />}
       {CARD_DEPOSIT_ENABLED && method === 'card' && <CardDeposit onSuccess={(amt, ref) => setSuccess({ amount: amt, ref })} selectedStrategySummary={selectedStrategySummary} />}
       {method === 'bank' && <BankTransfer onSuccess={(amt, ref) => setSuccess({ amount: amt, ref })} selectedStrategySummary={selectedStrategySummary} />}
       {method === 'usdc' && (
