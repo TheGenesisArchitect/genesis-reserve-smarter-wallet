@@ -130,7 +130,21 @@ export function CashOutPage({ onNavigate }: { onNavigate: (v: ViewKey) => void }
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
   const [payoutId, setPayoutId] = useState<string | null>(null)
   const [showLinkCard, setShowLinkCard] = useState(false)
+  const [viewW, setViewW] = useState(500)
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  useEffect(() => {
+    const update = () => setViewW(window.innerWidth)
+    update()
+    window.addEventListener('resize', update)
+    return () => window.removeEventListener('resize', update)
+  }, [])
+
+  const contentW = Math.min(viewW - 64, 500)
+  const pickerCardW = Math.max(260, contentW - 20)
+  const pickerCardH = Math.round(pickerCardW * (284 / 460))
+  const confirmCardW = Math.max(260, contentW)
+  const confirmCardH = Math.round(confirmCardW * (308 / 500))
 
   const positions = positionsData?.positions ?? []
   const hasVaultPositions = positions.length > 0
@@ -365,7 +379,7 @@ export function CashOutPage({ onNavigate }: { onNavigate: (v: ViewKey) => void }
                   return (
                     <button key={card.id} type="button" onClick={() => setSelectedCardId(card.id)}
                       style={{ padding: 10, borderRadius: 14, border: sel ? '1px solid rgba(201,168,76,0.5)' : '1px solid rgba(255,255,255,0.08)', background: sel ? 'rgba(201,168,76,0.06)' : 'rgba(255,255,255,0.02)', cursor: 'pointer', textAlign: 'left' }}>
-                      <LinkedCardVisual card={{ cardholderName: card.cardholderName, last4: card.last4, expiry: cardExpiry(card), brand: card.brand, issuerName: card.issuerName, frozen: false }} width={460} height={284} />
+                      <LinkedCardVisual card={{ cardholderName: card.cardholderName, last4: card.last4, expiry: cardExpiry(card), brand: card.brand, issuerName: card.issuerName, frozen: false }} width={pickerCardW} height={pickerCardH} />
                       <div style={{ fontSize: 11, color: '#f5f0e8', marginTop: 8, padding: '0 4px' }}>
                         •••• {card.last4} · {card.cardholderName}
                       </div>
@@ -431,7 +445,7 @@ export function CashOutPage({ onNavigate }: { onNavigate: (v: ViewKey) => void }
         {step === 'confirm' && selectedCard && (
           <>
             {source === 'vault' && <StepBar phase={1} />}
-            <LinkedCardVisual card={{ cardholderName: selectedCard.cardholderName, last4: selectedCard.last4, expiry: cardExpiry(selectedCard), brand: selectedCard.brand, issuerName: selectedCard.issuerName, frozen: false }} width={500} height={308} />
+            <LinkedCardVisual card={{ cardholderName: selectedCard.cardholderName, last4: selectedCard.last4, expiry: cardExpiry(selectedCard), brand: selectedCard.brand, issuerName: selectedCard.issuerName, frozen: false }} width={confirmCardW} height={confirmCardH} />
             <div style={{ borderRadius: 12, border: '1px solid rgba(255,255,255,0.08)', overflow: 'hidden' }}>
               {[
                 source === 'vault'

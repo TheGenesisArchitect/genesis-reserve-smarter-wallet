@@ -92,10 +92,26 @@ export function FundPage({ onNavigate }: { onNavigate: (v: ViewKey) => void }) {
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null)
   const [amount, setAmount] = useState('')
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
+  const [needsRelink, setNeedsRelink] = useState(false)
   const [fundingId, setFundingId] = useState<string | null>(null)
   const [fundingTx, setFundingTx] = useState<any>(null)
   const [showLinkCard, setShowLinkCard] = useState(false)
+  const [viewW, setViewW] = useState(500)
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  useEffect(() => {
+    const update = () => setViewW(window.innerWidth)
+    update()
+    window.addEventListener('resize', update)
+    return () => window.removeEventListener('resize', update)
+  }, [])
+
+  // Responsive card dimensions — page padding is 32px each side
+  const contentW = Math.min(viewW - 64, 500)
+  const pickerCardW = Math.max(260, contentW - 20)  // -20 for button padding
+  const pickerCardH = Math.round(pickerCardW * (284 / 460))
+  const confirmCardW = Math.max(260, contentW)
+  const confirmCardH = Math.round(confirmCardW * (308 / 500))
 
   const selectedCard = cards.find(c => c.id === selectedCardId) ?? null
   const amountNum = parseFloat(amount.replace(/[^0-9.]/g, '')) || 0
@@ -149,7 +165,7 @@ export function FundPage({ onNavigate }: { onNavigate: (v: ViewKey) => void }) {
 
   async function handleFund() {
     if (!selectedCard) return
-    setStep('processing'); setErrorMsg(null)
+    setStep('processing'); setErrorMsg(null); setNeedsRelink(false)
     try {
       const res = await fetch('/api/gr/funding/add-money', {
         method: 'POST',
@@ -162,7 +178,15 @@ export function FundPage({ onNavigate }: { onNavigate: (v: ViewKey) => void }) {
         }),
       })
       const data = await res.json()
-      if (!res.ok) { setErrorMsg(data?.error?.message ?? 'Payment failed.'); setStep('error'); return }
+      if (!res.ok) {
+        if (data?.error?.code === 'not_found') {
+          setNeedsRelink(true)
+          setErrorMsg(`Card •••• ${selectedCard.last4} needs to be re-linked. Tap below to remove it and link it again.`)
+        } else {
+          setErrorMsg(data?.error?.message ?? 'Payment failed.')
+        }
+        setStep('error'); return
+      }
       const tx = data?.data
       setFundingTx(tx); setFundingId(tx.id)
       if (tx.status === 'requires_action' && tx.challenge?.clientSecret) {
@@ -281,7 +305,7 @@ export function FundPage({ onNavigate }: { onNavigate: (v: ViewKey) => void }) {
                     return (
                       <button key={card.id} type="button" onClick={() => setSelectedCardId(card.id)}
                         style={{ padding: 10, borderRadius: 14, border: sel ? '1px solid rgba(201,168,76,0.5)' : '1px solid rgba(255,255,255,0.08)', background: sel ? 'rgba(201,168,76,0.06)' : 'rgba(255,255,255,0.02)', cursor: 'pointer', textAlign: 'left' }}>
-                        <LinkedCardVisual card={{ cardholderName: card.cardholderName, last4: card.last4, expiry: cardExpiry(card), brand: card.brand, issuerName: card.issuerName, frozen: false }} width={460} height={284} />
+                        <LinkedCardVisual card={{ cardholderName: card.cardholderName, last4: card.last4, expiry: cardExpiry(card), brand: card.brand, issuerName: card.issuerName, frozen: false }} width={pickerCardW} height={pickerCardH} />
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 8, padding: '0 4px' }}>
                           <span style={{ fontSize: 11, color: '#f5f0e8' }}>•••• {card.last4}</span>
                           {card.circleCardId ? <StatusPill label="USDC Ready" tone="success" /> : <StatusPill label="USD Charge" tone="accent" />}
@@ -343,7 +367,7 @@ export function FundPage({ onNavigate }: { onNavigate: (v: ViewKey) => void }) {
           {/* Confirm */}
           {step === 'confirm' && selectedCard && (
             <>
-              <LinkedCardVisual card={{ cardholderName: selectedCard.cardholderName, last4: selectedCard.last4, expiry: cardExpiry(selectedCard), brand: selectedCard.brand, issuerName: selectedCard.issuerName, frozen: false }} width={500} height={308} />
+              <LinkedCardVisual card={{ cardholderName: selectedCard.cardholderName, last4: selectedCard.last4, expiry: cardExpiry(selectedCard), brand: selectedCard.brand, issuerName: selectedCard.issuerName, frozen: false }} width={confirmCardW} height={confirmCardH} />
               <div style={{ borderRadius: 12, border: '1px solid rgba(255,255,255,0.08)', overflow: 'hidden' }}>
                 {[
                   { label: 'Charging', value: `$${fmt(amountNum)} USD`, sub: `•••• ${selectedCard.last4}` },
@@ -410,8 +434,23 @@ export function FundPage({ onNavigate }: { onNavigate: (v: ViewKey) => void }) {
           {/* Error */}
           {step === 'error' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              <div style={{ padding: '14px 16px', borderRadius: 12, background: 'rgba(232,64,64,0.07)', border: '1px solid rgba(232,64,64,0.25)', color: '#E84040', fontSize: 12 }}>{errorMsg}</div>
-              <button type="button" onClick={() => setStep('pick')} style={{ padding: '11px 14px', borderRadius: 10, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.12)', color: 'rgba(245,240,232,0.7)', fontSize: 11, fontFamily: "'Sora', sans-serif", cursor: 'pointer' }}>← Try Again</button>
+              <div style={{ padding: '14px 16px', borderRadius: 12, background: 'rgba(232,64,64,0.07)', border: '1px solid rgba(232,64,64,0.25)', color: '#E84040', fontSize: 12, lineHeight: 1.6 }}>{errorMsg}</div>
+              {needsRelink && selectedCard ? (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  <button type="button" onClick={() => {
+                    setCards(prev => prev.filter(c => c.id !== selectedCard.id))
+                    setSelectedCardId(null)
+                    setNeedsRelink(false)
+                    setShowLinkCard(true)
+                    setStep('pick')
+                  }} style={{ padding: '11px 14px', borderRadius: 10, background: 'rgba(201,168,76,0.12)', border: '1px solid rgba(201,168,76,0.35)', color: '#c9a84c', fontSize: 11, fontFamily: "'Sora', sans-serif", cursor: 'pointer', fontWeight: 600 }}>
+                    Remove & Re-link Card →
+                  </button>
+                  <button type="button" onClick={() => { setNeedsRelink(false); setStep('pick') }} style={{ padding: '11px 14px', borderRadius: 10, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.12)', color: 'rgba(245,240,232,0.5)', fontSize: 11, fontFamily: "'Sora', sans-serif", cursor: 'pointer' }}>← Back to Cards</button>
+                </div>
+              ) : (
+                <button type="button" onClick={() => setStep('pick')} style={{ padding: '11px 14px', borderRadius: 10, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.12)', color: 'rgba(245,240,232,0.7)', fontSize: 11, fontFamily: "'Sora', sans-serif", cursor: 'pointer' }}>← Try Again</button>
+              )}
             </div>
           )}
 
