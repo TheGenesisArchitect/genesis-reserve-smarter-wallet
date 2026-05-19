@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from 'react'
 import { usePrivy } from '@privy-io/react-auth'
 import { loadStripe } from '@stripe/stripe-js'
 import { CardElement, Elements, useElements, useStripe } from '@stripe/react-stripe-js'
-import { arbitrum } from 'viem/chains'
 import { useGenesisVault } from '../hooks/useGenesisVault'
 import { useComplianceGate } from '../hooks/useComplianceGate'
 import { useAutoKYCActivate } from '../hooks/useAutoKYCActivate'
@@ -552,14 +551,22 @@ function ProcessingScreen({ label }: { label: string }) {
 }
 
 // ── 1. Card Deposit — powered by Privy × Stripe ─────────────────────────────
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? '')
+// Lazy singleton — Stripe only loads when the card deposit tab is actually mounted.
+// Avoids Stripe Radar beacon firing on every Add Money page load.
+let _cardStripePromise: ReturnType<typeof loadStripe> | null = null
+function getCardStripe() {
+  const pk = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+  if (!pk) return null
+  if (!_cardStripePromise) _cardStripePromise = loadStripe(pk)
+  return _cardStripePromise
+}
 
 function CardDeposit({ onSuccess, selectedStrategySummary }: { onSuccess: (amount: string, ref: string) => void; selectedStrategySummary?: VaultStrategySummary }) {
   const { login, authenticated } = usePrivy()
   const walletAddress = useActiveWalletAddress()
 
   return (
-    <Elements stripe={stripePromise}>
+    <Elements stripe={getCardStripe()}>
       <StripeCardDepositForm
         onSuccess={onSuccess}
         selectedStrategySummary={selectedStrategySummary}
