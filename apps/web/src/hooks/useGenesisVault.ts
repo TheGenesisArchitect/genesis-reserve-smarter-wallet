@@ -12,7 +12,7 @@ import { useSmartAccount } from './useSmartAccount'
 
 const RELIABLE_RPC =
   (typeof process !== 'undefined' && process.env?.NEXT_PUBLIC_ALCHEMY_RPC_URL) ||
-  'https://arb1.arbitrum.io/rpc'
+  'https://rpc.ankr.com/arbitrum'
 
 function parseDepositError(err: unknown): Error {
   const msg = err instanceof Error ? err.message : String(err)

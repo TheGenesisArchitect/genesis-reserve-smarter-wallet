@@ -32,7 +32,6 @@ import {
   type Address,
 } from 'viem'
 import { toOwner } from 'permissionless/utils'
-import { arbitrum } from 'viem/chains'
 import { ACTIVE_CHAIN } from '../config/contracts'
 
 // ── Environment ──────────────────────────────────────────────────────────────
@@ -50,6 +49,8 @@ const parseRpcList = (raw: string | undefined): string[] =>
 const SMART_ACCOUNT_RPC_CANDIDATES = Array.from(new Set([
   ...(ALCHEMY_RPC && !ALCHEMY_RPC.includes('PASTE') ? [ALCHEMY_RPC] : []),
   ...parseRpcList(process.env.NEXT_PUBLIC_ARBITRUM_RPC_FALLBACKS),
+  'https://rpc.ankr.com/arbitrum',
+  'https://arbitrum-one.publicnode.com',
   'https://arb1.arbitrum.io/rpc',
 ]))
 
