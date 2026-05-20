@@ -634,7 +634,7 @@ export function WalletHome({ accountId, onNavigate }: WalletHomeProps) {
 
           <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
             <div style={{ flex: 1 }}>
-              <ActionButton label="Cash Out" onClick={() => onNavigate('withdraw')} />
+              <ActionButton label="Withdraw" onClick={() => onNavigate('vault-withdraw')} />
             </div>
             <div style={{ flex: 1 }}>
               <ActionButton label="Manage Vaults" onClick={() => onNavigate('vaults')} secondary />

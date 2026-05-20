@@ -3,7 +3,7 @@
 import { useState, useEffect, type ReactNode } from 'react'
 
 export type ViewKey =
-  | 'home' | 'send' | 'deposit' | 'withdraw' | 'receive' | 'card' | 'vaults' | 'activity' | 'settings' | 'bridge' | 'swap'
+  | 'home' | 'send' | 'deposit' | 'withdraw' | 'vault-withdraw' | 'receive' | 'card' | 'vaults' | 'activity' | 'settings' | 'bridge' | 'swap'
   | 'agentic' | 'analytics' | 'yield-monitor' | 'compliance' | 'consultive' | 'scheduled' | 'batch' | 'admin' | 'academy'
 
 interface AppShellProps {

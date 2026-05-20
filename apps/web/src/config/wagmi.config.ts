@@ -80,8 +80,8 @@ const OPTIMISM_RPC_URLS = orderedRpcUrls(
   ['https://mainnet.optimism.io']
 )
 
-const ARBITRUM_WS = ALCHEMY_KEY ? `wss://arb-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}` : 'wss://arb1.arbitrum.io/feed'
-const SEPOLIA_WS = ALCHEMY_KEY ? `wss://arb-sepolia.g.alchemy.com/v2/${ALCHEMY_KEY}` : 'wss://sepolia-rollup.arbitrum.io/feed'
+const ARBITRUM_WS = ALCHEMY_KEY ? `wss://arb-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}` : ''
+const SEPOLIA_WS = ALCHEMY_KEY ? `wss://arb-sepolia.g.alchemy.com/v2/${ALCHEMY_KEY}` : ''
 
 // ── wagmi config ──────────────────────────────────────────────────────────────
 

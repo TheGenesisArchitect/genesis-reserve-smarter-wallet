@@ -10,6 +10,7 @@ import { CardPage } from '../components/CardPage'
 import { VaultsPage } from '../components/VaultsPage'
 import { FundPage } from '../components/FundPage'
 import { CashOutPage } from '../components/CashOutPage'
+import { WithdrawPage } from '../components/WithdrawPage'
 import { ActivityPage } from '../components/ActivityPage'
 import { SettingsPanel } from '../components/SettingsPanel'
 import { GenesisLandingPage } from '../components/GenesisLandingPage'
@@ -180,6 +181,9 @@ function PanelRouter({
 
     case 'withdraw':
       return <CashOutPage onNavigate={onNavigate} />
+
+    case 'vault-withdraw':
+      return <WithdrawPage onNavigate={onNavigate} />
 
     case 'receive':
       return (
