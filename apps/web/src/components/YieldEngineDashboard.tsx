@@ -18,6 +18,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useYieldEngine } from '../hooks/useYieldEngine'
 import { useVaultPositions } from '../hooks/useVaultPositions'
+import { WS_TRANSPORT_URL } from '../config/wagmi.config'
 import { useActiveWalletAddress } from '../hooks/useActiveWalletAddress'
 import type { VaultPositionItem } from '../lib/bff.types'
 
@@ -304,7 +305,7 @@ export function YieldEngineDashboard() {
   const apyBadge = APY_SOURCE_LABELS[engine.apySource]
   const showApySourceBadge = engine.apySource !== 'fallback'
   const hasApyValue = !engine.isLoading && engine.apySource !== 'fallback' && engine.displayApy > 0
-  const isStale = !engine.wsConnected && engine.apySource !== 'harvest'
+  const isStale = Boolean(WS_TRANSPORT_URL) && !engine.wsConnected && engine.apySource !== 'harvest'
 
   const APY_SOURCE_TOOLTIPS: Record<string, string> = {
     harvest: 'LIVE — Sourced directly from on-chain harvest events (highest confidence)',
