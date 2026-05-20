@@ -52,7 +52,7 @@ const orderedRpcUrls = (primary: string, fallbackEnv: string | undefined, defaul
 const ARBITRUM_RPC_URLS = orderedRpcUrls(
   primaryRpc('arb-mainnet.g.alchemy.com'),
   process.env.NEXT_PUBLIC_ARBITRUM_RPC_FALLBACKS,
-  ['https://arb1.arbitrum.io/rpc']
+  ['https://rpc.ankr.com/arbitrum', 'https://arbitrum-one.publicnode.com', 'https://arb1.arbitrum.io/rpc']
 )
 const SEPOLIA_RPC_URLS = orderedRpcUrls(
   primaryRpc('arb-sepolia.g.alchemy.com'),

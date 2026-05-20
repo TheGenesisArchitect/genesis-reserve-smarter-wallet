@@ -37,9 +37,9 @@ const CHAIN_RPCS: Record<number, string[]> = {
     'https://rpc.ankr.com/eth',
   ],
   [arbitrum.id]: [
-    'https://arb1.arbitrum.io/rpc',
-    'https://arbitrum.llamarpc.com',
     'https://rpc.ankr.com/arbitrum',
+    'https://arbitrum-one.publicnode.com',
+    'https://arb1.arbitrum.io/rpc',
   ],
   [base.id]: [
     'https://mainnet.base.org',
