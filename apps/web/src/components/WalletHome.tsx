@@ -11,6 +11,7 @@ import { useVaultPositions } from '../hooks/useVaultPositions'
 import { useYieldEngine } from '../hooks/useYieldEngine'
 import { useActiveWalletAddress } from '../hooks/useActiveWalletAddress'
 import { TapToPayModal } from './TapToPayModal'
+import { AddMoneyModal } from './AddMoneyModal'
 import { CHAIN_META } from '../config/contracts'
 import type { LedgerEntry } from '../lib/bff.types'
 import type { ViewKey } from './AppShell'
@@ -269,6 +270,7 @@ export function WalletHome({ accountId, onNavigate }: WalletHomeProps) {
   const [masked, setMasked] = useState(false)
   const [showPortfolio, setShowPortfolio] = useState(true)  // default open
   const [showTapToPay, setShowTapToPay] = useState(false)
+  const [showAddMoney, setShowAddMoney] = useState(false)
 
   // ── Linked card carousel ─────────────────────────────────────────────
   const [linkedCards, setLinkedCards] = useState<HomeLinkedCard[]>([])
@@ -646,7 +648,7 @@ export function WalletHome({ accountId, onNavigate }: WalletHomeProps) {
       {/* ── Quick actions ─────────────────────────────────────────────── */}
       <SectionPanel title="Quick Actions" eyebrow="Transfers & Conversions">
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-          <QuickAction label="Add Money" onClick={() => onNavigate('deposit')} icon={<PlusQAIcon />} />
+          <QuickAction label="Add Money" onClick={() => setShowAddMoney(true)} icon={<PlusQAIcon />} />
           <QuickAction label="Cash Out" onClick={() => onNavigate('withdraw')} icon={<CashOutQAIcon />} />
           <QuickAction label="Send" onClick={() => onNavigate('send')} icon={<SendQAIcon />} />
           <QuickAction label="Swap" onClick={() => onNavigate('swap')} icon={<SwapQAIcon />} />
@@ -760,6 +762,15 @@ export function WalletHome({ accountId, onNavigate }: WalletHomeProps) {
           ]}
           defaultCardId={activeCardIdx === 0 ? 'home-genesis' : (linkedCards[activeCardIdx - 1]?.id ?? 'home-genesis')}
           onClose={() => setShowTapToPay(false)}
+        />
+      )}
+
+      {/* Add Money modal — in-place overlay so user stays on Home */}
+      {showAddMoney && (
+        <AddMoneyModal
+          onClose={() => setShowAddMoney(false)}
+          onSuccess={() => setShowAddMoney(false)}
+          onLinkCard={() => { setShowAddMoney(false); onNavigate('card') }}
         />
       )}
 

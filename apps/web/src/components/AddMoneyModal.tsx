@@ -10,9 +10,61 @@ const PRESETS = [25, 50, 100, 250]
 
 type Step = 'pick' | 'success' | 'error'
 
+type LinkedCard = {
+  id: string
+  cardholderName: string
+  brand: string
+  last4: string
+  expMonth: number
+  expYear: number
+  status: string
+}
+
+function normBrand(brand: string): 'visa' | 'mastercard' | 'amex' | 'other' {
+  const b = brand.toLowerCase()
+  if (b.includes('visa')) return 'visa'
+  if (b.includes('master')) return 'mastercard'
+  if (b.includes('amex') || b.includes('american')) return 'amex'
+  return 'other'
+}
+
+function CardBrandBadge({ brand }: { brand: string }) {
+  const n = normBrand(brand)
+  if (n === 'visa') return (
+    <span style={{ fontFamily: "'Arial Black', sans-serif", fontSize: 9, fontWeight: 900, color: '#1A1F71', background: '#fff', borderRadius: 3, padding: '1px 4px', letterSpacing: '0.04em' }}>VISA</span>
+  )
+  if (n === 'mastercard') return (
+    <span style={{ position: 'relative', display: 'inline-flex', width: 22, height: 14, verticalAlign: 'middle', flexShrink: 0 }}>
+      <span style={{ position: 'absolute', left: 0, width: 14, height: 14, borderRadius: '50%', background: '#EB001B', opacity: 0.9 }} />
+      <span style={{ position: 'absolute', left: 7, width: 14, height: 14, borderRadius: '50%', background: '#F79E1B', opacity: 0.9 }} />
+    </span>
+  )
+  if (n === 'amex') return (
+    <span style={{ fontFamily: 'sans-serif', fontSize: 8, fontWeight: 700, color: '#fff', background: '#2E77BC', borderRadius: 3, padding: '1px 4px' }}>AMEX</span>
+  )
+  return <span style={{ fontSize: 13 }}>💳</span>
+}
+
+function getCardsFromStorage(accountId: string): LinkedCard[] {
+  if (typeof window === 'undefined') return []
+  try {
+    const raw = window.localStorage.getItem(`gr:cards:v1:${accountId.toLowerCase()}`)
+    if (!raw) return []
+    const stored = JSON.parse(raw) as Array<{
+      id: string; holderName: string; isLinked?: boolean
+      brand: string; last4: string; expiry: string
+    }>
+    return stored.filter(c => c.isLinked).map(c => {
+      const [mm, yy] = (c.expiry ?? '01/99').split('/')
+      return { id: c.id, cardholderName: c.holderName, brand: c.brand, last4: c.last4, expMonth: parseInt(mm, 10) || 1, expYear: 2000 + (parseInt(yy, 10) || 30), status: 'verified' }
+    })
+  } catch { return [] }
+}
+
 export function AddMoneyModal({
   onClose,
   onSuccess,
+  onLinkCard,
 }: {
   accountId?: string
   onClose: () => void
@@ -20,14 +72,43 @@ export function AddMoneyModal({
   onLinkCard?: () => void
 }) {
   const walletAddress = useActiveWalletAddress()
+  const accountId = walletAddress ?? ''
+
   const [step, setStep] = useState<Step>('pick')
   const [amount, setAmount] = useState('')
   const [transakOpen, setTransakOpen] = useState(false)
   const [transakOrder, setTransakOrder] = useState<TransakOrderData | null>(null)
   const transakCleanupRef = useRef<(() => void) | null>(null)
 
+  const [linkedCards, setLinkedCards] = useState<LinkedCard[]>([])
+  const [selectedCardId, setSelectedCardId] = useState<string | null>(null)
+  const [cardsLoading, setCardsLoading] = useState(true)
+
   const amountNum = parseFloat(amount.replace(/[^0-9.]/g, '')) || 0
   const canBuy = amountNum >= MIN_USD && !!walletAddress && !transakOpen
+
+  // Fetch linked debit cards
+  useEffect(() => {
+    if (!accountId) { setCardsLoading(false); return }
+    fetch(`/api/gr/linked-debit-cards?accountId=${encodeURIComponent(accountId)}`)
+      .then(r => r.json())
+      .then(data => {
+        const apiCards: LinkedCard[] = (data?.data ?? []).filter(
+          (c: LinkedCard) => c.status !== 'removed' && c.status !== 'blocked'
+        )
+        const stored = getCardsFromStorage(accountId)
+        const merged = [...stored]
+        apiCards.forEach(c => { if (!merged.find(x => x.id === c.id)) merged.push(c) })
+        setLinkedCards(merged)
+        setSelectedCardId(prev => prev ?? merged[0]?.id ?? null)
+      })
+      .catch(() => {
+        const stored = getCardsFromStorage(accountId)
+        setLinkedCards(stored)
+        setSelectedCardId(prev => prev ?? stored[0]?.id ?? null)
+      })
+      .finally(() => setCardsLoading(false))
+  }, [accountId])
 
   useEffect(() => {
     const h = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
@@ -97,6 +178,58 @@ export function AddMoneyModal({
           <div style={{ display: 'flex', flexDirection: 'column', gap: 22 }}>
             <div style={{ padding: '12px 16px', borderRadius: 12, background: 'rgba(0,212,170,0.06)', border: '1px solid rgba(0,212,170,0.15)', fontSize: 11, color: 'rgba(0,212,170,0.8)', lineHeight: 1.7 }}>
               Buy USDC with your debit card. Transak handles payment securely — Genesis never stores your card details.
+            </div>
+
+            {/* ── Card Selector ── */}
+            <div>
+              <div style={{ fontSize: 10, letterSpacing: '0.14em', color: 'rgba(245,240,232,0.4)', textTransform: 'uppercase', marginBottom: 10 }}>
+                Funding Card
+              </div>
+              {cardsLoading ? (
+                <div style={{ fontSize: 11, color: 'rgba(245,240,232,0.3)', padding: '8px 0' }}>Loading cards…</div>
+              ) : linkedCards.length === 0 ? (
+                <div style={{ padding: '12px 14px', borderRadius: 12, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
+                  <span style={{ fontSize: 11, color: 'rgba(245,240,232,0.4)' }}>No debit cards linked yet</span>
+                  {onLinkCard && (
+                    <button type="button" onClick={onLinkCard}
+                      style={{ fontSize: 11, color: '#c9a84c', background: 'none', border: 'none', cursor: 'pointer', letterSpacing: '0.06em', textDecoration: 'underline', textUnderlineOffset: 3, flexShrink: 0 }}>
+                      + Link a card
+                    </button>
+                  )}
+                </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
+                  {linkedCards.map(card => {
+                    const sel = card.id === selectedCardId
+                    const exp = `${String(card.expMonth).padStart(2, '0')}/${String(card.expYear).slice(-2)}`
+                    return (
+                      <button key={card.id} type="button" onClick={() => setSelectedCardId(card.id)}
+                        style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '11px 13px', borderRadius: 11, cursor: 'pointer', textAlign: 'left', background: sel ? 'rgba(201,168,76,0.08)' : 'rgba(255,255,255,0.03)', border: sel ? '1px solid rgba(201,168,76,0.45)' : '1px solid rgba(255,255,255,0.09)', transition: 'all 0.15s' }}>
+                        <div style={{ width: 32, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                          <CardBrandBadge brand={card.brand} />
+                        </div>
+                        <div style={{ flex: 1 }}>
+                          <div style={{ fontSize: 13, color: sel ? '#f5f0e8' : 'rgba(245,240,232,0.7)', fontFamily: "'Cormorant Garamond', serif", letterSpacing: '0.04em' }}>
+                            •••• {card.last4}
+                          </div>
+                          <div style={{ fontSize: 10, color: 'rgba(245,240,232,0.35)', marginTop: 2 }}>
+                            {card.cardholderName} &middot; exp {exp}
+                          </div>
+                        </div>
+                        <div style={{ width: 15, height: 15, borderRadius: '50%', flexShrink: 0, border: sel ? '1px solid rgba(201,168,76,0.8)' : '1px solid rgba(255,255,255,0.18)', background: sel ? 'rgba(201,168,76,0.25)' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          {sel && <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#c9a84c' }} />}
+                        </div>
+                      </button>
+                    )
+                  })}
+                  {onLinkCard && (
+                    <button type="button" onClick={onLinkCard}
+                      style={{ padding: '8px 13px', borderRadius: 10, background: 'transparent', border: '1px dashed rgba(201,168,76,0.22)', color: 'rgba(201,168,76,0.5)', fontSize: 11, cursor: 'pointer', letterSpacing: '0.06em', textAlign: 'left', fontFamily: "'Tenor Sans', sans-serif" }}>
+                      + Link another card
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
 
             <div>
