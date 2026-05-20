@@ -40,7 +40,7 @@ export function openTransakWidget(params: {
 }): () => void {
   if (typeof window === 'undefined') return () => {}
 
-  const apiKey = process.env.NEXT_PUBLIC_TRANSAK_API_KEY ?? ''
+  const apiKey = process.env.NEXT_PUBLIC_TRANSAK_API ?? ''
   const widgetUrl = buildWidgetUrl(apiKey, params.walletAddress, params.fiatAmount)
 
   const transak = new Transak({
