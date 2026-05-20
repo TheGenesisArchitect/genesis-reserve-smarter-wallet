@@ -337,10 +337,22 @@ export function LinkDebitCardPanelWrapper({ onClose, onLinked, accountId }: { on
 // encryptCircleCardData and tokenizeCard imported from ../lib/circle-tokenize
 
 /* ── Toggle ───────────────────────────────────────────────────────────── */
+function isLinkAuthError(err: { type?: string; code?: string; decline_code?: string; message?: string }): boolean {
+  const code = err.code ?? ''
+  const decline = err.decline_code ?? ''
+  const msg = (err.message ?? '').toLowerCase()
+  return (
+    code === 'authentication_required' ||
+    decline === 'authentication_required' ||
+    code === 'payment_intent_authentication_failure' ||
+    (code === 'card_declined' && (msg.includes('authenticat') || msg.includes('verif') || msg.includes('link')))
+  )
+}
+
 function LinkDebitCardPanel({ onClose, onLinked, accountId, prefetchedClientSecret }: { onClose: () => void; onLinked: (card: LinkedCardPayload) => void; accountId: string; prefetchedClientSecret: string | null }) {
   const stripe = useStripe()
   const elements = useElements()
-  const [step, setStep] = useState<'form' | 'submitting' | 'issuer' | 'success'>('form')
+  const [step, setStep] = useState<'form' | 'submitting' | 'issuer' | 'success' | 'troubleshoot'>('form')
   const [cardholderName, setCardholderName] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [successCard, setSuccessCard] = useState<LinkedCardPayload | null>(null)
@@ -432,7 +444,14 @@ function LinkDebitCardPanel({ onClose, onLinked, accountId, prefetchedClientSecr
           },
         })
 
-        if (result.error) throw new Error(result.error.message || 'Unable to confirm card setup.')
+        if (result.error) {
+          if (isLinkAuthError(result.error)) {
+            setStep('troubleshoot')
+            setSubmitting(false)
+            return
+          }
+          throw new Error(result.error.message || 'Unable to confirm card setup.')
+        }
         const paymentMethod = result.setupIntent?.payment_method
         if (!paymentMethod) throw new Error('Failed to create a reusable payment method for the card.')
 
@@ -605,6 +624,96 @@ function LinkDebitCardPanel({ onClose, onLinked, accountId, prefetchedClientSecr
             </div>
           </div>
 
+        ) : step === 'troubleshoot' ? (
+          /* ── Stripe Link phone number troubleshoot guide ── */
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+            <div style={{ textAlign: 'center', paddingTop: 4 }}>
+              <div style={{
+                width: 64, height: 64, borderRadius: '50%',
+                background: 'rgba(255,180,0,0.07)',
+                border: '1px solid rgba(255,180,0,0.22)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                margin: '0 auto 16px', fontSize: 26,
+              }}>
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#f5c842" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="5" y="2" width="14" height="20" rx="2" />
+                  <line x1="12" y1="18" x2="12.01" y2="18" strokeWidth="2.4" />
+                </svg>
+              </div>
+              <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22, color: '#f5f0e8', marginBottom: 8 }}>
+                Verification Issue
+              </div>
+              <div style={{ fontSize: 12, color: 'rgba(245,240,232,0.55)', lineHeight: 1.75, maxWidth: 310, margin: '0 auto' }}>
+                Your card was declined during setup. This is typically caused by an outdated phone number saved in your Stripe Link autofill profile — the one used to send a verification code.
+              </div>
+            </div>
+
+            {/* Step-by-step guide */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {([
+                { n: 1, title: 'Open your Stripe Link profile', body: 'Tap the button below to visit link.stripe.com — this is Stripe\'s autofill service that saves your payment details.' },
+                { n: 2, title: 'Update your phone number', body: 'Sign in with your email, then go to Security → Phone number and enter your current number.' },
+                { n: 3, title: 'Return here and try again', body: 'Once your number is updated, tap "Try Again" below. Your card details are still saved.' },
+              ] as const).map(({ n, title, body }) => (
+                <div key={n} style={{ display: 'flex', gap: 14, alignItems: 'flex-start', padding: '13px 14px', borderRadius: 12, background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.07)' }}>
+                  <div style={{
+                    width: 26, height: 26, borderRadius: '50%', flexShrink: 0,
+                    background: 'rgba(201,168,76,0.12)', border: '1px solid rgba(201,168,76,0.3)',
+                    color: '#c9a84c', fontSize: 11, fontWeight: 700,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontFamily: "'Tenor Sans', sans-serif",
+                  }}>{n}</div>
+                  <div>
+                    <div style={{ fontSize: 12, color: '#f5f0e8', marginBottom: 3, letterSpacing: '0.02em' }}>{title}</div>
+                    <div style={{ fontSize: 11, color: 'rgba(245,240,232,0.45)', lineHeight: 1.6 }}>{body}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Open Stripe Link */}
+            <a
+              href="https://link.stripe.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'block', padding: '13px 20px', textAlign: 'center', textDecoration: 'none',
+                background: 'rgba(99,102,241,0.10)', border: '1px solid rgba(99,102,241,0.32)',
+                borderRadius: 12, color: '#a5b4fc',
+                fontSize: 12, letterSpacing: '0.1em', textTransform: 'uppercase',
+                fontFamily: "'Tenor Sans', sans-serif",
+              }}
+            >
+              Open Stripe Link ↗
+            </a>
+
+            {/* Try again */}
+            <button
+              type="button"
+              onClick={() => { setError(null); setStep('form') }}
+              style={{
+                padding: '13px 20px',
+                background: 'rgba(201,168,76,0.12)', border: '1px solid rgba(201,168,76,0.3)',
+                borderRadius: 12, color: '#c9a84c',
+                fontSize: 12, letterSpacing: '0.1em', textTransform: 'uppercase',
+                fontFamily: "'Tenor Sans', sans-serif", cursor: 'pointer',
+              }}
+            >
+              Try Again
+            </button>
+
+            <div style={{ textAlign: 'center', fontSize: 11, color: 'rgba(245,240,232,0.28)', lineHeight: 1.7 }}>
+              Not using Stripe Link?{' '}
+              <button
+                type="button"
+                onClick={() => { setError(null); setStep('form') }}
+                style={{ background: 'none', border: 'none', color: 'rgba(201,168,76,0.55)', cursor: 'pointer', fontSize: 11, fontFamily: "'Tenor Sans', sans-serif", padding: 0 }}
+              >
+                Try a different card
+              </button>
+            </div>
+          </div>
+
         ) : step === 'success' ? (
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', gap: 18 }}>
             <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'rgba(76,175,80,0.12)', border: '1px solid rgba(76,175,80,0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28 }}>
@@ -729,8 +838,15 @@ function LinkDebitCardPanel({ onClose, onLinked, accountId, prefetchedClientSecr
             </div>
 
             {error && (
-              <div style={{ padding: '10px 14px', borderRadius: 10, background: 'rgba(229,115,115,0.07)', border: '1px solid rgba(229,115,115,0.2)', fontSize: 12, color: '#e57373' }}>
-                {error}
+              <div style={{ padding: '12px 14px', borderRadius: 10, background: 'rgba(229,115,115,0.07)', border: '1px solid rgba(229,115,115,0.2)' }}>
+                <div style={{ fontSize: 12, color: '#e57373', marginBottom: 8 }}>{error}</div>
+                <button
+                  type="button"
+                  onClick={() => setStep('troubleshoot')}
+                  style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontSize: 11, color: 'rgba(201,168,76,0.7)', fontFamily: "'Tenor Sans', sans-serif", letterSpacing: '0.04em' }}
+                >
+                  Linking issues? Get help →
+                </button>
               </div>
             )}
 
