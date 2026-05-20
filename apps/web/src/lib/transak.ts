@@ -17,7 +17,7 @@ export type TransakOrderData = {
 }
 
 function buildWidgetUrl(apiKey: string, walletAddress: string, fiatAmount: number): string {
-  const base = process.env.NODE_ENV === 'production' ? PRODUCTION_URL : STAGING_URL
+  const base = process.env.NEXT_PUBLIC_TRANSAK_ENVIRONMENT === 'production' ? PRODUCTION_URL : STAGING_URL
   const params = new URLSearchParams({
     apiKey,
     walletAddress,
