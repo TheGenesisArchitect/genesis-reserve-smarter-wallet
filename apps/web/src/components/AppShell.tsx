@@ -38,6 +38,7 @@ export function AppShell({
 }: AppShellProps) {
   const [isMobile, setIsMobile] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [collapsed, setCollapsed] = useState(false)
   const [sidebarAddrCopied, setSidebarAddrCopied] = useState(false)
 
   function copySidebarAddress() {
@@ -58,6 +59,18 @@ export function AppShell({
     mq.addEventListener('change', handler)
     return () => mq.removeEventListener('change', handler)
   }, [])
+
+  useEffect(() => {
+    const stored = localStorage.getItem('gr_sidebar_collapsed')
+    if (stored === 'true') setCollapsed(true)
+  }, [])
+
+  function toggleCollapsed() {
+    setCollapsed(c => {
+      localStorage.setItem('gr_sidebar_collapsed', String(!c))
+      return !c
+    })
+  }
 
   function navigate(view: ViewKey) {
     onNavigate(view)
@@ -86,7 +99,7 @@ export function AppShell({
 
       {/* ── Sidebar ─────────────────────────────────────────────────── */}
       <aside style={{
-        width: isMobile ? '100vw' : 240,
+        width: isMobile ? '100vw' : (collapsed ? 64 : 240),
         minHeight: '100vh',
         height: '100vh',
         position: isMobile ? 'fixed' : 'sticky',
@@ -97,21 +110,25 @@ export function AppShell({
         borderRight: isMobile ? 'none' : '1px solid rgba(201,168,76,0.12)',
         display: 'flex',
         flexDirection: 'column',
-        padding: '28px 16px 22px',
+        padding: isMobile ? '28px 16px 22px' : (collapsed ? '28px 8px 22px' : '28px 16px 22px'),
         flexShrink: 0,
         overflow: 'hidden',
         transform: isMobile ? (mobileOpen ? 'translateX(0)' : 'translateX(-100%)') : 'none',
-        transition: isMobile ? 'transform 0.28s cubic-bezier(0.4,0,0.2,1)' : 'none',
+        transition: isMobile ? 'transform 0.28s cubic-bezier(0.4,0,0.2,1)' : 'width 0.22s ease, padding 0.22s ease',
       }}>
 
         {/* Brand */}
-        <div style={{ marginBottom: 26, paddingLeft: 4, display: 'flex', alignItems: 'center', gap: 12, justifyContent: 'space-between' }}>
+        <div style={{ marginBottom: 26, display: 'flex', alignItems: 'center', gap: 12, justifyContent: collapsed && !isMobile ? 'center' : 'space-between', paddingLeft: collapsed && !isMobile ? 0 : 4 }}>
           {/* Logo seal */}
-          <div style={{
-            width: 40, height: 40, borderRadius: '50%', overflow: 'hidden', flexShrink: 0,
-            boxShadow: '0 0 0 1px rgba(201,168,76,0.15), 0 0 18px rgba(201,168,76,0.22), 0 0 40px rgba(201,168,76,0.09)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}>
+          <div
+            style={{
+              width: 40, height: 40, borderRadius: '50%', overflow: 'hidden', flexShrink: 0,
+              boxShadow: '0 0 0 1px rgba(201,168,76,0.15), 0 0 18px rgba(201,168,76,0.22), 0 0 40px rgba(201,168,76,0.09)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: collapsed && !isMobile ? 'pointer' : 'default',
+            }}
+            onClick={collapsed && !isMobile ? toggleCollapsed : undefined}
+            title={collapsed && !isMobile ? 'Expand sidebar' : undefined}
+          >
             <img
               src="/genesis-logo.png"
               alt="Genesis Reserve"
@@ -124,42 +141,24 @@ export function AppShell({
               }}
             />
           </div>
-          <div>
-            <div style={{
-              fontFamily: "'Cormorant Garamond', serif",
-              fontSize: 22,
-              fontWeight: 300,
-              color: '#f5f0e8',
-              letterSpacing: '0.28em',
-              lineHeight: 1,
-            }}>GENESIS</div>
-            <div style={{
-              fontFamily: "'Tenor Sans', sans-serif",
-              fontSize: 7.5,
-              letterSpacing: '0.6em',
-              color: '#c9a84c',
-              marginTop: 4,
-              textTransform: 'uppercase',
-            }}>RESERVE</div>
-          </div>
-          {/* Mobile close button */}
-          {isMobile && (
-            <button
-              type="button"
-              onClick={() => setMobileOpen(false)}
-              style={{
-                marginLeft: 'auto',
-                background: 'rgba(255,255,255,0.06)',
-                border: '1px solid rgba(255,255,255,0.12)',
-                borderRadius: 8,
-                width: 36, height: 36,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                cursor: 'pointer', flexShrink: 0,
-              }}
-            >
+          {/* Brand text — hidden when collapsed on desktop */}
+          {(!collapsed || isMobile) && (
+            <div>
+              <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22, fontWeight: 300, color: '#f5f0e8', letterSpacing: '0.28em', lineHeight: 1 }}>GENESIS</div>
+              <div style={{ fontFamily: "'Tenor Sans', sans-serif", fontSize: 7.5, letterSpacing: '0.6em', color: '#c9a84c', marginTop: 4, textTransform: 'uppercase' }}>RESERVE</div>
+            </div>
+          )}
+          {/* Mobile close / desktop collapse button */}
+          {isMobile ? (
+            <button type="button" onClick={() => setMobileOpen(false)} style={{ marginLeft: 'auto', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 8, width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0 }}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(245,240,232,0.6)" strokeWidth="2" strokeLinecap="round">
-                <line x1="18" y1="6" x2="6" y2="18" />
-                <line x1="6" y1="6" x2="18" y2="18" />
+                <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+          ) : !collapsed && (
+            <button type="button" onClick={toggleCollapsed} title="Collapse sidebar" style={{ marginLeft: 'auto', background: 'transparent', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 6, width: 28, height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0 }}>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(245,240,232,0.4)" strokeWidth="2" strokeLinecap="round">
+                <polyline points="15 18 9 12 15 6" />
               </svg>
             </button>
           )}
@@ -172,16 +171,19 @@ export function AppShell({
         <nav style={{ display: 'flex', flexDirection: 'column', gap: 2, flex: 1, overflowY: 'auto', overflowX: 'hidden', scrollbarWidth: 'none' }}>
           {CONSUMER_NAV.map((item) => {
             const active = activeView === item.key
+            const isCollapsed = collapsed && !isMobile
             return (
               <button
                 key={item.key}
                 type="button"
                 onClick={() => navigate(item.key)}
+                title={isCollapsed ? item.label : undefined}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: 11,
-                  padding: '8px 12px',
+                  justifyContent: isCollapsed ? 'center' : 'flex-start',
+                  gap: isCollapsed ? 0 : 11,
+                  padding: isCollapsed ? '10px 0' : '8px 12px',
                   borderRadius: 10,
                   flexShrink: 0,
                   border: active ? '1px solid rgba(201,168,76,0.28)' : '1px solid transparent',
@@ -193,10 +195,11 @@ export function AppShell({
                   cursor: 'pointer',
                   textAlign: 'left',
                   transition: 'color 0.18s, background 0.18s, border-color 0.18s',
+                  width: '100%',
                 }}
               >
                 {item.icon(active)}
-                {item.label}
+                {!isCollapsed && item.label}
               </button>
             )
           })}
@@ -208,26 +211,32 @@ export function AppShell({
           <div style={{
             display: 'flex',
             alignItems: 'center',
+            justifyContent: collapsed && !isMobile ? 'center' : 'flex-start',
             gap: 9,
             marginBottom: 14,
-            padding: '8px 10px',
+            padding: collapsed && !isMobile ? '8px 0' : '8px 10px',
             borderRadius: 9,
             background: 'rgba(201,168,76,0.07)',
             border: '1px solid rgba(201,168,76,0.18)',
             cursor: 'pointer',
           }}
             onClick={() => navigate('settings')}
+            title={collapsed && !isMobile ? 'Guardian · Settings' : undefined}
           >
             <ShieldIcon />
-            <div>
-              <div style={{ fontSize: 9, color: 'rgba(245,240,232,0.38)', letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: 1 }}>DAO Tier</div>
-              <div style={{ fontSize: 12, color: '#c9a84c', letterSpacing: '0.04em' }}>Guardian</div>
-            </div>
-            <div style={{ marginLeft: 'auto', fontSize: 12, color: 'rgba(201,168,76,0.35)' }}>›</div>
+            {(!collapsed || isMobile) && (
+              <>
+                <div>
+                  <div style={{ fontSize: 9, color: 'rgba(245,240,232,0.38)', letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: 1 }}>DAO Tier</div>
+                  <div style={{ fontSize: 12, color: '#c9a84c', letterSpacing: '0.04em' }}>Guardian</div>
+                </div>
+                <div style={{ marginLeft: 'auto', fontSize: 12, color: 'rgba(201,168,76,0.35)' }}>›</div>
+              </>
+            )}
           </div>
 
           {/* User row */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, justifyContent: collapsed && !isMobile ? 'center' : 'flex-start' }}>
             <div style={{
               width: 34, height: 34, borderRadius: '50%',
               background: authenticated ? 'rgba(201,168,76,0.18)' : 'rgba(255,255,255,0.05)',
@@ -238,7 +247,7 @@ export function AppShell({
             }}>
               {authenticated ? (address ? address.slice(2, 4).toUpperCase() : '✓') : '?'}
             </div>
-            <div style={{ minWidth: 0, flex: 1 }}>
+            {(!collapsed || isMobile) && <div style={{ minWidth: 0, flex: 1 }}>
               <div style={{ fontSize: 12, color: authenticated ? '#f5f0e8' : 'rgba(245,240,232,0.35)', letterSpacing: '0.02em', whiteSpace: 'nowrap' }}>
                 {authenticated ? 'Connected' : 'Not connected'}
               </div>
@@ -266,7 +275,7 @@ export function AppShell({
                   </button>
                 )}
               </div>
-            </div>
+            </div>}
             {authenticated ? (
               <button type="button" onClick={onLogout} title="Sign out"
                 style={{

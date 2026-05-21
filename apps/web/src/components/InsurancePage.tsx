@@ -1,10 +1,9 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 
 // ── Brand tokens ──────────────────────────────────────────────────────────────
 const GOLD = '#c9a84c'
-const GOLD2 = '#e8cb6e'
 const TEXT = '#f5f0e8'
 const MUTED = 'rgba(245,240,232,0.45)'
 const LINE = 'rgba(255,255,255,0.07)'
@@ -163,7 +162,8 @@ function ProjectionBars({ monthlyContrib, growthRate, color }: { monthlyContrib:
 }
 
 // ── Main component ────────────────────────────────────────────────────────────
-export function InsurancePage({ accountId }: { accountId?: string }) {
+export function InsurancePage({ accountId: _accountId }: { accountId?: string }) {
+  const [isMobile, setIsMobile] = useState(false)
   const [selectedId, setSelectedId] = useState<'term' | 'iul' | 'whole'>('term')
   const [coverageK, setCoverageK] = useState(500)          // in thousands
   const [allocationPct, setAllocationPct] = useState(25)   // % of yield to insurance
@@ -171,6 +171,14 @@ export function InsurancePage({ accountId }: { accountId?: string }) {
   const [apyPct, setApyPct] = useState(8.5)
   const [waitlistEmail, setWaitlistEmail] = useState('')
   const [waitlistJoined, setWaitlistJoined] = useState(false)
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 640px)')
+    setIsMobile(mq.matches)
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches)
+    mq.addEventListener('change', handler)
+    return () => mq.removeEventListener('change', handler)
+  }, [])
 
   const product = PRODUCTS.find(p => p.id === selectedId)!
   const coverageAmount = coverageK * 1000
@@ -189,7 +197,7 @@ export function InsurancePage({ accountId }: { accountId?: string }) {
   const growthRate = selectedId === 'iul' ? 0.065 : selectedId === 'whole' ? 0.045 : 0
 
   return (
-    <div style={{ maxWidth: 900, margin: '0 auto', padding: '32px 24px 80px', color: TEXT, fontFamily: "'Tenor Sans', sans-serif" }}>
+    <div style={{ maxWidth: 900, margin: '0 auto', padding: isMobile ? '20px 16px 60px' : '32px 24px 80px', color: TEXT, fontFamily: "'Tenor Sans', sans-serif" }}>
 
       {/* ── Header ─────────────────────────────────────────────────────────── */}
       <div style={{ marginBottom: 36 }}>
@@ -205,7 +213,7 @@ export function InsurancePage({ accountId }: { accountId?: string }) {
             Phase 2 &amp; 3 Preview
           </div>
         </div>
-        <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 48, fontWeight: 300, letterSpacing: '-0.02em', color: TEXT, margin: '0 0 10px', lineHeight: 1 }}>
+        <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: isMobile ? 32 : 48, fontWeight: 300, letterSpacing: '-0.02em', color: TEXT, margin: '0 0 10px', lineHeight: 1.05 }}>
           Yield-Funded Protection
         </h1>
         <p style={{ fontSize: 15, color: MUTED, lineHeight: 1.7, maxWidth: 560, margin: 0 }}>
@@ -214,7 +222,7 @@ export function InsurancePage({ accountId }: { accountId?: string }) {
       </div>
 
       {/* ── Product selector tabs ────────────────────────────────────────── */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12, marginBottom: 32 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr 1fr', gap: 12, marginBottom: 32 }}>
         {PRODUCTS.map(p => {
           const active = p.id === selectedId
           return (
@@ -249,7 +257,7 @@ export function InsurancePage({ accountId }: { accountId?: string }) {
       </div>
 
       {/* ── Two-column: detail + calculator ─────────────────────────────── */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 28 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 16, marginBottom: 28 }}>
 
         {/* Product detail */}
         <div style={{ padding: '26px 24px', borderRadius: 18, background: SURFACE, border: `1px solid ${product.color}30` }}>
@@ -370,7 +378,7 @@ export function InsurancePage({ accountId }: { accountId?: string }) {
       </div>
 
       {/* ── Stats row ───────────────────────────────────────────────────────── */}
-      <div style={{ display: 'flex', gap: 12, marginBottom: 24 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : '1fr 1fr 1fr 1fr', gap: 10, marginBottom: 24 }}>
         <StatBox
           label="Monthly Yield"
           value={fmt$(calcs.monthlyYield, 0)}
@@ -399,7 +407,7 @@ export function InsurancePage({ accountId }: { accountId?: string }) {
       {/* ── Cash value projection (IUL / Whole Life) ────────────────────── */}
       {selectedId !== 'term' && (
         <div style={{ padding: '26px 28px', borderRadius: 18, background: SURFACE, border: `1px solid ${product.color}25`, marginBottom: 24 }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: isMobile ? 24 : 32 }}>
             <ProjectionBars
               monthlyContrib={calcs.allocationDollars}
               growthRate={growthRate}
@@ -432,7 +440,7 @@ export function InsurancePage({ accountId }: { accountId?: string }) {
         <div style={{ fontSize: 10, letterSpacing: '0.22em', color: GOLD, textTransform: 'uppercase', marginBottom: 18 }}>
           How It Works
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 12 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : '1fr 1fr 1fr 1fr', gap: 12 }}>
           {[
             { n: '01', title: 'Wallet Earns', body: 'Your stablecoin deposits earn yield across vetted DeFi strategies — compounding daily.' },
             { n: '02', title: 'Yield Routes', body: `${allocationPct}% of your daily yield flows automatically into your Insurance Premium Reserve.` },
