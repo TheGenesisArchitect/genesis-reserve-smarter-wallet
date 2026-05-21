@@ -86,7 +86,7 @@ export function AppShell({
 
       {/* ── Sidebar ─────────────────────────────────────────────────── */}
       <aside style={{
-        width: 240,
+        width: isMobile ? '100vw' : 240,
         minHeight: '100vh',
         height: '100vh',
         position: isMobile ? 'fixed' : 'sticky',
@@ -94,7 +94,7 @@ export function AppShell({
         left: 0,
         zIndex: 40,
         background: '#040608',
-        borderRight: '1px solid rgba(201,168,76,0.12)',
+        borderRight: isMobile ? 'none' : '1px solid rgba(201,168,76,0.12)',
         display: 'flex',
         flexDirection: 'column',
         padding: '28px 16px 22px',
@@ -105,7 +105,7 @@ export function AppShell({
       }}>
 
         {/* Brand */}
-        <div style={{ marginBottom: 26, paddingLeft: 4, display: 'flex', alignItems: 'center', gap: 12 }}>
+        <div style={{ marginBottom: 26, paddingLeft: 4, display: 'flex', alignItems: 'center', gap: 12, justifyContent: 'space-between' }}>
           {/* Logo seal */}
           <div style={{
             width: 40, height: 40, borderRadius: '50%', overflow: 'hidden', flexShrink: 0,
@@ -142,6 +142,27 @@ export function AppShell({
               textTransform: 'uppercase',
             }}>RESERVE</div>
           </div>
+          {/* Mobile close button */}
+          {isMobile && (
+            <button
+              type="button"
+              onClick={() => setMobileOpen(false)}
+              style={{
+                marginLeft: 'auto',
+                background: 'rgba(255,255,255,0.06)',
+                border: '1px solid rgba(255,255,255,0.12)',
+                borderRadius: 8,
+                width: 36, height: 36,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                cursor: 'pointer', flexShrink: 0,
+              }}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(245,240,232,0.6)" strokeWidth="2" strokeLinecap="round">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+          )}
         </div>
 
         {/* Divider */}
