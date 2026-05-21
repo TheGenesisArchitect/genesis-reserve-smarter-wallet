@@ -1,0 +1,2339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Genesis Reserve v2.0 — The Treasury Intelligence Layer: Institutional Whitepaper</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --gold:#C9A84C;--gold-lt:#E8C96A;--gold-dk:#A07830;
+  --teal:#00D4AA;--green:#1ABF6A;--red:#E84040;--violet:#9B6DFF;
+  --black:#020305;--white:#FFFFFF;
+  --gray-50:#F9F9F9;--gray-100:#F0F0F0;--gray-200:#E0E0E0;
+  --gray-400:#9A9A9A;--gray-600:#555555;--gray-800:#222222;
+  --body-bg:#FFFFFF;
+  --text-primary:#111111;--text-secondary:#444444;--text-muted:#777777;
+  --border-light:#E8E8E8;--border-gold:rgba(201,168,76,0.3);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:'Sora',sans-serif;background:var(--body-bg);color:var(--text-primary);line-height:1.7;-webkit-font-smoothing:antialiased}
+
+/* COVER */
+#cover{position:relative;min-height:100vh;background:#020305;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
+.cover-bg-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(201,168,76,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,0.04) 1px,transparent 1px);background-size:60px 60px;pointer-events:none}
+.cover-bg-radial{position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 40%,rgba(201,168,76,0.09) 0%,transparent 70%);pointer-events:none}
+.cover-corner{position:absolute;width:120px;height:120px;opacity:0.25}
+.cover-corner.tl{top:32px;left:32px;border-top:1px solid var(--gold);border-left:1px solid var(--gold)}
+.cover-corner.tr{top:32px;right:32px;border-top:1px solid var(--gold);border-right:1px solid var(--gold)}
+.cover-corner.bl{bottom:32px;left:32px;border-bottom:1px solid var(--gold);border-left:1px solid var(--gold)}
+.cover-corner.br{bottom:32px;right:32px;border-bottom:1px solid var(--gold);border-right:1px solid var(--gold)}
+.cover-inner{position:relative;z-index:2;text-align:center;padding:60px 40px;max-width:960px}
+.cover-classification{display:inline-block;border:1px solid rgba(201,168,76,0.4);color:var(--gold);font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;padding:5px 18px;border-radius:2px;margin-bottom:44px}
+.cover-logo-mark{display:flex;align-items:center;justify-content:center;margin-bottom:22px}
+.cover-logo-img{width:110px;height:110px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 1px rgba(201,168,76,0.35),0 8px 40px rgba(201,168,76,0.2);display:block}
+.cover-brand-name{font-family:'Cormorant Garamond',serif;font-size:clamp(22px,3.2vw,38px);font-weight:300;letter-spacing:.28em;text-transform:uppercase;color:#fff;line-height:1;margin-bottom:6px}
+.cover-brand-name span{color:var(--gold)}
+.cover-brand-sub{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:rgba(201,168,76,0.5)}
+.cover-divider{width:80px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:26px auto}
+.cover-title{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,5.5vw,68px);font-weight:600;line-height:1.1;color:#fff;letter-spacing:-.01em;margin-bottom:12px}
+.cover-title span{color:var(--gold)}
+.cover-subtitle{font-family:'Cormorant Garamond',serif;font-size:clamp(16px,2.2vw,24px);font-weight:300;font-style:italic;color:rgba(255,255,255,0.5);margin-bottom:44px;letter-spacing:.02em}
+.cover-meta-row{display:flex;align-items:center;justify-content:center;gap:28px;flex-wrap:wrap;margin-bottom:44px}
+.cover-meta-item{display:flex;flex-direction:column;align-items:center;gap:4px}
+.cover-meta-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,0.3)}
+.cover-meta-val{font-size:13px;font-weight:500;color:rgba(255,255,255,0.75)}
+.cover-sep{width:1px;height:36px;background:rgba(201,168,76,0.2)}
+.cover-tagline{font-family:'Cormorant Garamond',serif;font-size:clamp(14px,1.8vw,18px);font-style:italic;color:rgba(201,168,76,0.7);letter-spacing:.06em}
+.cover-scroll-hint{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0.35;animation:bounce 2s infinite}
+.cover-scroll-hint span{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.cover-scroll-arr{width:16px;height:16px;border-right:1px solid var(--gold);border-bottom:1px solid var(--gold);transform:rotate(45deg)}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(7px)}}
+
+/* LAYOUT */
+.wp-layout{display:grid;grid-template-columns:260px 1fr;min-height:100vh;max-width:1440px;margin:0 auto}
+.wp-sidebar{position:sticky;top:0;height:100vh;overflow-y:auto;background:#F9F9F9;border-right:1px solid var(--border-light);padding:40px 0;scrollbar-width:thin;scrollbar-color:var(--gold) transparent}
+.wp-sidebar::-webkit-scrollbar{width:3px}
+.wp-sidebar::-webkit-scrollbar-thumb{background:var(--gold);border-radius:2px}
+.toc-header{padding:0 28px 20px;border-bottom:1px solid var(--border-light);margin-bottom:12px}
+.toc-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
+.toc-title{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:600;color:var(--text-primary);line-height:1.3}
+.toc-list{list-style:none;padding:0 12px}
+.toc-item a{display:flex;align-items:baseline;gap:10px;padding:5px 12px;border-radius:6px;text-decoration:none;font-size:11.5px;color:var(--text-muted);transition:all .15s;line-height:1.35}
+.toc-item a:hover{background:rgba(201,168,76,0.08);color:var(--text-primary)}
+.toc-item.active a{background:rgba(201,168,76,0.12);color:var(--gold-dk);font-weight:600}
+.toc-num{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--gold);flex-shrink:0}
+.toc-phase{padding:8px 24px 4px;font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted)}
+.toc-divider{height:1px;background:var(--border-light);margin:8px 24px}
+
+/* MAIN */
+.wp-main{min-width:0;padding:72px 80px 120px}
+@media(max-width:1100px){.wp-layout{grid-template-columns:1fr}.wp-sidebar{display:none}.wp-main{padding:48px 32px 80px}}
+@media(max-width:640px){.wp-main{padding:32px 20px 80px}}
+
+/* SECTIONS */
+.wp-section{max-width:840px;margin-bottom:96px;padding-bottom:72px;border-bottom:1px solid var(--border-light)}
+.wp-section:last-child{border-bottom:none}
+.section-eyebrow{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.section-num{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--gold);letter-spacing:.08em}
+.section-rule{flex:1;height:1px;background:linear-gradient(90deg,var(--gold),transparent);max-width:60px}
+.section-phase{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted)}
+h2.section-title{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,4vw,44px);font-weight:600;line-height:1.15;color:var(--text-primary);margin-bottom:8px;letter-spacing:-.01em}
+h2.section-title .gold{color:var(--gold-dk)}
+.section-lead{font-family:'Cormorant Garamond',serif;font-size:clamp(16px,1.8vw,20px);font-style:italic;color:var(--text-secondary);margin-bottom:32px;line-height:1.6}
+p{font-size:15px;line-height:1.8;color:var(--text-primary);margin-bottom:20px}
+h3{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--text-primary);margin:40px 0 12px}
+h4{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--text-secondary);margin:28px 0 10px}
+strong{color:var(--text-primary);font-weight:600}
+ul,ol{padding-left:20px;margin-bottom:20px}
+li{font-size:15px;line-height:1.8;margin-bottom:6px}
+
+/* CALLOUTS */
+.callout{border-left:3px solid var(--gold);background:rgba(201,168,76,0.04);padding:20px 24px;border-radius:0 8px 8px 0;margin:28px 0}
+.callout-teal{border-left-color:var(--teal);background:rgba(0,212,170,0.04)}
+.callout-violet{border-left-color:var(--violet);background:rgba(155,109,255,0.04)}
+.callout-green{border-left-color:var(--green);background:rgba(26,191,106,0.04)}
+.callout-red{border-left-color:var(--red);background:rgba(232,64,64,0.04)}
+.callout p{margin-bottom:0}
+.callout-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+.callout-teal .callout-label{color:var(--teal)}
+.callout-violet .callout-label{color:var(--violet)}
+.callout-green .callout-label{color:var(--green)}
+.callout-red .callout-label{color:var(--red)}
+
+/* STAT GRID */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin:32px 0}
+.stat-card{background:var(--gray-50);border:1px solid var(--border-light);border-radius:12px;padding:20px 18px;text-align:center}
+.stat-card.gold-border{border-color:rgba(201,168,76,0.4);background:rgba(201,168,76,0.03)}
+.stat-card.teal-border{border-color:rgba(0,212,170,0.3);background:rgba(0,212,170,0.02)}
+.stat-card.violet-border{border-color:rgba(155,109,255,0.3);background:rgba(155,109,255,0.02)}
+.stat-val{font-family:'Cormorant Garamond',serif;font-size:clamp(24px,3vw,36px);font-weight:600;color:var(--gold-dk);line-height:1;margin-bottom:6px}
+.stat-card.teal-border .stat-val{color:var(--teal)}
+.stat-card.violet-border .stat-val{color:var(--violet)}
+.stat-label{font-size:11px;color:var(--text-muted);letter-spacing:.04em;line-height:1.4}
+
+/* TABLES */
+.wp-table{width:100%;border-collapse:collapse;margin:28px 0;font-size:13.5px}
+.wp-table th{background:#F5F5F5;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);padding:10px 14px;border:1px solid var(--border-light);text-align:left;font-weight:600}
+.wp-table td{padding:10px 14px;border:1px solid var(--border-light);vertical-align:top;line-height:1.5}
+.wp-table tr:nth-child(even) td{background:rgba(249,249,249,0.6)}
+.wp-table .gold-cell{color:var(--gold-dk);font-weight:600;font-family:'JetBrains Mono',monospace}
+.wp-table .teal-cell{color:var(--teal);font-weight:600;font-family:'JetBrains Mono',monospace}
+.wp-table .violet-cell{color:var(--violet);font-weight:600}
+.wp-table .mono{font-family:'JetBrains Mono',monospace;font-size:12px}
+
+/* DIAGRAM WRAP */
+.diagram-wrap{background:var(--gray-50);border:1px solid var(--border-light);border-radius:16px;padding:32px;margin:32px 0;position:relative;overflow:hidden}
+.diagram-wrap::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--teal))}
+.diagram-title{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);margin-bottom:20px;display:flex;align-items:center;gap:8px}
+.diagram-title::before{content:'';display:inline-block;width:6px;height:6px;background:var(--gold);border-radius:50%}
+
+/* WATERFALL CALCULATOR */
+.calc-row{display:flex;align-items:center;gap:16px;margin-bottom:16px;flex-wrap:wrap}
+.calc-label{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:var(--gold-dk);min-width:100px}
+.wp-range{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:3px;background:var(--gray-200);outline:none;cursor:pointer;flex:1;min-width:120px}
+.wp-range::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--gold);border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.2);cursor:pointer}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:20px 0}
+@media(max-width:640px){.kpi-grid{grid-template-columns:repeat(2,1fr)}}
+.kpi-card{background:white;border:1px solid var(--border-light);border-radius:10px;padding:14px 12px;text-align:center}
+.kpi-val{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:var(--gold-dk);margin-bottom:4px}
+.kpi-val.teal{color:var(--teal)}
+.kpi-val.violet{color:var(--violet)}
+.kpi-val.green{color:var(--green)}
+.kpi-lbl{font-size:10px;color:var(--text-muted);letter-spacing:.04em;line-height:1.3}
+
+/* SPLIT BAR */
+.split-bar{display:flex;height:56px;border-radius:8px;overflow:hidden;gap:3px;margin:20px 0 8px}
+.split-seg{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.split-seg.investor{flex:40;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.3);border-radius:8px 0 0 8px}
+.split-seg.grx{flex:20;background:rgba(0,212,170,0.12);border:1px solid rgba(0,212,170,0.3)}
+.split-seg.treasury{flex:40;background:rgba(155,109,255,0.12);border:1px solid rgba(155,109,255,0.3);border-radius:0 8px 8px 0}
+.split-pct{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;line-height:1}
+.split-seg.investor .split-pct{color:var(--gold-dk)}
+.split-seg.grx .split-pct{color:var(--teal)}
+.split-seg.treasury .split-pct{color:var(--violet)}
+.split-name{font-size:9px;color:var(--text-muted);letter-spacing:.04em;text-align:center;padding:0 4px}
+
+/* RISK TIER GRID */
+.risk-tier-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:24px 0}
+@media(max-width:700px){.risk-tier-grid{grid-template-columns:repeat(2,1fr)}}
+.risk-tier-card{border-radius:10px;padding:16px 12px;text-align:center;border:1px solid}
+.rtc-1{background:rgba(26,191,106,0.06);border-color:rgba(26,191,106,0.3)}
+.rtc-2{background:rgba(0,212,170,0.06);border-color:rgba(0,212,170,0.3)}
+.rtc-3{background:rgba(201,168,76,0.06);border-color:rgba(201,168,76,0.3)}
+.rtc-4{background:rgba(232,148,64,0.06);border-color:rgba(232,148,64,0.3)}
+.rtc-5{background:rgba(232,64,64,0.06);border-color:rgba(232,64,64,0.3)}
+.rtc-num{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;line-height:1;margin-bottom:4px}
+.rtc-1 .rtc-num{color:var(--green)}
+.rtc-2 .rtc-num{color:var(--teal)}
+.rtc-3 .rtc-num{color:var(--gold-dk)}
+.rtc-4 .rtc-num{color:#E89440}
+.rtc-5 .rtc-num{color:var(--red)}
+.rtc-name{font-size:11px;font-weight:600;margin-bottom:4px}
+.rtc-cap{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-muted)}
+
+/* PRODUCT TIER */
+.product-tier-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin:24px 0}
+@media(max-width:640px){.product-tier-grid{grid-template-columns:1fr}}
+.pt-card{border-radius:12px;border:1px solid var(--border-light);padding:20px;background:var(--gray-50)}
+.pt-badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:3px 10px;border-radius:20px;margin-bottom:10px}
+.pt-badge.retail{background:rgba(0,212,170,0.12);color:var(--teal);border:1px solid rgba(0,212,170,0.3)}
+.pt-badge.eligible{background:rgba(201,168,76,0.12);color:var(--gold-dk);border:1px solid rgba(201,168,76,0.3)}
+.pt-badge.accredited{background:rgba(155,109,255,0.12);color:var(--violet);border:1px solid rgba(155,109,255,0.3)}
+.pt-badge.enterprise{background:rgba(26,191,106,0.12);color:var(--green);border:1px solid rgba(26,191,106,0.3)}
+.pt-name{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;margin-bottom:6px}
+.pt-desc{font-size:13px;color:var(--text-secondary);line-height:1.5}
+
+/* TIMELINE */
+.timeline{margin:32px 0}
+.tl-phase{margin-bottom:32px}
+.tl-phase-header{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+.tl-phase-dot{width:12px;height:12px;border-radius:50%;background:var(--gold);flex-shrink:0}
+.tl-phase-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-dk);font-weight:700}
+.tl-phase-period{font-size:12px;color:var(--text-muted);margin-left:auto}
+.tl-items{border-left:2px solid var(--border-light);padding-left:24px;margin-left:6px}
+.tl-item{margin-bottom:14px;position:relative}
+.tl-item::before{content:'';position:absolute;left:-30px;top:7px;width:8px;height:8px;border-radius:50%;background:var(--border-light);border:2px solid var(--gray-200)}
+.tl-item strong{display:block;font-size:13.5px;font-weight:600;margin-bottom:2px}
+.tl-item span{font-size:12.5px;color:var(--text-muted);line-height:1.5}
+
+/* ENGINE CARDS */
+.engine-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:28px 0}
+@media(max-width:700px){.engine-grid{grid-template-columns:1fr}}
+.engine-card{border-radius:12px;border:1px solid var(--border-light);padding:22px 18px;background:var(--gray-50)}
+.engine-num{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;font-weight:700}
+.engine-1 .engine-num{color:var(--gold-dk)}
+.engine-2 .engine-num{color:var(--teal)}
+.engine-3 .engine-num{color:var(--violet)}
+.engine-name{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;margin-bottom:8px}
+.engine-tag{font-size:11px;color:var(--text-muted);font-style:italic;margin-bottom:12px}
+.engine-items{list-style:none;padding:0}
+.engine-items li{font-size:12.5px;line-height:1.6;color:var(--text-secondary);padding:3px 0;border-bottom:1px solid var(--border-light)}
+.engine-items li:last-child{border-bottom:none}
+.engine-items li::before{content:'→ ';color:var(--gold);font-family:'JetBrains Mono',monospace;font-size:10px}
+
+/* ARCH DIAGRAM */
+.arch-diagram{display:flex;flex-direction:column;gap:12px;margin:24px 0}
+.arch-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.arch-box{border-radius:8px;padding:12px 18px;text-align:center;min-width:120px;border:1px solid}
+.arch-box.layer-user{background:rgba(201,168,76,0.08);border-color:rgba(201,168,76,0.35)}
+.arch-box.layer-router{background:rgba(0,212,170,0.08);border-color:rgba(0,212,170,0.4);font-weight:700}
+.arch-box.layer-strategy{background:rgba(26,191,106,0.07);border-color:rgba(26,191,106,0.3)}
+.arch-box.layer-compliance{background:rgba(155,109,255,0.07);border-color:rgba(155,109,255,0.3)}
+.arch-box.layer-yield{background:rgba(232,64,64,0.05);border-color:rgba(232,64,64,0.2)}
+.arch-box-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:3px}
+.arch-box-name{font-size:13px;font-weight:600}
+.arch-arrow{text-align:center;color:var(--gold);font-size:16px;opacity:0.5;line-height:1}
+
+/* WATERFALL STEPS */
+.wf-steps{margin:20px 0}
+.wf-step{display:flex;align-items:flex-start;gap:14px;padding:14px 0;border-bottom:1px solid var(--border-light)}
+.wf-step:last-child{border-bottom:none}
+.wf-step-num{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:var(--gold);line-height:1;flex-shrink:0;width:32px}
+.wf-step-body{flex:1}
+.wf-step-title{font-weight:600;font-size:14px;margin-bottom:3px}
+.wf-step-desc{font-size:13px;color:var(--text-secondary);line-height:1.5}
+.wf-step-rate{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--gold-dk);font-weight:700;margin-top:4px}
+
+/* DISCLOSURE */
+.disclosure-block{background:#F5F5F5;border:1px solid var(--border-light);border-radius:8px;padding:24px 28px;margin:24px 0}
+.disclosure-block p{font-size:12.5px;color:var(--text-muted);line-height:1.7;margin-bottom:12px}
+.disclosure-block p:last-child{margin-bottom:0}
+.disclosure-block h4{margin:16px 0 8px}
+
+/* SCENARIO TABLE */
+.scenario-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:24px 0}
+@media(max-width:640px){.scenario-grid{grid-template-columns:1fr}}
+.scenario-card{border-radius:12px;border:1px solid var(--border-light);padding:20px;background:var(--gray-50)}
+.scenario-card.base{border-color:rgba(201,168,76,0.35);background:rgba(201,168,76,0.03)}
+.scenario-card.stretch{border-color:rgba(0,212,170,0.3);background:rgba(0,212,170,0.02)}
+.scenario-name{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px;font-weight:700}
+.scenario-card.base .scenario-name{color:var(--gold-dk)}
+.scenario-card.stretch .scenario-name{color:var(--teal)}
+.scenario-month{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:600;line-height:1;margin-bottom:12px}
+.scenario-card.base .scenario-month{color:var(--gold-dk)}
+.scenario-card.stretch .scenario-month{color:var(--teal)}
+.scenario-rows{list-style:none;padding:0}
+.scenario-rows li{display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-bottom:1px solid var(--border-light)}
+.scenario-rows li:last-child{border-bottom:none}
+.scenario-rows .sv{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600}
+
+/* SECURITY GRID */
+.security-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin:24px 0}
+@media(max-width:640px){.security-grid{grid-template-columns:1fr}}
+.sec-card{border-radius:10px;border:1px solid var(--border-light);padding:18px;background:var(--gray-50)}
+.sec-icon{font-size:22px;margin-bottom:8px}
+.sec-name{font-weight:700;font-size:13.5px;margin-bottom:6px}
+.sec-desc{font-size:12.5px;color:var(--text-secondary);line-height:1.5}
+
+/* COMPLIANCE MAP */
+.comp-map{display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px;margin:20px 0;border-radius:10px;overflow:hidden;border:1px solid var(--border-light)}
+@media(max-width:640px){.comp-map{grid-template-columns:1fr}}
+.comp-cell{padding:14px;background:var(--gray-50)}
+.comp-cell.header{background:#F0F0F0;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);font-weight:700}
+.comp-cell-name{font-weight:600;font-size:13px;margin-bottom:3px}
+.comp-cell-desc{font-size:12px;color:var(--text-muted);line-height:1.4}
+.comp-badge{display:inline-block;font-size:10px;padding:2px 8px;border-radius:20px;font-family:'JetBrains Mono',monospace;margin-top:4px}
+
+/* CROSS-REF TABLE */
+.crossref-table{width:100%;border-collapse:collapse;margin:20px 0;font-size:13px}
+.crossref-table th{background:#F5F5F5;padding:10px 14px;text-align:left;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);border:1px solid var(--border-light)}
+.crossref-table td{padding:10px 14px;border:1px solid var(--border-light);vertical-align:top;line-height:1.5}
+.crossref-table .check{color:var(--green);font-weight:700}
+.crossref-table .partial{color:var(--gold-dk);font-weight:700}
+.crossref-table .ref-only{color:var(--text-muted)}
+
+/* PRINT */
+@media print{.wp-sidebar{display:none}.wp-layout{grid-template-columns:1fr}.wp-main{padding:40px}}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════ COVER ═══════════════════════ -->
+<section id="cover">
+  <div class="cover-bg-grid"></div>
+  <div class="cover-bg-radial"></div>
+  <div class="cover-corner tl"></div>
+  <div class="cover-corner tr"></div>
+  <div class="cover-corner bl"></div>
+  <div class="cover-corner br"></div>
+  <div class="cover-inner">
+    <div class="cover-classification">Confidential — Version 2.0 — May 2026</div>
+    <div class="cover-logo-mark">
+      <img src="/genesis-logo.png" alt="Genesis Reserve" class="cover-logo-img" onerror="this.src='/genesis-logo.svg'"/>
+    </div>
+    <div class="cover-brand-name"><span>Genesis</span> Reserve</div>
+    <div class="cover-brand-sub">Treasury Infrastructure Protocol</div>
+    <div class="cover-divider"></div>
+    <h1 class="cover-title">The Treasury<br/><span>Intelligence Layer</span></h1>
+    <div class="cover-subtitle">Risk-managed capital routing for the stablecoin economy</div>
+    <div class="cover-meta-row">
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Document</div>
+        <div class="cover-meta-val">Institutional Whitepaper v2.0</div>
+      </div>
+      <div class="cover-sep"></div>
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Sections</div>
+        <div class="cover-meta-val">20</div>
+      </div>
+      <div class="cover-sep"></div>
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Classification</div>
+        <div class="cover-meta-val">Private &amp; Confidential</div>
+      </div>
+      <div class="cover-sep"></div>
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Issued</div>
+        <div class="cover-meta-val">May 2026</div>
+      </div>
+    </div>
+    <div class="cover-tagline">"Risk-managed capital routing for programmable money."</div>
+  </div>
+  <div class="cover-scroll-hint">
+    <span>Read</span>
+    <div class="cover-scroll-arr"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ LAYOUT ═══════════════════════ -->
+<div class="wp-layout">
+
+<!-- SIDEBAR TOC -->
+<nav class="wp-sidebar">
+  <div class="toc-header">
+    <div class="toc-label">Contents</div>
+    <div class="toc-title">Genesis Reserve<br/>Whitepaper v2.0</div>
+  </div>
+  <ul class="toc-list">
+    <div class="toc-phase">Phase A — Foundation</div>
+    <li class="toc-item" data-section="s01"><a href="#s01"><span class="toc-num">01</span>Executive Abstract</a></li>
+    <li class="toc-item" data-section="s02"><a href="#s02"><span class="toc-num">02</span>The Idle Capital Problem</a></li>
+    <li class="toc-item" data-section="s03"><a href="#s03"><span class="toc-num">03</span>The Stablecoin Opportunity</a></li>
+    <li class="toc-item" data-section="s04"><a href="#s04"><span class="toc-num">04</span>Genesis Reserve Thesis</a></li>
+    <div class="toc-divider"></div>
+    <div class="toc-phase">Phase B — Engine Core</div>
+    <li class="toc-item" data-section="s05"><a href="#s05"><span class="toc-num">05</span>Perpetual Capital Engine</a></li>
+    <li class="toc-item" data-section="s06"><a href="#s06"><span class="toc-num">06</span>System Architecture</a></li>
+    <li class="toc-item" data-section="s07"><a href="#s07"><span class="toc-num">07</span>Yield Source Taxonomy</a></li>
+    <li class="toc-item" data-section="s08"><a href="#s08"><span class="toc-num">08</span>Capital Waterfall</a></li>
+    <div class="toc-divider"></div>
+    <div class="toc-phase">Phase C — Product Layer</div>
+    <li class="toc-item" data-section="s09"><a href="#s09"><span class="toc-num">09</span>$GRX — Revenue Participation</a></li>
+    <li class="toc-item" data-section="s10"><a href="#s10"><span class="toc-num">10</span>Smarter Wallet Access Layer</a></li>
+    <li class="toc-item" data-section="s11"><a href="#s11"><span class="toc-num">11</span>B2B Treasury Use Cases</a></li>
+    <li class="toc-item" data-section="s12"><a href="#s12"><span class="toc-num">12</span>B2C Growth Model</a></li>
+    <div class="toc-divider"></div>
+    <div class="toc-phase">Phase D — Governance</div>
+    <li class="toc-item" data-section="s13"><a href="#s13"><span class="toc-num">13</span>Risk Framework</a></li>
+    <li class="toc-item" data-section="s14"><a href="#s14"><span class="toc-num">14</span>Compliance Framework</a></li>
+    <li class="toc-item" data-section="s15"><a href="#s15"><span class="toc-num">15</span>Security Framework</a></li>
+    <div class="toc-divider"></div>
+    <div class="toc-phase">Phase E — Model &amp; Disclosures</div>
+    <li class="toc-item" data-section="s16"><a href="#s16"><span class="toc-num">16</span>Financial Model</a></li>
+    <li class="toc-item" data-section="s17"><a href="#s17"><span class="toc-num">17</span>72-Month Scenario Roadmap</a></li>
+    <li class="toc-item" data-section="s18"><a href="#s18"><span class="toc-num">18</span>Disclosures</a></li>
+    <li class="toc-item" data-section="s19"><a href="#s19"><span class="toc-num">19</span>Technical Appendix</a></li>
+    <li class="toc-item" data-section="s20"><a href="#s20"><span class="toc-num">20</span>Offering Document Cross-Reference</a></li>
+  </ul>
+</nav>
+
+<!-- MAIN CONTENT -->
+<main class="wp-main">
+
+<!-- ══ §01 EXECUTIVE ABSTRACT ══════════════════════════ -->
+<section class="wp-section" id="s01">
+  <div class="section-eyebrow">
+    <span class="section-num">01</span>
+    <div class="section-rule"></div>
+    <span class="section-phase">Phase A — Foundation</span>
+  </div>
+  <h2 class="section-title">Executive <span class="gold">Abstract</span></h2>
+  <p class="section-lead">
+    Genesis Reserve is a risk-managed treasury infrastructure protocol for the stablecoin economy.
+  </p>
+
+  <div class="callout">
+    <div class="callout-label">Primary Positioning</div>
+    <p style="font-family:'Cormorant Garamond',serif;font-size:22px;font-style:italic;line-height:1.5;">
+      "The Treasury Intelligence Layer for the Stablecoin Economy."
+    </p>
+  </div>
+
+  <p>
+    Genesis Reserve introduces the <strong>Perpetual Capital Engine</strong>: a policy-controlled capital allocation system that routes eligible digital dollar capital across approved yield corridors. The engine follows a disciplined waterfall — investor targeted preferred return first, Genesis spread second, treasury reinvestment and token-holder participation thereafter.
+  </p>
+
+  <p>
+    The system is architecturally dual-layered. At the protocol level, a suite of audited smart contracts (ERC-4626 vaults, StrategyRouter, ComplianceRegistry, Risk Engine) operates permissionlessly and continuously, settling every 15 minutes across seven yield source categories. At the interface level, yield-bearing features are activated for eligible users in approved jurisdictions through a compliance layer that creates no friction for end users and no additional cost to their yield economics.
+  </p>
+
+  <p>
+    Genesis Reserve serves two primary market segments through one unified infrastructure: institutional participants — family offices, corporate treasuries, and embedded finance platforms — through a contractual treasury service offering; and retail-eligible users in approved jurisdictions through the <strong>Genesis Smarter Wallet</strong>, which collapses savings, payments, remittance, and yield into a single consumer interface.
+  </p>
+
+  <p>
+    Through the Smarter Wallet access layer, the same infrastructure that serves institutional capital also serves everyday participants — enabling eligible users to route idle digital dollars into policy-controlled yield corridors previously accessible only to institutional capital. Genesis earns revenue from three engines: card interchange and FX spread (payment rails), yield spread on AUM (infrastructure margin), and premium cross-sell (insurance, advanced vaults, $GRX). All Genesis revenue is taken from yield, never from principal.
+  </p>
+
+  <p>
+    The long-term objective is to build a self-reinforcing treasury infrastructure layer that transforms idle digital capital into monitored, transparent, and compounding financial capacity — at institutional scale and consumer reach simultaneously.
+  </p>
+
+  <div class="callout callout-teal">
+    <div class="callout-label">Investor One-Liner</div>
+    <p>Genesis Reserve helps institutions, platforms, and eligible investors convert idle digital dollars into policy-controlled, risk-scored, yield-bearing capital — routing through the same corridors that institutional money has always accessed, but now available across the full capital spectrum.</p>
+  </div>
+
+  <h4>Document Structure</h4>
+  <p>
+    This whitepaper is organized across five phases: Foundation (§01–04) establishes the problem, opportunity, and thesis. Engine Core (§05–08) details the Perpetual Capital Engine mechanics, architecture, yield taxonomy, and waterfall. Product Layer (§09–12) covers $GRX, the Smarter Wallet, B2B use cases, and B2C growth model. Governance (§13–15) addresses risk, compliance, and security. Model &amp; Disclosures (§16–20) presents the financial model, 72-month scenario roadmap, full disclosures, technical appendix, and offering document cross-reference.
+  </p>
+  <p style="font-size:13px;color:var(--text-muted);">
+    <em>This document is for informational purposes only. It does not constitute an offer to sell or a solicitation to buy any securities. Forward-looking statements reflect current expectations under modeled assumptions and are subject to material change. See §18 for full disclosures.</em>
+  </p>
+</section>
+
+<!-- ══ §02 IDLE CAPITAL PROBLEM ════════════════════════ -->
+<section class="wp-section" id="s02">
+  <div class="section-eyebrow">
+    <span class="section-num">02</span>
+    <div class="section-rule"></div>
+    <span class="section-phase">Phase A — Foundation</span>
+  </div>
+  <h2 class="section-title">The Idle <span class="gold">Capital Problem</span></h2>
+  <p class="section-lead">
+    The financial system has always extracted yield from your deposits. For the first time, infrastructure exists to return that yield to the people whose capital generates it.
+  </p>
+
+  <div class="stat-grid">
+    <div class="stat-card gold-border">
+      <div class="stat-val">$19.2T</div>
+      <div class="stat-label">U.S. commercial bank deposits earning near-zero rates<br/><span style="font-family:'JetBrains Mono',monospace;font-size:10px">FRED DPSACBW027SBOG, May 2026</span></div>
+    </div>
+    <div class="stat-card teal-border">
+      <div class="stat-val">0.01%</div>
+      <div class="stat-label">Median U.S. retail savings account APY — while banks earn 4–5% deploying that same capital</div>
+    </div>
+    <div class="stat-card gold-border">
+      <div class="stat-val">$321.9B</div>
+      <div class="stat-label">Global stablecoin market cap (April 2026, +50% since early 2025)<br/><span style="font-family:'JetBrains Mono',monospace;font-size:10px">DefiLlama</span></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val">1.4B</div>
+      <div class="stat-label">Global unbanked or underbanked individuals with no access to meaningful yield infrastructure</div>
+    </div>
+  </div>
+
+  <h3>The Bank Extraction Model</h3>
+  <p>
+    The traditional banking system operates on a structurally extractive model: retail and institutional depositors provide capital at near-zero cost, banks deploy that capital into yield-generating assets at 4–8%, and retain the spread entirely. This is not inefficiency — it is design. The depositor's capital funds the yield machine; the depositor receives none of the output.
+  </p>
+  <p>
+    The emergence of programmable stablecoins and DeFi yield infrastructure has for the first time created a technically viable alternative. A dollar denominated in USDC can be routed through the same yield corridors that institutional capital has always accessed — tokenized U.S. Treasury wrappers, institutional lending protocols, structured yield markets — and the output returned to the original depositor, minus only a transparent operating margin.
+  </p>
+
+  <h3>The Digital Dollar Gap</h3>
+  <p>
+    Stablecoin adoption has accelerated dramatically. As of April 2026, over $321.9 billion in digital dollar equivalents are held in stablecoins globally, growing at over 50% year-over-year. The majority of this capital sits in wallets, exchange accounts, or low-yield custodial products — earning nothing, or earning rates that bear no relationship to the yield the underlying capital could generate.
+  </p>
+  <p>
+    The gap between what these digital dollars could earn — routed intelligently through DeFi yield infrastructure — and what they actually earn represents the largest unaddressed yield opportunity in the digital asset economy. Genesis Reserve exists to close this gap.
+  </p>
+
+  <div class="callout callout-violet">
+    <div class="callout-label">The Core Inequality</div>
+    <p>A $500,000 family office treasury using institutional DeFi routing can earn 8–13% annualized on stablecoin balances. A retail user holding $5,000 in a stablecoin wallet earns 0–0.5%. The capital is identical in type and function. Only access to infrastructure differs. Genesis Reserve resolves this asymmetry.</p>
+  </div>
+
+  <h3>Why Now</h3>
+  <p>
+    Three conditions have converged to make this infrastructure viable in 2026: the maturation of ERC-4626 as a standardized vault API enabling composable yield routing; the regulatory clarification trajectory underway at the SEC Crypto Task Force regarding securities versus non-securities distinctions for digital yield products; and the critical mass of stablecoin supply providing sufficient TVL for institutional-grade yield corridors to remain liquid and efficiently priced.
+  </p>
+  <p>
+    The window to build the dominant treasury intelligence layer is now. First-mover advantage in infrastructure — unlike in consumer apps — tends to be durable, because institutional clients migrate slowly and yield routing efficiency improves with scale.
+  </p>
+</section>
+
+<!-- ══ §03 STABLECOIN OPPORTUNITY ══════════════════════ -->
+<section class="wp-section" id="s03">
+  <div class="section-eyebrow">
+    <span class="section-num">03</span>
+    <div class="section-rule"></div>
+    <span class="section-phase">Phase A — Foundation</span>
+  </div>
+  <h2 class="section-title">The Stablecoin <span class="gold">Treasury Opportunity</span></h2>
+  <p class="section-lead">
+    Programmable dollars have created the infrastructure preconditions for a new class of yield delivery — but no intelligent capital routing layer yet connects supply to optimal yield at scale.
+  </p>
+
+  <h3>Stablecoins as Programmable Treasury Instruments</h3>
+  <p>
+    Unlike bank deposits, stablecoins are bearer instruments on programmable rails. A USDC balance can be directed by smart contract logic into any yield-bearing position, rebalanced automatically, and returned to its holder — all without a bank intermediary, with settlement measured in seconds rather than days.
+  </p>
+  <p>
+    This programmability is the foundational primitive that makes Genesis Reserve possible. The StrategyRouter can evaluate seven yield sources simultaneously, apply risk-scoring and allocation limits, route capital at the epoch (15-minute) boundary, and report attribution transparently — a level of precision and transparency that traditional treasury management infrastructure cannot match at any price point.
+  </p>
+
+  <h3>DeFi Yield Infrastructure Maturation</h3>
+  <p>
+    The DeFi yield ecosystem has matured materially since 2021. The early era of unsustainable liquidity mining rewards has been replaced by genuine yield primitives: tokenized Treasury wrappers generating real T-bill rates on-chain; institutional lending markets (Aave, Compound) with deep liquidity and transparent utilization; and structured yield markets (Pendle) enabling yield-rate price discovery for the first time. These are not speculative instruments — they are infrastructure-grade yield sources with documented risk profiles.
+  </p>
+
+  <div class="stat-grid">
+    <div class="stat-card teal-border">
+      <div class="stat-val">$16.5B</div>
+      <div class="stat-label">Total value lost to DeFi exploits historically — motivating the risk-tier architecture Genesis employs<br/><span style="font-family:'JetBrains Mono',monospace;font-size:10px">DefiLlama, 2026</span></div>
+    </div>
+    <div class="stat-card gold-border">
+      <div class="stat-val">ERC-4626</div>
+      <div class="stat-label">Tokenized vault standard enabling composable yield routing — the technical foundation of the Genesis vault layer</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val">15 min</div>
+      <div class="stat-label">Genesis epoch length — 96 settlement cycles per day enabling precise NAV attribution and drift detection</div>
+    </div>
+    <div class="stat-card teal-border">
+      <div class="stat-val">4–22%</div>
+      <div class="stat-label">Gross yield range across Genesis's seven approved yield source categories — risk-tiered and allocation-capped</div>
+    </div>
+  </div>
+
+  <h3>The Missing Layer: Intelligent Capital Routing</h3>
+  <p>
+    Despite the maturation of individual yield sources, no infrastructure layer intelligently routes capital across the full yield taxonomy — applying institutional risk standards, compliance gating, waterfall discipline, and transparent attribution in a single unified system. Most DeFi participants optimize manually or use rudimentary yield aggregators that lack compliance infrastructure and risk management depth.
+  </p>
+  <p>
+    Genesis Reserve is this missing layer. The StrategyRouter is not a yield aggregator in the traditional sense — it is a policy-controlled capital allocation engine that applies a defined risk framework, waterfall priority, and compliance check at every epoch boundary. It manages capital the way a disciplined institutional treasury manager would — systematically, transparently, and without emotional deviation from the policy framework.
+  </p>
+
+  <h3>Total Addressable Market</h3>
+  <p>
+    The addressable market for Genesis Reserve spans three concentric rings: the $321.9 billion stablecoin market (directly addressable with the right compliance stack); the broader $19.2 trillion U.S. commercial deposit base (addressable as stablecoin adoption extends digital dollar infrastructure to mainstream users); and the global remittance market of approximately $800 billion annually (addressable through the Smarter Wallet's Zero Hash-powered payment corridors).
+  </p>
+  <p>
+    Even fractional penetration of the stablecoin TAM represents a multi-billion dollar TVL opportunity. A 1% capture of current stablecoin balances represents $3.2 billion in AUM — at which scale Genesis's yield routing efficiency, management fee revenue, and treasury compounding create a durable operating model.
+  </p>
+</section>
+
+<!-- ══ §04 GENESIS RESERVE THESIS ══════════════════════ -->
+<section class="wp-section" id="s04">
+  <div class="section-eyebrow">
+    <span class="section-num">04</span>
+    <div class="section-rule"></div>
+    <span class="section-phase">Phase A — Foundation</span>
+  </div>
+  <h2 class="section-title">Genesis Reserve <span class="gold">Thesis</span></h2>
+  <p class="section-lead">
+    Genesis Reserve is structured as programmable treasury infrastructure. Certain offerings may constitute securities and will be offered only through appropriate exemptions, disclosures, and jurisdiction-approved channels.
+  </p>
+
+  <h3>Primary Thesis</h3>
+  <p>
+    The stablecoin economy will produce the next generation of institutional-grade yield infrastructure. The entity that builds the best capital routing layer — one that is simultaneously compliant, risk-managed, transparent, and accessible — will capture a disproportionate share of the $321.9 billion (and growing) digital dollar treasury opportunity.
+  </p>
+  <p>
+    Genesis Reserve is built on the conviction that this layer does not yet exist in its optimal form — and that the combination of ERC-4626 vault composability, StrategyRouter policy enforcement, ComplianceRegistry jurisdiction gating, and the 40/20/40 waterfall discipline creates a structural advantage that compounds over time.
+  </p>
+
+  <h3>What Genesis Reserve Is</h3>
+  <ul>
+    <li><strong>Programmable treasury infrastructure</strong> — a policy-controlled system for routing digital dollar capital across approved yield corridors</li>
+    <li><strong>A risk-managed yield delivery network</strong> — with five risk tiers, circuit breakers, and a preferred return reserve buffer</li>
+    <li><strong>A dual-market platform</strong> — serving institutional capital through contractual treasury services and retail-eligible users through the Smarter Wallet access layer</li>
+    <li><strong>An aligned economic system</strong> — where Genesis earns only after investor preferred return is satisfied, and treasury reinvestment compounds the engine over time</li>
+  </ul>
+
+  <h3>What Genesis Reserve Is Not</h3>
+  <ul>
+    <li>Not a bank or deposit-taking institution — balances are not FDIC-insured</li>
+    <li>Not a fund — Genesis Reserve is infrastructure; certain specific products offered through the platform may constitute securities and are offered only under applicable exemptions</li>
+    <li>Not a guaranteed return product — the 8% annualized rate is a targeted preferred return, payable from net realized yield and subject to market conditions, protocol performance, and the terms of applicable offering documents</li>
+    <li>Not a custodian — capital is held in non-custodial smart contract vaults; Genesis does not hold user funds in the traditional sense</li>
+  </ul>
+
+  <h3>Two-Layer Architecture — Permissionless and Compliant</h3>
+  <p>
+    A central design principle of Genesis Reserve is the explicit separation of the protocol layer from the interface layer. This separation is not a compromise — it is the architecture that enables Genesis to claim both "permissionless at the protocol level" and "compliance-gated at the product level" simultaneously.
+  </p>
+
+  <div class="callout callout-teal">
+    <div class="callout-label">Architecture Principle</div>
+    <p><strong>Protocol Layer (permissionless):</strong> Smart contracts accept capital, execute strategies, settle epochs, and distribute yield without identity requirements. Fee settlement is automated on-chain and deducted from yield before distribution — no user action required.<br/><br/>
+    <strong>Interface Layer (jurisdiction-gated):</strong> The product frontend gates yield-bearing features behind eligibility verification. This compliance overlay imposes no additional cost on the yield economics — users pay no more or less because of the compliance check. It only gates access timing.</p>
+  </div>
+
+  <h3>Why Now — The Four Conditions</h3>
+  <p>Four conditions have simultaneously materialized in 2026 to make Genesis Reserve viable and timely:</p>
+  <ol>
+    <li><strong>ERC-4626 standard maturity</strong> — composable vault API enabling multi-strategy routing without bespoke integration per yield source</li>
+    <li><strong>Institutional DeFi yield depth</strong> — sufficient TVL in core yield sources (Aave, Pendle, tokenized T-bills) for disciplined allocation without price impact</li>
+    <li><strong>Regulatory clarity trajectory</strong> — SEC Crypto Task Force actively developing securities versus non-securities frameworks, reducing the regulatory ambiguity that previously deterred institutional participation</li>
+    <li><strong>Consumer stablecoin adoption inflection</strong> — the $321.9B stablecoin market now includes meaningful retail balances seeking yield access, creating the demand-side conditions for Smarter Wallet scaling</li>
+  </ol>
+</section>
+
+<!-- ══ §05 PERPETUAL CAPITAL ENGINE ════════════════════ -->
+<section class="wp-section" id="s05">
+  <div class="section-eyebrow">
+    <span class="section-num">05</span>
+    <div class="section-rule"></div>
+    <span class="section-phase">Phase B — Engine Core</span>
+  </div>
+  <h2 class="section-title">The Perpetual <span class="gold">Capital Engine</span></h2>
+  <p class="section-lead">
+    A policy-controlled capital allocation system that routes eligible capital across approved yield corridors — settling every 15 minutes, compounding every epoch, reinforcing the treasury continuously.
+  </p>
+
+  <h3>How the Engine Works</h3>
+  <p>
+    The Perpetual Capital Engine is Genesis Reserve's core mechanism. Capital enters the system through the ERC-4626 vault interface — from retail Smarter Wallet users, institutional treasury clients, or embedded finance platforms. At each epoch boundary (every 15 minutes, 96 times per day), the StrategyRouter evaluates all active positions against the current risk-policy parameters, rebalances allocation across the seven approved yield corridors, and triggers yield settlement.
+  </p>
+  <p>
+    Yield settlement follows the waterfall priority precisely: investor targeted preferred return is credited first; Genesis management fee is deducted pro-rata from earned yield; Genesis spread is recognized only if net yield exceeds the preferred return threshold; the spread is then distributed 40% to the Genesis treasury reinvestment pool, 20% to the $GRX participation pool, and 40% to Genesis operations.
+  </p>
+
+  <h3>The 96-Epoch Operational Advantage</h3>
+  <p>
+    Genesis Reserve's 96-epoch daily settlement cadence is not primarily a compounding mechanism — it is a risk management and attribution precision tool. Settling every 15 minutes rather than daily provides three structural operational advantages:
+  </p>
+  <ul>
+    <li><strong>NAV accuracy:</strong> Each epoch produces a precise NAV snapshot, enabling real-time attribution of yield by strategy and risk tier. Daily settling masks intraday strategy performance; 15-minute settling makes every drift event visible.</li>
+    <li><strong>Drift detection:</strong> Strategy positions that deviate from policy parameters — due to market movements, liquidity changes, or protocol events — are detected and corrected within 15 minutes rather than accumulating undetected through a full trading day.</li>
+    <li><strong>Attribution transparency:</strong> Institutional clients and $GRX holders can audit yield attribution at the epoch level, providing a level of transparency that daily-settling yield products cannot offer.</li>
+  </ul>
+
+  <h3>Self-Reinforcing Mechanics</h3>
+  <p>
+    The engine's compounding character comes from the 40% treasury reinvestment pool. Each epoch that generates spread above the preferred return threshold contributes 40% of that spread into the Genesis treasury, which is itself deployed into the StrategyRouter as additional managed capital. This creates a self-funded AUM growth mechanic — the treasury grows not from new investor capital alone, but from the accumulated output of the engine itself.
+  </p>
+  <p>
+    Over the 72-month base-case scenario, this treasury compounding effect becomes material: by Month 33, treasury-owned capital represents a meaningful percentage of total AUM, reducing the engine's dependence on continuous new capital inflows to sustain operations and preferred return payments.
+  </p>
+
+  <div class="callout callout-green">
+    <div class="callout-label">The Preferred Return Reserve</div>
+    <p>Genesis maintains a dedicated preferred return reserve buffer — a percentage of TVL held in the lowest-risk corridor (Tokenized Treasuries) specifically to fund the investor preferred return during months where blended gross yield falls below the preferred return threshold. The reserve is replenished from spread allocations during above-threshold months, creating a structural smoothing mechanism that protects investor returns from short-term yield volatility.</p>
+  </div>
+
+  <h3>Capital Entry and Exit</h3>
+  <p>
+    Capital enters the engine through ERC-4626 standard deposit functions. There is no minimum deposit, no lock-up period, and no entry fee. Capital exits through ERC-4626 standard redemption functions — processed at the next epoch boundary. There is no redemption fee and no penalty for early exit. This unconditional exit liquidity is a deliberate design choice: Genesis earns loyalty through performance, not through contractual trap.
+  </p>
+</section>
+
+<!-- ══ §06 SYSTEM ARCHITECTURE ═════════════════════════ -->
+<section class="wp-section" id="s06">
+  <div class="section-eyebrow">
+    <span class="section-num">06</span>
+    <div class="section-rule"></div>
+    <span class="section-phase">Phase B — Engine Core</span>
+  </div>
+  <h2 class="section-title">System <span class="gold">Architecture</span></h2>
+  <p class="section-lead">
+    Five interconnected smart contract modules, one unified policy enforcement layer, and a two-sided interface serving institutional and retail capital simultaneously.
+  </p>
+
+  <div class="diagram-wrap">
+    <div class="diagram-title">Genesis Reserve — Smart Contract Architecture</div>
+    <div class="arch-diagram">
+      <div class="arch-row">
+        <div class="arch-box layer-user" style="flex:1;max-width:200px">
+          <div class="arch-box-label">Access Layer</div>
+          <div class="arch-box-name">Smarter Wallet</div>
+        </div>
+        <div class="arch-box layer-user" style="flex:1;max-width:200px">
+          <div class="arch-box-label">Access Layer</div>
+          <div class="arch-box-name">B2B Treasury API</div>
+        </div>
+        <div class="arch-box layer-compliance" style="flex:1;max-width:200px">
+          <div class="arch-box-label">Compliance</div>
+          <div class="arch-box-name">ComplianceRegistry</div>
+        </div>
+      </div>
+      <div class="arch-arrow">↓</div>
+      <div class="arch-row">
+        <div class="arch-box layer-user" style="flex:1;max-width:280px">
+          <div class="arch-box-label">Vault Standard</div>
+          <div class="arch-box-name">ERC-4626 Vault Interface</div>
+        </div>
+        <div class="arch-box layer-compliance" style="flex:1;max-width:280px">
+          <div class="arch-box-label">Risk</div>
+          <div class="arch-box-name">Risk Engine + Oracle</div>
+        </div>
+      </div>
+      <div class="arch-arrow">↓</div>
+      <div class="arch-row">
+        <div class="arch-box layer-router" style="flex:1;max-width:500px">
+          <div class="arch-box-label">Core Routing</div>
+          <div class="arch-box-name" style="font-size:16px">StrategyRouter</div>
+        </div>
+      </div>
+      <div class="arch-arrow">↓</div>
+      <div class="arch-row">
+        <div class="arch-box layer-strategy">
+          <div class="arch-box-label">Tier 1</div>
+          <div class="arch-box-name" style="font-size:12px">T-Bill Wrappers</div>
+        </div>
+        <div class="arch-box layer-strategy">
+          <div class="arch-box-label">Tier 2</div>
+          <div class="arch-box-name" style="font-size:12px">Aave Lending</div>
+        </div>
+        <div class="arch-box layer-strategy">
+          <div class="arch-box-label">Tier 3</div>
+          <div class="arch-box-name" style="font-size:12px">Pendle Markets</div>
+        </div>
+        <div class="arch-box layer-strategy">
+          <div class="arch-box-label">Tier 4</div>
+          <div class="arch-box-name" style="font-size:12px">Gearbox</div>
+        </div>
+        <div class="arch-box layer-yield">
+          <div class="arch-box-label">Tier 5+</div>
+          <div class="arch-box-name" style="font-size:12px">DEX / Basis / Arb</div>
+        </div>
+      </div>
+      <div class="arch-arrow">↓</div>
+      <div class="arch-row">
+        <div class="arch-box layer-compliance" style="flex:1;max-width:500px">
+          <div class="arch-box-label">Settlement</div>
+          <div class="arch-box-name">Epoch Settler + Waterfall Distributor + Reporting Module</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h3>Module Descriptions</h3>
+
+  <h4>ERC-4626 Vault Interface</h4>
+  <p>
+    The standard tokenized vault API handles all capital entry (deposit), exit (redeem), and share accounting. Users receive vault shares representing their proportional claim on the pool's NAV. Shares are non-transferable by default (configurable per vault class). The ERC-4626 standard ensures composability with the broader DeFi ecosystem without requiring bespoke integration per consumer application.
+  </p>
+
+  <h4>StrategyRouter — The Hero Component</h4>
+  <p>
+    The StrategyRouter is the core capital allocation engine. At each epoch boundary, it: evaluates current allocations against policy parameters; executes rebalancing transactions where positions have drifted beyond tolerance bands; and records strategy-level attribution for the Reporting Module. The StrategyRouter enforces maximum allocation caps per risk tier, respects circuit breaker conditions, and maintains the preferred return reserve buffer. It cannot be manually overridden without multi-sig governance approval.
+  </p>
+
+  <h4>ComplianceRegistry</h4>
+  <p>
+    The ComplianceRegistry maintains jurisdiction-level eligibility mappings. Before any yield-bearing feature is activated for a wallet address, the interface layer queries the ComplianceRegistry. Approved addresses are stored on-chain with jurisdiction code and approval timestamp. The registry is updatable by the Genesis compliance multi-sig, allowing jurisdiction approvals to be added without smart contract upgrades. The registry does not store personally identifiable information on-chain — only jurisdiction approval status by address hash.
+  </p>
+
+  <h4>Risk Engine</h4>
+  <p>
+    The Risk Engine evaluates strategy positions against five risk parameters at each epoch: utilization rate, drawdown from peak NAV, protocol TVL threshold, oracle price deviation, and liquidity depth. If any parameter breaches its circuit breaker threshold, the Risk Engine signals the StrategyRouter to reduce or exit the affected position and reallocate to the lowest-risk available corridor.
+  </p>
+
+  <h4>Reporting Module</h4>
+  <p>
+    The Reporting Module produces epoch-level attribution reports: gross yield by strategy, management fee deducted, preferred return credited, Genesis spread recognized, and treasury/GRX/operations allocation. These reports are stored on-chain in compressed form and surfaced through the institutional dashboard API, providing the audit trail that institutional clients require.
+  </p>
+</section>
+
+<!-- ══ §07 YIELD SOURCE TAXONOMY ══════════════════════ -->
+<section class="wp-section" id="s07">
+  <div class="section-eyebrow">
+    <span class="section-num">07</span>
+    <div class="section-rule"></div>
+    <span class="section-phase">Phase B — Engine Core</span>
+  </div>
+  <h2 class="section-title">Yield Source <span class="gold">Taxonomy</span></h2>
+  <p class="section-lead">
+    Seven approved yield source categories, organized by institutional risk tier. Each category carries defined allocation caps, circuit breaker conditions, and a documented Genesis gross target corridor and net spread range.
+  </p>
+
+  <p>
+    The yield taxonomy is not a speculative menu — it is a risk policy document. Every yield source Genesis routes capital through must be approved at the governance level, assigned to a risk tier, and subject to the allocation cap for that tier. No yield source operates outside this framework, and no rebalancing occurs without StrategyRouter policy enforcement.
+  </p>
+
+  <div style="overflow-x:auto;">
+  <table class="wp-table">
+    <thead>
+      <tr>
+        <th>Tier</th>
+        <th>Source Category</th>
+        <th>Representative Protocol</th>
+        <th>Yield Type</th>
+        <th>Primary Risk</th>
+        <th>Gross Target</th>
+        <th>Genesis Net Spread</th>
+        <th>Max Allocation</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="teal-cell">1 — Preserve</span></td>
+        <td>Tokenized Treasuries</td>
+        <td>T-Bill wrappers (OUSG, BUIDL)</td>
+        <td>Cash-equivalent</td>
+        <td>Custody, redemption, smart contract wrapper</td>
+        <td class="gold-cell">4.5–5.5%</td>
+        <td class="mono">0.20–0.80%</td>
+        <td class="mono">40% max</td>
+      </tr>
+      <tr>
+        <td><span style="color:var(--teal)">2 — Core DeFi</span></td>
+        <td>Institutional Lending</td>
+        <td>Aave v3, Compound v3</td>
+        <td>Borrow demand yield</td>
+        <td>Utilization rate, protocol risk</td>
+        <td class="gold-cell">5.0–9.0%</td>
+        <td class="mono">0.50–1.50%</td>
+        <td class="mono">35% max</td>
+      </tr>
+      <tr>
+        <td><span style="color:var(--gold-dk)">3 — Structured</span></td>
+        <td>Yield Rate Markets</td>
+        <td>Pendle Finance (PT/YT)</td>
+        <td>Yield discount / rate lock</td>
+        <td>Liquidity, maturity, rate movement</td>
+        <td class="gold-cell">8.0–16.0%</td>
+        <td class="mono">1.00–2.50%</td>
+        <td class="mono">20% max</td>
+      </tr>
+      <tr>
+        <td><span style="color:#E89440">4 — Accelerate</span></td>
+        <td>Leveraged Lending</td>
+        <td>Gearbox Protocol</td>
+        <td>Levered DeFi yield</td>
+        <td>Liquidation risk, leverage amplification</td>
+        <td class="gold-cell">12.0–22.0%</td>
+        <td class="mono">1.50–3.50%</td>
+        <td class="mono">10% max</td>
+      </tr>
+      <tr>
+        <td><span style="color:#C08040">4 — Tactical</span></td>
+        <td>DEX Liquidity Provision</td>
+        <td>Aerodrome, Curve</td>
+        <td>Fee yield + incentives</td>
+        <td>Impermanent loss, incentive expiry</td>
+        <td class="gold-cell">5.0–12.0%</td>
+        <td class="mono">0.50–2.00%</td>
+        <td class="mono">15% max</td>
+      </tr>
+      <tr>
+        <td><span style="color:#E07050">5 — Advanced</span></td>
+        <td>Basis / Funding Carry</td>
+        <td>Perpetual spread strategies</td>
+        <td>Market-neutral carry</td>
+        <td>Funding rate compression, counter-party</td>
+        <td class="gold-cell">8.0–18.0%</td>
+        <td class="mono">1.00–3.00%</td>
+        <td class="mono">8% max</td>
+      </tr>
+      <tr>
+        <td><span style="color:var(--red)">5 — Canary</span></td>
+        <td>Execution Arbitrage</td>
+        <td>Cross-venue statistical arb</td>
+        <td>Execution alpha</td>
+        <td>MEV, gas costs, slippage, execution failure</td>
+        <td class="gold-cell">10.0–30.0%</td>
+        <td class="mono">0.50–2.00%</td>
+        <td class="mono">2% max</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="callout">
+    <div class="callout-label">Reading the Spread Column</div>
+    <p>The Genesis Net Spread is not a fixed fee — it is the range of spread that Genesis captures between gross yield delivered by the strategy and net yield distributed to investors (after the preferred return is satisfied and management fee is deducted). In high-yield regimes, spread is wider; in compressed-yield environments, Genesis earns only the management fee. Spread is earned only above the preferred return threshold.</p>
+  </div>
+
+  <h3>Blended Yield and Allocation Policy</h3>
+  <p>
+    At any given time, the StrategyRouter maintains a policy-compliant blended allocation across all seven categories. The blended gross yield target — which drives the preferred return coverage ratio and Genesis spread — is determined by the weighted average of individual strategy positions. The allocation policy prioritizes preferred return coverage: if blended yield is tracking below the 8% preferred return target, the StrategyRouter increases allocation to higher-yield tiers within their caps before touching the preferred return reserve.
+  </p>
+
+  <h3>Rebalancing Mechanics</h3>
+  <p>
+    Rebalancing is triggered at each epoch boundary when any strategy position deviates more than 2% from its target allocation, when a circuit breaker condition is active, or when the Risk Engine signals a compliance-level event. Rebalancing transactions are gas-optimized through batch execution and timing relative to epoch settlement, minimizing transaction costs that would otherwise erode yield distribution.
+  </p>
+</section>
+
+<!-- ══ §08 CAPITAL WATERFALL ════════════════════════════ -->
+<section class="wp-section" id="s08">
+  <div class="section-eyebrow">
+    <span class="section-num">08</span>
+    <div class="section-rule"></div>
+    <span class="section-phase">Phase B — Engine Core</span>
+  </div>
+  <h2 class="section-title">Capital <span class="gold">Waterfall</span></h2>
+  <p class="section-lead">
+    The waterfall is not a fee structure — it is an alignment of incentives. Genesis earns only after investors are made whole. Every dollar of Genesis spread is proof of investor delivery.
+  </p>
+
+  <h3>Waterfall Priority Order</h3>
+  <div class="wf-steps">
+    <div class="wf-step">
+      <div class="wf-step-num">1</div>
+      <div class="wf-step-body">
+        <div class="wf-step-title">Investor Targeted Preferred Return — Priority Lien</div>
+        <div class="wf-step-desc">First claim on all net realized yield. Investors receive their targeted preferred return before any other distribution. The preferred return reserve covers shortfalls in below-threshold yield months, funded by prior-period spread accumulation.</div>
+        <div class="wf-step-rate">Target: 8.0% annualized (payable from net yield, subject to market conditions and offering document terms)</div>
+      </div>
+    </div>
+    <div class="wf-step">
+      <div class="wf-step-num">2</div>
+      <div class="wf-step-body">
+        <div class="wf-step-title">Protocol Management Fee — AUM-Based, Epoch-Settled</div>
+        <div class="wf-step-desc">A management fee charged against earned yield — not against principal. Settled pro-rata at each epoch, deducted before distribution so investors receive the net figure without a separate fee event.</div>
+        <div class="wf-step-rate">Rate: 0.75–1.25% p.a. of AUM (charged against yield, never principal)</div>
+      </div>
+    </div>
+    <div class="wf-step">
+      <div class="wf-step-num">3</div>
+      <div class="wf-step-body">
+        <div class="wf-step-title">Genesis Spread — Performance Margin Above Preferred</div>
+        <div class="wf-step-desc">The spread Genesis captures when net yield exceeds the preferred return threshold plus management fee. This is not earned unless investors have been made whole. In flat or negative yield months, this line is zero — Genesis earns management fee only.</div>
+        <div class="wf-step-rate">Rate: Variable — scales with risk tier utilization and blended gross yield</div>
+      </div>
+    </div>
+    <div class="wf-step">
+      <div class="wf-step-num">4</div>
+      <div class="wf-step-body">
+        <div class="wf-step-title">Spread Distribution — 40 / 20 / 40</div>
+        <div class="wf-step-desc">The recognized Genesis spread is distributed across three pools at each epoch: treasury reinvestment (40%), $GRX participation pool (20%), and Genesis operations (40%). The treasury pool is redeployed into the StrategyRouter, compounding AUM organically.</div>
+        <div class="wf-step-rate">40% Treasury Reinvestment · 20% $GRX Pool · 40% Operations</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="diagram-wrap">
+    <div class="diagram-title">Genesis Spread Distribution — 40/20/40</div>
+    <div class="split-bar">
+      <div class="split-seg investor"><span class="split-pct">40%</span><span class="split-name">Treasury Reinvest</span></div>
+      <div class="split-seg grx"><span class="split-pct">20%</span><span class="split-name">$GRX Pool</span></div>
+      <div class="split-seg treasury"><span class="split-pct">40%</span><span class="split-name">Operations</span></div>
+    </div>
+  </div>
+
+  <h3>Fee Architecture — Complete Reference Table</h3>
+  <p>Every fee Genesis charges is documented in the table below. There are no hidden fees, no performance fees charged against principal, and no exit penalties.</p>
+
+  <div style="overflow-x:auto;">
+  <table class="wp-table">
+    <thead>
+      <tr>
+        <th>Fee Layer</th>
+        <th>Mechanism</th>
+        <th>Rate / Range</th>
+        <th>Charged Against</th>
+        <th>Trigger Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Preferred Waterfall Priority</strong></td>
+        <td>First lien on net yield — investor distribution</td>
+        <td class="gold-cell">Target 8% p.a.</td>
+        <td>Net realized yield (epoch)</td>
+        <td>Any epoch with positive net yield</td>
+      </tr>
+      <tr>
+        <td><strong>Protocol Management Fee</strong></td>
+        <td>AUM-based, epoch-settled pro-rata</td>
+        <td class="gold-cell">0.75–1.25% p.a.</td>
+        <td>Earned yield only — never principal</td>
+        <td>Continuous — deducted before distribution</td>
+      </tr>
+      <tr>
+        <td><strong>Genesis Spread</strong></td>
+        <td>Performance margin above preferred threshold</td>
+        <td class="gold-cell">Varies by strategy mix</td>
+        <td>Yield above preferred + mgmt fee threshold</td>
+        <td>Only recognized after investor preferred is satisfied</td>
+      </tr>
+      <tr>
+        <td><strong>Deposit / Entry Fee</strong></td>
+        <td>None</td>
+        <td class="teal-cell">0%</td>
+        <td>N/A</td>
+        <td>No entry fee charged</td>
+      </tr>
+      <tr>
+        <td><strong>Redemption / Exit Fee</strong></td>
+        <td>None</td>
+        <td class="teal-cell">0%</td>
+        <td>N/A</td>
+        <td>No exit fee — full liquidity at all times</td>
+      </tr>
+      <tr>
+        <td><strong>Strategy Execution Margin</strong></td>
+        <td>Embedded in NAV per epoch — not line-itemized</td>
+        <td class="mono">Basis points per corridor</td>
+        <td>Embedded in strategy execution costs</td>
+        <td>Each epoch settlement</td>
+      </tr>
+      <tr>
+        <td><strong>Card Interchange (B2C)</strong></td>
+        <td>Payment network interchange on debit transactions</td>
+        <td class="mono">1.5–2.0% per transaction</td>
+        <td>Merchant (not charged to user)</td>
+        <td>Every Smarter Wallet card transaction</td>
+      </tr>
+      <tr>
+        <td><strong>FX Conversion Spread (B2C)</strong></td>
+        <td>Currency conversion margin on cross-currency settlements</td>
+        <td class="mono">0.5–1.5% per conversion</td>
+        <td>Conversion amount</td>
+        <td>Every cross-currency transaction</td>
+      </tr>
+      <tr>
+        <td><strong>B2B Enterprise Service Fee</strong></td>
+        <td>Contractual treasury service — flat monthly + basis points</td>
+        <td class="mono">Negotiated per SLA</td>
+        <td>Enterprise client AUM</td>
+        <td>Active service agreement</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>Interactive Waterfall Calculator</h3>
+  <div class="diagram-wrap">
+    <div class="diagram-title">Waterfall Distribution Simulator</div>
+    <div class="calc-row">
+      <div class="calc-label" id="tvl-lbl">TVL: $100M</div>
+      <input type="range" class="wp-range" id="tvl-slider" min="10" max="1000" value="100" step="10"/>
+    </div>
+    <div class="calc-row">
+      <div class="calc-label" id="yield-lbl">Gross Yield: 11%</div>
+      <input type="range" class="wp-range" id="yield-slider" min="3" max="22" value="11" step="0.5"/>
+    </div>
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-val" id="kpi-investor">$8.0M</div>
+        <div class="kpi-lbl">Investor Preferred Return</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-val" id="kpi-mgmt">$1.0M</div>
+        <div class="kpi-lbl">Management Fee (1%)</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-val teal" id="kpi-spread">$2.0M</div>
+        <div class="kpi-lbl">Genesis Spread (above preferred)</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-val violet" id="kpi-treasury">$0.8M</div>
+        <div class="kpi-lbl">Treasury Reinvestment (40%)</div>
+      </div>
+    </div>
+    <div class="split-bar" id="wf-bar">
+      <div class="split-seg investor" id="bar-investor" style="flex:40"><span class="split-pct">$8.0M</span><span class="split-name">Investor Preferred</span></div>
+      <div class="split-seg grx" id="bar-grx" style="flex:20"><span class="split-pct">$0.4M</span><span class="split-name">$GRX Pool</span></div>
+      <div class="split-seg treasury" id="bar-treasury" style="flex:40"><span class="split-pct">$2.6M</span><span class="split-name">Genesis Total</span></div>
+    </div>
+    <p style="font-size:12px;color:var(--text-muted);text-align:center;margin:8px 0 0">Illustrative — assumes 1% management fee, 8% preferred return target. Not a projection of actual returns.</p>
+  </div>
+
+  <div class="callout callout-green">
+    <div class="callout-label">Investor-First Principle</div>
+    <p><strong>All Genesis revenue is taken from yield, never from principal.</strong> A depositor's principal is never reduced to satisfy a Genesis fee. Every fee is denominated against earned yield and settled in the same epoch it was earned. This is the deepest form of permissionless design: no one takes a dollar from your balance that your capital did not first generate.</p>
+  </div>
+
+  <h3>Competitive Comparison</h3>
+  <div style="overflow-x:auto;">
+  <table class="wp-table">
+    <thead>
+      <tr>
+        <th>Feature</th>
+        <th>Genesis Reserve</th>
+        <th>Traditional Liquid Alt</th>
+        <th>Typical Yield Aggregator</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Management Fee</td>
+        <td class="teal-cell">0.75–1.25% p.a.</td>
+        <td>1.5–2.0% p.a.</td>
+        <td>0–2.0% p.a.</td>
+      </tr>
+      <tr>
+        <td>Performance Fee</td>
+        <td class="teal-cell">Spread earned only above preferred (investor first)</td>
+        <td>20% of gross above hurdle</td>
+        <td>10–30% of yield</td>
+      </tr>
+      <tr>
+        <td>Entry Fee</td>
+        <td class="teal-cell">0%</td>
+        <td>0–5%</td>
+        <td>0%</td>
+      </tr>
+      <tr>
+        <td>Exit / Redemption Fee</td>
+        <td class="teal-cell">0% — full liquidity</td>
+        <td>Lockups or gates common</td>
+        <td>0–1%</td>
+      </tr>
+      <tr>
+        <td>Fees Charged Against</td>
+        <td class="teal-cell">Yield only — never principal</td>
+        <td>Principal + yield</td>
+        <td>Yield (varies)</td>
+      </tr>
+      <tr>
+        <td>Preferred Return Priority</td>
+        <td class="teal-cell">Yes — investor always paid first</td>
+        <td>Hurdle rate varies</td>
+        <td>No priority waterfall</td>
+      </tr>
+      <tr>
+        <td>Settlement Cadence</td>
+        <td class="teal-cell">96x daily (15-min epochs)</td>
+        <td>Daily or monthly</td>
+        <td>Daily or weekly</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<!-- ══ §09 $GRX REVENUE PARTICIPATION ══════════════════ -->
+<section class="wp-section" id="s09">
+  <div class="section-eyebrow">
+    <span class="section-num">09</span>
+    <div class="section-rule"></div>
+    <span class="section-phase">Phase C — Product Layer</span>
+  </div>
+  <h2 class="section-title">$GRX — Revenue <span class="gold">Participation Security</span></h2>
+  <p class="section-lead">
+    A private, restricted revenue participation security — structured for offering under Regulation D, Rule 506(c) to accredited investors. $GRX represents a contractual claim on the 20% Genesis spread pool.
+  </p>
+
+  <div class="callout callout-red">
+    <div class="callout-label">Securities Notice</div>
+    <p>$GRX tokens are securities offered only to accredited investors pursuant to an exemption from registration under the Securities Act of 1933, as amended, specifically Regulation D, Rule 506(c). This whitepaper section is for informational purposes only and does not constitute an offer to sell $GRX. Any offer and sale of $GRX will be made only pursuant to the definitive offering documents, which contain complete information including risk factors, transfer restrictions, and investor eligibility requirements. See §18 and §20 for full disclosures.</p>
+  </div>
+
+  <h3>What $GRX Represents</h3>
+  <p>
+    $GRX is a revenue participation security — not an equity stake, not a governance token in the traditional sense, and not a utility token. Each $GRX token represents a proportional claim on the 20% of Genesis spread that is allocated to the $GRX pool at each epoch settlement. This pool accumulates across epochs and is distributed to $GRX holders on a defined distribution schedule as specified in the offering documents.
+  </p>
+  <p>
+    The economic structure is straightforward: $GRX holders participate in the revenue upside of the Perpetual Capital Engine proportionally, but only after investors have received their preferred return and Genesis has covered management costs. This creates a meaningful alignment of interests — $GRX holders benefit from Genesis growing its TVL, increasing blended gross yield, and efficiently managing operations, because all three factors expand the spread pool from which $GRX distributions are drawn.
+  </p>
+
+  <h3>Token Distribution</h3>
+  <div style="overflow-x:auto;">
+  <table class="wp-table">
+    <thead>
+      <tr>
+        <th>Allocation Category</th>
+        <th>Percentage</th>
+        <th>Vesting / Lock</th>
+        <th>Purpose</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Founding Team &amp; Advisors</td>
+        <td class="mono">20%</td>
+        <td class="mono">4-year vest, 1-year cliff</td>
+        <td>Long-term alignment with protocol growth</td>
+      </tr>
+      <tr>
+        <td>Investor Offering (Reg D 506(c))</td>
+        <td class="mono">30%</td>
+        <td class="mono">12-month transfer restriction</td>
+        <td>Capital formation for protocol development and operations</td>
+      </tr>
+      <tr>
+        <td>Protocol Treasury Reserve</td>
+        <td class="mono">25%</td>
+        <td class="mono">DAO/multi-sig governed</td>
+        <td>Future liquidity, strategic partnerships, growth initiatives</td>
+      </tr>
+      <tr>
+        <td>Ecosystem &amp; Partnerships</td>
+        <td class="mono">15%</td>
+        <td class="mono">Project-based vesting</td>
+        <td>B2B integrations, platform partnerships, developer grants</td>
+      </tr>
+      <tr>
+        <td>Community &amp; Growth</td>
+        <td class="mono">10%</td>
+        <td class="mono">Performance-gated</td>
+        <td>User growth programs, referral mechanics, ecosystem expansion</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>Transfer Restrictions and Eligibility</h3>
+  <p>
+    $GRX tokens offered under Regulation D, Rule 506(c) carry a 12-month transfer restriction from the date of purchase. Secondary transfers are permitted only to other verified accredited investors after the restriction period expires, subject to applicable securities laws. The ComplianceRegistry maintains an on-chain record of transfer eligibility by address — transfers to non-eligible addresses are blocked at the smart contract level.
+  </p>
+  <p>
+    This restriction framework is not a limitation on the security's ultimate liquidity — it is the legal structure that enables Genesis to offer a genuine revenue participation instrument without full securities registration. The trade-off is predictable and disclosed: accredited investors receive a meaningful economic instrument with real revenue participation; the restriction period is the cost of access before secondary market infrastructure matures.
+  </p>
+
+  <h3>The $GRX Economic Flywheel</h3>
+  <p>
+    The $GRX pool does not deplete — it accumulates. At each epoch, 20% of recognized Genesis spread is added to the pool. Distribution schedule and frequency are specified in the offering documents. Undistributed pool balances earn yield within the StrategyRouter at the Tier 1 rate, meaning the pool compounds between distribution events. This creates a compounding economic instrument whose value grows with Genesis TVL and spread performance over time.
+  </p>
+</section>
+
+<!-- ══ §10 SMARTER WALLET ACCESS LAYER ═════════════════ -->
+<section class="wp-section" id="s10">
+  <div class="section-eyebrow">
+    <span class="section-num">10</span>
+    <div class="section-rule"></div>
+    <span class="section-phase">Phase C — Product Layer</span>
+  </div>
+  <h2 class="section-title">Smarter Wallet <span class="gold">Access Layer</span></h2>
+  <p class="section-lead">
+    The consumer interface that makes institutional treasury infrastructure available to Main Street — collapsing five fragmented financial services into one compliant, yield-bearing wallet.
+  </p>
+
+  <div class="callout">
+    <div class="callout-label">The Core Proposition</div>
+    <p style="font-family:'Cormorant Garamond',serif;font-size:20px;font-style:italic;line-height:1.5;">
+      You were already funding institutional yield. You just weren't being paid for it.
+    </p>
+  </div>
+
+  <h3>Five Services. One Interface.</h3>
+  <p>
+    The Genesis Smarter Wallet collapses five traditionally fragmented financial services into one unified, mobile-first interface. Each service layer contributes to Genesis revenue and user retention independently — they compound each other:
+  </p>
+  <ul>
+    <li><strong>Savings &amp; Yield:</strong> Idle USDC balance routed through the Perpetual Capital Engine — earning targeted yield automatically, credited at every epoch</li>
+    <li><strong>Payments:</strong> USDC send and receive — instant settlement, zero fees to users, Genesis earns nothing on peer-to-peer payments (this is the onboarding loss leader)</li>
+    <li><strong>Debit Card:</strong> Spend balance anywhere Visa is accepted — Genesis earns 1.5–2.0% card interchange on every transaction, invisible to the user</li>
+    <li><strong>Remittance:</strong> Cross-border digital dollar transfers through Zero Hash corridors — Genesis earns 0.5–1.5% FX conversion spread on every cross-currency settlement</li>
+    <li><strong>Insurance (Phase 2):</strong> Yield-funded insurance premiums — yield allocation from wallet balance funds term, IUL, or whole life premiums automatically</li>
+  </ul>
+
+  <h3>Product Tier Separation</h3>
+  <p>The four Genesis product tiers serve distinct user populations with distinct legal treatment. The Smarter Wallet and its core payment features are not securities — they are payment infrastructure available globally to eligible users without yield-specific gating.</p>
+
+  <div class="product-tier-grid">
+    <div class="pt-card">
+      <div class="pt-badge retail">Retail Global</div>
+      <div class="pt-name">Genesis Smarter Wallet</div>
+      <div class="pt-desc">Payments, remittance, debit card, peer-to-peer transfers. Available globally to eligible users. No yield activation required. Revenue: card interchange + FX spread from day one.</div>
+    </div>
+    <div class="pt-card">
+      <div class="pt-badge eligible">Jurisdiction-Gated</div>
+      <div class="pt-name">Genesis Earn / Vaults</div>
+      <div class="pt-desc">Yield-bearing features activated following eligibility review in approved jurisdictions. Securities analysis required by jurisdiction. Revenue: yield spread on AUM.</div>
+    </div>
+    <div class="pt-card">
+      <div class="pt-badge accredited">Accredited Only</div>
+      <div class="pt-name">$GRX Token</div>
+      <div class="pt-desc">Revenue participation security offered under Reg D 506(c). Available only to verified accredited investors. Transfer restrictions apply. Revenue: 20% pool distributions.</div>
+    </div>
+    <div class="pt-card">
+      <div class="pt-badge enterprise">Enterprise</div>
+      <div class="pt-name">Institutional Treasury</div>
+      <div class="pt-desc">Contractual treasury service for businesses, family offices, and embedded finance platforms. B2B API access, custom SLA, institutional reporting. Revenue: contractual service fee.</div>
+    </div>
+  </div>
+
+  <h3>The Progressive Unlock Model</h3>
+  <p>
+    User acquisition begins with the frictionless wallet onboarding — phone number, basic payment-compliance KYC, virtual card issued. From day one, every Smarter Wallet user generates payment rail revenue through card interchange and FX spread, regardless of their yield activation status.
+  </p>
+  <p>
+    Yield features unlock through a streamlined eligibility review designed to complete in under 3 minutes for most users in approved jurisdictions. Each unlock event transforms a payment user into a yield-generating depositor — adding AUM to the engine and yield spread revenue to Genesis. Insurance features (Phase 2) unlock on top of an active yield allocation.
+  </p>
+  <p>
+    This progressive ladder — payment user → yield user → insurance user — is the consumer monetization engine. Each rung adds revenue for Genesis and compounding value for the user.
+  </p>
+
+  <h3>High-Yield DeFi for the People</h3>
+  <p>
+    The Smarter Wallet's yield infrastructure is not a consumer-grade approximation of DeFi routing. It is the same Perpetual Capital Engine — the same StrategyRouter, the same seven yield categories, the same risk tier framework — serving retail and institutional capital simultaneously. A $100 balance and a $10,000,000 balance pass through identical strategy execution with identical risk management. Only the distribution amount differs.
+  </p>
+  <p>
+    This equivalence is both the product's core claim and its institutional credibility signal: "The same risk-managed yield infrastructure trusted by family offices and corporate treasuries is the engine behind your Smarter Wallet balance." It positions Genesis yield not as a consumer approximation but as democratized access to infrastructure that was previously restricted by wealth and relationship.
+  </p>
+
+  <h3>Geographic Sequencing</h3>
+  <p>
+    The Smarter Wallet launches globally for payment features on day one. Yield activation follows a jurisdiction-by-jurisdiction sequencing as regulatory approvals are received. The financial model reflects this sequencing: payment rail revenue runs globally from month one; yield spread revenue steps up as each new jurisdiction's yield features are activated. Compliance gating is not a limitation — it is a growth roadmap with revenue attached to each milestone.
+  </p>
+
+  <h3>From Main Street to Institution — and Back</h3>
+  <p>
+    The Genesis flywheel is powered by the reinforcing relationship between retail and institutional participation. Retail wallet TVL pools with institutional treasury TVL in the same StrategyRouter — more retail capital improves yield routing efficiency for all participants. Institutional AUM provides the engine's base stability. Treasury reinvestment compounds both pools. Three stakeholder groups power one compounding machine, with aligned economic incentives designed to sustain the engine across market cycles.
+  </p>
+</section>
+
+
+<!-- ══ §11 B2B TREASURY USE CASES ══════════════════════ -->
+<section class="wp-section" id="s11">
+  <div class="section-eyebrow">
+    <span class="section-num">11</span>
+    <div class="section-rule"></div>
+    <span class="section-phase">Phase C — Product Layer</span>
+  </div>
+  <h2 class="section-title">B2B Treasury <span class="gold">Use Cases</span></h2>
+  <p class="section-lead">
+    Institutional participants access the Perpetual Capital Engine through a contractual treasury service — API-first, compliance-documented, and SLA-governed.
+  </p>
+
+  <h3>Who the B2B Product Serves</h3>
+  <p>
+    The Genesis Institutional Treasury Service targets three categories of enterprise client: family offices and high-net-worth vehicles managing digital dollar treasury positions of $500K and above; corporate treasuries holding stablecoin balances as operational liquidity or strategic reserve; and embedded finance platforms seeking to offer yield-bearing digital dollar products to their own user bases without building yield infrastructure in-house.
+  </p>
+
+  <h3>Family Offices and Private Wealth</h3>
+  <p>
+    Family offices represent the fastest near-term institutional penetration opportunity. The typical single-family office with $50–500M in assets under management maintains meaningful cash and near-cash positions — historically in T-bills, money market funds, or prime brokerage cash accounts earning 4–5%. The Genesis treasury service offers a direct upgrade: the same capital routed through the StrategyRouter targeting 8% annualized preferred return, with institutional-grade attribution reporting, multi-sig governance, and a defined exit liquidity path.
+  </p>
+  <p>
+    The institutional onboarding for family offices includes: customized vault configuration, dedicated relationship management, monthly attribution reporting in institutional PDF format, and multi-sig wallet setup for governance-level operations. The Genesis treasury service does not compete with the family office's existing advisors — it provides the yield infrastructure those advisors deploy.
+  </p>
+
+  <h3>Corporate Treasury</h3>
+  <p>
+    Corporate finance teams managing stablecoin treasury balances face a persistent challenge: idle USDC on a balance sheet earns nothing while the same balance in traditional money markets earns 4–5%. The Genesis treasury API enables direct integration into corporate treasury management systems — a single API endpoint that accepts deposits, reports NAV, provides attribution data in standard formats, and processes withdrawals on the next epoch boundary.
+  </p>
+  <p>
+    For corporate clients, the yield spread economics are secondary to the reporting and compliance infrastructure. Genesis provides SOC-2-aligned operational controls, on-chain audit trails, and configurable reporting integrations — making the institutional onboarding straightforward for treasury and finance teams with existing compliance obligations.
+  </p>
+
+  <h3>Embedded Finance Platforms</h3>
+  <p>
+    The highest-leverage B2B channel is embedded finance: neobanks, payment platforms, and fintech applications that want to offer their own users yield-bearing digital dollar balances without building yield infrastructure. Genesis provides these platforms with a white-label treasury API — the platform acquires users and manages the interface; Genesis provides the yield routing, compliance infrastructure, and attribution reporting under a revenue-sharing arrangement.
+  </p>
+  <p>
+    This channel scales the Smarter Wallet's reach without requiring Genesis to acquire every end user directly. Each embedded finance partner effectively becomes a distribution channel for Genesis's treasury infrastructure, pooling their user base's balances into the same StrategyRouter and sharing in the yield spread economics.
+  </p>
+
+  <h3>B2B Service Fee Structure</h3>
+  <div style="overflow-x:auto;">
+  <table class="wp-table">
+    <thead>
+      <tr>
+        <th>Client Type</th>
+        <th>Minimum AUM</th>
+        <th>Service Fee</th>
+        <th>Reporting</th>
+        <th>SLA</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Family Office</td>
+        <td class="mono">$500K</td>
+        <td class="mono">Negotiated (AUM + basis points)</td>
+        <td>Monthly institutional PDF + API</td>
+        <td>Dedicated relationship manager</td>
+      </tr>
+      <tr>
+        <td>Corporate Treasury</td>
+        <td class="mono">$1M</td>
+        <td class="mono">Flat monthly + basis points</td>
+        <td>Real-time API + quarterly review</td>
+        <td>Finance team integration support</td>
+      </tr>
+      <tr>
+        <td>Embedded Finance Platform</td>
+        <td class="mono">$5M pooled</td>
+        <td class="mono">Revenue share on spread (negotiated)</td>
+        <td>White-label reporting API</td>
+        <td>Technical integration + compliance support</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<!-- ══ §12 B2C GROWTH MODEL ════════════════════════════ -->
+<section class="wp-section" id="s12">
+  <div class="section-eyebrow">
+    <span class="section-num">12</span>
+    <div class="section-rule"></div>
+    <span class="section-phase">Phase C — Product Layer</span>
+  </div>
+  <h2 class="section-title">B2C <span class="gold">Growth Model</span></h2>
+  <p class="section-lead">
+    Three distinct revenue engines. One unified wallet. Unit economics that compound from day one — before yield features are even activated.
+  </p>
+
+  <h3>Three Revenue Engines</h3>
+  <div class="engine-grid">
+    <div class="engine-card engine-1">
+      <div class="engine-num">Engine 1</div>
+      <div class="engine-name">Transaction Rails</div>
+      <div class="engine-tag">Velocity play — scales with spend behavior</div>
+      <ul class="engine-items">
+        <li>Card interchange: 1.5–2.0% per debit transaction</li>
+        <li>FX conversion spread: 0.5–1.5% per cross-currency settlement</li>
+        <li>Active from day one — no yield activation required</li>
+        <li>Works in every jurisdiction globally</li>
+        <li>Unaffected by DeFi yield compression</li>
+      </ul>
+    </div>
+    <div class="engine-card engine-2">
+      <div class="engine-num">Engine 2</div>
+      <div class="engine-name">Yield Infrastructure</div>
+      <div class="engine-tag">Retention play — scales with balance size</div>
+      <ul class="engine-items">
+        <li>Yield spread on idle wallet balances: 0.75–1.25% p.a.</li>
+        <li>Activated jurisdiction by jurisdiction</li>
+        <li>Creates stickiness — users won't leave active yield</li>
+        <li>Grows with average user balance over time</li>
+        <li>Same StrategyRouter as institutional AUM</li>
+      </ul>
+    </div>
+    <div class="engine-card engine-3">
+      <div class="engine-num">Engine 3</div>
+      <div class="engine-name">Premium &amp; Cross-Sell</div>
+      <div class="engine-tag">Monetization depth — scales with user engagement</div>
+      <ul class="engine-items">
+        <li>Yield-funded insurance premiums (Phase 2)</li>
+        <li>Advanced Earn vault upgrades</li>
+        <li>$GRX access for accredited users</li>
+        <li>Business account conversions</li>
+        <li>Referral-driven viral coefficient</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Unit Economics Per Active Wallet User</h3>
+  <p>At a representative active user with $500/month in card spend and $1,500 average wallet balance, Genesis earns approximately:</p>
+  <div style="overflow-x:auto;">
+  <table class="wp-table">
+    <thead>
+      <tr>
+        <th>Revenue Stream</th>
+        <th>Assumption</th>
+        <th>Monthly Estimate</th>
+        <th>Engine</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Card Interchange</td>
+        <td>$500/mo spend × 1.75% blended rate</td>
+        <td class="gold-cell">$8.75</td>
+        <td>Engine 1</td>
+      </tr>
+      <tr>
+        <td>FX Conversion</td>
+        <td>$150/mo cross-currency × 1.0% spread</td>
+        <td class="gold-cell">$1.50</td>
+        <td>Engine 1</td>
+      </tr>
+      <tr>
+        <td>Yield Spread</td>
+        <td>$1,500 balance × 1.0% p.a. ÷ 12</td>
+        <td class="gold-cell">$1.25</td>
+        <td>Engine 2</td>
+      </tr>
+      <tr>
+        <td>Insurance Premium (Phase 2)</td>
+        <td>% of premium funded by yield allocation</td>
+        <td class="gold-cell">$2.00–$8.00</td>
+        <td>Engine 3</td>
+      </tr>
+      <tr>
+        <td><strong>Baseline per User (Engines 1+2)</strong></td>
+        <td></td>
+        <td class="teal-cell"><strong>~$11.50–$13.50</strong></td>
+        <td>Pre-yield activation: $10.25</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="callout callout-teal">
+    <div class="callout-label">Key Insight</div>
+    <p>Even before yield features are activated in a new jurisdiction, the average Smarter Wallet user generates ~$10/month through card interchange and FX spread alone. M33 does not require DeFi yields to be elevated — it requires wallet adoption and transaction velocity. Engine 1 provides a durable revenue floor independent of crypto market conditions.</p>
+  </div>
+
+  <h3>Viral Growth Mechanic</h3>
+  <p>
+    Yield-bearing products have a structural referral advantage over pure payment products: the value proposition is ongoing and quantifiable. A user earning 6–8% on their wallet balance has a concrete dollar amount to communicate to others each month — not just a vague product recommendation. Every yield statement is a referral trigger.
+  </p>
+  <p>
+    The Genesis referral program activates this mechanic by offering referring users a yield bonus (a portion of the referred user's first 90 days of yield allocation) — creating a reward that compounds naturally with the referred user's engagement. This reduces customer acquisition cost over time as the network grows.
+  </p>
+
+  <h3>Geographic Sequencing — The Step-Change Model</h3>
+  <p>
+    The B2C financial model is structured as a series of step-change events corresponding to jurisdiction yield-activation milestones. Each activation unlocks Engine 2 revenue for that market's existing wallet user base — creating a predictable revenue uplift that compounds as both the user base and yield spreads grow within the activated jurisdiction.
+  </p>
+
+  <div class="scenario-grid">
+    <div class="scenario-card base">
+      <div class="scenario-name">Base Case — Month 33</div>
+      <div class="scenario-month">M33</div>
+      <ul class="scenario-rows">
+        <li><span>Active Wallet Users</span><span class="sv">85,000</span></li>
+        <li><span>Yield-Activated Users</span><span class="sv">42,000</span></li>
+        <li><span>Avg Wallet Balance</span><span class="sv">$1,800</span></li>
+        <li><span>B2C TVL Contribution</span><span class="sv">~$75M</span></li>
+        <li><span>Monthly B2C Revenue</span><span class="sv">~$1.1M</span></li>
+        <li><span>B2B TVL</span><span class="sv">~$175M</span></li>
+        <li><span>Total Protocol TVL</span><span class="sv">~$250M</span></li>
+      </ul>
+    </div>
+    <div class="scenario-card stretch">
+      <div class="scenario-name">Base Case — Month 72</div>
+      <div class="scenario-month">M72</div>
+      <ul class="scenario-rows">
+        <li><span>Active Wallet Users</span><span class="sv">520,000</span></li>
+        <li><span>Yield-Activated Users</span><span class="sv">310,000</span></li>
+        <li><span>Avg Wallet Balance</span><span class="sv">$2,400</span></li>
+        <li><span>B2C TVL Contribution</span><span class="sv">~$744M</span></li>
+        <li><span>Monthly B2C Revenue</span><span class="sv">~$7.2M</span></li>
+        <li><span>B2B TVL</span><span class="sv">~$600M+</span></li>
+        <li><span>Total Protocol TVL</span><span class="sv">~$1.3B+</span></li>
+      </ul>
+    </div>
+  </div>
+  <p style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:-8px;">All figures are base-case projections under modeled assumptions. Actual results will depend on user adoption, market conditions, regulatory approvals, and protocol performance. These are not forecasts or guarantees.</p>
+</section>
+
+<!-- ══ §13 RISK FRAMEWORK ══════════════════════════════ -->
+<section class="wp-section" id="s13">
+  <div class="section-eyebrow">
+    <span class="section-num">13</span>
+    <div class="section-rule"></div>
+    <span class="section-phase">Phase D — Governance</span>
+  </div>
+  <h2 class="section-title">Risk <span class="gold">Framework</span></h2>
+  <p class="section-lead">
+    Five risk tiers. Defined allocation caps. Automated circuit breakers. A preferred return reserve. Genesis earns more spread in higher-risk corridors because it consumes more risk budget — compensation and risk are explicitly coupled.
+  </p>
+
+  <h3>Five-Tier Risk Architecture</h3>
+  <p>Every Genesis yield source is assigned to one of five risk tiers. Tier assignment determines the maximum capital allocation Genesis can deploy to that source category, the circuit breaker conditions that trigger rebalancing, and the maximum Genesis spread that can be recognized from that source.</p>
+
+  <div class="risk-tier-grid">
+    <div class="risk-tier-card rtc-1">
+      <div class="rtc-num">1</div>
+      <div class="rtc-name">Preserve</div>
+      <div class="rtc-cap">Max 40% AUM</div>
+    </div>
+    <div class="risk-tier-card rtc-2">
+      <div class="rtc-num">2</div>
+      <div class="rtc-name">Core DeFi</div>
+      <div class="rtc-cap">Max 35% AUM</div>
+    </div>
+    <div class="risk-tier-card rtc-3">
+      <div class="rtc-num">3</div>
+      <div class="rtc-name">Structured</div>
+      <div class="rtc-cap">Max 20% AUM</div>
+    </div>
+    <div class="risk-tier-card rtc-4">
+      <div class="rtc-num">4</div>
+      <div class="rtc-name">Accelerate</div>
+      <div class="rtc-cap">Max 10% AUM</div>
+    </div>
+    <div class="risk-tier-card rtc-5">
+      <div class="rtc-num">5</div>
+      <div class="rtc-name">Canary</div>
+      <div class="rtc-cap">Max 2% AUM</div>
+    </div>
+  </div>
+
+  <h3>Risk-Compensation Coupling</h3>
+  <p>
+    The Genesis net spread scales with the risk tier of the capital deployed. Tier 1 (Tokenized Treasuries) generates the most predictable, lowest-margin spread (0.20–0.80%). Tier 5 (Execution Arbitrage) generates the highest potential spread (up to 2.0%) but is capped at 2% of AUM precisely because the execution risk, gas exposure, and MEV sensitivity of arbitrage strategies make larger allocations imprudent.
+  </p>
+  <p>
+    This coupling serves an important institutional communication function: Genesis is not incentivized to chase high-risk strategies to boost its own spread revenue, because high-risk tiers have strict allocation caps that limit total spread exposure. The management fee (0.75–1.25% on AUM) provides a predictable revenue baseline regardless of risk tier deployment — removing the dangerous incentive to over-allocate to high-yield/high-risk corridors.
+  </p>
+
+  <h3>Circuit Breaker Conditions</h3>
+  <div style="overflow-x:auto;">
+  <table class="wp-table">
+    <thead>
+      <tr>
+        <th>Trigger Parameter</th>
+        <th>Threshold</th>
+        <th>Circuit Breaker Action</th>
+        <th>Recovery Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Strategy NAV Drawdown</td>
+        <td class="mono">&gt;5% from peak</td>
+        <td>Reduce allocation by 50%, notify governance</td>
+        <td>Recovery above threshold for 3 consecutive epochs</td>
+      </tr>
+      <tr>
+        <td>Protocol TVL Drop</td>
+        <td class="mono">&gt;30% in 24h</td>
+        <td>Exit position, move to Tier 1</td>
+        <td>Manual governance review required</td>
+      </tr>
+      <tr>
+        <td>Oracle Price Deviation</td>
+        <td class="mono">&gt;2% from TWAP</td>
+        <td>Pause rebalancing, hold current allocation</td>
+        <td>Oracle resynchronization confirmed</td>
+      </tr>
+      <tr>
+        <td>Utilization Rate (lending)</td>
+        <td class="mono">&gt;95%</td>
+        <td>Reduce lending allocation to 50% of cap</td>
+        <td>Utilization drops below 90% for 6 epochs</td>
+      </tr>
+      <tr>
+        <td>Liquidity Depth (DEX)</td>
+        <td class="mono">&lt;5× position size</td>
+        <td>Exit DEX position over 3 epochs</td>
+        <td>Depth restored above threshold</td>
+      </tr>
+      <tr>
+        <td>Blended Portfolio Drawdown</td>
+        <td class="mono">&gt;3% in 7 days</td>
+        <td>Shift 20% AUM to Tier 1, alert $GRX holders</td>
+        <td>Manual governance review + recovery confirmation</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>Preferred Return Reserve</h3>
+  <p>
+    The preferred return reserve is a dedicated buffer maintained within the StrategyRouter in Tier 1 assets specifically to fund the investor preferred return during low-yield months. The reserve target is 2% of TVL, maintained as a floor. When blended gross yield falls below the preferred return threshold in any epoch, the reserve funds the shortfall — ensuring investors receive their targeted return without Genesis needing to draw on operational capital.
+  </p>
+  <p>
+    The reserve is replenished from Genesis spread during above-threshold months. This creates a structural smoothing mechanism: strong-yield months fund the reserve; weak-yield months draw on it. Investors experience yield stability while Genesis absorbs short-term volatility at the reserve level.
+  </p>
+
+  <h3>DeFi Ecosystem Risk Context</h3>
+  <p>
+    The DeFi ecosystem has experienced approximately $16.5 billion in total value losses through exploits and bridge vulnerabilities since its inception ($7.8 billion DeFi protocol-level, $3.2 billion bridge-related). Genesis addresses this historical risk through three structural mitigations: strict Tier 5 cap (2% AUM maximum in highest-risk strategies), mandatory audit requirements for all approved yield sources, and the circuit breaker system that exits positions within one epoch of detecting anomalous behavior.
+  </p>
+  <p>
+    Genesis does not claim to eliminate smart contract risk — it claims to structure exposure to smart contract risk within a defined, institutional-grade framework that limits any single protocol failure to a bounded impact on total AUM.
+  </p>
+
+  <h3>Governance and Risk Committee</h3>
+  <p>
+    Risk framework parameters — tier definitions, allocation caps, circuit breaker thresholds, and preferred return reserve targets — are governed by the Genesis Risk Committee, a multi-sig structure requiring 3-of-5 signatures for parameter changes. Risk Committee composition includes protocol engineers, independent risk professionals, and institutional advisor seats. Parameter changes are timelock-delayed by 48 hours, giving all stakeholders visibility into proposed governance actions before they take effect.
+  </p>
+</section>
+
+<!-- ══ §14 COMPLIANCE FRAMEWORK ════════════════════════ -->
+<section class="wp-section" id="s14">
+  <div class="section-eyebrow">
+    <span class="section-num">14</span>
+    <div class="section-rule"></div>
+    <span class="section-phase">Phase D — Governance</span>
+  </div>
+  <h2 class="section-title">Compliance <span class="gold">Framework</span></h2>
+  <p class="section-lead">
+    Compliance gating is not friction — it is the architecture that makes global institutional deployment possible without regulatory overhang. The compliance layer costs the user nothing; it only gates access timing.
+  </p>
+
+  <h3>Product Compliance Map</h3>
+  <div class="comp-map">
+    <div class="comp-cell header">Product</div>
+    <div class="comp-cell header">Legal Classification</div>
+    <div class="comp-cell header">Compliance Requirement</div>
+    <div class="comp-cell">
+      <div class="comp-cell-name">Smarter Wallet (Payments)</div>
+      <span class="comp-badge" style="background:rgba(0,212,170,0.1);color:var(--teal);border:1px solid rgba(0,212,170,0.3)">Non-Security</span>
+    </div>
+    <div class="comp-cell">Payment infrastructure / MSB</div>
+    <div class="comp-cell">
+      <div class="comp-cell-desc">KYC/AML for payments, FinCEN MSB registration, Zero Hash partnership corridors. No yield-specific gating.</div>
+    </div>
+    <div class="comp-cell">
+      <div class="comp-cell-name">Genesis Earn / Vaults</div>
+      <span class="comp-badge" style="background:rgba(201,168,76,0.1);color:var(--gold-dk);border:1px solid rgba(201,168,76,0.3)">Securities Analysis</span>
+    </div>
+    <div class="comp-cell">Jurisdiction-dependent — securities analysis required per market</div>
+    <div class="comp-cell">
+      <div class="comp-cell-desc">Eligibility review, jurisdiction approval, fee disclosure at point of activation. Yield features activated only in approved markets.</div>
+    </div>
+    <div class="comp-cell">
+      <div class="comp-cell-name">$GRX Token</div>
+      <span class="comp-badge" style="background:rgba(155,109,255,0.1);color:var(--violet);border:1px solid rgba(155,109,255,0.3)">Security — Reg D</span>
+    </div>
+    <div class="comp-cell">U.S. Security — Reg D Rule 506(c)</div>
+    <div class="comp-cell">
+      <div class="comp-cell-desc">Accredited investor verification, 12-month transfer restriction, full offering document, Form D filing. On-chain transfer restrictions enforced by ComplianceRegistry.</div>
+    </div>
+    <div class="comp-cell">
+      <div class="comp-cell-name">Institutional Treasury Service</div>
+      <span class="comp-badge" style="background:rgba(26,191,106,0.1);color:var(--green);border:1px solid rgba(26,191,106,0.3)">Contractual</span>
+    </div>
+    <div class="comp-cell">Contractual treasury service — B2B</div>
+    <div class="comp-cell">
+      <div class="comp-cell-desc">Client-specific compliance review, institutional KYB, SLA documentation, jurisdiction-specific advice where required by client's counsel.</div>
+    </div>
+  </div>
+
+  <h3>Zero Hash Partnership — MSB Clarification</h3>
+  <p>
+    Genesis Reserve partners with Zero Hash, a FinCEN-registered Money Services Business operating in 51 U.S. jurisdictions, for fiat on/off ramp and remittance corridor infrastructure. This partnership provides significant compliance infrastructure — but it does not eliminate Genesis Reserve's own licensing and compliance obligations.
+  </p>
+  <p>
+    Genesis maintains its own independent compliance program appropriate to its product suite. Zero Hash's MSB registration covers the payment and remittance activities processed through their infrastructure. Genesis's yield-bearing products, $GRX offering, and institutional treasury services each require independent legal and compliance analysis. The Zero Hash relationship is a component of the compliance stack — not a substitute for it.
+  </p>
+
+  <h3>Fee Disclosure Obligations</h3>
+  <p>
+    Every Genesis fee is disclosed at the appropriate point in the user or investor journey. For Smarter Wallet users, fee disclosures are presented during onboarding, before yield feature activation (including the management fee rate and yield spread methodology), and in the monthly account statement. For $GRX investors, the complete fee schedule and waterfall mechanics are disclosed in the offering documents, which supersede this whitepaper in all matters of economic terms.
+  </p>
+  <p>
+    For institutional treasury clients, fee terms are disclosed in the service agreement and confirmed in writing before capital deployment. The service agreement specifies the management fee rate, spread recognition methodology, reporting schedule, and redemption terms.
+  </p>
+
+  <h3>SEC Crypto Task Force Context</h3>
+  <p>
+    The SEC Crypto Task Force is actively developing frameworks for distinguishing securities from non-securities in the digital asset context and establishing appropriate disclosure standards for digital asset offerings. Genesis Reserve monitors this regulatory development continuously and structures its product offerings conservatively — applying existing securities law frameworks (Regulation D, securities analysis per Howey) rather than relying on anticipated regulatory clarity. This conservative approach may restrict certain product features in the near term but provides durable institutional confidence in the compliance posture.
+  </p>
+</section>
+
+<!-- ══ §15 SECURITY FRAMEWORK ══════════════════════════ -->
+<section class="wp-section" id="s15">
+  <div class="section-eyebrow">
+    <span class="section-num">15</span>
+    <div class="section-rule"></div>
+    <span class="section-phase">Phase D — Governance</span>
+  </div>
+  <h2 class="section-title">Security <span class="gold">Framework</span></h2>
+  <p class="section-lead">
+    Multi-layered security architecture spanning smart contract audits, custody model design, multi-sig governance, oracle integrity, and incident response — designed to institutional custody standards.
+  </p>
+
+  <div class="security-grid">
+    <div class="sec-card">
+      <div class="sec-icon">🔍</div>
+      <div class="sec-name">Smart Contract Audits</div>
+      <div class="sec-desc">All core contracts (ERC-4626 vault, StrategyRouter, ComplianceRegistry, Risk Engine) are subject to independent third-party audit before mainnet deployment. Audit reports are published in full. Remediation of all critical and high-severity findings is required before deployment. Audit program repeats on material contract upgrades.</div>
+    </div>
+    <div class="sec-card">
+      <div class="sec-icon">🔐</div>
+      <div class="sec-name">Multi-Sig Governance</div>
+      <div class="sec-desc">All privileged contract operations — parameter changes, strategy approvals, circuit breaker overrides, treasury deployments — require 3-of-5 multi-sig authorization. Key holders include protocol engineers, independent security advisors, and institutional stakeholder seats. No single point of key compromise can authorize privileged operations.</div>
+    </div>
+    <div class="sec-card">
+      <div class="sec-icon">🏦</div>
+      <div class="sec-name">Non-Custodial Vault Design</div>
+      <div class="sec-desc">Genesis does not hold user funds in a centralized account. Capital is held in non-custodial smart contract vaults — Genesis operators cannot unilaterally access or move user capital. Redemption rights are enforced at the contract level. This design eliminates the custodial risk that has led to major losses in centralized yield products.</div>
+    </div>
+    <div class="sec-card">
+      <div class="sec-icon">⚡</div>
+      <div class="sec-name">Oracle Integrity</div>
+      <div class="sec-desc">All price and yield data used by the StrategyRouter comes through a multi-source oracle system using time-weighted average prices (TWAP) with deviation circuit breakers. If any oracle source deviates more than 2% from the aggregate, rebalancing is paused until the deviation resolves — preventing oracle manipulation from triggering harmful rebalancing events.</div>
+    </div>
+    <div class="sec-card">
+      <div class="sec-icon">🛡️</div>
+      <div class="sec-name">Timelock Controls</div>
+      <div class="sec-desc">All governance parameter changes are subject to a 48-hour timelock before taking effect. This window allows all stakeholders — investors, $GRX holders, institutional clients — to observe proposed changes and take action before they are enforced. Emergency pause mechanisms remain available to the security multi-sig without timelock for genuine incident response.</div>
+    </div>
+    <div class="sec-card">
+      <div class="sec-icon">🚨</div>
+      <div class="sec-name">Incident Response</div>
+      <div class="sec-desc">Genesis maintains a documented incident response protocol: automated monitoring triggers on anomalous activity; on-call security team has a 15-minute response target; emergency pause is executable by 2-of-5 security multi-sig; communication to stakeholders within 1 hour of a material security event. Post-incident review and public report are standard procedure.</div>
+    </div>
+  </div>
+
+  <h3>Strategy Allowlist and Protocol Approval</h3>
+  <p>
+    No yield strategy can be deployed through the StrategyRouter unless it has been formally approved by the Risk Committee and added to the on-chain strategy allowlist. The approval process includes: protocol audit review, TVL and liquidity assessment, historical performance analysis, risk tier assignment, and maximum allocation determination. This allowlist is the primary guard against the StrategyRouter deploying capital into unknown or unvetted protocols.
+  </p>
+
+  <h3>Insurance and Coverage</h3>
+  <p>
+    Genesis evaluates smart contract insurance products from established DeFi coverage protocols for core vault contracts. Insurance coverage is an additional layer — not a replacement for the primary security architecture. Coverage terms, limits, and exclusions are disclosed to institutional clients upon request. The preferred return reserve serves a complementary role as an economic buffer against short-term strategy underperformance.
+  </p>
+</section>
+
+<!-- ══ §16 FINANCIAL MODEL ═════════════════════════════ -->
+<section class="wp-section" id="s16">
+  <div class="section-eyebrow">
+    <span class="section-num">16</span>
+    <div class="section-rule"></div>
+    <span class="section-phase">Phase E — Model &amp; Disclosures</span>
+  </div>
+  <h2 class="section-title">Financial <span class="gold">Model</span></h2>
+  <p class="section-lead">
+    Five revenue streams. Conservative base assumptions. A dual-engine model that provides yield-independent revenue stability while compounding through the infrastructure spread.
+  </p>
+
+  <div class="callout callout-red">
+    <div class="callout-label">Forward-Looking Statement Notice</div>
+    <p>All financial projections in this section are base-case scenarios under modeled assumptions. They are not forecasts, guarantees, or representations of expected performance. Actual results will depend on user adoption rates, regulatory approvals, market conditions, DeFi yield environment, competitive dynamics, and operational execution. See §18 for full forward-looking statement disclosures.</p>
+  </div>
+
+  <h3>Five Revenue Streams</h3>
+  <div style="overflow-x:auto;">
+  <table class="wp-table">
+    <thead>
+      <tr>
+        <th>Revenue Stream</th>
+        <th>Driver</th>
+        <th>Rate / Margin</th>
+        <th>Yield-Dependent?</th>
+        <th>M33 Base Est.</th>
+        <th>M72 Base Est.</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Management Fee</strong></td>
+        <td>Protocol TVL</td>
+        <td class="mono">0.75–1.25% p.a.</td>
+        <td class="teal-cell">No — AUM-based</td>
+        <td class="mono">~$2.5M/yr</td>
+        <td class="mono">~$13M/yr</td>
+      </tr>
+      <tr>
+        <td><strong>Protocol Spread</strong></td>
+        <td>Yield above preferred</td>
+        <td class="mono">Variable</td>
+        <td class="gold-cell">Yes — yield-driven</td>
+        <td class="mono">~$3.5M/yr</td>
+        <td class="mono">~$20M/yr</td>
+      </tr>
+      <tr>
+        <td><strong>Card Interchange</strong></td>
+        <td>Wallet card spend volume</td>
+        <td class="mono">1.5–2.0% per txn</td>
+        <td class="teal-cell">No — payment rails</td>
+        <td class="mono">~$1.8M/yr</td>
+        <td class="mono">~$11M/yr</td>
+      </tr>
+      <tr>
+        <td><strong>FX Spread</strong></td>
+        <td>Cross-currency volume</td>
+        <td class="mono">0.5–1.5% per conversion</td>
+        <td class="teal-cell">No — payment rails</td>
+        <td class="mono">~$0.5M/yr</td>
+        <td class="mono">~$3M/yr</td>
+      </tr>
+      <tr>
+        <td><strong>B2B Service Fees</strong></td>
+        <td>Enterprise client AUM</td>
+        <td class="mono">Negotiated</td>
+        <td class="teal-cell">Partial</td>
+        <td class="mono">~$0.8M/yr</td>
+        <td class="mono">~$5M/yr</td>
+      </tr>
+      <tr style="background:rgba(201,168,76,0.04)">
+        <td><strong>Total Protocol Revenue</strong></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td class="gold-cell"><strong>~$9.1M/yr</strong></td>
+        <td class="gold-cell"><strong>~$52M/yr</strong></td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>Base Assumptions</h3>
+  <ul>
+    <li>Blended gross yield: 10–13% annualized across active strategy allocations (subject to DeFi market conditions)</li>
+    <li>Management fee rate: 1.0% (midpoint of 0.75–1.25% range)</li>
+    <li>Preferred return: 8% targeted — funded from gross yield with preferred return reserve buffer</li>
+    <li>B2C wallet user growth: conservative adoption curve, 18–24 month ramp to meaningful yield activation penetration</li>
+    <li>B2B TVL growth: 3–5 institutional clients onboarded per quarter at average $30–50M AUM per client in early periods</li>
+    <li>Card spend per active user: $400–600/month (consistent with neobank benchmarks)</li>
+    <li>Zero assumption of token price appreciation, secondary market liquidity, or speculative $GRX demand in revenue projections</li>
+  </ul>
+
+  <h3>Revenue Stress Test — Compressed Yield Scenario</h3>
+  <p>
+    A critical institutional stress test: what does Genesis revenue look like if DeFi yields compress to 5% annualized — below the 8% preferred return target?
+  </p>
+  <p>
+    In this scenario: the preferred return reserve funds the investor shortfall for 2–3 months; protocol spread drops to zero (Genesis earns management fee only); card interchange and FX spread continue generating $2.3M+ annualized at M33 scale; B2B service fees continue at contracted rates. Total revenue in compressed-yield scenario at M33 scale: ~$5.6M/yr (vs. ~$9.1M base). The business does not break — it contracts. This revenue floor demonstrates that Genesis is not a pure-DeFi yield bet; Engine 1 provides structural revenue stability.
+  </p>
+
+  <h3>Treasury Compounding Effect</h3>
+  <p>
+    The 40% treasury reinvestment pool from Genesis spread deployments compounds AUM organically over time. At M33 base case, the treasury-owned AUM represents approximately 8–12% of total TVL — reducing dependence on new external capital to sustain preferred return payments. By M72, under the base-case scenario, treasury-owned AUM contributes meaningfully to the self-sustaining character of the Perpetual Capital Engine.
+  </p>
+</section>
+
+<!-- ══ §17 72-MONTH SCENARIO ROADMAP ═══════════════════ -->
+<section class="wp-section" id="s17">
+  <div class="section-eyebrow">
+    <span class="section-num">17</span>
+    <div class="section-rule"></div>
+    <span class="section-phase">Phase E — Model &amp; Disclosures</span>
+  </div>
+  <h2 class="section-title">72-Month <span class="gold">Scenario Roadmap</span></h2>
+  <p class="section-lead">
+    A base-case projection for what disciplined execution — combined with favorable but realistic market conditions and regulatory approvals — can produce under the modeled assumptions. Not a guarantee. Not a forecast. A structured scenario for planning and investor orientation.
+  </p>
+
+  <div class="timeline">
+    <div class="tl-phase">
+      <div class="tl-phase-header">
+        <div class="tl-phase-dot"></div>
+        <div class="tl-phase-label">Phase I — Foundation</div>
+        <div class="tl-phase-period">Month 01–12</div>
+      </div>
+      <div class="tl-items">
+        <div class="tl-item">
+          <strong>Core smart contract deployment</strong>
+          <span>ERC-4626 vault, StrategyRouter v1, ComplianceRegistry, Risk Engine — audited and deployed on Base/Arbitrum. Tier 1 and Tier 2 yield sources active.</span>
+        </div>
+        <div class="tl-item">
+          <strong>Smarter Wallet beta — payment features</strong>
+          <span>Card issuance, USDC send/receive, Zero Hash remittance corridors. Engine 1 revenue active from day one. Target: 5,000–15,000 active users by M12.</span>
+        </div>
+        <div class="tl-item">
+          <strong>First institutional treasury clients</strong>
+          <span>2–4 family office or corporate treasury clients onboarded at $5–30M AUM each. B2B service agreements executed. Institutional reporting module live.</span>
+        </div>
+        <div class="tl-item">
+          <strong>$GRX offering — Reg D 506(c)</strong>
+          <span>Accredited investor offering launched following Form D filing and offering document finalization. Proceeds fund protocol development and operations runway.</span>
+        </div>
+        <div class="tl-item">
+          <strong>First jurisdiction yield activation</strong>
+          <span>Earn features activated in first approved jurisdiction(s). Engine 2 revenue begins. Preferred return reserve funded and operational.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-phase">
+      <div class="tl-phase-header">
+        <div class="tl-phase-dot" style="background:var(--teal)"></div>
+        <div class="tl-phase-label">Phase II — Scale</div>
+        <div class="tl-phase-period">Month 13–24</div>
+      </div>
+      <div class="tl-items">
+        <div class="tl-item">
+          <strong>Tier 3 and 4 strategy activation</strong>
+          <span>Pendle yield markets and Gearbox leveraged strategies integrated after audit and Risk Committee approval. Blended yield improves; spread generation increases.</span>
+        </div>
+        <div class="tl-item">
+          <strong>B2B embedded finance — first platform partner</strong>
+          <span>First embedded finance platform integration live. White-label treasury API deployed. Partner's user base becomes pooled AUM contributor.</span>
+        </div>
+        <div class="tl-item">
+          <strong>Wallet growth acceleration</strong>
+          <span>Referral program launch. Target 25,000–45,000 active users. Card spend volume growing; FX corridor revenue expanding across Zero Hash markets.</span>
+        </div>
+        <div class="tl-item">
+          <strong>Multi-jurisdiction yield rollout</strong>
+          <span>Earn features activated in additional approved jurisdictions. Jurisdiction-by-jurisdiction step-change revenue uplift materializes in financial model.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-phase">
+      <div class="tl-phase-header">
+        <div class="tl-phase-dot" style="background:var(--violet)"></div>
+        <div class="tl-phase-label">Phase III — M33 Milestone</div>
+        <div class="tl-phase-period">Month 25–36</div>
+      </div>
+      <div class="tl-items">
+        <div class="tl-item">
+          <strong>Base-case M33 targets</strong>
+          <span>~85,000 active wallet users, ~42,000 yield-activated. Protocol TVL ~$250M. Monthly revenue ~$760K blended. Treasury-owned AUM 8–12% of TVL.</span>
+        </div>
+        <div class="tl-item">
+          <strong>Insurance Phase 2 launch</strong>
+          <span>Yield-funded insurance premium feature released. Term life, IUL, and whole life products available in approved jurisdictions. Engine 3 revenue activation.</span>
+        </div>
+        <div class="tl-item">
+          <strong>StrategyRouter v2</strong>
+          <span>Enhanced strategy routing with machine-learning-assisted allocation optimization. Canary tier (Tier 5) strategies piloted at 2% AUM cap.</span>
+        </div>
+        <div class="tl-item">
+          <strong>Institutional reporting expansion</strong>
+          <span>Real-time institutional dashboard live. API integrations with major treasury management platforms. Quarterly independent performance attestation launched.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-phase">
+      <div class="tl-phase-header">
+        <div class="tl-phase-dot" style="background:var(--green)"></div>
+        <div class="tl-phase-label">Phase IV — Maturity</div>
+        <div class="tl-phase-period">Month 37–60</div>
+      </div>
+      <div class="tl-items">
+        <div class="tl-item">
+          <strong>200,000+ active wallet users</strong>
+          <span>Network effects from referral program and yield reputation drive organic growth. Average wallet balance growing as users deepen engagement.</span>
+        </div>
+        <div class="tl-item">
+          <strong>Protocol TVL ~$600–800M</strong>
+          <span>B2B and B2C TVL growing in parallel. Treasury-owned AUM compounding provides meaningful AUM floor independent of new capital inflows.</span>
+        </div>
+        <div class="tl-item">
+          <strong>Global remittance corridor expansion</strong>
+          <span>Zero Hash corridors operational across primary remittance markets. FX spread revenue growing materially as corridor volume scales.</span>
+        </div>
+        <div class="tl-item">
+          <strong>Credit feature development</strong>
+          <span>Yield-collateralized credit lines in development — the fifth financial service in the Smarter Wallet unified interface. Institutional credit product scoping.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-phase">
+      <div class="tl-phase-header">
+        <div class="tl-phase-dot" style="background:var(--gold)"></div>
+        <div class="tl-phase-label">Phase V — M72 Compounding</div>
+        <div class="tl-phase-period">Month 61–72</div>
+      </div>
+      <div class="tl-items">
+        <div class="tl-item">
+          <strong>Base-case M72 targets</strong>
+          <span>~520,000 active wallet users, ~310,000 yield-activated. Protocol TVL ~$1.3B+. Annual revenue ~$52M. Three-engine model fully operational across all product tiers.</span>
+        </div>
+        <div class="tl-item">
+          <strong>Self-reinforcing treasury engine</strong>
+          <span>Treasury-owned AUM grown through 72 months of reinvestment provides meaningful structural capital that reduces new-capital dependence for preferred return sustainability.</span>
+        </div>
+        <div class="tl-item">
+          <strong>Infrastructure-layer positioning</strong>
+          <span>Genesis Reserve established as the reference treasury intelligence layer for the stablecoin economy — the platform other yield products route through, not compete with.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout callout-red">
+    <div class="callout-label">Scenario Disclaimer</div>
+    <p>The M33 and M72 milestones above are base-case projections under modeled assumptions — not forecasts, commitments, or guarantees of any outcome. They represent what disciplined execution, combined with realistic but favorable conditions, might produce. They should be read alongside the risk factors in §18. Genesis Reserve makes no representation that any of these milestones will be achieved on the specified timeline or at the specified scale.</p>
+  </div>
+</section>
+
+<!-- ══ §18 DISCLOSURES ════════════════════════════════ -->
+<section class="wp-section" id="s18">
+  <div class="section-eyebrow">
+    <span class="section-num">18</span>
+    <div class="section-rule"></div>
+    <span class="section-phase">Phase E — Model &amp; Disclosures</span>
+  </div>
+  <h2 class="section-title"><span class="gold">Disclosures</span></h2>
+  <p class="section-lead">
+    This section contains legally required and institutionally standard disclosures. All readers — retail users, accredited investors, institutional clients, and counterparties — should read these disclosures in full before taking any action based on this document.
+  </p>
+
+  <div class="disclosure-block">
+    <h4>General Notice — Not an Offer</h4>
+    <p>This whitepaper is for informational and educational purposes only. It does not constitute an offer to sell, a solicitation of an offer to buy, or a recommendation with respect to any security, investment product, or financial instrument. Nothing in this document should be construed as investment, legal, tax, regulatory, or financial advice. Recipients should consult qualified advisors before making any investment decision.</p>
+
+    <h4>Forward-Looking Statements</h4>
+    <p>This document contains forward-looking statements, including but not limited to statements regarding projected TVL, user growth, revenue, yield performance, timeline milestones, and market opportunity. Forward-looking statements are identified by words such as "target," "base case," "project," "expect," "plan," "intend," "estimate," "scenario," and similar expressions. These statements reflect current expectations under modeled assumptions and involve material risks and uncertainties.</p>
+    <p>Actual results may differ materially from those projected due to: changes in DeFi yield environments; regulatory actions; competitive developments; smart contract vulnerabilities; market liquidity conditions; user adoption rates different from assumptions; regulatory approvals not received on expected timelines; and other factors outside Genesis Reserve's control. Genesis Reserve undertakes no obligation to update forward-looking statements.</p>
+
+    <h4>Regulation D Notice — $GRX Token</h4>
+    <p>$GRX tokens are securities offered only to accredited investors, as defined under Rule 501 of Regulation D under the Securities Act of 1933, as amended. The offering is made pursuant to an exemption from registration under Rule 506(c) of Regulation D. $GRX tokens have not been registered under the Securities Act or any state securities law. They may not be resold or transferred unless registered or an exemption from registration is available. Purchasers of $GRX tokens will be required to represent and warrant that they are accredited investors and agree to the transfer restrictions described in the applicable offering documents.</p>
+
+    <h4>No Guarantee of Return</h4>
+    <p>The 8% annualized preferred return described in this document is a <strong>targeted preferred return</strong> — not a guaranteed return, fixed interest rate, or contractual obligation independent of protocol performance. The preferred return is payable from net realized yield and available reserve capacity, subject to market conditions, strategy performance, protocol liquidity, operating expenses, and the specific terms of applicable offering documents. In periods where net realized yield is insufficient to fund the preferred return and the preferred return reserve is depleted, investors may receive less than the targeted preferred return or no return. Principal is also at risk.</p>
+
+    <h4>Not FDIC Insured / Not a Bank</h4>
+    <p>Genesis Reserve is not a bank, savings institution, or deposit-taking entity. Balances held in Genesis Reserve vaults are not insured by the FDIC, SIPC, or any government agency. Users bear the risk of loss of their deposited capital, including from smart contract vulnerabilities, strategy underperformance, protocol failures, and other risks described in this document and in applicable offering documents.</p>
+
+    <h4>Risk Factors — Selected</h4>
+    <p>The following is a non-exhaustive summary of material risk factors. Complete risk factors are contained in the applicable offering documents and should be reviewed in full:</p>
+    <ul style="font-size:13px;color:var(--text-muted);">
+      <li><strong>Smart contract risk:</strong> ERC-4626 vaults, StrategyRouter, and all related contracts are subject to bugs, vulnerabilities, and exploits despite audit programs. Historical DeFi losses total ~$16.5B.</li>
+      <li><strong>Yield compression risk:</strong> DeFi yields can compress materially and rapidly. If blended gross yield falls below the preferred return target for extended periods, investor returns may be reduced.</li>
+      <li><strong>Regulatory risk:</strong> Digital asset regulation is evolving rapidly. Regulatory actions could restrict or prohibit Genesis Reserve products in certain jurisdictions, require product modifications, or impose unforeseen compliance costs.</li>
+      <li><strong>Liquidity risk:</strong> While ERC-4626 redemptions are designed to be immediate, extreme market conditions may create redemption delays if strategy positions cannot be unwound at current market prices without material impact.</li>
+      <li><strong>Counterparty risk:</strong> Genesis's yield strategies rely on third-party protocols (Aave, Pendle, Gearbox, etc.). Failure or impairment of any counterparty protocol could reduce available yield or cause capital loss.</li>
+      <li><strong>Oracle risk:</strong> Price and yield data depends on oracle systems. Oracle manipulation or failure, despite circuit breaker protections, could cause suboptimal rebalancing or brief NAV inaccuracies.</li>
+      <li><strong>Concentration risk:</strong> Despite allocation caps, concentrated exposure to a single yield source category during periods of high blended yield could amplify losses if that category experiences an adverse event.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ══ §19 TECHNICAL APPENDIX ══════════════════════════ -->
+<section class="wp-section" id="s19">
+  <div class="section-eyebrow">
+    <span class="section-num">19</span>
+    <div class="section-rule"></div>
+    <span class="section-phase">Phase E — Model &amp; Disclosures</span>
+  </div>
+  <h2 class="section-title">Technical <span class="gold">Appendix</span></h2>
+  <p class="section-lead">
+    Smart contract specifications, vault interface reference, epoch mechanics, and oracle architecture for technical reviewers and integration partners.
+  </p>
+
+  <h3>ERC-4626 Implementation</h3>
+  <p>The Genesis vault implements the ERC-4626 Tokenized Vault Standard as defined in Ethereum Improvement Proposal 4626. Core interface functions:</p>
+
+  <div style="background:#F5F5F5;border:1px solid var(--border-light);border-radius:8px;padding:20px;overflow-x:auto;margin:20px 0;">
+    <pre style="font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.7;color:var(--text-primary);white-space:pre-wrap;"><span style="color:var(--gold-dk)">interface</span> IGenesisVault <span style="color:var(--gold-dk)">is</span> IERC4626 {
+  <span style="color:var(--text-muted)">// Standard ERC-4626 functions</span>
+  <span style="color:var(--teal)">function</span> deposit(uint256 assets, address receiver) <span style="color:var(--violet)">external</span> returns (uint256 shares);
+  <span style="color:var(--teal)">function</span> redeem(uint256 shares, address receiver, address owner) <span style="color:var(--violet)">external</span> returns (uint256 assets);
+  <span style="color:var(--teal)">function</span> convertToShares(uint256 assets) <span style="color:var(--violet)">external view</span> returns (uint256);
+  <span style="color:var(--teal)">function</span> convertToAssets(uint256 shares) <span style="color:var(--violet)">external view</span> returns (uint256);
+  <span style="color:var(--teal)">function</span> totalAssets() <span style="color:var(--violet)">external view</span> returns (uint256);
+
+  <span style="color:var(--text-muted)">// Genesis extensions</span>
+  <span style="color:var(--teal)">function</span> epochSettle() <span style="color:var(--violet)">external</span>; <span style="color:var(--text-muted)">// called by keeper every 15 minutes</span>
+  <span style="color:var(--teal)">function</span> currentEpochYield() <span style="color:var(--violet)">external view</span> returns (uint256 grossYield, uint256 netToInvestor);
+  <span style="color:var(--teal)">function</span> preferredReturnReserve() <span style="color:var(--violet)">external view</span> returns (uint256);
+  <span style="color:var(--teal)">function</span> complianceRegistry() <span style="color:var(--violet)">external view</span> returns (address);
+}</pre>
+  </div>
+
+  <h3>Epoch Settlement Sequence</h3>
+  <p>The epoch settlement process executes the following sequence at each 15-minute boundary:</p>
+  <ol>
+    <li><strong>Oracle update:</strong> TWAP prices and yield rates fetched from approved oracle sources; deviation check against circuit breaker threshold</li>
+    <li><strong>Strategy harvest:</strong> Pending yield harvested from all active strategy positions; gross yield computed by strategy</li>
+    <li><strong>Risk check:</strong> Risk Engine evaluates all positions against circuit breaker parameters; rebalancing instructions generated if any threshold is breached</li>
+    <li><strong>Rebalancing execution:</strong> StrategyRouter executes any required rebalancing transactions in batch</li>
+    <li><strong>Waterfall settlement:</strong> Management fee deducted; preferred return credited to investor NAV; excess spread distributed 40/20/40; preferred return reserve funded or drawn as appropriate</li>
+    <li><strong>NAV update:</strong> ERC-4626 totalAssets() updated to reflect settled values; share price updated</li>
+    <li><strong>Attribution record:</strong> Epoch-level attribution data written to Reporting Module on-chain storage</li>
+  </ol>
+
+  <h3>Network Deployment</h3>
+  <div style="overflow-x:auto;">
+  <table class="wp-table">
+    <thead>
+      <tr>
+        <th>Component</th>
+        <th>Network</th>
+        <th>Rationale</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>ERC-4626 Vault</td>
+        <td>Base + Arbitrum</td>
+        <td>Low gas costs for epoch settlement; deep USDC liquidity; established DeFi ecosystem</td>
+      </tr>
+      <tr>
+        <td>StrategyRouter</td>
+        <td>Base (primary)</td>
+        <td>Aerodrome/Curve DEX liquidity concentrated on Base; CCTP for cross-chain asset movement</td>
+      </tr>
+      <tr>
+        <td>ComplianceRegistry</td>
+        <td>Ethereum mainnet</td>
+        <td>Maximum security and decentralization for the authoritative compliance record</td>
+      </tr>
+      <tr>
+        <td>$GRX Token</td>
+        <td>Ethereum mainnet</td>
+        <td>Maximum liquidity, wallet support, and secondary market infrastructure</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>CCTP Integration</h3>
+  <p>
+    Genesis Reserve integrates Circle's Cross-Chain Transfer Protocol (CCTP) for USDC movement between supported networks. CCTP enables native USDC burning and minting across chains — eliminating bridge risk for cross-chain capital routing. The StrategyRouter uses CCTP to rebalance between Base and Arbitrum deployments as yield opportunities shift across networks.
+  </p>
+</section>
+
+<!-- ══ §20 OFFERING DOCUMENT CROSS-REFERENCE ═══════════ -->
+<section class="wp-section" id="s20">
+  <div class="section-eyebrow">
+    <span class="section-num">20</span>
+    <div class="section-rule"></div>
+    <span class="section-phase">Phase E — Model &amp; Disclosures</span>
+  </div>
+  <h2 class="section-title">Offering Document <span class="gold">Cross-Reference</span></h2>
+  <p class="section-lead">
+    This whitepaper provides architectural and strategic context. The definitive legal terms for each Genesis Reserve product are contained in the applicable offering documents, which control in all matters of economic terms, investor rights, and legal obligations.
+  </p>
+
+  <h3>Document Hierarchy</h3>
+  <p>In the event of any inconsistency between this whitepaper and any offering document, the offering document controls. This whitepaper is illustrative, not contractual.</p>
+
+  <table class="crossref-table">
+    <thead>
+      <tr>
+        <th>Topic</th>
+        <th>In Whitepaper</th>
+        <th>In Offering Document</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Preferred Return Rate</td>
+        <td class="partial">Illustrative (8% target)</td>
+        <td class="check">Definitive</td>
+        <td>Offering doc governs exact rate, conditions, and reserve terms</td>
+      </tr>
+      <tr>
+        <td>Management Fee Rate</td>
+        <td class="partial">Range (0.75–1.25%)</td>
+        <td class="check">Definitive</td>
+        <td>Exact rate per vault class specified in offering doc</td>
+      </tr>
+      <tr>
+        <td>$GRX Token Economics</td>
+        <td class="partial">Structural description</td>
+        <td class="check">Definitive</td>
+        <td>Distribution schedule, transfer restrictions, investor rights all in offering doc</td>
+      </tr>
+      <tr>
+        <td>Redemption Terms</td>
+        <td class="partial">Illustrative (next epoch)</td>
+        <td class="check">Definitive</td>
+        <td>Specific redemption windows and any limitations in offering doc</td>
+      </tr>
+      <tr>
+        <td>Risk Factors</td>
+        <td class="partial">Selected summary</td>
+        <td class="check">Complete</td>
+        <td>Complete risk factors in offering doc — must be read in full</td>
+      </tr>
+      <tr>
+        <td>System Architecture</td>
+        <td class="check">Full description</td>
+        <td class="ref-only">Referenced</td>
+        <td>Technical architecture is in whitepaper; offering doc references it</td>
+      </tr>
+      <tr>
+        <td>Yield Source Taxonomy</td>
+        <td class="check">Full description</td>
+        <td class="partial">Summary</td>
+        <td>Allowlist updates governed by Risk Committee — not fixed in offering doc</td>
+      </tr>
+      <tr>
+        <td>Financial Projections</td>
+        <td class="partial">Scenario-based</td>
+        <td class="ref-only">Not included</td>
+        <td>Projections are illustrative only — not representations in offering doc</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Contact and Access</h3>
+  <p>
+    To request access to Genesis Reserve offering documents, institutional onboarding information, or technical integration documentation, contact the Genesis Reserve team through the official investor relations channel. All offering document requests are subject to accredited investor verification for $GRX-related materials.
+  </p>
+
+  <div class="callout">
+    <div class="callout-label">Version Note</div>
+    <p>This is Genesis Reserve Whitepaper v2.0, issued May 2026. This document supersedes all prior versions. Genesis Reserve reserves the right to update this whitepaper at any time. Material updates will be versioned and dated. The current version of all Genesis Reserve documents is available through the official Genesis Reserve platform.</p>
+  </div>
+
+  <div style="margin-top:48px;padding-top:32px;border-top:1px solid var(--border-light);text-align:center;">
+    <div style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:600;color:var(--text-primary);margin-bottom:8px;">Genesis Reserve</div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:16px;">The Treasury Intelligence Layer for the Stablecoin Economy</div>
+    <div style="font-size:13px;color:var(--text-muted);">Whitepaper v2.0 · May 2026 · Private &amp; Confidential</div>
+    <div style="font-size:12px;color:var(--text-muted);margin-top:8px;">© 2026 Genesis Reserve. All rights reserved.</div>
+  </div>
+</section>
+
+</main>
+</div><!-- end .wp-layout -->
+
+<script>
+// ── TOC Active State
+const tocItems = document.querySelectorAll('.toc-item[data-section]');
+const sections = document.querySelectorAll('.wp-section[id]');
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if(e.isIntersecting) {
+      tocItems.forEach(t => t.classList.remove('active'));
+      const active = document.querySelector(`.toc-item[data-section="${e.target.id}"]`);
+      if(active) active.classList.add('active');
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+
+sections.forEach(s => observer.observe(s));
+
+// ── Waterfall Calculator
+function fmt(n) {
+  if(n >= 1e6) return '$' + (n/1e6).toFixed(1) + 'M';
+  if(n >= 1e3) return '$' + (n/1e3).toFixed(0) + 'K';
+  return '$' + n.toFixed(0);
+}
+
+function updateWaterfall() {
+  const tvl = parseFloat(document.getElementById('tvl-slider').value) * 1e6;
+  const grossYieldPct = parseFloat(document.getElementById('yield-slider').value) / 100;
+  const mgmtFeeRate = 0.01;
+  const preferredRate = 0.08;
+
+  const grossIncome = tvl * grossYieldPct;
+  const mgmtFee = tvl * mgmtFeeRate;
+  const netIncome = grossIncome - mgmtFee;
+  const preferredPay = Math.min(netIncome, tvl * preferredRate);
+  const spread = Math.max(0, netIncome - preferredPay);
+  const grxPool = spread * 0.2;
+  const treasuryReinvest = spread * 0.4;
+  const genesisOps = spread * 0.4;
+  const genesisTotal = mgmtFee + spread;
+
+  document.getElementById('tvl-lbl').textContent = 'TVL: ' + fmt(tvl);
+  document.getElementById('yield-lbl').textContent = 'Gross Yield: ' + (grossYieldPct*100).toFixed(1) + '%';
+  document.getElementById('kpi-investor').textContent = fmt(preferredPay);
+  document.getElementById('kpi-mgmt').textContent = fmt(mgmtFee);
+  document.getElementById('kpi-spread').textContent = fmt(spread);
+  document.getElementById('kpi-treasury').textContent = fmt(treasuryReinvest);
+
+  const investorFlex = preferredPay / (grossIncome || 1) * 60;
+  const grxFlex = grxPool / (grossIncome || 1) * 60;
+  const genFlex = genesisTotal / (grossIncome || 1) * 60;
+
+  document.getElementById('bar-investor').style.flex = Math.max(investorFlex,5);
+  document.getElementById('bar-investor').querySelector('.split-pct').textContent = fmt(preferredPay);
+  document.getElementById('bar-grx').style.flex = Math.max(grxFlex,5);
+  document.getElementById('bar-grx').querySelector('.split-pct').textContent = fmt(grxPool);
+  document.getElementById('bar-treasury').style.flex = Math.max(genFlex,5);
+  document.getElementById('bar-treasury').querySelector('.split-pct').textContent = fmt(genesisTotal);
+}
+
+const tvlSlider = document.getElementById('tvl-slider');
+const yieldSlider = document.getElementById('yield-slider');
+if(tvlSlider) { tvlSlider.addEventListener('input', updateWaterfall); yieldSlider.addEventListener('input', updateWaterfall); updateWaterfall(); }
+</script>
+</body>
+</html>
