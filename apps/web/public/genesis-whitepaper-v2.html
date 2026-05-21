@@ -286,11 +286,60 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
 .crossref-table .partial{color:var(--gold-dk);font-weight:700}
 .crossref-table .ref-only{color:var(--text-muted)}
 
+/* VERSION PILL — COVER */
+.cover-version-pill{
+  display:inline-flex;align-items:center;gap:7px;
+  background:rgba(201,168,76,0.15);
+  border:1px solid rgba(201,168,76,0.5);
+  color:var(--gold-lt);
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  padding:5px 14px;border-radius:20px;
+}
+.cover-version-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--gold);
+  box-shadow:0 0 6px var(--gold);
+  animation:pulse-dot 2s ease-in-out infinite;
+  flex-shrink:0;
+}
+@keyframes pulse-dot{0%,100%{opacity:1;box-shadow:0 0 6px var(--gold)}50%{opacity:.6;box-shadow:0 0 12px var(--gold)}}
+.cover-version-delta{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;letter-spacing:.1em;
+  color:rgba(0,212,170,0.7);
+  text-transform:uppercase;
+}
+
+/* FLOATING VERSION BADGE */
+.version-float{
+  position:fixed;bottom:20px;right:20px;z-index:999;
+  display:flex;align-items:center;gap:8px;
+  background:#020305;
+  border:1px solid rgba(201,168,76,0.4);
+  border-radius:20px;
+  padding:6px 14px 6px 10px;
+  box-shadow:0 4px 20px rgba(0,0,0,0.4);
+  opacity:0;pointer-events:none;
+  transition:opacity .3s ease;
+}
+.version-float.visible{opacity:1;pointer-events:auto}
+.version-float-dot{width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 6px var(--gold);flex-shrink:0}
+.version-float-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-lt);font-weight:700}
+.version-float-sections{font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(255,255,255,0.3);margin-left:4px}
+
 /* PRINT */
-@media print{.wp-sidebar{display:none}.wp-layout{grid-template-columns:1fr}.wp-main{padding:40px}}
+@media print{.wp-sidebar{display:none}.wp-layout{grid-template-columns:1fr}.wp-main{padding:40px}.version-float{display:none}}
 </style>
 </head>
 <body>
+
+<!-- FLOATING VERSION BADGE -->
+<div class="version-float" id="versionBadge">
+  <div class="version-float-dot"></div>
+  <span class="version-float-label">v2.0</span>
+  <span class="version-float-sections">20 sections</span>
+</div>
 
 <!-- ═══════════════════════ COVER ═══════════════════════ -->
 <section id="cover">
@@ -301,12 +350,19 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
   <div class="cover-corner bl"></div>
   <div class="cover-corner br"></div>
   <div class="cover-inner">
-    <div class="cover-classification">Confidential — Version 2.0 — May 2026</div>
+    <div class="cover-classification">Confidential · Private &amp; Institutional · May 2026</div>
     <div class="cover-logo-mark">
       <img src="/genesis-logo.png" alt="Genesis Reserve" class="cover-logo-img" onerror="this.src='/genesis-logo.svg'"/>
     </div>
     <div class="cover-brand-name"><span>Genesis</span> Reserve</div>
     <div class="cover-brand-sub">Treasury Infrastructure Protocol</div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-top:14px;margin-bottom:-10px;">
+      <div class="cover-version-pill">
+        <span class="cover-version-dot"></span>
+        Whitepaper v2.0
+      </div>
+      <div class="cover-version-delta">↑ from v1.0</div>
+    </div>
     <div class="cover-divider"></div>
     <h1 class="cover-title">The Treasury<br/><span>Intelligence Layer</span></h1>
     <div class="cover-subtitle">Risk-managed capital routing for the stablecoin economy</div>
@@ -2273,6 +2329,18 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
 </div><!-- end .wp-layout -->
 
 <script>
+// ── Floating Version Badge — appears after scrolling past cover
+const versionBadge = document.getElementById('versionBadge');
+const cover = document.getElementById('cover');
+if(versionBadge && cover) {
+  const coverObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      versionBadge.classList.toggle('visible', !e.isIntersecting);
+    });
+  }, { threshold: 0.1 });
+  coverObs.observe(cover);
+}
+
 // ── TOC Active State
 const tocItems = document.querySelectorAll('.toc-item[data-section]');
 const sections = document.querySelectorAll('.wp-section[id]');
