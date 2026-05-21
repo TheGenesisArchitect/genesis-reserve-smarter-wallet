@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Genesis Reserve — Perpetual Capital Engine: A New Asset Class Whitepaper</title>
+<title>Genesis Reserve — Perpetual Capital Engine: Treasury Infrastructure Whitepaper</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
@@ -926,7 +926,7 @@ svg.wp-chart{width:100%;height:auto;overflow:visible}
     <div class="cover-divider"></div>
 
     <h1 class="cover-title">Perpetual <span>Capital</span><br/>Engine</h1>
-    <p class="cover-subtitle">A New Asset Class for the Infinite Economy</p>
+    <p class="cover-subtitle">The Treasury Intelligence Layer for the Stablecoin Economy</p>
 
     <div class="cover-meta-row">
       <div class="cover-meta-item">
@@ -1014,7 +1014,7 @@ svg.wp-chart{width:100%;height:auto;overflow:visible}
         Traditional finance optimizes for exit. Venture capital seeks liquidity events. Fixed-income instruments mature. Even the most sophisticated fund structures carry a sunset clause. Genesis Reserve is built on an entirely different premise: <strong>capital that never stops working is more valuable than capital that eventually stops.</strong>
       </p>
       <p>
-        Through a disciplined 40/20/40 spread allocation, a 96-epoch daily harvest cycle, and an ERC-4626 vault architecture connected to Pendle, Gearbox, Aave, and U.S. Treasury yield corridors, Genesis Reserve delivers a guaranteed 8% investor preferred return — while capturing every basis point above 8% as Genesis spread. At current live rates (Pendle 18%, Gearbox 20.53%), the Genesis spread expands from the conservative 5.2% floor toward 11%+, compounding the sovereign treasury and operational capital simultaneously.
+        Through a disciplined 40/20/40 spread allocation, a 96-epoch daily harvest cycle, and an ERC-4626 vault architecture connected to Pendle, Gearbox, Aave, and U.S. Treasury yield corridors, Genesis Reserve targets an 8% annualized preferred return to eligible investors — payable from net realized yield and available reserve capacity, subject to market conditions, protocol performance, liquidity, expenses, and the terms of the definitive offering documents. Every basis point above 8% is captured as Genesis spread. At current live rates (Pendle 18%, Gearbox 20.53%), the Genesis spread expands from the conservative 5.2% floor toward 11%+, compounding the sovereign treasury and operational capital simultaneously. The 8% preferred return is structurally senior to Genesis spread distributions; no spread is recognized until the preferred waterfall is satisfied for the applicable period.
       </p>
       <p>
         The $GRX Revenue Participation Token — issued under Reg D 506(c) — grants accredited investors and family offices a proportional, quarterly claim on the 20% investor pool of Genesis's gross spread, compounding at 13.2% on the reinvested 40% fraction. By Month 33, the treasury self-liquidates its own growth loan. By Month 72, the sovereign treasury generates $16,242/month in perpetuity — indefinitely — from no new capital deployment.
@@ -1026,7 +1026,7 @@ svg.wp-chart{width:100%;height:auto;overflow:visible}
       <div class="stat-grid">
         <div class="stat-card gold-border">
           <div class="stat-val">8%</div>
-          <div class="stat-label">Investor Preferred<br/>Guaranteed Floor</div>
+          <div class="stat-label">Investor Preferred<br/>Return Target</div>
         </div>
         <div class="stat-card gold-border">
           <div class="stat-val" style="font-size:26px">5.2–11%</div>
@@ -1044,7 +1044,7 @@ svg.wp-chart{width:100%;height:auto;overflow:visible}
 
       <div class="callout">
         <div class="callout-label">Thesis Statement</div>
-        <p>A perpetual capital engine does not ask when it will stop. It is designed to never stop. Every dollar of yield reinvested today compounds the engine's power tomorrow. Genesis Reserve is not a fund. It is a sovereign financial infrastructure — and it belongs to no one's exit timeline.</p>
+        <p>A perpetual capital engine does not ask when it will stop. It is designed to never stop. Every dollar of yield reinvested today compounds the engine's power tomorrow. Genesis Reserve is structured as programmable treasury infrastructure. Certain offerings — including $GRX and vault-linked revenue participation rights — may constitute securities and will be offered only through appropriate exemptions, disclosures, transfer restrictions, and eligibility controls. It belongs to no one's exit timeline.</p>
       </div>
     </section>
 
@@ -1123,7 +1123,7 @@ svg.wp-chart{width:100%;height:auto;overflow:visible}
         <strong>Layer 2 — $GRX Token Distribution:</strong> 20% of the Genesis 5.2% spread × 60% distribution rate × token share. This is the on-chain, Reg D-compliant revenue participation layer — connecting investors to the growth of the B2C engine as it scales from $18K/mo at M18 to $2.6M/mo at M72.
       </p>
       <p>
-        <strong>Layer 3 — Sovereign Treasury:</strong> 40% of the spread continuously reinvested at 13.2% APY. By Month 33, the treasury self-liquidates its growth loan. By Month 72, it generates $16,242/month in perpetuity from its own compounded base — requiring no new capital, no new investors, and no new decisions.
+        <strong>Layer 3 — Sovereign Treasury:</strong> 40% of the spread continuously reinvested at 13.2% APY. By Month 33, under base-case projections, the treasury self-liquidates its growth loan. By Month 72, the base-case model projects $16,242/month from its own compounded base — with reduced reliance on new external capital deployment. Actual results will depend on strategy performance, market conditions, and operational execution.
       </p>
 
       <div class="callout callout-teal">
@@ -1153,7 +1153,7 @@ svg.wp-chart{width:100%;height:auto;overflow:visible}
 
       <h3>The Epoch Model</h3>
       <p>
-        Traditional DeFi protocols harvest yield opportunistically or daily. Genesis Reserve operates on a <strong>15-minute epoch model</strong> — 96 harvest cycles per 24-hour period. Each epoch triggers a yield accrual event from the active strategy pool, which is logged on-chain, aggregated across the day, and settled into the vault's share price. This high-frequency compounding model outperforms daily compounding by approximately 0.18% annualized at a 13% base rate — a material advantage at institutional AUM.
+        Traditional DeFi protocols harvest yield opportunistically or daily. Genesis Reserve operates on a <strong>15-minute epoch model</strong> — 96 harvest cycles per 24-hour period. Each epoch triggers a yield accrual event from the active strategy pool, which is logged on-chain, aggregated across the day, and settled into the vault's share price. The 96-epoch model is not designed to create material compounding uplift versus daily compounding — the mathematical delta at a 13% base rate is minimal. Its purpose is operational: faster yield accounting, tighter NAV updates, cleaner attribution per strategy, improved reporting cadence, and earlier detection of underperformance or allocation drift. The real advantage is treasury intelligence and risk control at sub-daily resolution.
       </p>
 
       <!-- Epoch Diagram -->
@@ -1308,7 +1308,7 @@ svg.wp-chart{width:100%;height:auto;overflow:visible}
       </p>
 
       <h3>Yield Scenario Engine Calculator</h3>
-      <p>Select a yield scenario and move the AUM slider. <strong>Preserve</strong> (13.2%) is the guaranteed investor floor. <strong>Grow</strong> and <strong>Accelerate</strong> reflect live Pendle/Gearbox allocation strategies currently available.</p>
+      <p>Select a yield scenario and move the AUM slider. <strong>Preserve</strong> (13.2%) represents the targeted investor preferred return scenario. <strong>Grow</strong> and <strong>Accelerate</strong> reflect live Pendle/Gearbox allocation strategies currently available. All figures are projections, not guarantees.</p>
 
       <div class="diagram-wrap">
         <div class="diagram-title">Perpetual Engine Economics · Yield Scenario Model</div>
@@ -1642,14 +1642,14 @@ svg.wp-chart{width:100%;height:auto;overflow:visible}
         <span class="section-num">05</span>
         <div class="section-rule"></div>
       </div>
-      <h2 class="section-title">The New Asset Class:<br/><span class="gold">$GRX Revenue Participation Token</span></h2>
+      <h2 class="section-title">Revenue Participation Security:<br/><span class="gold">$GRX Token</span></h2>
       <p class="section-lead">
-        $GRX is not equity. It is not a utility token. It is not a stablecoin. $GRX is a new category of financial instrument: a Reg D 506(c) Revenue Participation Token that grants accredited investors a quarterly claim on the Genesis engine's operating spread — compounding, on-chain, and perpetual.
+        $GRX is not equity. It is not a utility token. It is not a stablecoin. $GRX is a private, restricted revenue participation security — structured for offering under Regulation D, Rule 506(c) — that grants verified accredited investors a quarterly pro-rata claim on the Genesis engine's operating spread, with on-chain settlement and transparent distribution accounting.
       </p>
 
-      <h3>Why $GRX Is a New Asset Class</h3>
+      <h3>$GRX as a Revenue Participation Security</h3>
       <p>
-        Traditional securities represent ownership of equity, debt, or real assets. Revenue participation agreements exist in private markets but are illiquid, bespoke, and non-composable. DeFi governance tokens grant voting rights but rarely revenue rights. $GRX is distinct from all three: it carries a contractual revenue participation right (20% of Genesis spread × token share), is issued under existing Reg D securities exemptions, and settles on-chain with quarterly USDC distributions — combining the rights of a revenue-based financing instrument with the transparency of blockchain settlement.
+        Traditional securities represent ownership of equity, debt, or real assets. Revenue participation agreements exist in private markets but are illiquid, bespoke, and non-composable. DeFi governance tokens grant voting rights but rarely revenue rights. $GRX is distinct from all three: it carries a contractual revenue participation right (20% of Genesis spread × token share), is issued under existing Reg D securities exemptions with transfer restrictions and accredited investor verification, and settles on-chain with quarterly USDC distributions — combining the rights of a revenue-based financing instrument with the transparency of blockchain settlement. $GRX is offered only to eligible accredited investors subject to applicable verification, transfer restrictions, investor suitability requirements, and definitive legal documentation.
       </p>
 
       <div class="token-dist-row">
@@ -1752,7 +1752,7 @@ svg.wp-chart{width:100%;height:auto;overflow:visible}
       </div>
       <h2 class="section-title">The Smarter Wallet:<br/><span class="gold">DeFi for Main Street</span></h2>
       <p class="section-lead">
-        The Genesis Smarter Wallet makes the Perpetual Capital Engine accessible to anyone with a phone number. Built on Privy's embedded wallet infrastructure, Circle USDC rails, and Zero Hash's licensed remittance network, it eliminates every traditional barrier between idle cash and institutional yield.
+        The Genesis Smarter Wallet is the consumer access layer for the Perpetual Capital Engine — built on Privy's embedded wallet infrastructure, Circle USDC rails, and Zero Hash's licensed remittance network. It provides eligible users with a simple, compliant interface for holding, sending, receiving, and managing digital dollars. Yield-bearing features, where available, are activated only after jurisdictional review, user eligibility verification, and applicable product-level disclosures.
       </p>
 
       <!-- Phone Demo Widget -->
@@ -1821,7 +1821,7 @@ svg.wp-chart{width:100%;height:auto;overflow:visible}
       </div>
 
       <h3>Smarter Wallet Feature Set</h3>
-      <p><strong>Earn:</strong> Deposit any amount via ACH, debit card, or USDC transfer. Funds are swept into the Genesis vault and begin earning at the blended 13.2% rate within one epoch (15 minutes). No minimums. No lock-ups for Main Street users (institutional investors have the 72-month structure).</p>
+      <p><strong>Earn:</strong> Deposit via ACH, debit card, or USDC transfer. Yield-bearing features are activated where jurisdictionally permitted, following eligibility review and applicable product disclosures. Institutional investors access the full vault structure — including the 72-month compounding engine — through the dedicated onboarding and offering flow.</p>
       <p><strong>Send:</strong> Send USDC to any phone number globally in under 60 seconds at a fraction of wire transfer cost. Zero Hash handles the licensed cross-border settlement — the user sees a simple send screen. Supported corridors: US→MX, US→PH, expanding to 25 corridors by M36.</p>
       <p><strong>Receive:</strong> Receive direct deposits, international transfers, and $GRX quarterly distributions — all into the same Smarter Wallet. One interface for all cash flows.</p>
       <p><strong>Stack:</strong> The Smarter Wallet's viral referral mechanic turns every user into a growth node. Each referral that activates yields a bonus APY boost for both parties — driving the LTV:CAC ratio of 7.6× that underpins the B2C growth engine's projections.</p>
@@ -1954,7 +1954,7 @@ svg.wp-chart{width:100%;height:auto;overflow:visible}
 
       <h3>From Main Street to Institution — and Back</h3>
       <p>
-        The genius of the Genesis flywheel is that Main Street users and institutional investors are not competing for the same product — they are powering each other's returns. Main Street transaction fees grow the $GRX pool. Institutional AUM provides the engine's base yield. The sovereign treasury provides permanent stability. Three stakeholder groups, one compounding machine, zero conflicts of interest.
+        The architecture of the Genesis flywheel is that retail users and institutional participants are not competing for the same product — they are powering each other's returns. Transaction fees grow the $GRX pool. Institutional AUM provides the engine's base yield. The sovereign treasury provides long-term stability. Three stakeholder groups, one compounding machine, with aligned economic incentives designed to sustain the engine across market cycles.
       </p>
     </section>
 
@@ -2152,7 +2152,7 @@ svg.wp-chart{width:100%;height:auto;overflow:visible}
         We have described, in technical and economic detail, a programmable capital infrastructure that operates on a premise no existing financial product has fully committed to: that capital should compound forever, that investors should own a piece of a growing revenue engine rather than a shrinking fixed-income schedule, and that the institutions who build such an engine should accumulate sovereign power as a natural byproduct of disciplined operation.
       </p>
       <p>
-        The 40/20/40 split is not a marketing concept. It is a mathematical commitment. The 96-epoch daily harvest is not a feature — it is the engine's heartbeat. The M33 inflection point is not a milestone — it is the moment the engine achieves true autonomy. And the sovereign treasury at Month 72 is not a target — it is an inevitability, given disciplined execution.
+        The 40/20/40 split is not a marketing concept. It is a structural commitment. The 96-epoch daily harvest is not a feature — it is the engine's operational heartbeat. The M33 inflection point is not a milestone — it is the base-case moment the engine achieves capital self-sufficiency. The sovereign treasury at Month 72 is the base-case projection for what disciplined execution, compound returns, and B2C adoption can produce under the modeled assumptions.
       </p>
       <p>
         The Smarter Wallet brings this engine to Main Street without complexity, without seed phrases, without confusion. Zero Hash moves money across borders without friction. Privy makes self-custody feel like a bank account. Circle's USDC provides the stable unit of account that connects fiat and on-chain without volatility risk.
@@ -2162,7 +2162,7 @@ svg.wp-chart{width:100%;height:auto;overflow:visible}
       </p>
 
       <div class="pull-quote">
-        <p>"We are the Gold Standard. Not because we say so — but because the mathematics demands it."</p>
+        <p>"We have built a policy-controlled treasury engine that routes capital through approved yield corridors, pays investors first through a defined waterfall, captures spread for treasury and operations, and compounds retained capital under transparent risk limits."</p>
       </div>
 
       <p>
@@ -2252,7 +2252,7 @@ svg.wp-chart{width:100%;height:auto;overflow:visible}
   const aumDisplay = document.getElementById('wpAumDisplay');
 
   const YIELD_MODES = {
-    preserve:    { rate: 0.132, spread: 0.052, note: 'Guaranteed floor — stable blended target across Pendle, Aave, and T-bills. Investor preferred rate secured.' },
+    preserve:    { rate: 0.132, spread: 0.052, note: 'Targeted preferred scenario — stable blended allocation across Pendle, Aave, and T-bills. Subject to market conditions and protocol performance.' },
     grow:        { rate: 0.160, spread: 0.080, note: 'Live optimized — 70% allocation to Pendle (18%) + Gearbox (20.53%), blended ~16% APY.' },
     accelerate:  { rate: 0.190, spread: 0.110, note: 'Maximum capture — full Pendle/Gearbox allocation at current live rates of 18–20.53%.' }
   };

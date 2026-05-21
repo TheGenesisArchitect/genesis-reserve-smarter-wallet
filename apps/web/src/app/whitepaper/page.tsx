@@ -1,6 +1,6 @@
 export const metadata = {
-  title: 'Genesis Reserve — Perpetual Capital Engine: A New Asset Class Whitepaper',
-  description: 'Technical whitepaper covering engine mechanics, $GRX tokenomics, smart contract architecture, B2C adoption strategy, and the 72-month sovereign treasury roadmap.',
+  title: 'Genesis Reserve — Perpetual Capital Engine: Treasury Infrastructure Whitepaper',
+  description: 'Risk-managed treasury infrastructure whitepaper covering the Perpetual Capital Engine mechanics, $GRX revenue participation security, ERC-4626 vault architecture, yield source taxonomy, and 72-month base-case scenario roadmap.',
 }
 
 export default function WhitepaperPage() {
