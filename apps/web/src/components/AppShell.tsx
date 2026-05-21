@@ -4,7 +4,7 @@ import { useState, useEffect, type ReactNode } from 'react'
 
 export type ViewKey =
   | 'home' | 'send' | 'deposit' | 'withdraw' | 'vault-withdraw' | 'receive' | 'card' | 'vaults' | 'activity' | 'settings' | 'bridge' | 'swap'
-  | 'agentic' | 'analytics' | 'yield-monitor' | 'compliance' | 'consultive' | 'scheduled' | 'batch' | 'admin' | 'academy'
+  | 'agentic' | 'analytics' | 'yield-monitor' | 'compliance' | 'consultive' | 'scheduled' | 'batch' | 'admin' | 'academy' | 'insurance'
 
 interface AppShellProps {
   activeView: ViewKey
@@ -28,6 +28,7 @@ const CONSUMER_NAV: Array<{ key: ViewKey; label: string; icon: (active: boolean)
   { key: 'vaults', label: 'Vaults', icon: (a) => <VaultIcon active={a} /> },
   { key: 'activity', label: 'Activity', icon: (a) => <ActivityIcon active={a} /> },
   { key: 'yield-monitor', label: 'Yield Monitor', icon: (a) => <ResearchIcon active={a} /> },
+  { key: 'insurance', label: 'Protection', icon: (a) => <ProtectionIcon active={a} /> },
   { key: 'academy', label: 'Academy', icon: (a) => <AcademyIcon active={a} /> },
   { key: 'settings', label: 'Settings', icon: (a) => <SettingsIcon active={a} /> },
 ]
@@ -147,7 +148,7 @@ export function AppShell({
         <div style={{ width: '100%', height: 1, background: 'rgba(201,168,76,0.18)', marginBottom: 22 }} />
 
         {/* Nav */}
-        <nav style={{ display: 'flex', flexDirection: 'column', gap: 2, flex: 1 }}>
+        <nav style={{ display: 'flex', flexDirection: 'column', gap: 2, flex: 1, overflowY: 'auto', overflowX: 'hidden', scrollbarWidth: 'none' }}>
           {CONSUMER_NAV.map((item) => {
             const active = activeView === item.key
             return (
@@ -159,8 +160,9 @@ export function AppShell({
                   display: 'flex',
                   alignItems: 'center',
                   gap: 11,
-                  padding: '10px 12px',
+                  padding: '8px 12px',
                   borderRadius: 10,
+                  flexShrink: 0,
                   border: active ? '1px solid rgba(201,168,76,0.28)' : '1px solid transparent',
                   background: active ? 'rgba(201,168,76,0.08)' : 'transparent',
                   color: active ? '#c9a84c' : 'rgba(245,240,232,0.5)',
@@ -468,6 +470,16 @@ function BridgeIcon({ active }: { active: boolean }) {
       <path d="M4 12h16M4 12c0-4 3-7 8-7s8 3 8 7" />
       <path d="M8 12v4M12 12v4M16 12v4" />
       <path d="M3 16h18" />
+    </svg>
+  )
+}
+
+function ProtectionIcon({ active }: { active: boolean }) {
+  const c = active ? '#c9a84c' : 'rgba(245,240,232,0.45)'
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+      <path d="M9 12l2 2 4-4" strokeWidth="1.8" />
     </svg>
   )
 }

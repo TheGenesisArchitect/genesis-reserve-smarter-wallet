@@ -32,6 +32,7 @@ const YieldMonitorPanel = dynamic(() => import('../components/YieldMonitorPanel'
 const ConsultiveForecastPanel = dynamic(() => import('../components/ConsultiveForecastPanel').then((mod) => mod.ConsultiveForecastPanel), { ssr: false })
 const AgentUniversePanel = dynamic(() => import('../components/AgentUniversePanel').then((mod) => mod.AgentUniversePanel), { ssr: false })
 const CodexAcademyHub = dynamic(() => import('../components/codex/CodexAcademyHub').then((mod) => mod.CodexAcademyHub), { ssr: false })
+const InsurancePage = dynamic(() => import('../components/InsurancePage').then((mod) => mod.InsurancePage), { ssr: false })
 const BridgePanel = dynamic(() => import('../components/BridgePanel').then((mod) => mod.BridgePanel), { ssr: false })
 const SwapPanel = dynamic(() => import('../components/SwapPanel').then((mod) => mod.SwapPanel), { ssr: false })
 const ReceiveFlow = dynamic(() => import('../components/ReceiveFlow').then((mod) => mod.ReceiveFlow), { ssr: false })
@@ -221,6 +222,7 @@ function PanelRouter({
     case 'batch': return <div style={panelStyle}><BatchOperationsPanel accountId={accountId} /></div>
     case 'admin': return <div style={panelStyle}><AdminConsolePanel /></div>
     case 'academy': return <div style={panelStyle}><CodexAcademyHub /></div>
+    case 'insurance': return <div style={panelStyle}><InsurancePage accountId={accountId} /></div>
 
     default:
       return <WalletHome accountId={accountId} onNavigate={onNavigate} />

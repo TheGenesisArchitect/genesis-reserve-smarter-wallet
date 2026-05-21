@@ -528,6 +528,58 @@ export interface BuildRunReviewSubmitResponse {
     event: Record<string, unknown>
 }
 
+// ─── Insurance / Yield-Funded Protection Types ────────────────────────────
+
+export type InsuranceProductType = 'term' | 'iul' | 'whole'
+export type InsurancePolicyStatus = 'demo' | 'applied' | 'underwriting' | 'active' | 'lapsed' | 'cancelled'
+export type InsurancePhase = 'phase1' | 'phase2' | 'phase3'
+
+export interface InsuranceBeneficiary {
+  name: string
+  relationship: string
+  percentage: number
+}
+
+export interface InsurancePolicy {
+  id: string
+  accountId: string
+  type: InsuranceProductType
+  status: InsurancePolicyStatus
+  coverageAmount: number
+  monthlyPremium: number
+  termYears?: number
+  startDate?: string
+  cashValue?: number
+  beneficiaries: InsuranceBeneficiary[]
+  createdAt: string
+}
+
+export interface YieldAllocation {
+  accountId: string
+  insurancePercent: number
+  vaultPercent: number
+  walletPercent: number
+  updatedAt: string
+}
+
+export interface InsuranceQuote {
+  productType: InsuranceProductType
+  coverageAmount: number
+  monthlyPremium: number
+  termYears?: number
+  estimatedYieldCoverage: number
+  outOfPocketMonthly: number
+}
+
+export interface PremiumPayment {
+  id: string
+  policyId: string
+  amount: number
+  yieldSourced: number
+  status: 'pending' | 'processed' | 'failed'
+  paidAt?: string
+}
+
 // ─── Vault Upgrade BFF Types ─────────────────────────────────────────────
 
 export type VaultIntentTier = 'preserve' | 'grow' | 'accelerate'
