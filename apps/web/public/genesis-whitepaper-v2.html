@@ -3917,8 +3917,9 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
   }
 
   function startTour(){
+    // Keep geo-assembled — its forwards fill-mode holds stroke-dashoffset:0 on all paths.
+    // geo-touring's animation:none!important on the group elements stops rotation only.
     stage.classList.add('geo-touring');
-    stage.classList.remove('geo-assembled');
     pre.style.display  = 'none';
     tour.classList.add('visible');
     goTo(0);
@@ -3933,9 +3934,7 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
     pre.style.display = '';
     tour.classList.remove('visible');
     current = -1;
-    // Re-trigger breathing by re-adding geo-assembled
-    void stage.offsetWidth;
-    stage.classList.add('geo-assembled');
+    // geo-assembled already present — breathing animations resume automatically
   }
 
   document.getElementById('geoStartBtn').addEventListener('click', startTour);
