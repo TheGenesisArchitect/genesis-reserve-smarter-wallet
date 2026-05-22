@@ -537,7 +537,67 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
 .wd-comp-footer{display:flex;flex-direction:column;align-items:center;gap:8px}
 
 /* PRINT */
-@media print{.wp-sidebar{display:none}.wp-layout{grid-template-columns:1fr}.wp-main{padding:40px}.version-float{display:none}.wd-comparison{display:block}}
+/* ── Treasury Capital Flow Demo ───────────────────── */
+.td-demo{margin:40px 0;background:var(--gray-50);border:1px solid var(--border-light);border-radius:16px;overflow:hidden}
+.td-header{padding:18px 24px;border-bottom:1px solid var(--border-light);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.td-header-title{font-size:11px;font-weight:700;letter-spacing:0.10em;color:var(--gold);text-transform:uppercase}
+.td-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.td-chip{background:rgba(201,168,76,0.07);border:1px solid rgba(201,168,76,0.18);border-radius:20px;padding:4px 12px;font-size:11px;color:var(--text-muted);font-family:'JetBrains Mono',monospace}
+.td-chip span{color:var(--gold)}.td-chip .td-green{color:#00D4AA}
+.td-run-btn{background:linear-gradient(135deg,#c9a84c,#a8863c);color:#1a1400;border:none;border-radius:20px;padding:6px 16px;font-size:11.5px;font-weight:700;cursor:pointer;letter-spacing:0.04em}
+.td-run-btn:hover{filter:brightness(1.08)}
+.td-diagram{padding:20px 22px 16px;display:flex;flex-direction:column;align-items:center}
+.td-row{display:flex;justify-content:center;align-items:stretch;gap:8px;width:100%}
+.td-vline{width:2px;min-height:22px;background:linear-gradient(to bottom,rgba(201,168,76,0.25),rgba(201,168,76,0.55),rgba(201,168,76,0.25));margin:0 auto;position:relative;overflow:visible}
+.td-vline-green{background:linear-gradient(to bottom,rgba(0,212,170,0.25),rgba(0,212,170,0.55),rgba(0,212,170,0.25))}
+.td-part{width:7px;height:7px;border-radius:50%;background:#c9a84c;position:absolute;left:-2.5px;top:-7px;animation:tdDown 1s linear infinite;box-shadow:0 0 7px rgba(201,168,76,0.9);animation-play-state:paused}
+.td-part-green{background:#00D4AA;box-shadow:0 0 7px rgba(0,212,170,0.9);animation-name:tdUp}
+.td-demo.td-running .td-part{animation-play-state:running}
+@keyframes tdDown{from{top:-7px}to{top:calc(100% + 7px)}}
+@keyframes tdUp{from{top:calc(100% + 7px)}to{top:-7px}}
+.td-source-node{flex:1;background:rgba(255,255,255,0.03);border:1px solid var(--border-light);border-radius:9px;padding:10px 8px;text-align:center;max-width:150px}
+.td-source-label{font-size:11.5px;font-weight:600;color:var(--text-primary)}
+.td-source-sub{font-size:9.5px;color:var(--text-muted);margin-top:2px}
+.td-vault-row{gap:16px;justify-content:center;align-items:center}
+.td-vault{background:rgba(201,168,76,0.06);border:1.5px solid rgba(201,168,76,0.30);border-radius:12px;padding:13px 28px;text-align:center}
+.td-vault-label{font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(201,168,76,0.6);margin-bottom:5px}
+.td-vault-bal{font-family:'JetBrains Mono',monospace;font-size:19px;font-weight:700;color:var(--gold)}
+.td-vault-sub{font-size:9px;color:var(--text-muted);margin-top:3px}
+.td-epoch{position:relative;width:76px;height:76px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0}
+.td-epoch-svg{position:absolute;top:0;left:0;width:76px;height:76px}
+.td-epoch-num{font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:700;color:var(--gold);position:relative;z-index:1}
+.td-epoch-tag{font-size:8px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;position:relative;z-index:1;margin-top:1px}
+.td-router{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.11);border-radius:10px;padding:11px 28px;text-align:center;width:100%;max-width:440px}
+.td-router-label{font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-primary)}
+.td-router-sub{font-size:9.5px;color:var(--text-muted);margin-top:3px}
+.td-fan{display:flex;justify-content:space-between;width:100%;height:14px;position:relative}
+.td-fan::before{content:'';position:absolute;bottom:0;left:3.5%;right:3.5%;height:1.5px;background:rgba(201,168,76,0.2)}
+.td-fan-green::before{background:rgba(0,212,170,0.2)}
+.td-corridors{display:flex;gap:5px;width:100%}
+.td-corr{flex:1;border-radius:8px;padding:9px 5px;text-align:center;border:1px solid transparent;min-width:58px}
+.td-corr-name{font-size:10px;font-weight:600;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.td-corr-tier{font-size:8px;color:var(--text-muted);margin:2px 0 5px;text-transform:uppercase;letter-spacing:0.05em}
+.td-corr-track{height:3px;background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden}
+.td-corr-fill{height:100%;border-radius:2px;transition:width 0.5s ease}
+.td-corr-pct{font-size:9px;color:var(--text-muted);margin-top:3px;font-family:'JetBrains Mono',monospace}
+.td-c-preserve{background:rgba(34,197,94,0.07);border-color:rgba(34,197,94,0.2)}.td-c-preserve .td-corr-fill{background:#22c55e}
+.td-c-core{background:rgba(59,130,246,0.07);border-color:rgba(59,130,246,0.2)}.td-c-core .td-corr-fill{background:#3b82f6}
+.td-c-structured{background:rgba(168,85,247,0.07);border-color:rgba(168,85,247,0.2)}.td-c-structured .td-corr-fill{background:#a855f7}
+.td-c-accelerate{background:rgba(249,115,22,0.07);border-color:rgba(249,115,22,0.2)}.td-c-accelerate .td-corr-fill{background:#f97316}
+.td-c-tactical{background:rgba(234,179,8,0.07);border-color:rgba(234,179,8,0.2)}.td-c-tactical .td-corr-fill{background:#eab308}
+.td-c-advanced{background:rgba(239,68,68,0.07);border-color:rgba(239,68,68,0.2)}.td-c-advanced .td-corr-fill{background:#ef4444}
+.td-c-canary{background:rgba(236,72,153,0.07);border-color:rgba(236,72,153,0.2)}.td-c-canary .td-corr-fill{background:#ec4899}
+.td-wfall-row{gap:6px;flex-wrap:wrap}
+.td-wfall{flex:1;min-width:110px;border-radius:10px;padding:11px 8px;text-align:center}
+.td-wfall-label{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-muted);margin-bottom:3px}
+.td-wfall-cut{font-size:8.5px;color:rgba(245,240,232,0.3);margin-bottom:5px}
+.td-wfall-val{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700}
+.td-wf-inv{background:rgba(0,212,170,0.07);border:1px solid rgba(0,212,170,0.2)}.td-wf-inv .td-wfall-val{color:#00D4AA}
+.td-wf-grx{background:rgba(201,168,76,0.07);border:1px solid rgba(201,168,76,0.2)}.td-wf-grx .td-wfall-val{color:var(--gold)}
+.td-wf-tres{background:rgba(34,197,94,0.07);border:1px solid rgba(34,197,94,0.2)}.td-wf-tres .td-wfall-val{color:#22c55e}
+.td-wf-ops{background:rgba(255,255,255,0.03);border:1px solid var(--border-light)}.td-wf-ops .td-wfall-val{color:var(--text-secondary)}
+.td-reinvest-note{text-align:center;font-size:10.5px;color:rgba(34,197,94,0.6);margin-top:10px;font-style:italic}
+@media print{.wp-sidebar{display:none}.wp-layout{grid-template-columns:1fr}.wp-main{padding:40px}.version-float{display:none}.wd-comparison{display:block}.td-demo{display:none}}
 </style>
 </head>
 <body>
@@ -927,6 +987,155 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
   <p>
     Capital enters the engine through ERC-4626 standard deposit functions. There is no minimum deposit, no lock-up period, and no entry fee. Capital exits through ERC-4626 standard redemption functions — processed at the next epoch boundary. There is no redemption fee and no penalty for early exit. This unconditional exit liquidity is a deliberate design choice: Genesis earns loyalty through performance, not through contractual trap.
   </p>
+
+  <!-- ── Live Engine Simulation ──────────────────────── -->
+  <h3>Live Engine Simulation</h3>
+  <p>The diagram below simulates one full day (96 epochs) of the Perpetual Capital Engine at $10M TVL. Press Run Engine to watch capital route through the StrategyRouter, allocation rebalance in real time, and yield settle through the waterfall every epoch.</p>
+
+  <div class="td-demo" id="treasuryDemo">
+    <div class="td-header">
+      <div class="td-header-title">Perpetual Capital Engine · Live Simulation</div>
+      <div class="td-controls">
+        <div class="td-chip">Epoch <span id="tdEpoch">0</span>/96</div>
+        <div class="td-chip">TVL <span id="tdTVL">$10.000M</span></div>
+        <div class="td-chip">Blended APY <span class="td-green" id="tdAPY">11.0%</span></div>
+        <button class="td-run-btn" id="tdRunBtn" onclick="tdToggle()">▶ Run Engine</button>
+      </div>
+    </div>
+
+    <div class="td-diagram">
+      <!-- Row: Capital Sources -->
+      <div class="td-row" style="gap:8px">
+        <div class="td-source-node"><div class="td-source-label">Retail</div><div class="td-source-sub">Smarter Wallet</div></div>
+        <div class="td-source-node"><div class="td-source-label">Institutional</div><div class="td-source-sub">Treasury API</div></div>
+        <div class="td-source-node"><div class="td-source-label">Embedded</div><div class="td-source-sub">B2B Partners</div></div>
+      </div>
+
+      <!-- Flow: Sources → Vault -->
+      <div class="td-vline" style="height:24px">
+        <div class="td-part" style="animation-delay:0s"></div>
+        <div class="td-part" style="animation-delay:0.35s"></div>
+        <div class="td-part" style="animation-delay:0.7s"></div>
+      </div>
+
+      <!-- Row: Vault + Epoch Ring -->
+      <div class="td-row td-vault-row" style="margin-bottom:0">
+        <div class="td-vault">
+          <div class="td-vault-label">ERC-4626 Vault</div>
+          <div class="td-vault-bal" id="tdVaultBal">$10,000,000</div>
+          <div class="td-vault-sub">Managed capital · Standard deposit/withdraw interface</div>
+        </div>
+        <div class="td-epoch">
+          <svg class="td-epoch-svg" viewBox="0 0 76 76">
+            <circle cx="38" cy="38" r="30" fill="none" stroke="rgba(201,168,76,0.12)" stroke-width="5"/>
+            <circle cx="38" cy="38" r="30" fill="none" stroke="#c9a84c" stroke-width="5"
+                    stroke-linecap="round" stroke-dasharray="188.5" id="tdArc"
+                    stroke-dashoffset="188.5" transform="rotate(-90 38 38)"/>
+          </svg>
+          <div class="td-epoch-num" id="tdEpochBig">0</div>
+          <div class="td-epoch-tag">of 96 epochs</div>
+        </div>
+      </div>
+
+      <!-- Flow: Vault → Router -->
+      <div class="td-vline" style="height:24px">
+        <div class="td-part" style="animation-delay:0s"></div>
+        <div class="td-part" style="animation-delay:0.5s"></div>
+      </div>
+
+      <!-- Row: Strategy Router -->
+      <div class="td-row">
+        <div class="td-router">
+          <div class="td-router-label">Strategy Router</div>
+          <div class="td-router-sub">Policy-controlled allocation · Real-time risk scoring · Rebalances every epoch</div>
+        </div>
+      </div>
+
+      <!-- Fan: Router → Corridors -->
+      <div class="td-fan"></div>
+
+      <!-- Row: 7 Yield Corridors -->
+      <div class="td-corridors">
+        <div class="td-corr td-c-preserve">
+          <div class="td-corr-name">T-Bills</div>
+          <div class="td-corr-tier">Preserve</div>
+          <div class="td-corr-track"><div class="td-corr-fill" id="tdA0" style="width:30%"></div></div>
+          <div class="td-corr-pct" id="tdP0">30%</div>
+        </div>
+        <div class="td-corr td-c-core">
+          <div class="td-corr-name">Aave</div>
+          <div class="td-corr-tier">Core DeFi</div>
+          <div class="td-corr-track"><div class="td-corr-fill" id="tdA1" style="width:25%"></div></div>
+          <div class="td-corr-pct" id="tdP1">25%</div>
+        </div>
+        <div class="td-corr td-c-structured">
+          <div class="td-corr-name">Pendle</div>
+          <div class="td-corr-tier">Structured</div>
+          <div class="td-corr-track"><div class="td-corr-fill" id="tdA2" style="width:15%"></div></div>
+          <div class="td-corr-pct" id="tdP2">15%</div>
+        </div>
+        <div class="td-corr td-c-accelerate">
+          <div class="td-corr-name">Gearbox</div>
+          <div class="td-corr-tier">Accelerate</div>
+          <div class="td-corr-track"><div class="td-corr-fill" id="tdA3" style="width:12%"></div></div>
+          <div class="td-corr-pct" id="tdP3">12%</div>
+        </div>
+        <div class="td-corr td-c-tactical">
+          <div class="td-corr-name">DEX LP</div>
+          <div class="td-corr-tier">Tactical</div>
+          <div class="td-corr-track"><div class="td-corr-fill" id="tdA4" style="width:10%"></div></div>
+          <div class="td-corr-pct" id="tdP4">10%</div>
+        </div>
+        <div class="td-corr td-c-advanced">
+          <div class="td-corr-name">Basis</div>
+          <div class="td-corr-tier">Advanced</div>
+          <div class="td-corr-track"><div class="td-corr-fill" id="tdA5" style="width:6%"></div></div>
+          <div class="td-corr-pct" id="tdP5">6%</div>
+        </div>
+        <div class="td-corr td-c-canary">
+          <div class="td-corr-name">Arbitrage</div>
+          <div class="td-corr-tier">Canary</div>
+          <div class="td-corr-track"><div class="td-corr-fill" id="tdA6" style="width:2%"></div></div>
+          <div class="td-corr-pct" id="tdP6">2%</div>
+        </div>
+      </div>
+
+      <!-- Fan: Corridors → Yield Settlement -->
+      <div class="td-fan td-fan-green"></div>
+
+      <!-- Flow: Corridors → Waterfall (yield, green) -->
+      <div class="td-vline td-vline-green" style="height:24px">
+        <div class="td-part td-part-green" style="animation-delay:0s"></div>
+        <div class="td-part td-part-green" style="animation-delay:0.45s"></div>
+      </div>
+
+      <!-- Row: Waterfall Settlement -->
+      <div class="td-row td-wfall-row">
+        <div class="td-wfall td-wf-inv">
+          <div class="td-wfall-label">Investor Return</div>
+          <div class="td-wfall-cut">8% preferred</div>
+          <div class="td-wfall-val" id="tdWfInv">$0.00</div>
+        </div>
+        <div class="td-wfall td-wf-grx">
+          <div class="td-wfall-label">$GRX Pool</div>
+          <div class="td-wfall-cut">20% of spread</div>
+          <div class="td-wfall-val" id="tdWfGRX">$0.00</div>
+        </div>
+        <div class="td-wfall td-wf-tres">
+          <div class="td-wfall-label">Treasury Reinvest</div>
+          <div class="td-wfall-cut">40% of spread</div>
+          <div class="td-wfall-val" id="tdWfTres">$0.00</div>
+        </div>
+        <div class="td-wfall td-wf-ops">
+          <div class="td-wfall-label">Genesis Ops</div>
+          <div class="td-wfall-cut">40% of spread</div>
+          <div class="td-wfall-val" id="tdWfOps">$0.00</div>
+        </div>
+      </div>
+
+      <div class="td-reinvest-note">↺ 40% of spread returns to treasury — each epoch the engine compounds its own AUM, becoming self-reinforcing over time</div>
+    </div>
+  </div>
 </section>
 
 <!-- ══ §06 SYSTEM ARCHITECTURE ═════════════════════════ -->
@@ -3250,6 +3459,110 @@ if(tvlSlider) { tvlSlider.addEventListener('input', updateWaterfall); yieldSlide
 
   // ── Kick off login animations on page load ────────────────────────────────
   setTimeout(function(){ wdRunLoginAnims(); }, 700);
+})();
+
+// ── Treasury Capital Flow Demo ─────────────────────────────────────────────
+(function(){
+  var epoch = 0;
+  var running = false;
+  var timer = null;
+  var tvl = 10000000;           // $10M starting TVL
+  var grossApy = 0.11;          // 11% blended gross
+  var prefRate = 0.08;          // 8% preferred return
+  var mgmtRate = 0.01;          // 1% management fee
+  var totals = {inv:0, grx:0, tres:0, ops:0};
+  // Corridor allocations (sum ≈ 100)
+  var allocs = [30, 25, 15, 12, 10, 6, 2];
+
+  function g(id){ return document.getElementById(id); }
+
+  function fmtD(n){
+    if(n >= 1e6) return '$' + (n/1e6).toFixed(3) + 'M';
+    if(n >= 1e3) return '$' + (n/1e3).toFixed(1) + 'K';
+    return '$' + n.toFixed(2);
+  }
+
+  function tick(){
+    epoch++;
+    if(epoch > 96){
+      // Loop: reset for next day
+      epoch = 1;
+      totals = {inv:0, grx:0, tres:0, ops:0};
+      tvl = 10000000;
+    }
+
+    // Epoch yield math: annual / 365 days / 96 epochs
+    var grossE = tvl * grossApy / 35040;
+    var feeE   = tvl * mgmtRate / 35040;
+    var netE   = grossE - feeE;
+    var prefE  = tvl * prefRate / 35040;
+    var invPay = Math.min(netE, prefE);
+    var spread = Math.max(0, netE - invPay);
+    var grxPay = spread * 0.20;
+    var tresPay= spread * 0.40;
+    var opsPay = spread * 0.40;
+
+    // Treasury reinvestment compounds TVL
+    tvl += tresPay;
+
+    // Slight APY drift each epoch
+    grossApy = 0.105 + Math.random() * 0.010;
+
+    // Small random reallocation between two corridors
+    var i = Math.floor(Math.random() * 7);
+    var j = (i + 1 + Math.floor(Math.random() * 6)) % 7;
+    var shift = (Math.random() - 0.5) * 2.5;
+    allocs[i] = Math.max(1, Math.min(48, allocs[i] + shift));
+    allocs[j] = Math.max(1, Math.min(48, allocs[j] - shift));
+
+    // Accumulate running daily totals
+    totals.inv  += invPay;
+    totals.grx  += grxPay;
+    totals.tres += tresPay;
+    totals.ops  += opsPay;
+
+    // ── Update UI ────────────────────────────────────────────────────────────
+    if(g('tdEpoch'))    g('tdEpoch').textContent    = epoch;
+    if(g('tdEpochBig')) g('tdEpochBig').textContent = epoch;
+    if(g('tdTVL'))      g('tdTVL').textContent      = '$' + (tvl/1e6).toFixed(3) + 'M';
+    if(g('tdAPY'))      g('tdAPY').textContent      = (grossApy * 100).toFixed(1) + '%';
+    if(g('tdVaultBal')) g('tdVaultBal').textContent = '$' + Math.round(tvl).toLocaleString();
+
+    // Epoch arc — circumference = 2π × 30 ≈ 188.5
+    var arc = g('tdArc');
+    if(arc) arc.setAttribute('stroke-dashoffset', (188.5 * (1 - epoch / 96)).toFixed(1));
+
+    // Corridor bars and percentages
+    for(var k = 0; k < 7; k++){
+      var f = g('tdA' + k);
+      var p = g('tdP' + k);
+      if(f) f.style.width = Math.round(allocs[k]) + '%';
+      if(p) p.textContent = Math.round(allocs[k]) + '%';
+    }
+
+    // Waterfall daily totals
+    if(g('tdWfInv'))  g('tdWfInv').textContent  = fmtD(totals.inv);
+    if(g('tdWfGRX'))  g('tdWfGRX').textContent  = fmtD(totals.grx);
+    if(g('tdWfTres')) g('tdWfTres').textContent = fmtD(totals.tres);
+    if(g('tdWfOps'))  g('tdWfOps').textContent  = fmtD(totals.ops);
+  }
+
+  function tdToggle(){
+    running = !running;
+    var btn  = g('tdRunBtn');
+    var demo = document.getElementById('treasuryDemo');
+    if(running){
+      if(btn)  btn.textContent = '⏸ Pause';
+      if(demo) demo.classList.add('td-running');
+      timer = setInterval(tick, 130);
+    } else {
+      if(btn)  btn.textContent = '▶ Run Engine';
+      if(demo) demo.classList.remove('td-running');
+      clearInterval(timer);
+    }
+  }
+
+  window.tdToggle = tdToggle;
 })();
 </script>
 </body>
