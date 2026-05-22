@@ -837,7 +837,20 @@ select.form-input option{background:#0d1018;color:var(--text)}
   window.wdSendTap=wdSendTap;
   window.submitPartner=submitPartner;
 
-  setTimeout(function(){runLoginAnims();},700);
+  // Start demo when phone enters viewport, not on page load.
+  (function(){
+    var started = false;
+    var phone = document.querySelector('.phone-col');
+    function start(){ if(!started){ started=true; setTimeout(runLoginAnims, 400); } }
+    if(phone && 'IntersectionObserver' in window){
+      var obs = new IntersectionObserver(function(entries){
+        if(entries[0].isIntersecting){ start(); obs.disconnect(); }
+      }, { threshold: 0.35 });
+      obs.observe(phone);
+    } else {
+      setTimeout(runLoginAnims, 700);
+    }
+  })();
 })();
 </script>
 </body>

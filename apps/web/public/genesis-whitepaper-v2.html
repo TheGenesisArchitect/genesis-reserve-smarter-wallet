@@ -3812,8 +3812,22 @@ if(tvlSlider) { tvlSlider.addEventListener('input', updateWaterfall); yieldSlide
   window.wdRestart = wdRestart;
   window.wdSendTap = wdSendTap;
 
-  // ── Kick off login animations on page load ────────────────────────────────
-  setTimeout(function(){ wdRunLoginAnims(); }, 700);
+  // ── Start demo when phone scrolls into view ──────────────────────────────
+  // Using IntersectionObserver so the demo begins only when the user
+  // has actually scrolled to the phone, not on page load.
+  (function(){
+    var started = false;
+    var phone = document.getElementById('wdPhone');
+    function start(){ if(!started){ started=true; setTimeout(wdRunLoginAnims, 400); } }
+    if(phone && 'IntersectionObserver' in window){
+      var obs = new IntersectionObserver(function(entries){
+        if(entries[0].isIntersecting){ start(); obs.disconnect(); }
+      }, { threshold: 0.35 });
+      obs.observe(phone);
+    } else {
+      setTimeout(wdRunLoginAnims, 700);
+    }
+  })();
 })();
 
 // ── Treasury Capital Flow Demo ─────────────────────────────────────────────
