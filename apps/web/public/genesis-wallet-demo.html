@@ -309,12 +309,24 @@ select.form-input option{background:#0d1018;color:var(--text)}
     <div class="sd-panel" id="sd-5">
       <div class="sd-num">06 — Institutional Yield</div>
       <div class="sd-title">7.8% APY.<br>No minimums.</div>
-      <div class="sd-body">The same Perpetual Capital Engine that serves institutional treasury clients routes your balance across 7 yield corridors — T-Bills, Aave, Pendle, Gearbox, and more — automatically.</div>
+      <div class="sd-body">The same Perpetual Capital Engine that serves institutional treasury clients routes your balance across institutional yield corridors — T-Bills, Aave, Pendle, Gearbox, and more — automatically.</div>
       <ul class="sd-features">
-        <li>7 yield corridors, institutional-grade</li>
+        <li>Institutional yield corridors, three investor tiers</li>
         <li>Same StrategyRouter as $100M+ clients</li>
         <li>No lock-up, exit anytime</li>
         <li>Transparent attribution per epoch</li>
+      </ul>
+    </div>
+
+    <div class="sd-panel" id="sd-6">
+      <div class="sd-num">07 — Legacy Protection</div>
+      <div class="sd-title">$1M+ in coverage.<br>Zero cost.</div>
+      <div class="sd-body">Your vault yield automatically pays your life insurance premium — Term, IUL, or Whole Life. You deposit. The engine pays the premium. Your family is protected. You never write a check.</div>
+      <ul class="sd-features">
+        <li>Term Life from $25K vault · IUL from $50K · Whole Life from $150K</li>
+        <li>Premium funded automatically from yield every epoch</li>
+        <li>IUL cash value compounds alongside your USDC position</li>
+        <li>The unicorn: two growing assets, one deposit</li>
       </ul>
     </div>
 
@@ -339,7 +351,7 @@ select.form-input option{background:#0d1018;color:var(--text)}
         <span class="compare-who">Genesis Reserve</span>
         <div class="compare-right">
           <span class="compare-bal" data-target="5412">$0</span>
-          <span class="compare-apy" style="color:var(--green)">7.8%</span>
+          <span class="compare-apy" style="color:var(--green)">7.8% + Legacy ✓</span>
         </div>
       </div>
     </div>
@@ -549,7 +561,56 @@ select.form-input option{background:#0d1018;color:var(--text)}
               <div class="nav-item" onclick="wdGoTo(2)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 12L12 3l9 9M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9"/></svg><span>Home</span></div>
               <div class="nav-item" onclick="wdGoTo(3)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg><span>Send</span></div>
               <div class="nav-item" onclick="wdGoTo(4)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg><span>Card</span></div>
-              <div class="nav-item active"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg><span>Earn</span></div>
+              <div class="nav-item" onclick="wdGoTo(6)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span>Legacy</span></div>
+            </div>
+          </div>
+          <div class="p-home-bar"></div>
+        </div>
+
+        <!-- Screen 6: LEGACY PROTECTION -->
+        <div class="p-screen" id="ps-6">
+          <div class="app-screen">
+            <div class="app-header">
+              <div class="app-title">Legacy</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#C9A84C">Protected</div>
+            </div>
+            <div class="app-body">
+              <!-- Coverage hero -->
+              <div style="background:linear-gradient(135deg,rgba(201,168,76,0.10) 0%,rgba(0,212,170,0.06) 100%);border:1px solid rgba(201,168,76,0.25);border-radius:14px;padding:16px;margin-bottom:12px;text-align:center;">
+                <div style="font-size:9px;font-family:'JetBrains Mono',monospace;color:rgba(201,168,76,0.65);letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px;">Coverage Amount</div>
+                <div style="font-size:30px;font-weight:700;color:#C9A84C;letter-spacing:-.02em;margin-bottom:7px;">$1,000,000</div>
+                <div style="display:inline-flex;align-items:center;gap:5px;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.22);border-radius:20px;padding:3px 10px;">
+                  <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  <span style="font-size:8.5px;font-family:'JetBrains Mono',monospace;color:#C9A84C;letter-spacing:.05em;">IUL · INDEXED UNIVERSAL LIFE</span>
+                </div>
+              </div>
+              <!-- Yield funding -->
+              <div style="background:rgba(0,212,170,0.06);border:1px solid rgba(0,212,170,0.15);border-radius:11px;padding:12px;margin-bottom:12px;">
+                <div style="font-size:9px;color:#00D4AA;font-family:'JetBrains Mono',monospace;letter-spacing:.08em;margin-bottom:8px;">FUNDED BY YOUR YIELD</div>
+                <div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="font-size:12px;color:rgba(255,255,255,0.5);">Vault Balance</span><span style="font-size:12px;font-weight:600;">$50,000</span></div>
+                <div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="font-size:12px;color:rgba(255,255,255,0.5);">Annual Yield (6%)</span><span style="font-size:12px;font-weight:600;color:#00D4AA;">+$3,000</span></div>
+                <div style="height:1px;background:rgba(0,212,170,0.12);margin:6px 0;"></div>
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <span style="font-size:12px;color:rgba(255,255,255,0.5);">Premium Auto-Paid</span>
+                  <div style="display:flex;align-items:center;gap:5px;">
+                    <span style="font-size:12px;font-weight:700;">$2,400/yr</span>
+                    <span style="font-size:8px;background:rgba(0,212,170,0.18);color:#00D4AA;border-radius:7px;padding:2px 6px;font-family:'JetBrains Mono',monospace;">✓ PAID</span>
+                  </div>
+                </div>
+              </div>
+              <!-- Cash value stats -->
+              <div class="earn-stats">
+                <div class="earn-stat"><div class="earn-stat-val" style="color:#C9A84C;">$12,400</div><div class="earn-stat-lbl">Cash Value</div></div>
+                <div class="earn-stat"><div class="earn-stat-val">Yr 4</div><div class="earn-stat-lbl">Policy Age</div></div>
+                <div class="earn-stat"><div class="earn-stat-val" style="color:#00D4AA;">$89K</div><div class="earn-stat-lbl">Yr 10 Value</div></div>
+              </div>
+              <div style="font-size:10px;color:rgba(255,255,255,0.28);text-align:center;margin-top:10px;line-height:1.6;">No out-of-pocket cost · Yield pays your premium · Automatically</div>
+            </div>
+            <div class="bottom-nav">
+              <div class="nav-item" onclick="wdGoTo(2)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 12L12 3l9 9M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9"/></svg><span>Home</span></div>
+              <div class="nav-item" onclick="wdGoTo(3)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg><span>Send</span></div>
+              <div class="nav-item" onclick="wdGoTo(5)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg><span>Earn</span></div>
+              <div class="nav-item active"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span>Legacy</span></div>
             </div>
           </div>
           <div class="p-home-bar"></div>
@@ -565,6 +626,7 @@ select.form-input option{background:#0d1018;color:var(--text)}
       <div class="dot" onclick="wdGoTo(3)"></div>
       <div class="dot" onclick="wdGoTo(4)"></div>
       <div class="dot" onclick="wdGoTo(5)"></div>
+      <div class="dot" onclick="wdGoTo(6)"></div>
     </div>
   </div><!-- end .phone-col -->
 
@@ -624,7 +686,7 @@ select.form-input option{background:#0d1018;color:var(--text)}
 
 <script>
 (function(){
-  var current=0, total=6;
+  var current=0, total=7;
   var autoTimer=null, balTimer=null, bootTimer=null;
   var compShown=false;
   var screens=[].slice.call(document.querySelectorAll('.p-screen'));
