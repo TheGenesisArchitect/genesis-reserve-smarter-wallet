@@ -598,6 +598,98 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
 .td-wf-ops{background:rgba(255,255,255,0.03);border:1px solid var(--border-light)}.td-wf-ops .td-wfall-val{color:var(--text-secondary)}
 .td-reinvest-note{text-align:center;font-size:10.5px;color:rgba(34,197,94,0.6);margin-top:10px;font-style:italic}
 @media print{.wp-sidebar{display:none}.wp-layout{grid-template-columns:1fr}.wp-main{padding:40px}.version-float{display:none}.wd-comparison{display:block}.td-demo{display:none}}
+
+/* ── Subliminal watermark: sacred triangle in every section footer ─────── */
+.wp-section{position:relative}
+.wp-section::after{content:'';display:block;position:absolute;bottom:14px;left:50%;transform:translateX(-50%);width:22px;height:22px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cpolygon points='11,1 21,21 1,21' fill='none' stroke='%23C9A84C' stroke-width='1.1'/%3E%3C/svg%3E");background-repeat:no-repeat;background-size:contain;opacity:0.055;pointer-events:none}
+.wp-section:nth-child(n+7)::after{opacity:0.07}
+.wp-section:nth-child(n+12)::after{opacity:0.09}
+.wp-section:nth-child(n+16)::after{opacity:0.12}
+.wp-section:nth-child(n+20)::after{opacity:0.17}
+.wp-section:last-child::after{display:none}
+
+/* ── §22 Sacred Geometry Appendix ──────────────────────────────────────── */
+.geo-stage{background:#020305;border-radius:16px;border:1px solid rgba(201,168,76,0.18);padding:36px 28px 44px;margin:40px 0;position:relative;overflow:hidden}
+.geo-bg-radial{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 60% 55% at 50% 50%,rgba(201,168,76,0.07) 0%,transparent 68%)}
+.geo-scene-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(201,168,76,0.4);text-align:center;margin-bottom:24px}
+.geo-layout{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;max-width:800px;margin:0 auto}
+@media(max-width:700px){.geo-layout{grid-template-columns:1fr}}
+.geo-symbol-col{position:relative}
+.geo-symbol-col svg{display:block;width:100%;height:auto;overflow:visible}
+.geo-info-col{color:#fff}
+
+/* Assembly draw-in */
+.geo-path{stroke-dasharray:1500;stroke-dashoffset:1500}
+.geo-fill{opacity:0}
+.geo-assembled .geo-path{animation:geoDrawIn 2.2s cubic-bezier(.4,0,.2,1) forwards}
+.geo-assembled .geo-fill{animation:geoFadeIn .9s ease forwards}
+#geoLayerBoundary .geo-path{animation-delay:.05s}
+#geoLayerRings .geo-path{animation-delay:.55s}
+#geoLayerShiva path:nth-child(1){animation-delay:.95s}
+#geoLayerShiva path:nth-child(2){animation-delay:1.12s}
+#geoLayerShiva path:nth-child(3){animation-delay:1.28s}
+#geoLayerShiva path:nth-child(4){animation-delay:1.44s}
+#geoLayerShakti path:nth-child(1){animation-delay:1.08s}
+#geoLayerShakti path:nth-child(2){animation-delay:1.24s}
+#geoLayerShakti path:nth-child(3){animation-delay:1.40s}
+#geoLayerShakti path:nth-child(4){animation-delay:1.56s}
+#geoLayerPetals .geo-path{animation-delay:1.72s}
+#geoLayerBindu .geo-path{animation-delay:2.10s}
+#geoLayerBindu .geo-fill{animation-delay:2.30s}
+@keyframes geoDrawIn{to{stroke-dashoffset:0}}
+@keyframes geoFadeIn{to{opacity:1}}
+
+/* Breathing idle */
+@keyframes geoSpinCCW{to{transform:rotate(-360deg)}}
+@keyframes geoSpinCW{to{transform:rotate(360deg)}}
+@keyframes geoPulseDot{0%,100%{opacity:.75;transform:scale(1)}50%{opacity:1;transform:scale(1.7)}}
+.geo-assembled #geoLayerBoundary{transform-box:view-box;transform-origin:250px 250px;animation:geoSpinCCW 100s linear infinite}
+.geo-assembled #geoLayerRings{transform-box:view-box;transform-origin:250px 250px;animation:geoSpinCW 60s linear infinite}
+.geo-assembled #geoBinduDot{transform-box:fill-box;transform-origin:center;animation:geoPulseDot 3.2s ease-in-out infinite}
+
+/* Tour mode */
+.geo-layer{transition:opacity .55s ease,filter .55s ease}
+.geo-touring .geo-layer{opacity:.1;filter:none}
+.geo-touring .geo-layer.geo-active{opacity:1;filter:drop-shadow(0 0 10px rgba(201,168,76,.75)) drop-shadow(0 0 24px rgba(201,168,76,.35))}
+.geo-touring #geoLayerBoundary,.geo-touring #geoLayerRings{animation:none!important}
+.geo-touring #geoBinduDot{animation:none!important}
+
+/* Pre-state panel */
+.geo-pre{display:flex;flex-direction:column;gap:18px}
+.geo-pre-body{font-family:'Cormorant Garamond',serif;font-size:16px;font-style:italic;color:rgba(255,255,255,.55);line-height:1.65}
+.geo-pre-body strong{color:rgba(201,168,76,.85);font-style:normal;font-weight:400}
+
+/* Tour state panel */
+.geo-tour{display:none;flex-direction:column;gap:12px}
+.geo-tour.visible{display:flex}
+.geo-step-counter{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:rgba(201,168,76,.45)}
+.geo-step-eyebrow{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:rgba(201,168,76,.7);margin-bottom:2px}
+.geo-step-title{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;color:#fff;line-height:1.2;margin-bottom:6px}
+.geo-step-body{font-size:13px;line-height:1.75;color:rgba(255,255,255,.6)}
+.geo-step-ref{font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.1em;color:rgba(201,168,76,.55);margin-top:6px;padding-top:10px;border-top:1px solid rgba(201,168,76,.12)}
+.geo-tour-nav{display:flex;align-items:center;gap:10px;margin-top:16px}
+.geo-nav-btn{background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);color:var(--gold);font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;padding:8px 16px;border-radius:6px;cursor:pointer;transition:all .2s}
+.geo-nav-btn:hover{background:rgba(201,168,76,.22);border-color:var(--gold)}
+.geo-nav-btn:disabled{opacity:.28;cursor:default;pointer-events:none}
+.geo-tour-dots{display:flex;gap:6px;flex:1;justify-content:center}
+.geo-tour-dot{width:6px;height:6px;border-radius:50%;background:rgba(201,168,76,.22);border:none;padding:0;cursor:pointer;transition:all .25s}
+.geo-tour-dot.active{background:var(--gold);transform:scale(1.3)}
+
+/* Buttons */
+.geo-btn{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:11px 24px;border-radius:7px;cursor:pointer;transition:all .2s;border:none}
+.geo-btn-primary{background:rgba(201,168,76,.14);color:var(--gold);border:1px solid rgba(201,168,76,.35)}
+.geo-btn-primary:hover{background:rgba(201,168,76,.26);border-color:var(--gold)}
+.geo-btn-ghost{background:transparent;color:rgba(201,168,76,.4);border:1px solid rgba(201,168,76,.18);margin-top:8px}
+.geo-btn-ghost:hover{color:var(--gold);border-color:rgba(201,168,76,.4)}
+
+/* Final caption */
+.geo-caption{text-align:center;margin-top:48px;padding:28px 0 0;border-top:1px solid var(--border-light);font-family:'Cormorant Garamond',serif;font-size:21px;font-style:italic;color:var(--text-secondary);letter-spacing:.03em;line-height:1.5}
+
+/* §01 foreshadow */
+.geo-foreshadow{text-align:center;margin-top:28px;padding:12px 20px;border:1px solid rgba(201,168,76,.1);border-radius:6px;background:rgba(201,168,76,.025)}
+.geo-foreshadow-text{font-family:'Cormorant Garamond',serif;font-size:12.5px;font-style:italic;color:rgba(201,168,76,.45);letter-spacing:.04em}
+.geo-foreshadow-link{color:rgba(201,168,76,.65);text-decoration:none;border-bottom:1px dashed rgba(201,168,76,.28);transition:color .2s,border-color .2s}
+.geo-foreshadow-link:hover{color:var(--gold);border-color:var(--gold)}
 </style>
 </head>
 <body>
@@ -635,7 +727,7 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
       <div class="cover-sep"></div>
       <div class="cover-meta-item">
         <div class="cover-meta-label">Sections</div>
-        <div class="cover-meta-val">21</div>
+        <div class="cover-meta-val">22</div>
       </div>
       <div class="cover-sep"></div>
       <div class="cover-meta-item">
@@ -696,6 +788,9 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
     <li class="toc-item" data-section="s19"><a href="#s19"><span class="toc-num">19</span>Disclosures</a></li>
     <li class="toc-item" data-section="s20"><a href="#s20"><span class="toc-num">20</span>Technical Appendix</a></li>
     <li class="toc-item" data-section="s21"><a href="#s21"><span class="toc-num">21</span>Offering Document Cross-Reference</a></li>
+    <li class="toc-divider"></li>
+    <li class="toc-phase">Appendix</li>
+    <li class="toc-item" data-section="s22"><a href="#s22"><span class="toc-num">22</span>The Geometry</a></li>
   </ul>
 </nav>
 
@@ -750,7 +845,11 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
   <p>
     This whitepaper is organized across five phases: Foundation (§01–04) establishes the problem, opportunity, and thesis. Engine Core (§05–08) details the Perpetual Capital Engine mechanics, architecture, yield taxonomy, and waterfall. Product Layer (§09–12) covers $GRX, the Smarter Wallet, B2B use cases, and B2C growth model. Governance (§13–15) addresses risk, compliance, and security. Model &amp; Disclosures (§16–20) presents the financial model, 72-month scenario roadmap, full disclosures, technical appendix, and offering document cross-reference.
   </p>
-  <p style="font-size:13px;color:var(--text-muted);">
+  <div class="geo-foreshadow">
+    <span class="geo-foreshadow-text">The architecture you are about to read was not invented — it was derived. &nbsp;<a href="#s22" class="geo-foreshadow-link">§22 — The Geometry ↓</a></span>
+  </div>
+
+  <p style="font-size:13px;color:var(--text-muted);margin-top:20px;">
     <em>This document is for informational purposes only. It does not constitute an offer to sell or a solicitation to buy any securities. Forward-looking statements reflect current expectations under modeled assumptions and are subject to material change. See §18 for full disclosures.</em>
   </p>
 </section>
@@ -3514,10 +3613,349 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
   </div>
 </section>
 
+<!-- ══ §22 SACRED GEOMETRY APPENDIX ════════════════════════════════════ -->
+<section class="wp-section" id="s22">
+  <div class="section-eyebrow">
+    <span class="section-num">22</span>
+    <div class="section-rule"></div>
+    <span class="section-phase">Appendix — The Architecture</span>
+  </div>
+  <h2 class="section-title">The <span class="gold">Geometry</span></h2>
+  <p class="section-lead">
+    Every system described in this whitepaper obeys the same principles that govern self-sustaining structures in nature. The symbol was not chosen for aesthetics — it is a diagram.
+  </p>
+
+  <div class="geo-stage" id="geoStage">
+    <div class="geo-bg-radial"></div>
+    <div class="geo-scene-label" id="geoSceneLabel">The Architecture of Perpetual Flow</div>
+
+    <div class="geo-layout">
+
+      <!-- ── Left: SVG Symbol ── -->
+      <div class="geo-symbol-col">
+        <svg viewBox="0 0 500 500" id="geoSvg" aria-label="Sacred geometry diagram of the Genesis Reserve Perpetual Capital Engine">
+          <defs>
+            <radialGradient id="gBinduGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#C9A84C" stop-opacity="0.9"/>
+              <stop offset="100%" stop-color="#C9A84C" stop-opacity="0"/>
+            </radialGradient>
+            <filter id="gGlow" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur stdDeviation="4" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+
+          <!-- ── Layer 1: Outer Boundary Ring ── -->
+          <g class="geo-layer" id="geoLayerBoundary">
+            <circle class="geo-path" cx="250" cy="250" r="228" fill="none" stroke="#C9A84C" stroke-width="1.6" opacity="0.75"/>
+            <circle class="geo-path" cx="250" cy="250" r="214" fill="none" stroke="#C9A84C" stroke-width="0.5" opacity="0.35" stroke-dasharray="4 6"/>
+          </g>
+
+          <!-- ── Layer 2: Three Tier Rings ── -->
+          <g class="geo-layer" id="geoLayerRings">
+            <circle class="geo-path" cx="250" cy="250" r="193" fill="none" stroke="#C9A84C" stroke-width="1.1" opacity="0.55"/>
+            <circle class="geo-path" cx="250" cy="250" r="162" fill="none" stroke="#C9A84C" stroke-width="0.9" opacity="0.45"/>
+            <circle class="geo-path" cx="250" cy="250" r="128" fill="none" stroke="#C9A84C" stroke-width="0.7" opacity="0.35"/>
+          </g>
+
+          <!-- ── Layer 3: Shiva — Upward Triangles (Active / Deployment) ── -->
+          <!-- R=210: apex(250,40) BL(68,355) BR(432,355) -->
+          <!-- R=175: apex(250,75) BL(98,337) BR(402,337) -->
+          <!-- R=135: apex(250,115) BL(133,317) BR(367,317) -->
+          <!-- R=88:  apex(250,162) BL(174,294) BR(326,294) -->
+          <g class="geo-layer" id="geoLayerShiva">
+            <path class="geo-path" d="M250,40 L68,355 L432,355 Z"  fill="none" stroke="#C9A84C" stroke-width="1.5" opacity="0.85"/>
+            <path class="geo-path" d="M250,75 L98,337 L402,337 Z"  fill="none" stroke="#C9A84C" stroke-width="1.1" opacity="0.6"/>
+            <path class="geo-path" d="M250,115 L133,317 L367,317 Z" fill="none" stroke="#C9A84C" stroke-width="0.8" opacity="0.45"/>
+            <path class="geo-path" d="M250,162 L174,294 L326,294 Z" fill="none" stroke="#C9A84C" stroke-width="0.55" opacity="0.32"/>
+          </g>
+
+          <!-- ── Layer 4: Shakti — Downward Triangles (Receptive / Distribution) ── -->
+          <!-- R=210: apex(250,460) TL(68,145) TR(432,145) -->
+          <!-- R=175: apex(250,425) TL(98,163) TR(402,163) -->
+          <!-- R=135: apex(250,385) TL(133,183) TR(367,183) -->
+          <!-- R=88:  apex(250,338) TL(174,206) TR(326,206) -->
+          <g class="geo-layer" id="geoLayerShakti">
+            <path class="geo-path" d="M250,460 L68,145 L432,145 Z"  fill="none" stroke="#C9A84C" stroke-width="1.5" opacity="0.85"/>
+            <path class="geo-path" d="M250,425 L98,163 L402,163 Z"  fill="none" stroke="#C9A84C" stroke-width="1.1" opacity="0.6"/>
+            <path class="geo-path" d="M250,385 L133,183 L367,183 Z" fill="none" stroke="#C9A84C" stroke-width="0.8" opacity="0.45"/>
+            <path class="geo-path" d="M250,338 L174,206 L326,206 Z" fill="none" stroke="#C9A84C" stroke-width="0.55" opacity="0.32"/>
+          </g>
+
+          <!-- ── Layer 5: Inner Lotus — 8 Petals (Yield Corridors) ── -->
+          <!-- Each petal: ellipse cx=250 cy=192, rx=14 ry=32, rotated n×45° around (250,250) -->
+          <g class="geo-layer" id="geoLayerPetals">
+            <ellipse class="geo-path" cx="250" cy="192" rx="14" ry="32" fill="none" stroke="#C9A84C" stroke-width="0.9" opacity="0.6" transform="rotate(0 250 250)"/>
+            <ellipse class="geo-path" cx="250" cy="192" rx="14" ry="32" fill="none" stroke="#C9A84C" stroke-width="0.9" opacity="0.6" transform="rotate(45 250 250)"/>
+            <ellipse class="geo-path" cx="250" cy="192" rx="14" ry="32" fill="none" stroke="#C9A84C" stroke-width="0.9" opacity="0.6" transform="rotate(90 250 250)"/>
+            <ellipse class="geo-path" cx="250" cy="192" rx="14" ry="32" fill="none" stroke="#C9A84C" stroke-width="0.9" opacity="0.6" transform="rotate(135 250 250)"/>
+            <ellipse class="geo-path" cx="250" cy="192" rx="14" ry="32" fill="none" stroke="#C9A84C" stroke-width="0.9" opacity="0.6" transform="rotate(180 250 250)"/>
+            <ellipse class="geo-path" cx="250" cy="192" rx="14" ry="32" fill="none" stroke="#C9A84C" stroke-width="0.9" opacity="0.6" transform="rotate(225 250 250)"/>
+            <ellipse class="geo-path" cx="250" cy="192" rx="14" ry="32" fill="none" stroke="#C9A84C" stroke-width="0.9" opacity="0.6" transform="rotate(270 250 250)"/>
+            <ellipse class="geo-path" cx="250" cy="192" rx="14" ry="32" fill="none" stroke="#C9A84C" stroke-width="0.9" opacity="0.6" transform="rotate(315 250 250)"/>
+          </g>
+
+          <!-- ── Layer 6: Bindu — The Genesis Point ── -->
+          <g class="geo-layer" id="geoLayerBindu">
+            <circle class="geo-path" cx="250" cy="250" r="28" fill="none" stroke="#C9A84C" stroke-width="0.8" opacity="0.5"/>
+            <circle class="geo-path" cx="250" cy="250" r="16" fill="none" stroke="#C9A84C" stroke-width="1.0" opacity="0.65"/>
+            <circle class="geo-fill" id="geoBinduGlow" cx="250" cy="250" r="24" fill="url(#gBinduGlow)" opacity="0.6"/>
+            <circle class="geo-fill" id="geoBinduDot"  cx="250" cy="250" r="5"  fill="#C9A84C"/>
+          </g>
+        </svg>
+      </div>
+
+      <!-- ── Right: Info Panel ── -->
+      <div class="geo-info-col">
+
+        <!-- Pre-tour state -->
+        <div class="geo-pre" id="geoPre">
+          <div class="geo-pre-body">
+            What you have just read — every yield tier, every waterfall step, every compounding mechanic — is encoded in this symbol.<br><br>
+            The <strong>upward triangles</strong> deploy capital. The <strong>downward triangles</strong> return yield. The <strong>concentric rings</strong> are your tier caps. The <strong>lotus petals</strong> are the 7 corridors. The <strong>central point</strong> is your deposit.<br><br>
+            This is not metaphor. It is the same geometry.
+          </div>
+          <button class="geo-btn geo-btn-primary" id="geoStartBtn">Begin Tour &nbsp;→</button>
+        </div>
+
+        <!-- Tour state -->
+        <div class="geo-tour" id="geoTour">
+          <div class="geo-step-counter" id="geoCounter">01 / 06</div>
+          <div class="geo-step-eyebrow" id="geoEyebrow"></div>
+          <div class="geo-step-title"   id="geoTitle"></div>
+          <div class="geo-step-body"    id="geoBody"></div>
+          <div class="geo-step-ref"     id="geoRef"></div>
+          <div class="geo-tour-nav">
+            <button class="geo-nav-btn" id="geoPrevBtn" disabled>← Prev</button>
+            <div class="geo-tour-dots"  id="geoDots"></div>
+            <button class="geo-nav-btn" id="geoNextBtn">Next →</button>
+          </div>
+          <button class="geo-btn geo-btn-ghost" id="geoExitBtn">Exit Tour</button>
+        </div>
+
+      </div>
+    </div><!-- end geo-layout -->
+  </div><!-- end geo-stage -->
+
+  <div class="geo-caption">
+    <em>"The Perpetual Capital Engine is not a financial product. It is a geometric inevitability."</em>
+  </div>
+
+  <h3>The Correspondence Table</h3>
+  <p>Every layer of the symbol maps to a specific section of this whitepaper. The geometry is not illustration — it is the operating architecture rendered in its most reduced form.</p>
+
+  <table class="data-table" style="font-size:13px;">
+    <thead>
+      <tr>
+        <th>Geometric Element</th>
+        <th>Sacred Geometry Principle</th>
+        <th>PCE Equivalent</th>
+        <th>Section</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Outer Circle</strong></td>
+        <td>The field boundary — defines what enters and what does not</td>
+        <td>ComplianceRegistry.sol — KYC tiers, jurisdiction gates</td>
+        <td>§15</td>
+      </tr>
+      <tr>
+        <td><strong>Three Concentric Rings</strong></td>
+        <td>Harmonic intervals — octaves of the same fundamental</td>
+        <td>Preserve 6% · Growth 10% · Accelerate 15% tier caps</td>
+        <td>§07 · §08</td>
+      </tr>
+      <tr>
+        <td><strong>Upward Triangles (Shiva)</strong></td>
+        <td>Active force — outward emanation, masculine principle</td>
+        <td>Capital deployment across 7 yield corridors via StrategyRouter</td>
+        <td>§05 · §06</td>
+      </tr>
+      <tr>
+        <td><strong>Downward Triangles (Shakti)</strong></td>
+        <td>Receptive force — inward return, feminine principle</td>
+        <td>Yield waterfall — investor cap → 50% treasury · 30% ops · 20% $GRX</td>
+        <td>§08 · §09</td>
+      </tr>
+      <tr>
+        <td><strong>Interlocking Star (Sri Yantra)</strong></td>
+        <td>Dynamic tension — two forces always in balance, never resolved</td>
+        <td>Every epoch: deployment and distribution running simultaneously</td>
+        <td>§05</td>
+      </tr>
+      <tr>
+        <td><strong>Eight-Petal Lotus</strong></td>
+        <td>Complete expression — 7 is the number of full manifestation + 1</td>
+        <td>7 yield source categories + 1 compliance layer</td>
+        <td>§07</td>
+      </tr>
+      <tr>
+        <td><strong>Vesica Piscis (lens)</strong></td>
+        <td>The overlap of two worlds — creation emerges at the intersection</td>
+        <td>IUL dual-asset compounding — vault yield crosses into insurance circle</td>
+        <td>§11</td>
+      </tr>
+      <tr>
+        <td><strong>Torus (implied flow)</strong></td>
+        <td>The only self-sustaining form — flows outward and curves back to feed itself</td>
+        <td>50% treasury reinvestment loop — captured excess seeds next epoch</td>
+        <td>§08</td>
+      </tr>
+      <tr>
+        <td><strong>Bindu (central point)</strong></td>
+        <td>The primordial point — before form, before division, pure potential</td>
+        <td>Your USDC deposit — the single genesis point of all yield activity</td>
+        <td>§05 · §10</td>
+      </tr>
+    </tbody>
+  </table>
+
+</section>
+
 </main>
 </div><!-- end .wp-layout -->
 
 <script>
+// ── §22 Sacred Geometry Tour Engine ──────────────────────────────────────
+(function(){
+  var stage   = document.getElementById('geoStage');
+  var svg     = document.getElementById('geoSvg');
+  var pre     = document.getElementById('geoPre');
+  var tour    = document.getElementById('geoTour');
+  var counter = document.getElementById('geoCounter');
+  var eyebrow = document.getElementById('geoEyebrow');
+  var title   = document.getElementById('geoTitle');
+  var body    = document.getElementById('geoBody');
+  var ref     = document.getElementById('geoRef');
+  var dots    = document.getElementById('geoDots');
+  var prevBtn = document.getElementById('geoPrevBtn');
+  var nextBtn = document.getElementById('geoNextBtn');
+  if(!stage) return;
+
+  var steps = [
+    {
+      layer: 'geoLayerBoundary',
+      eyebrow: 'The Outer Circle',
+      title: 'Compliance Boundary',
+      body: 'The outermost ring defines the field itself — who enters, at what tier, and under what jurisdiction. Nothing moves inside until this gate validates. In sacred geometry, the outer circle is the first act of creation: drawing a limit around infinite possibility.',
+      ref: '→ §15 Compliance Framework · §14 Risk Framework'
+    },
+    {
+      layer: 'geoLayerRings',
+      eyebrow: 'Three Concentric Rings',
+      title: 'The Yield Tier Caps',
+      body: 'Three harmonic rings, each an octave of the same fundamental frequency. Preserve caps at 6% — the most stable, widest allocation. Growth at 10%. Accelerate at 15%. Genesis captures 100% above each cap. The rings breathe as the torus rotates — tighter rings hold more energy at the center.',
+      ref: '→ §07 Yield Source Taxonomy · §08 Capital Waterfall'
+    },
+    {
+      layer: 'geoLayerShiva',
+      eyebrow: 'Upward Triangles',
+      title: 'Active Force — Capital Deployment',
+      body: 'The Shiva principle: active, outward, generative. Four nested upward triangles represent capital radiating from the bindu through the StrategyRouter — coarse asset class down to precise protocol weight. Each smaller triangle is a deeper allocation layer. The apex points skyward: toward yield.',
+      ref: '→ §05 Perpetual Capital Engine · §06 System Architecture'
+    },
+    {
+      layer: 'geoLayerShakti',
+      eyebrow: 'Downward Triangles',
+      title: 'Receptive Force — Yield Distribution',
+      body: 'The Shakti principle: receptive, inward, distributive. Four nested downward triangles are the mirror: yield returning through the waterfall. Investor cap paid first. Genesis captured excess split 50% treasury reinvestment · 30% operations · 20% $GRX. The two forces interlock — neither can exist without the other.',
+      ref: '→ §08 Capital Waterfall · §09 $GRX Revenue Participation'
+    },
+    {
+      layer: 'geoLayerPetals',
+      eyebrow: 'The Eight-Petal Lotus',
+      title: 'Seven Corridors + One',
+      body: 'Eight petals bloom from the bindu: seven yield source categories — T-Bills, Aave, Pendle, Gearbox, Euler, Morpho, RWA — plus the compliance layer that makes every corridor safe. Seven is the number of complete manifestation. The lotus grows from a single point. From your single deposit.',
+      ref: '→ §07 Yield Source Taxonomy'
+    },
+    {
+      layer: 'geoLayerBindu',
+      eyebrow: 'The Bindu',
+      title: 'Your Deposit — The Genesis Point',
+      body: 'The primordial point. Before form, before division, before yield — there is only this: one USDC deposited. Every tier, every corridor, every epoch of compounding, every insurance premium paid, every $GRX distributed — all of it emanates from this single point of origin. This is why it is called Genesis Reserve.',
+      ref: '→ §05 Perpetual Capital Engine · §10 Smarter Wallet · §11 Legacy Protection'
+    }
+  ];
+
+  var current = -1;
+  var allLayers = ['geoLayerBoundary','geoLayerRings','geoLayerShiva','geoLayerShakti','geoLayerPetals','geoLayerBindu'];
+
+  // Build dots
+  steps.forEach(function(_, i){
+    var d = document.createElement('button');
+    d.className = 'geo-tour-dot';
+    d.setAttribute('aria-label', 'Step ' + (i+1));
+    d.addEventListener('click', function(){ goTo(i); });
+    dots.appendChild(d);
+  });
+
+  function goTo(n){
+    current = n;
+    // Activate correct layer
+    allLayers.forEach(function(id){
+      var el = document.getElementById(id);
+      if(el) el.classList.remove('geo-active');
+    });
+    var active = document.getElementById(steps[n].layer);
+    if(active) active.classList.add('geo-active');
+    // Update panel
+    var s = steps[n];
+    counter.textContent = '0'+(n+1)+' / 0'+steps.length;
+    eyebrow.textContent = s.eyebrow;
+    title.textContent   = s.title;
+    body.textContent    = s.body;
+    ref.textContent     = s.ref;
+    // Update dots
+    dots.querySelectorAll('.geo-tour-dot').forEach(function(d,i){
+      d.classList.toggle('active', i===n);
+    });
+    // Update nav
+    prevBtn.disabled = (n === 0);
+    nextBtn.textContent = (n === steps.length-1) ? 'Finish ✓' : 'Next →';
+    nextBtn.disabled = false;
+  }
+
+  function startTour(){
+    stage.classList.add('geo-touring');
+    stage.classList.remove('geo-assembled');
+    pre.style.display  = 'none';
+    tour.classList.add('visible');
+    goTo(0);
+  }
+
+  function exitTour(){
+    stage.classList.remove('geo-touring');
+    allLayers.forEach(function(id){
+      var el = document.getElementById(id);
+      if(el) el.classList.remove('geo-active');
+    });
+    pre.style.display = '';
+    tour.classList.remove('visible');
+    current = -1;
+    // Re-trigger breathing by re-adding geo-assembled
+    void stage.offsetWidth;
+    stage.classList.add('geo-assembled');
+  }
+
+  document.getElementById('geoStartBtn').addEventListener('click', startTour);
+  document.getElementById('geoExitBtn').addEventListener('click', exitTour);
+  prevBtn.addEventListener('click', function(){ if(current > 0) goTo(current-1); });
+  nextBtn.addEventListener('click', function(){
+    if(current < steps.length-1){ goTo(current+1); }
+    else { exitTour(); }
+  });
+
+  // Assembly: fire when §22 enters viewport
+  var geoObs = new IntersectionObserver(function(entries){
+    if(entries[0].isIntersecting && !stage.classList.contains('geo-assembled') && !stage.classList.contains('geo-touring')){
+      stage.classList.add('geo-assembled');
+      geoObs.disconnect();
+    }
+  }, { threshold: 0.2 });
+  geoObs.observe(stage);
+})();
+
 // ── Floating Version Badge — appears after scrolling past cover
 const versionBadge = document.getElementById('versionBadge');
 const cover = document.getElementById('cover');
