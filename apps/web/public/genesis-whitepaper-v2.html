@@ -654,6 +654,14 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
 .geo-touring #geoLayerBoundary,.geo-touring #geoLayerRings{animation:none!important}
 .geo-touring #geoBinduDot{animation:none!important}
 
+/* Intro state — logo shown first, geometry assembles underneath then logo fades */
+.geo-stage.geo-intro .geo-logo-veil{opacity:1;pointer-events:auto}
+.geo-stage.geo-intro .geo-logo-veil-glow{opacity:1;transition:none}
+.geo-stage.geo-intro .geo-logo-veil-img{transform:scale(1);transition:none}
+.geo-stage.geo-intro .geo-logo-veil-wordmark{opacity:.65;transform:translateY(0);transition:none}
+.geo-stage.geo-intro .geo-layer{opacity:.055}
+.geo-stage.geo-intro #geoLayerBoundary,.geo-stage.geo-intro #geoLayerRings,.geo-stage.geo-intro #geoBinduDot{animation:none!important}
+
 /* Logo reveal state */
 .geo-symbol-col{position:relative}
 .geo-logo-veil{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;opacity:0;pointer-events:none;transition:opacity 1.4s ease}
@@ -3642,7 +3650,7 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
     Every system described in this whitepaper obeys the same principles that govern self-sustaining structures in nature. The symbol was not chosen for aesthetics — it is a diagram.
   </p>
 
-  <div class="geo-stage" id="geoStage">
+  <div class="geo-stage geo-intro" id="geoStage">
     <div class="geo-bg-radial"></div>
     <div class="geo-scene-label" id="geoSceneLabel">The Architecture of Perpetual Flow</div>
 
@@ -3953,6 +3961,7 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
   }
 
   function startTour(){
+    stage.classList.remove('geo-intro'); // fast-forward intro if still playing
     // Keep geo-assembled — its forwards fill-mode holds stroke-dashoffset:0 on all paths.
     // geo-touring's animation:none!important on the group elements stops rotation only.
     stage.classList.add('geo-touring');
@@ -3964,6 +3973,7 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
   function exitTour(){
     stage.classList.remove('geo-touring');
     stage.classList.remove('geo-revealed');
+    stage.classList.remove('geo-intro');
     allLayers.forEach(function(id){
       var el = document.getElementById(id);
       if(el) el.classList.remove('geo-active');
@@ -4033,10 +4043,12 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
   })();
 
   // Assembly: fire when §22 enters viewport
+  // Logo holds for ~900ms while paths begin drawing, then fades to reveal geometry
   var geoObs = new IntersectionObserver(function(entries){
     if(entries[0].isIntersecting && !stage.classList.contains('geo-assembled') && !stage.classList.contains('geo-touring')){
       stage.classList.add('geo-assembled');
       geoObs.disconnect();
+      setTimeout(function(){ stage.classList.remove('geo-intro'); }, 900);
     }
   }, { threshold: 0.2 });
   geoObs.observe(stage);
