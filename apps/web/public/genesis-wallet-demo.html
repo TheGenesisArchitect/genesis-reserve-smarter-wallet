@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Genesis Reserve — Smarter Wallet Demo</title>
+<meta name="description" content="Experience the Genesis Reserve Smarter Wallet — non-custodial, yield-bearing, card-enabled digital dollar wallet.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=JetBrains+Mono:wght@400;600;700&family=Tenor+Sans&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#020305;--s1:#07090e;--s2:#0d1018;
+  --border:rgba(255,255,255,0.06);--border-gold:rgba(201,168,76,0.22);
+  --gold:#C9A84C;--gold2:#E8CB6E;--gold-dim:rgba(201,168,76,0.10);
+  --green:#00D4AA;
+  --text:#f5f0e8;--sub:rgba(245,240,232,0.55);--muted:rgba(245,240,232,0.32)
+}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',Georgia,serif}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 60% 50% at 70% 30%,rgba(201,168,76,0.05) 0%,transparent 65%),radial-gradient(ellipse 40% 40% at 20% 70%,rgba(0,212,170,0.03) 0%,transparent 65%);pointer-events:none;z-index:0}
+button{font-family:'Cormorant Garamond',Georgia,serif}
+a{color:var(--gold);text-decoration:none}a:hover{color:var(--gold2)}
+
+/* ── Header ── */
+.hdr{height:52px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;flex-shrink:0;position:relative;z-index:2}
+.hdr-brand{display:flex;align-items:baseline;gap:8px}
+.hdr-genesis{font-size:18px;font-weight:300;letter-spacing:0.22em;color:var(--text)}
+.hdr-reserve{font-family:'Tenor Sans',serif;font-size:8px;letter-spacing:0.55em;color:var(--gold);text-transform:uppercase}
+.hdr-nav{display:flex;align-items:center;gap:20px}
+.hdr-nav a{font-size:11.5px;color:var(--sub);letter-spacing:0.05em;transition:color .2s}
+.hdr-nav a:hover{color:var(--gold)}
+
+/* ── Layout: 3 columns ── */
+.layout{display:grid;grid-template-columns:1fr 340px 360px;height:calc(100vh - 52px);overflow:hidden;position:relative;z-index:1}
+.story-col{padding:28px 24px;overflow-y:auto;border-right:1px solid var(--border);display:flex;flex-direction:column}
+.phone-col{padding:20px 0 16px;overflow:hidden;display:flex;flex-direction:column;align-items:center;background:rgba(255,255,255,0.01);border-right:1px solid var(--border)}
+.cta-col{padding:24px 26px 20px;overflow-y:auto;display:flex;flex-direction:column;gap:18px}
+
+/* ── Story column ── */
+.story-eyebrow{font-size:10px;font-weight:700;letter-spacing:0.13em;color:var(--gold);text-transform:uppercase;margin-bottom:6px}
+.story-headline{font-size:28px;font-weight:300;line-height:1.25;color:var(--text);margin-bottom:16px;letter-spacing:0.01em}
+.story-headline em{font-style:normal;color:var(--gold)}
+
+/* Screen description panels */
+.sd-panel{display:none;animation:sdIn .4s cubic-bezier(.22,1,.36,1)}
+.sd-panel.active{display:block}
+@keyframes sdIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.sd-num{font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--muted);margin-bottom:8px}
+.sd-title{font-size:22px;font-weight:600;color:var(--text);margin-bottom:10px;line-height:1.2}
+.sd-body{font-size:14px;color:var(--sub);line-height:1.7;margin-bottom:16px}
+.sd-features{list-style:none;display:flex;flex-direction:column;gap:8px}
+.sd-features li{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--sub)}
+.sd-features li::before{content:'✓';color:var(--green);font-weight:700;flex-shrink:0;margin-top:1px}
+
+/* Comparison table (shows after demo) */
+.compare-wrap{display:none;margin-top:24px;animation:sdIn .5s cubic-bezier(.22,1,.36,1)}
+.compare-wrap.visible{display:block}
+.compare-title{font-size:10px;font-weight:700;letter-spacing:0.10em;color:var(--gold);text-transform:uppercase;margin-bottom:10px}
+.compare-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)}
+.compare-row:last-child{border-bottom:none}
+.compare-who{font-size:12px;color:var(--sub)}
+.compare-right{display:flex;align-items:center;gap:16px}
+.compare-bal{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:var(--text);min-width:70px;text-align:right}
+.compare-apy{font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace;min-width:50px;text-align:right}
+.compare-row.genesis .compare-who{color:var(--gold);font-weight:600}
+.compare-row.genesis .compare-bal{color:var(--green)}
+
+/* ── Phone column ── */
+.phone-wrap{position:relative}
+.phone{width:300px;height:632px;background:#000;border-radius:46px;border:2px solid rgba(255,255,255,0.12);box-shadow:0 0 0 1px rgba(0,0,0,0.8),0 20px 60px rgba(0,0,0,0.8),inset 0 0 0 1px rgba(255,255,255,0.05);overflow:hidden;position:relative;flex-shrink:0}
+.phone-island{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:110px;height:32px;background:#000;border-radius:16px;z-index:10}
+.phone-status{position:absolute;top:0;left:0;right:0;height:52px;display:flex;align-items:center;justify-content:space-between;padding:14px 20px 0;z-index:9}
+.phone-time{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:#fff;id:wdTime}
+.phone-icons{display:flex;gap:5px;align-items:center}
+
+/* Screens */
+.p-screen{position:absolute;inset:0;display:none;background:#020305}
+.p-screen.active{display:flex;flex-direction:column}
+.p-home-bar{position:absolute;bottom:6px;left:50%;transform:translateX(-50%);width:120px;height:4px;background:rgba(255,255,255,0.25);border-radius:2px}
+
+/* LOGIN screen */
+.login-bg{position:absolute;inset:0;background:radial-gradient(circle at 50% 35%,rgba(201,168,76,0.16) 0%,rgba(2,3,5,0) 65%)}
+.login-body{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 24px 32px}
+.login-logo{width:52px;height:52px;border-radius:50%;border:1.5px solid rgba(201,168,76,0.35);display:flex;align-items:center;justify-content:center;margin-bottom:20px}
+.login-logo svg{width:28px;height:28px}
+.login-title{font-size:40px;font-weight:300;letter-spacing:0.28em;color:#f5f0e8;line-height:1}
+.login-sub{font-family:'Tenor Sans',serif;font-size:9px;letter-spacing:0.62em;color:#c9a84c;margin-bottom:14px}
+.login-rule{height:1px;background:linear-gradient(to right,transparent,rgba(201,168,76,0.6),transparent);margin:0 auto 14px;width:0;transition:width .55s cubic-bezier(.22,1,.36,1)}
+.login-rule.expanded{width:180px}
+.login-tagline{font-size:11px;color:rgba(245,240,232,0.5);text-align:center;letter-spacing:0.04em;margin-bottom:18px}
+.login-stats{display:flex;gap:8px;margin-bottom:20px;width:100%}
+.login-stat{flex:1;border:1px solid rgba(201,168,76,0.14);background:rgba(255,255,255,0.022);border-radius:10px;padding:8px;text-align:center}
+.login-stat-val{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#c9a84c}
+.login-stat-lbl{font-size:8.5px;color:rgba(245,240,232,0.4);margin-top:2px}
+.login-btns{display:flex;flex-direction:column;gap:8px;width:100%}
+.btn-primary{background:linear-gradient(135deg,#c9a84c,#a8863c,#c9a84c);color:#1a1400;border:none;border-radius:14px;padding:14px;font-size:14px;font-weight:700;width:100%;cursor:pointer;letter-spacing:0.04em;font-family:'Cormorant Garamond',serif}
+.btn-secondary{background:rgba(255,255,255,0.06);color:#f5f0e8;border:1px solid rgba(255,255,255,0.12);border-radius:14px;padding:13px;font-size:13px;width:100%;cursor:pointer;font-family:'Cormorant Garamond',serif}
+.login-trust{font-size:9px;color:rgba(245,240,232,0.3);text-align:center;margin-top:12px}
+.ld-a0,.ld-a1,.ld-a2,.ld-a3,.ld-a4,.ld-a5,.ld-a6{opacity:0;transform:translateY(10px);transition:opacity .5s cubic-bezier(.22,1,.36,1),transform .5s cubic-bezier(.22,1,.36,1)}
+.ld-in{opacity:1!important;transform:translateY(0)!important}
+
+/* BOOT screen */
+.boot-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px}
+.boot-logo{font-size:36px;font-weight:300;letter-spacing:0.25em;color:#f5f0e8}
+.boot-sub{font-family:'Tenor Sans',serif;font-size:8px;letter-spacing:0.6em;color:#c9a84c;text-transform:uppercase}
+.boot-spinner{width:32px;height:32px;border:2px solid rgba(201,168,76,0.2);border-top-color:#c9a84c;border-radius:50%;animation:spin 0.9s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.boot-step{font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(245,240,232,0.45)}
+
+/* APP screens shared */
+.app-screen{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.app-header{display:flex;align-items:center;justify-content:space-between;padding:52px 16px 12px;flex-shrink:0}
+.app-title{font-size:16px;font-weight:600;color:#f5f0e8}
+.app-sub{font-size:11px;color:rgba(245,240,232,0.45)}
+.app-body{flex:1;overflow-y:auto;padding:0 14px 8px}
+.bottom-nav{display:flex;border-top:1px solid rgba(255,255,255,0.06);padding:8px 0 16px;flex-shrink:0}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;opacity:0.45;transition:opacity .2s}
+.nav-item.active{opacity:1}
+.nav-item svg{stroke:rgba(201,168,76,0.7)}
+.nav-item.active svg{stroke:#c9a84c}
+.nav-item span{font-size:9.5px;color:rgba(245,240,232,0.55)}
+.nav-item.active span{color:#c9a84c}
+.back-btn{background:none;border:none;cursor:pointer;padding:6px;color:#c9a84c}
+
+/* HOME screen */
+.balance-card{background:linear-gradient(135deg,rgba(201,168,76,0.1),rgba(201,168,76,0.04));border:1px solid rgba(201,168,76,0.2);border-radius:16px;padding:18px;margin-bottom:14px}
+.bal-label{font-size:10px;color:rgba(245,240,232,0.45);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:6px}
+.bal-amount{font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;color:#f5f0e8}
+.bal-yield{display:flex;align-items:center;gap:6px;margin-top:6px}
+.yield-dot{width:6px;height:6px;border-radius:50%;background:#00D4AA;box-shadow:0 0 6px rgba(0,212,170,0.6);animation:yPulse 2s ease-in-out infinite}
+@keyframes yPulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.yield-txt{font-family:'JetBrains Mono',monospace;font-size:11px;color:#00D4AA}
+.apy-pill{background:rgba(0,212,170,0.12);border:1px solid rgba(0,212,170,0.2);border-radius:20px;padding:2px 10px;font-size:10px;color:#00D4AA;margin-left:auto;font-family:'JetBrains Mono',monospace}
+.quick-actions{display:flex;gap:8px;margin-bottom:14px}
+.qa{flex:1;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:12px;padding:10px 6px;text-align:center;cursor:pointer;transition:border-color .2s}
+.qa:hover{border-color:var(--border-gold)}
+.qa-icon{font-size:18px;margin-bottom:4px}
+.qa-lbl{font-size:10px;color:var(--sub)}
+.activity-lbl{font-size:9.5px;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px}
+.tx{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+.tx-desc{font-size:12px;color:var(--text)}
+.tx-meta{font-size:10px;color:var(--muted)}
+.tx-amount{font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:600}
+.tx-amount.pos{color:var(--green)}.tx-amount.neg{color:rgba(245,240,232,0.6)}
+
+/* SEND screen */
+.send-to{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:12px}
+.send-lbl{font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px}
+.send-recip{display:flex;align-items:center;gap:10px}
+.recip-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#c9a84c,#8a6e2a);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#1a1400;flex-shrink:0}
+.send-amount{text-align:center;padding:14px 0}
+.send-big{font-family:'JetBrains Mono',monospace;font-size:44px;font-weight:700;color:#f5f0e8;line-height:1}
+.send-usdc{font-size:12px;color:var(--muted);margin-top:4px}
+.fee-row{display:flex;gap:6px;margin-bottom:14px}
+.fee-item{flex:1;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:8px;text-align:center}
+.fee-lbl{font-size:8.5px;color:var(--muted);margin-bottom:3px}
+.fee-val{font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--text)}
+.fee-val.free{color:var(--green)}
+.fee-val.arb{color:#00D4AA}
+.send-success{display:none;text-align:center;padding:28px 0;animation:successPop .4s cubic-bezier(.34,1.56,.64,1)}
+@keyframes successPop{from{transform:scale(0.7);opacity:0}to{transform:scale(1);opacity:1}}
+
+/* CARD screen */
+.genesis-card{width:100%;height:160px;border-radius:16px;background:linear-gradient(155deg,#161410,#0c0a08,#181410);border:1px solid rgba(201,168,76,0.24);position:relative;overflow:hidden;margin-bottom:14px;flex-shrink:0}
+.card-shimmer{position:absolute;inset:0;background:linear-gradient(105deg,transparent 40%,rgba(201,168,76,0.06) 50%,transparent 60%);animation:shimmer 3s ease-in-out infinite}
+@keyframes shimmer{0%,100%{transform:translateX(-100%)}50%{transform:translateX(100%)}}
+.card-chip{width:30px;height:22px;background:linear-gradient(135deg,#c9a84c,#8a6e2a);border-radius:4px;position:absolute;top:28px;left:20px}
+.card-logo-ring{position:absolute;top:24px;right:18px;width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,rgba(201,168,76,0.15),rgba(201,168,76,0.05));border:1px solid rgba(201,168,76,0.3);display:flex;align-items:center;justify-content:center}
+.card-logo-g{font-size:14px;font-weight:700;color:#c9a84c;font-family:'Cormorant Garamond',serif}
+.card-number{position:absolute;bottom:38px;left:20px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.12em;color:rgba(245,240,232,0.7)}
+.card-holder{position:absolute;bottom:16px;left:20px;font-size:11px;font-weight:600;color:#f5f0e8;letter-spacing:0.06em;text-transform:uppercase}
+.card-visa{position:absolute;bottom:14px;right:18px;font-size:16px;font-style:italic;font-weight:700;color:#E8CB6E;letter-spacing:-0.02em}
+.card-meta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.card-meta-chip{border-radius:20px;padding:4px 10px;font-size:10px;font-family:'JetBrains Mono',monospace}
+.card-meta-chip.active{background:rgba(0,212,170,0.1);border:1px solid rgba(0,212,170,0.2);color:var(--green)}
+.card-meta-chip.detail{background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--muted)}
+.interchange-lbl{font-size:9px;color:var(--gold);font-family:'JetBrains Mono',monospace;background:rgba(201,168,76,0.08);border-radius:4px;padding:2px 6px;margin-left:auto}
+
+/* EARN screen */
+.earn-hero{text-align:center;padding:20px 0 16px;border-bottom:1px solid var(--border);margin-bottom:14px}
+.earn-rate{font-family:'JetBrains Mono',monospace;font-size:42px;font-weight:700;color:var(--green);line-height:1}
+.earn-rate-sub{font-size:11px;color:var(--muted);margin-top:4px}
+.earn-stats{display:flex;gap:8px;margin-bottom:14px}
+.earn-stat{flex:1;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;padding:10px 8px;text-align:center}
+.earn-stat-val{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:var(--text)}
+.earn-stat-lbl{font-size:9px;color:var(--muted);margin-top:2px}
+.strategies{display:flex;flex-direction:column;gap:6px}
+.strat{display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:8px 10px}
+.strat-name{font-size:11.5px;color:var(--text)}
+.strat-tier{font-size:9px;color:var(--muted);margin-top:1px}
+.strat-apy{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--green)}
+
+/* Dots */
+.phone-dots{display:flex;gap:7px;margin-top:12px}
+.dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.2);cursor:pointer;transition:all .25s}
+.dot.active{background:#c9a84c;width:18px;border-radius:3px}
+
+/* ── CTA column ── */
+.cta-label{font-size:9.5px;font-weight:700;letter-spacing:0.12em;color:var(--gold);text-transform:uppercase;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border-gold)}
+.wallet-cta-btn{display:block;width:100%;padding:14px;background:linear-gradient(135deg,#c9a84c,#a8863c,#c9a84c);background-size:200%;color:#1a1400;border:none;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;letter-spacing:0.05em;font-family:'Cormorant Garamond',serif;text-align:center;text-decoration:none;transition:background-position .4s,filter .2s;margin-bottom:8px}
+.wallet-cta-btn:hover{background-position:100%;filter:brightness(1.08);color:#1a1400}
+.cta-sub-note{font-size:11px;color:var(--muted);text-align:center;margin-bottom:16px}
+
+/* Form (same as treasury page) */
+.form-wrap{display:flex;flex-direction:column;gap:10px}
+.form-field{display:flex;flex-direction:column;gap:4px}
+.form-field label{font-size:9.5px;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase}
+.form-input{background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:13px;color:var(--text);font-family:'Cormorant Garamond',serif;outline:none;transition:border-color .2s;width:100%}
+.form-input:focus{border-color:var(--border-gold)}
+.form-input::placeholder{color:var(--muted)}
+select.form-input option{background:#0d1018;color:var(--text)}
+.form-textarea{resize:none;height:60px;font-family:'Cormorant Garamond',serif}
+.form-submit{width:100%;padding:12px;background:rgba(255,255,255,0.06);border:1px solid var(--border-gold);border-radius:10px;font-size:14px;font-weight:600;color:var(--gold);cursor:pointer;letter-spacing:0.06em;font-family:'Cormorant Garamond',serif;transition:background .2s,filter .2s}
+.form-submit:hover{background:rgba(201,168,76,0.1);filter:brightness(1.08)}
+.success-state{display:none;text-align:center;padding:28px 12px;flex-direction:column;align-items:center;gap:10px}
+.success-check{font-size:36px;color:var(--green)}
+.success-title{font-size:18px;font-weight:600;color:var(--text)}
+.success-sub{font-size:12.5px;color:var(--sub);line-height:1.6}
+.trust{display:flex;align-items:center;justify-content:center;gap:7px;font-size:10px;color:var(--muted);margin-top:auto;padding-top:4px}
+.trust-dot{width:3px;height:3px;border-radius:50%;background:var(--muted);flex-shrink:0}
+
+@media(max-width:1100px){
+  .layout{grid-template-columns:1fr 300px;height:auto;overflow:visible}
+  html,body{height:auto;overflow:auto}
+  .story-col{display:none}
+  .phone-col{border-right:none;padding:24px 24px 0}
+  .cta-col{border-top:1px solid var(--border)}
+}
+@media(max-width:680px){
+  .layout{grid-template-columns:1fr;height:auto;overflow:visible}
+  .phone-col{align-items:center}
+}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr-brand">
+    <span class="hdr-genesis">GENESIS</span>
+    <span class="hdr-reserve">RESERVE</span>
+  </div>
+  <nav class="hdr-nav">
+    <a href="/treasury">Capital Engine</a>
+    <a href="/whitepaper">← Whitepaper</a>
+  </nav>
+</header>
+
+<div class="layout">
+
+  <!-- ── Story Column ── -->
+  <div class="story-col">
+    <div class="story-eyebrow">Smarter Wallet</div>
+    <div class="story-headline">Your money,<br><em>always working</em>.</div>
+
+    <div class="sd-panel active" id="sd-0">
+      <div class="sd-num">01 — Instant Access</div>
+      <div class="sd-title">One tap.<br>You're in.</div>
+      <div class="sd-body">No username. No password. No bank approval. Just a phone number and you have a non-custodial digital dollar wallet, secured by Privy and backed by institutional infrastructure.</div>
+      <ul class="sd-features">
+        <li>Phone-linked identity — no seed phrase</li>
+        <li>Non-custodial by design</li>
+        <li>Privy embedded wallet infrastructure</li>
+        <li>Compliant across approved jurisdictions</li>
+      </ul>
+    </div>
+    <div class="sd-panel" id="sd-1">
+      <div class="sd-num">02 — Secure Setup</div>
+      <div class="sd-title">Ready in under<br>three seconds.</div>
+      <div class="sd-body">Privy connects your identity, loads your wallet, and prepares your vault — all in a single smooth sequence. No app store download. No KYC queue. No wait.</div>
+      <ul class="sd-features">
+        <li>Privy wallet provisioned instantly</li>
+        <li>Vault pre-configured and ready</li>
+        <li>Zero onboarding friction</li>
+      </ul>
+    </div>
+    <div class="sd-panel" id="sd-2">
+      <div class="sd-num">03 — Live Balance</div>
+      <div class="sd-title">Every dollar<br>earning yield.</div>
+      <div class="sd-body">Your idle USDC balance routes through the Perpetual Capital Engine automatically — earning yield every 15 minutes, credited every epoch. No opt-in. No minimum. No lock-up.</div>
+      <ul class="sd-features">
+        <li>96 yield settlements per day</li>
+        <li>Same engine as institutional clients</li>
+        <li>Zero-fee P2P transfers on Arbitrum</li>
+        <li>Real-time balance, always accurate</li>
+      </ul>
+    </div>
+    <div class="sd-panel" id="sd-3">
+      <div class="sd-num">04 — Global Transfers</div>
+      <div class="sd-title">Send $250<br>for exactly $0.</div>
+      <div class="sd-body">USDC transfers on Arbitrum settle in seconds with zero network fee, no correspondent bank, and no FX spread. Your recipient gets exactly what you send — every time.</div>
+      <ul class="sd-features">
+        <li>Zero network fees on Arbitrum</li>
+        <li>On-chain settlement — not custodial</li>
+        <li>Arrives in seconds, not days</li>
+        <li>No intermediary, no markup</li>
+      </ul>
+    </div>
+    <div class="sd-panel" id="sd-4">
+      <div class="sd-num">05 — Spend Anywhere</div>
+      <div class="sd-title">Your USDC,<br>on a Visa card.</div>
+      <div class="sd-body">The Genesis Card lets you spend your digital dollars at 40M+ Visa merchants worldwide. Powered by Circle. Every swipe generates interchange revenue that flows back to the protocol.</div>
+      <ul class="sd-features">
+        <li>Visa network — 40M+ merchants</li>
+        <li>Powered by Circle's card infrastructure</li>
+        <li>Interchange revenue shared to protocol</li>
+        <li>Real-time transaction visibility</li>
+      </ul>
+    </div>
+    <div class="sd-panel" id="sd-5">
+      <div class="sd-num">06 — Institutional Yield</div>
+      <div class="sd-title">7.8% APY.<br>No minimums.</div>
+      <div class="sd-body">The same Perpetual Capital Engine that serves institutional treasury clients routes your balance across 7 yield corridors — T-Bills, Aave, Pendle, Gearbox, and more — automatically.</div>
+      <ul class="sd-features">
+        <li>7 yield corridors, institutional-grade</li>
+        <li>Same StrategyRouter as $100M+ clients</li>
+        <li>No lock-up, exit anytime</li>
+        <li>Transparent attribution per epoch</li>
+      </ul>
+    </div>
+
+    <!-- Comparison (appears after full demo) -->
+    <div class="compare-wrap" id="compareWrap">
+      <div class="compare-title">After 1 Year at $5,000</div>
+      <div class="compare-row">
+        <span class="compare-who">Traditional Bank</span>
+        <div class="compare-right">
+          <span class="compare-bal" data-target="5003">$0</span>
+          <span class="compare-apy">0.05%</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <span class="compare-who">Coinbase / Robinhood</span>
+        <div class="compare-right">
+          <span class="compare-bal" data-target="5225">$0</span>
+          <span class="compare-apy">4.50%</span>
+        </div>
+      </div>
+      <div class="compare-row genesis">
+        <span class="compare-who">Genesis Reserve</span>
+        <div class="compare-right">
+          <span class="compare-bal" data-target="5412">$0</span>
+          <span class="compare-apy" style="color:var(--green)">7.8%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Phone Column ── -->
+  <div class="phone-col">
+    <div class="phone-wrap">
+      <div class="phone" id="thePhone">
+        <div class="phone-island"></div>
+        <div class="phone-status">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:#fff" id="wdTime">9:41</span>
+          <div class="phone-icons">
+            <svg width="14" height="10" viewBox="0 0 14 10" fill="white"><rect x="0" y="3" width="3" height="7" rx="0.5" opacity="0.4"/><rect x="4" y="2" width="3" height="8" rx="0.5" opacity="0.7"/><rect x="8" y="0" width="3" height="10" rx="0.5"/><rect x="12" y="1" width="2" height="8" rx="1" fill="none" stroke="white" stroke-width="0.8"/></svg>
+            <svg width="14" height="10" viewBox="0 0 20 14" fill="none" stroke="white" stroke-width="1.5"><path d="M1 4.5C4 1.5 16 1.5 19 4.5M4 7.5C6 5.5 14 5.5 16 7.5M7.5 10.5C8.5 9.5 11.5 9.5 12.5 10.5"/><circle cx="10" cy="13" r="1" fill="white"/></svg>
+          </div>
+        </div>
+
+        <!-- Screen 0: LOGIN -->
+        <div class="p-screen active" id="ps-0">
+          <div class="login-bg"></div>
+          <div class="login-body">
+            <div class="login-logo ld-a0">
+              <svg viewBox="0 0 28 28" fill="none"><path d="M14 4L4 10v8l10 6 10-6v-8L14 4z" stroke="#C9A84C" stroke-width="1.2" fill="none"/><path d="M14 8l-6 3.5v5L14 20l6-3.5v-5L14 8z" fill="rgba(201,168,76,0.15)" stroke="#C9A84C" stroke-width="0.8"/></svg>
+            </div>
+            <div class="login-title ld-a1">GENESIS</div>
+            <div class="login-sub ld-a1">RESERVE</div>
+            <div class="login-rule ld-a2" id="loginRule"></div>
+            <div class="login-tagline ld-a3">The Operating System for Stablecoins</div>
+            <div class="login-stats ld-a4">
+              <div class="login-stat"><div class="login-stat-val">7.8%</div><div class="login-stat-lbl">Target APY</div></div>
+              <div class="login-stat"><div class="login-stat-val">96&times;</div><div class="login-stat-lbl">Daily Settle</div></div>
+              <div class="login-stat"><div class="login-stat-val">$0</div><div class="login-stat-lbl">Send Fee</div></div>
+            </div>
+            <div class="login-btns ld-a5">
+              <button class="btn-primary" onclick="wdAdvance()">Create Wallet</button>
+              <button class="btn-secondary" onclick="wdAdvance()">Sign In</button>
+            </div>
+            <div class="login-trust ld-a6">Secured by Privy &middot; Powered by Arbitrum &middot; Enterprise Wallet Infra</div>
+          </div>
+          <div class="p-home-bar"></div>
+        </div>
+
+        <!-- Screen 1: BOOT -->
+        <div class="p-screen" id="ps-1">
+          <div class="boot-body">
+            <div>
+              <div class="boot-logo">GENESIS</div>
+              <div class="boot-sub">Reserve</div>
+            </div>
+            <div class="boot-spinner"></div>
+            <div class="boot-step" id="bootStep">Connecting to Privy&hellip;</div>
+          </div>
+          <div class="p-home-bar"></div>
+        </div>
+
+        <!-- Screen 2: HOME -->
+        <div class="p-screen" id="ps-2">
+          <div class="app-screen">
+            <div class="app-header">
+              <div><div class="app-title">Good morning</div><div class="app-sub">Wallet &middot; Arbitrum</div></div>
+              <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,rgba(201,168,76,0.2),rgba(201,168,76,0.05));border:1px solid var(--border-gold)"></div>
+            </div>
+            <div class="app-body">
+              <div class="balance-card">
+                <div class="bal-label">Total Balance</div>
+                <div class="bal-amount" id="wdBal">$5,412.73</div>
+                <div class="bal-yield">
+                  <div class="yield-dot"></div>
+                  <span class="yield-txt" id="wdYield">+$1.19 today</span>
+                  <div class="apy-pill">7.8% APY</div>
+                </div>
+              </div>
+              <div class="quick-actions">
+                <div class="qa" onclick="wdGoTo(3)"><div class="qa-icon">&#8593;</div><div class="qa-lbl">Send</div></div>
+                <div class="qa" onclick="wdGoTo(3)"><div class="qa-icon">&#8595;</div><div class="qa-lbl">Receive</div></div>
+                <div class="qa" onclick="wdGoTo(4)"><div class="qa-icon">&#9646;&#9646;</div><div class="qa-lbl">Card</div></div>
+                <div class="qa" onclick="wdGoTo(5)"><div class="qa-icon">&#9889;</div><div class="qa-lbl">Earn</div></div>
+              </div>
+              <div class="activity-lbl">Recent Activity</div>
+              <div class="tx"><div><div class="tx-desc">Yield Settlement</div><div class="tx-meta">Epoch #4,892</div></div><div class="tx-amount pos">+$0.83</div></div>
+              <div class="tx"><div><div class="tx-desc">USDC Received</div><div class="tx-meta">From Marcus J.</div></div><div class="tx-amount pos">+$500.00</div></div>
+              <div class="tx"><div><div class="tx-desc">Card Purchase</div><div class="tx-meta">Whole Foods</div></div><div class="tx-amount neg">&minus;$64.20</div></div>
+              <div class="tx"><div><div class="tx-desc">Yield Settlement</div><div class="tx-meta">Epoch #4,891</div></div><div class="tx-amount pos">+$0.82</div></div>
+            </div>
+            <div class="bottom-nav">
+              <div class="nav-item active"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 12L12 3l9 9M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9"/></svg><span>Home</span></div>
+              <div class="nav-item" onclick="wdGoTo(3)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg><span>Send</span></div>
+              <div class="nav-item" onclick="wdGoTo(4)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg><span>Card</span></div>
+              <div class="nav-item" onclick="wdGoTo(5)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg><span>Earn</span></div>
+            </div>
+          </div>
+          <div class="p-home-bar"></div>
+        </div>
+
+        <!-- Screen 3: SEND -->
+        <div class="p-screen" id="ps-3">
+          <div class="app-screen">
+            <div class="app-header">
+              <button class="back-btn" onclick="wdGoTo(2)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#c9a84c" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
+              <div class="app-title">Send USDC</div>
+              <div style="width:32px"></div>
+            </div>
+            <div class="app-body">
+              <div class="send-to">
+                <div class="send-lbl">To</div>
+                <div class="send-recip">
+                  <div class="recip-avatar">A</div>
+                  <div>
+                    <div style="font-size:13px;font-weight:600;color:#f5f0e8">Alex Wilson</div>
+                    <div style="font-size:10px;color:rgba(245,240,232,0.4);font-family:'JetBrains Mono',monospace">0x742d&hellip;4f2a</div>
+                  </div>
+                </div>
+              </div>
+              <div class="send-amount">
+                <div class="send-big">$250</div>
+                <div class="send-usdc">250.00 USDC</div>
+              </div>
+              <div class="fee-row">
+                <div class="fee-item"><div class="fee-lbl">Network fee</div><div class="fee-val free">$0.00</div></div>
+                <div class="fee-item"><div class="fee-lbl">Arrives</div><div class="fee-val">Instantly</div></div>
+                <div class="fee-item"><div class="fee-lbl">Network</div><div class="fee-val arb">Arbitrum</div></div>
+              </div>
+              <div id="sendBtn">
+                <button class="btn-primary" onclick="wdSendTap()" style="width:100%;border-radius:14px;padding:15px">Send $250.00</button>
+              </div>
+              <div class="send-success" id="sendSuccess">
+                <div style="font-size:42px;color:#00D4AA">&#10003;</div>
+                <div style="font-size:15px;font-weight:600;color:#f5f0e8;margin-top:8px">Sent Successfully</div>
+                <div style="font-size:11px;color:rgba(245,240,232,0.45);margin-top:4px">$250.00 USDC &rarr; Alex Wilson</div>
+                <div style="font-size:10.5px;color:#00D4AA;margin-top:6px;font-family:'JetBrains Mono',monospace">On-chain &middot; $0.00 fee &middot; Instant</div>
+              </div>
+              <div style="font-size:10px;color:rgba(245,240,232,0.3);text-align:center;margin-top:12px">&#10003; Settled on-chain &middot; Zero intermediary &middot; Non-custodial</div>
+            </div>
+            <div class="bottom-nav">
+              <div class="nav-item" onclick="wdGoTo(2)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 12L12 3l9 9M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9"/></svg><span>Home</span></div>
+              <div class="nav-item active"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg><span>Send</span></div>
+              <div class="nav-item" onclick="wdGoTo(4)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg><span>Card</span></div>
+              <div class="nav-item" onclick="wdGoTo(5)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg><span>Earn</span></div>
+            </div>
+          </div>
+          <div class="p-home-bar"></div>
+        </div>
+
+        <!-- Screen 4: CARD -->
+        <div class="p-screen" id="ps-4">
+          <div class="app-screen">
+            <div class="app-header">
+              <div class="app-title">Card</div>
+              <div style="background:rgba(0,212,170,0.1);border:1px solid rgba(0,212,170,0.2);border-radius:20px;padding:3px 10px;font-size:10px;color:#00D4AA;font-family:'JetBrains Mono',monospace">Active</div>
+            </div>
+            <div class="app-body">
+              <div class="genesis-card">
+                <div class="card-shimmer"></div>
+                <div class="card-chip"></div>
+                <div class="card-logo-ring"><span class="card-logo-g">G</span></div>
+                <div class="card-number">4242 &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; 1729</div>
+                <div class="card-holder">GENESIS RESERVE</div>
+                <div class="card-visa">VISA</div>
+              </div>
+              <div class="card-meta">
+                <div class="card-meta-chip active">&#9679; Active</div>
+                <div class="card-meta-chip detail">Arbitrum</div>
+                <div class="card-meta-chip detail">Circle Issued</div>
+              </div>
+              <div class="activity-lbl">Recent Transactions</div>
+              <div class="tx"><div><div class="tx-desc">Whole Foods</div><div class="tx-meta">Today 2:14pm</div></div><div style="display:flex;align-items:center;gap:6px"><span class="interchange-lbl">1.8% IC</span><span class="tx-amount neg">&minus;$64.20</span></div></div>
+              <div class="tx"><div><div class="tx-desc">Shell Station</div><div class="tx-meta">Yesterday</div></div><div style="display:flex;align-items:center;gap:6px"><span class="interchange-lbl">1.9% IC</span><span class="tx-amount neg">&minus;$48.75</span></div></div>
+              <div class="tx"><div><div class="tx-desc">Amazon</div><div class="tx-meta">May 18</div></div><div style="display:flex;align-items:center;gap:6px"><span class="interchange-lbl">1.6% IC</span><span class="tx-amount neg">&minus;$129.00</span></div></div>
+            </div>
+            <div class="bottom-nav">
+              <div class="nav-item" onclick="wdGoTo(2)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 12L12 3l9 9M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9"/></svg><span>Home</span></div>
+              <div class="nav-item" onclick="wdGoTo(3)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg><span>Send</span></div>
+              <div class="nav-item active"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg><span>Card</span></div>
+              <div class="nav-item" onclick="wdGoTo(5)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg><span>Earn</span></div>
+            </div>
+          </div>
+          <div class="p-home-bar"></div>
+        </div>
+
+        <!-- Screen 5: EARN -->
+        <div class="p-screen" id="ps-5">
+          <div class="app-screen">
+            <div class="app-header">
+              <div class="app-title">Earn</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#00D4AA">Live</div>
+            </div>
+            <div class="app-body">
+              <div class="earn-hero">
+                <div class="earn-rate">7.8%</div>
+                <div class="earn-rate-sub">Targeted APY &middot; Perpetual Capital Engine</div>
+              </div>
+              <div class="earn-stats">
+                <div class="earn-stat"><div class="earn-stat-val">96&times;</div><div class="earn-stat-lbl">Daily epochs</div></div>
+                <div class="earn-stat"><div class="earn-stat-val">$0</div><div class="earn-stat-lbl">Min. balance</div></div>
+                <div class="earn-stat"><div class="earn-stat-val">None</div><div class="earn-stat-lbl">Lock-up</div></div>
+              </div>
+              <div class="activity-lbl">Active Strategies</div>
+              <div class="strategies">
+                <div class="strat"><div><div class="strat-name">Tokenized Treasuries</div><div class="strat-tier">Preserve &middot; 30%</div></div><div class="strat-apy">5.2%</div></div>
+                <div class="strat"><div><div class="strat-name">Aave USDC</div><div class="strat-tier">Core DeFi &middot; 25%</div></div><div class="strat-apy">8.1%</div></div>
+                <div class="strat"><div><div class="strat-name">Pendle PT-USDC</div><div class="strat-tier">Structured &middot; 15%</div></div><div class="strat-apy">11.4%</div></div>
+                <div class="strat"><div><div class="strat-name">Gearbox Leverage</div><div class="strat-tier">Accelerate &middot; 12%</div></div><div class="strat-apy">18.7%</div></div>
+              </div>
+            </div>
+            <div class="bottom-nav">
+              <div class="nav-item" onclick="wdGoTo(2)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 12L12 3l9 9M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9"/></svg><span>Home</span></div>
+              <div class="nav-item" onclick="wdGoTo(3)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg><span>Send</span></div>
+              <div class="nav-item" onclick="wdGoTo(4)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg><span>Card</span></div>
+              <div class="nav-item active"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg><span>Earn</span></div>
+            </div>
+          </div>
+          <div class="p-home-bar"></div>
+        </div>
+
+      </div><!-- end .phone -->
+    </div><!-- end .phone-wrap -->
+
+    <div class="phone-dots" id="phoneDots">
+      <div class="dot active" onclick="wdGoTo(0)"></div>
+      <div class="dot" onclick="wdGoTo(1)"></div>
+      <div class="dot" onclick="wdGoTo(2)"></div>
+      <div class="dot" onclick="wdGoTo(3)"></div>
+      <div class="dot" onclick="wdGoTo(4)"></div>
+      <div class="dot" onclick="wdGoTo(5)"></div>
+    </div>
+  </div><!-- end .phone-col -->
+
+  <!-- ── CTA Column ── -->
+  <div class="cta-col">
+    <div>
+      <div class="cta-label">Try the Live App</div>
+      <a class="wallet-cta-btn" href="https://genesis-reserve-smarter-wallet.vercel.app" target="_blank">Create Your Wallet &rarr;</a>
+      <div class="cta-sub-note">Non-custodial &middot; No download required &middot; Free</div>
+    </div>
+
+    <div style="flex:1">
+      <div class="cta-label">Partner Inquiry</div>
+      <form class="form-wrap" id="partnerForm" onsubmit="submitPartner(event)">
+        <div class="form-field">
+          <label for="pf-name">Full Name</label>
+          <input class="form-input" id="pf-name" type="text" placeholder="Your full name" required>
+        </div>
+        <div class="form-field">
+          <label for="pf-org">Organization</label>
+          <input class="form-input" id="pf-org" type="text" placeholder="Company or project" required>
+        </div>
+        <div class="form-field">
+          <label for="pf-type">Partnership Type</label>
+          <select class="form-input" id="pf-type" required>
+            <option value="">Select type</option>
+            <option>Embedded Finance Integration</option>
+            <option>B2B Treasury Client</option>
+            <option>Institutional Investment</option>
+            <option>Distribution / Referral</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label for="pf-msg">Message</label>
+          <textarea class="form-input form-textarea" id="pf-msg" placeholder="Tell us about your use case or partnership idea&#8230;"></textarea>
+        </div>
+        <button class="form-submit" type="submit">Send Inquiry &rarr;</button>
+      </form>
+      <div class="success-state" id="partnerSuccess">
+        <div class="success-check">&#10003;</div>
+        <div class="success-title">Inquiry Received</div>
+        <div class="success-sub">We'll follow up within 24 hours to explore the partnership opportunity.</div>
+      </div>
+    </div>
+
+    <div class="trust">
+      <span>Secured by Privy</span>
+      <div class="trust-dot"></div>
+      <span>Powered by Arbitrum</span>
+      <div class="trust-dot"></div>
+      <span>Zero Hash</span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  var current=0, total=6;
+  var autoTimer=null, balTimer=null, bootTimer=null;
+  var compShown=false;
+  var screens=[].slice.call(document.querySelectorAll('.p-screen'));
+  var dots=[].slice.call(document.querySelectorAll('.dot'));
+  var sdPanels=[].slice.call(document.querySelectorAll('.sd-panel'));
+  var balEl=document.getElementById('wdBal');
+  var yieldEl=document.getElementById('wdYield');
+  var timeEl=document.getElementById('wdTime');
+  var bootStepEl=document.getElementById('bootStep');
+  var loginRuleEl=document.getElementById('loginRule');
+  var balBase=5412.73, yieldBase=1.19;
+
+  // Clock
+  function updateClock(){
+    var d=new Date(),h=d.getHours()%12||12,m=d.getMinutes();
+    if(timeEl)timeEl.textContent=h+':'+(m<10?'0':'')+m;
+  }
+  updateClock();
+  setInterval(updateClock,15000);
+
+  function _activate(n){
+    if(screens[current])screens[current].classList.remove('active');
+    if(dots[current])dots[current].classList.remove('active');
+    if(sdPanels[current])sdPanels[current].classList.remove('active');
+    current=n;
+    if(screens[current])screens[current].classList.add('active');
+    if(dots[current])dots[current].classList.add('active');
+    if(sdPanels[current])sdPanels[current].classList.add('active');
+  }
+
+  function clearAuto(){if(autoTimer){clearInterval(autoTimer);autoTimer=null;}}
+  function clearBoot(){if(bootTimer){clearTimeout(bootTimer);bootTimer=null;}}
+
+  function wdGoTo(n){
+    if(n<0||n>=total)return;
+    clearAuto();clearBoot();
+    if(n<=1){compShown=false;var cw=document.getElementById('compareWrap');if(cw)cw.classList.remove('visible');}
+    _activate(n);
+    if(n===0){resetLoginAnims();runLoginAnims();}
+    else if(n===1){runBootSeq();}
+    else{if(n===2)startBalTicker();startAutoPlay();}
+  }
+
+  function wdAdvance(){wdGoTo(Math.min(current+1,total-1));}
+
+  // Login
+  function resetLoginAnims(){
+    document.querySelectorAll('#ps-0 .ld-in').forEach(function(el){el.classList.remove('ld-in');});
+    if(loginRuleEl)loginRuleEl.classList.remove('expanded');
+  }
+  function runLoginAnims(){
+    var seq=[['#ps-0 .ld-a0',80],['#ps-0 .ld-a1',180],['#ps-0 .ld-a2',260],['#ps-0 .ld-a3',360],['#ps-0 .ld-a4',460],['#ps-0 .ld-a5',560],['#ps-0 .ld-a6',660]];
+    seq.forEach(function(s){
+      setTimeout(function(){document.querySelectorAll(s[0]).forEach(function(el){el.classList.add('ld-in');});},s[1]);
+    });
+    setTimeout(function(){if(loginRuleEl)loginRuleEl.classList.add('expanded');},260);
+    bootTimer=setTimeout(function(){wdGoTo(1);},3800);
+  }
+
+  // Boot
+  var bootMsgs=['Connecting to Privy…','Loading wallet…','Preparing vault…','Ready.'];
+  function runBootSeq(){
+    var i=0;
+    if(bootStepEl)bootStepEl.textContent=bootMsgs[0];
+    function next(){
+      i++;
+      if(i<bootMsgs.length){
+        if(bootStepEl)bootStepEl.textContent=bootMsgs[i];
+        bootTimer=setTimeout(next,i<bootMsgs.length-1?600:800);
+      } else {
+        bootTimer=setTimeout(function(){wdGoTo(2);},350);
+      }
+    }
+    bootTimer=setTimeout(next,700);
+  }
+
+  // Balance ticker
+  function startBalTicker(){
+    if(balTimer)return;
+    balTimer=setInterval(function(){
+      balBase+=Math.random()*0.14+0.02;
+      yieldBase+=Math.random()*0.05+0.01;
+      if(balEl)balEl.textContent='$'+balBase.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+      if(yieldEl)yieldEl.textContent='+$'+yieldBase.toFixed(2)+' today';
+    },2800);
+  }
+
+  // Auto-play
+  function startAutoPlay(){
+    clearAuto();
+    autoTimer=setInterval(function(){
+      if(current>=total-1){clearAuto();setTimeout(showComparison,600);}
+      else{var n=current+1;_activate(n);if(n===2)startBalTicker();}
+    },4000);
+  }
+
+  // Send tap
+  function wdSendTap(){
+    var btn=document.getElementById('sendBtn');
+    var suc=document.getElementById('sendSuccess');
+    if(btn)btn.style.display='none';
+    if(suc)suc.style.display='block';
+    setTimeout(function(){
+      if(btn)btn.style.display='';
+      if(suc)suc.style.display='';
+      wdGoTo(4);
+    },2200);
+  }
+
+  // Comparison reveal
+  function showComparison(){
+    if(compShown)return;
+    compShown=true;
+    var cw=document.getElementById('compareWrap');
+    if(cw)cw.classList.add('visible');
+    document.querySelectorAll('.compare-bal[data-target]').forEach(function(el,i){
+      var target=parseInt(el.getAttribute('data-target'),10);
+      setTimeout(function(){
+        var t0=Date.now(),dur=1200;
+        function step(){
+          var t=Math.min((Date.now()-t0)/dur,1);
+          var ease=1-Math.pow(1-t,3);
+          el.textContent='$'+Math.floor(target*ease).toLocaleString();
+          if(t<1)requestAnimationFrame(step);
+          else el.textContent='$'+target.toLocaleString();
+        }
+        requestAnimationFrame(step);
+      },i*220+150);
+    });
+  }
+
+  // Partner form
+  function submitPartner(e){
+    e.preventDefault();
+    var name=document.getElementById('pf-name').value;
+    var org=document.getElementById('pf-org').value;
+    var type=document.getElementById('pf-type').value;
+    var msg=document.getElementById('pf-msg').value;
+    var subj='Genesis Reserve — Partner Inquiry';
+    var body=['Name: '+name,'Organization: '+org,'Partnership Type: '+type,'','Message:',msg,'','---','Submitted via Genesis Reserve Smarter Wallet demo page.'].join('\n');
+    document.getElementById('partnerForm').style.display='none';
+    var s=document.getElementById('partnerSuccess');s.style.display='flex';
+    setTimeout(function(){window.open('mailto:crownmcllc@gmail.com?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body),'_self');},700);
+  }
+
+  window.wdGoTo=wdGoTo;
+  window.wdAdvance=wdAdvance;
+  window.wdSendTap=wdSendTap;
+  window.submitPartner=submitPartner;
+
+  setTimeout(function(){runLoginAnims();},700);
+})();
+</script>
+</body>
+</html>

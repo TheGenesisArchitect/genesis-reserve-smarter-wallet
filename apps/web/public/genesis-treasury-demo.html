@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Genesis Reserve — Perpetual Capital Engine</title>
+<meta name="description" content="Live simulation of the Perpetual Capital Engine — 96-epoch daily settlement, institutional yield infrastructure.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=JetBrains+Mono:wght@400;600;700&family=Tenor+Sans&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#020305;--s1:#07090e;--s2:#0d1018;
+  --border:rgba(255,255,255,0.06);--border-gold:rgba(201,168,76,0.22);
+  --gold:#C9A84C;--gold2:#E8CB6E;--gold-dim:rgba(201,168,76,0.10);
+  --green:#00D4AA;--green-dim:rgba(0,212,170,0.10);
+  --text:#f5f0e8;--sub:rgba(245,240,232,0.55);--muted:rgba(245,240,232,0.32)
+}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',Georgia,serif}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 60% at 15% 25%,rgba(201,168,76,0.05) 0%,transparent 65%),radial-gradient(ellipse 50% 40% at 85% 75%,rgba(0,212,170,0.03) 0%,transparent 65%);pointer-events:none;z-index:0}
+a{color:var(--gold);text-decoration:none}a:hover{color:var(--gold2)}
+button{font-family:'Cormorant Garamond',Georgia,serif}
+
+/* ── Header ── */
+.hdr{height:52px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;flex-shrink:0;position:relative;z-index:1}
+.hdr-brand{display:flex;align-items:baseline;gap:8px}
+.hdr-genesis{font-size:18px;font-weight:300;letter-spacing:0.22em;color:var(--text)}
+.hdr-reserve{font-family:'Tenor Sans',serif;font-size:8px;letter-spacing:0.55em;color:var(--gold);text-transform:uppercase}
+.hdr-nav{display:flex;align-items:center;gap:20px}
+.hdr-nav a{font-size:11.5px;color:var(--sub);letter-spacing:0.05em;transition:color .2s}
+.hdr-nav a:hover{color:var(--gold)}
+
+/* ── Layout ── */
+.layout{display:grid;grid-template-columns:1fr 400px;height:calc(100vh - 52px);overflow:hidden;position:relative;z-index:1}
+.demo-col{padding:20px 28px 16px;overflow-y:auto;border-right:1px solid var(--border)}
+.cta-col{padding:24px 26px 20px;overflow-y:auto;display:flex;flex-direction:column;gap:20px;background:rgba(255,255,255,0.012)}
+
+/* ── Demo column ── */
+.demo-title{font-size:10.5px;font-weight:700;letter-spacing:0.13em;color:var(--gold);text-transform:uppercase;margin-bottom:3px}
+.demo-sub{font-size:13px;color:var(--sub);margin-bottom:14px;line-height:1.5}
+
+/* Scale selector */
+.scale-bar{display:flex;align-items:center;gap:7px;margin-bottom:14px;flex-wrap:wrap}
+.scale-lbl{font-size:10.5px;color:var(--muted);letter-spacing:0.05em;font-family:'JetBrains Mono',monospace}
+.scale-btn{background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:20px;padding:5px 14px;font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--sub);cursor:pointer;transition:all .2s}
+.scale-btn:hover{border-color:var(--border-gold);color:var(--gold)}
+.scale-btn.active{background:var(--gold-dim);border-color:var(--border-gold);color:var(--gold);font-weight:600}
+
+/* Status bar */
+.status-bar{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.s-chip{border-radius:20px;padding:4px 12px;font-size:11px;font-family:'JetBrains Mono',monospace}
+.s-chip-gold{background:var(--gold-dim);border:1px solid var(--border-gold);color:var(--gold)}
+.s-chip-gold .dim{color:rgba(201,168,76,0.4)}
+.s-chip-green{background:var(--green-dim);border:1px solid rgba(0,212,170,0.2);color:var(--green)}
+.run-btn{background:linear-gradient(135deg,#c9a84c,#a8863c);color:#1a1400;border:none;border-radius:20px;padding:6px 18px;font-size:11.5px;font-weight:700;cursor:pointer;letter-spacing:0.04em;margin-left:auto;transition:filter .2s}
+.run-btn:hover{filter:brightness(1.1)}
+
+/* Diagram */
+.diag{display:flex;flex-direction:column;align-items:center}
+.d-row{display:flex;justify-content:center;align-items:stretch;gap:8px;width:100%}
+.vline{width:2px;min-height:20px;position:relative;margin:0 auto;overflow:visible}
+.vline-gold{background:linear-gradient(to bottom,rgba(201,168,76,0.18),rgba(201,168,76,0.5),rgba(201,168,76,0.18))}
+.vline-green{background:linear-gradient(to bottom,rgba(0,212,170,0.18),rgba(0,212,170,0.5),rgba(0,212,170,0.18))}
+.pt{width:7px;height:7px;border-radius:50%;position:absolute;left:-2.5px;top:-7px;animation:ptDown 1s linear infinite;animation-play-state:paused}
+.pt-gold{background:#c9a84c;box-shadow:0 0 8px rgba(201,168,76,0.9)}
+.pt-green{background:#00D4AA;box-shadow:0 0 8px rgba(0,212,170,0.9);animation-name:ptUp}
+.diag.running .pt{animation-play-state:running}
+@keyframes ptDown{from{top:-7px}to{top:calc(100% + 7px)}}
+@keyframes ptUp{from{top:calc(100% + 7px)}to{top:-7px}}
+
+/* Source nodes */
+.src{flex:1;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:9px;padding:9px 8px;text-align:center;max-width:140px}
+.src-lbl{font-size:11.5px;font-weight:600;color:var(--text)}
+.src-sub{font-size:9.5px;color:var(--muted);margin-top:2px}
+
+/* Vault */
+.vault-row{gap:14px;justify-content:center;align-items:center}
+.vault{background:var(--gold-dim);border:1.5px solid var(--border-gold);border-radius:12px;padding:12px 24px;text-align:center}
+.vault.pulsing{animation:vPulse .45s ease-out}
+@keyframes vPulse{0%,100%{box-shadow:none}50%{box-shadow:0 0 0 8px rgba(201,168,76,0.15),0 0 28px rgba(201,168,76,0.1)}}
+.vault-lbl{font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(201,168,76,0.6);margin-bottom:5px}
+.vault-bal{font-family:'JetBrains Mono',monospace;font-size:19px;font-weight:700;color:var(--gold)}
+.vault-sub{font-size:9px;color:var(--muted);margin-top:2px}
+.epoch-ring{position:relative;width:72px;height:72px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0}
+.epoch-ring svg{position:absolute;top:0;left:0;width:72px;height:72px}
+.epoch-num{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;color:var(--gold);position:relative;z-index:1}
+.epoch-tag{font-size:7.5px;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;position:relative;z-index:1;margin-top:1px}
+
+/* Router */
+.router{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.09);border-radius:10px;padding:10px 24px;text-align:center;width:100%;max-width:420px}
+.router-lbl{font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text)}
+.router-sub{font-size:9.5px;color:var(--muted);margin-top:2px}
+
+/* Fan lines */
+.fan{width:100%;height:14px;position:relative}
+.fan::before{content:'';position:absolute;bottom:0;left:3%;right:3%;height:1.5px;background:rgba(201,168,76,0.18)}
+.fan-green::before{background:rgba(0,212,170,0.18)}
+
+/* Corridors */
+.corridors{display:flex;gap:5px;width:100%}
+.corr{flex:1;border-radius:8px;padding:8px 5px;text-align:center;border:1px solid transparent;min-width:50px}
+.corr-name{font-size:10px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.corr-tier{font-size:7.5px;color:var(--muted);margin:2px 0 5px;text-transform:uppercase;letter-spacing:0.05em}
+.corr-track{height:3px;background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden}
+.corr-fill{height:100%;border-radius:2px;transition:width .5s ease}
+.corr-pct{font-size:9px;color:var(--muted);margin-top:3px;font-family:'JetBrains Mono',monospace}
+.c-p{background:rgba(34,197,94,0.07);border-color:rgba(34,197,94,0.2)}.c-p .corr-fill{background:#22c55e}
+.c-c{background:rgba(59,130,246,0.07);border-color:rgba(59,130,246,0.2)}.c-c .corr-fill{background:#3b82f6}
+.c-s{background:rgba(168,85,247,0.07);border-color:rgba(168,85,247,0.2)}.c-s .corr-fill{background:#a855f7}
+.c-a{background:rgba(249,115,22,0.07);border-color:rgba(249,115,22,0.2)}.c-a .corr-fill{background:#f97316}
+.c-t{background:rgba(234,179,8,0.07);border-color:rgba(234,179,8,0.2)}.c-t .corr-fill{background:#eab308}
+.c-v{background:rgba(239,68,68,0.07);border-color:rgba(239,68,68,0.2)}.c-v .corr-fill{background:#ef4444}
+.c-k{background:rgba(236,72,153,0.07);border-color:rgba(236,72,153,0.2)}.c-k .corr-fill{background:#ec4899}
+
+/* Waterfall */
+.wfall-row{gap:6px;flex-wrap:wrap}
+.wf{flex:1;min-width:95px;border-radius:10px;padding:10px 8px;text-align:center}
+.wf.pulsing{animation:wPulse .45s ease-out}
+@keyframes wPulse{0%,100%{filter:none}50%{filter:brightness(1.35)}}
+.wf-lbl{font-size:8.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);margin-bottom:3px}
+.wf-cut{font-size:7.5px;color:rgba(245,240,232,0.22);margin-bottom:5px}
+.wf-val{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700}
+.wf-i{background:rgba(0,212,170,0.07);border:1px solid rgba(0,212,170,0.2)}.wf-i .wf-val{color:var(--green)}
+.wf-g{background:rgba(201,168,76,0.07);border:1px solid rgba(201,168,76,0.2)}.wf-g .wf-val{color:var(--gold)}
+.wf-t{background:rgba(34,197,94,0.07);border:1px solid rgba(34,197,94,0.2)}.wf-t .wf-val{color:#22c55e}
+.wf-o{background:rgba(255,255,255,0.03);border:1px solid var(--border)}.wf-o .wf-val{color:var(--sub)}
+.reinvest-note{font-size:10px;color:rgba(34,197,94,0.55);text-align:center;margin-top:8px;font-style:italic}
+
+/* Sparkline */
+.spark-wrap{margin-top:11px;background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:10px;padding:10px 12px}
+.spark-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.spark-lbl{font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em}
+.spark-total{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold)}
+.spark-svg{width:100%;height:40px;display:block}
+
+/* Annual strip */
+.ann-strip{margin-top:10px;background:var(--gold-dim);border:1px solid var(--border-gold);border-radius:10px;padding:10px 14px;display:flex;gap:0;flex-wrap:wrap}
+.ann-item{flex:1;min-width:110px;text-align:center;padding:4px 8px}
+.ann-item+.ann-item{border-left:1px solid rgba(201,168,76,0.15)}
+.ann-lbl{font-size:8.5px;color:rgba(245,240,232,0.4);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px}
+.ann-val{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:var(--gold)}
+.ann-val.green{color:var(--green)}
+
+/* ── CTA Column ── */
+.cta-label{font-size:9.5px;font-weight:700;letter-spacing:0.12em;color:var(--gold);text-transform:uppercase;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border-gold)}
+.ann-stat{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)}
+.ann-stat:last-child{border-bottom:none}
+.ast-lbl{font-size:12px;color:var(--sub)}
+.ast-val{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700}
+.ast-val.gold{color:var(--gold)}.ast-val.green{color:var(--green)}.ast-val.lime{color:#22c55e}
+.total-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0 0;border-top:1px solid var(--border-gold);margin-top:6px}
+.total-lbl{font-size:12.5px;font-weight:600;color:var(--text)}
+.total-val{font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:700;color:var(--gold)}
+
+/* Form */
+.form-wrap{display:flex;flex-direction:column;gap:11px}
+.form-field{display:flex;flex-direction:column;gap:4px}
+.form-field label{font-size:9.5px;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase}
+.form-input{background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:13px;color:var(--text);font-family:'Cormorant Garamond',serif;outline:none;transition:border-color .2s;width:100%}
+.form-input:focus{border-color:var(--border-gold)}
+.form-input::placeholder{color:var(--muted)}
+select.form-input option{background:#0d1018;color:var(--text)}
+.form-textarea{resize:none;height:72px;font-family:'Cormorant Garamond',serif}
+.form-submit{width:100%;padding:13px;background:linear-gradient(135deg,#c9a84c,#a8863c,#c9a84c);background-size:200%;color:#1a1400;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;letter-spacing:0.06em;font-family:'Cormorant Garamond',serif;transition:background-position .4s,filter .2s}
+.form-submit:hover{background-position:100%;filter:brightness(1.08)}
+
+/* Success */
+.success-state{display:none;text-align:center;padding:32px 16px;flex-direction:column;align-items:center;gap:12px}
+.success-check{font-size:40px;color:var(--green)}
+.success-title{font-size:20px;font-weight:600;color:var(--text)}
+.success-sub{font-size:13px;color:var(--sub);line-height:1.65;max-width:280px}
+
+/* Trust */
+.trust{display:flex;align-items:center;justify-content:center;gap:8px;font-size:10px;color:var(--muted);padding-top:2px;margin-top:auto}
+.trust-dot{width:3px;height:3px;border-radius:50%;background:var(--muted);flex-shrink:0}
+
+@media(max-width:960px){
+  html,body{height:auto;overflow:auto}
+  .layout{grid-template-columns:1fr;height:auto;overflow:visible}
+  .demo-col{border-right:none;border-bottom:1px solid var(--border);overflow-y:visible;padding-bottom:28px}
+  .cta-col{padding:28px 26px 36px}
+  .corridors{flex-wrap:wrap}
+  .corr{min-width:calc(25% - 5px)}
+  .ann-item+.ann-item{border-left:none;border-top:1px solid rgba(201,168,76,0.15)}
+}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr-brand">
+    <span class="hdr-genesis">GENESIS</span>
+    <span class="hdr-reserve">RESERVE</span>
+  </div>
+  <nav class="hdr-nav">
+    <a href="/whitepaper">← Whitepaper</a>
+    <a href="/demo">Smarter Wallet</a>
+  </nav>
+</header>
+
+<div class="layout">
+
+  <!-- ── Demo Column ─────────────────────────────────── -->
+  <div class="demo-col">
+    <div class="demo-title">Perpetual Capital Engine</div>
+    <div class="demo-sub">96-epoch daily settlement &middot; Policy-controlled yield routing &middot; Self-reinforcing treasury</div>
+
+    <div class="scale-bar">
+      <span class="scale-lbl">Simulate at</span>
+      <button class="scale-btn" data-tvl="1000000" onclick="setScale(this)">$1M</button>
+      <button class="scale-btn active" data-tvl="10000000" onclick="setScale(this)">$10M</button>
+      <button class="scale-btn" data-tvl="100000000" onclick="setScale(this)">$100M</button>
+      <button class="scale-btn" data-tvl="1000000000" onclick="setScale(this)">$1B</button>
+    </div>
+
+    <div class="status-bar">
+      <div class="s-chip s-chip-gold">Epoch <span id="pgEpoch">0</span><span class="dim">/96</span></div>
+      <div class="s-chip s-chip-gold">TVL <span id="pgTVL">$10.000M</span></div>
+      <div class="s-chip s-chip-green">APY <span id="pgAPY">11.0%</span></div>
+      <button class="run-btn" id="pgRunBtn" onclick="pgToggle()">▶ Run Engine</button>
+    </div>
+
+    <div class="diag" id="engineDiag">
+      <!-- Sources -->
+      <div class="d-row" style="gap:8px">
+        <div class="src"><div class="src-lbl">Retail</div><div class="src-sub">Smarter Wallet</div></div>
+        <div class="src"><div class="src-lbl">Institutional</div><div class="src-sub">Treasury API</div></div>
+        <div class="src"><div class="src-lbl">Embedded</div><div class="src-sub">B2B Partners</div></div>
+      </div>
+      <div class="vline vline-gold" style="height:22px">
+        <div class="pt pt-gold" style="animation-delay:0s"></div>
+        <div class="pt pt-gold" style="animation-delay:0.35s"></div>
+        <div class="pt pt-gold" style="animation-delay:0.7s"></div>
+      </div>
+      <!-- Vault + Epoch -->
+      <div class="d-row vault-row">
+        <div class="vault" id="pgVault">
+          <div class="vault-lbl">ERC-4626 Vault</div>
+          <div class="vault-bal" id="pgVaultBal">$10,000,000</div>
+          <div class="vault-sub">Standard deposit / withdraw &middot; No lock-up &middot; No minimums</div>
+        </div>
+        <div class="epoch-ring">
+          <svg viewBox="0 0 72 72">
+            <circle cx="36" cy="36" r="28" fill="none" stroke="rgba(201,168,76,0.1)" stroke-width="5"/>
+            <circle cx="36" cy="36" r="28" fill="none" stroke="#C9A84C" stroke-width="5"
+                    stroke-linecap="round" stroke-dasharray="175.9" id="pgArc"
+                    stroke-dashoffset="175.9" transform="rotate(-90 36 36)"/>
+          </svg>
+          <div class="epoch-num" id="pgEpochBig">0</div>
+          <div class="epoch-tag">of 96</div>
+        </div>
+      </div>
+      <div class="vline vline-gold" style="height:22px">
+        <div class="pt pt-gold" style="animation-delay:0s"></div>
+        <div class="pt pt-gold" style="animation-delay:0.5s"></div>
+      </div>
+      <!-- Router -->
+      <div class="d-row">
+        <div class="router">
+          <div class="router-lbl">Strategy Router</div>
+          <div class="router-sub">Policy-controlled allocation &middot; Real-time risk scoring &middot; Rebalances every epoch</div>
+        </div>
+      </div>
+      <div class="fan"></div>
+      <!-- 7 Corridors -->
+      <div class="corridors">
+        <div class="corr c-p"><div class="corr-name">T-Bills</div><div class="corr-tier">Preserve</div><div class="corr-track"><div class="corr-fill" id="pgA0" style="width:30%"></div></div><div class="corr-pct" id="pgP0">30%</div></div>
+        <div class="corr c-c"><div class="corr-name">Aave</div><div class="corr-tier">Core DeFi</div><div class="corr-track"><div class="corr-fill" id="pgA1" style="width:25%"></div></div><div class="corr-pct" id="pgP1">25%</div></div>
+        <div class="corr c-s"><div class="corr-name">Pendle</div><div class="corr-tier">Structured</div><div class="corr-track"><div class="corr-fill" id="pgA2" style="width:15%"></div></div><div class="corr-pct" id="pgP2">15%</div></div>
+        <div class="corr c-a"><div class="corr-name">Gearbox</div><div class="corr-tier">Accelerate</div><div class="corr-track"><div class="corr-fill" id="pgA3" style="width:12%"></div></div><div class="corr-pct" id="pgP3">12%</div></div>
+        <div class="corr c-t"><div class="corr-name">DEX LP</div><div class="corr-tier">Tactical</div><div class="corr-track"><div class="corr-fill" id="pgA4" style="width:10%"></div></div><div class="corr-pct" id="pgP4">10%</div></div>
+        <div class="corr c-v"><div class="corr-name">Basis</div><div class="corr-tier">Advanced</div><div class="corr-track"><div class="corr-fill" id="pgA5" style="width:6%"></div></div><div class="corr-pct" id="pgP5">6%</div></div>
+        <div class="corr c-k"><div class="corr-name">Arb</div><div class="corr-tier">Canary</div><div class="corr-track"><div class="corr-fill" id="pgA6" style="width:2%"></div></div><div class="corr-pct" id="pgP6">2%</div></div>
+      </div>
+      <div class="fan fan-green"></div>
+      <div class="vline vline-green" style="height:22px">
+        <div class="pt pt-green" style="animation-delay:0s"></div>
+        <div class="pt pt-green" style="animation-delay:0.45s"></div>
+      </div>
+      <!-- Waterfall -->
+      <div class="d-row wfall-row">
+        <div class="wf wf-i" id="wfI"><div class="wf-lbl">Investor Return</div><div class="wf-cut">8% preferred</div><div class="wf-val" id="pgWfI">$0.00</div></div>
+        <div class="wf wf-g" id="wfG"><div class="wf-lbl">$GRX Pool</div><div class="wf-cut">20% of spread</div><div class="wf-val" id="pgWfG">$0.00</div></div>
+        <div class="wf wf-t" id="wfT"><div class="wf-lbl">Treasury Reinvest</div><div class="wf-cut">40% of spread</div><div class="wf-val" id="pgWfT">$0.00</div></div>
+        <div class="wf wf-o" id="wfO"><div class="wf-lbl">Genesis Ops</div><div class="wf-cut">40% of spread</div><div class="wf-val" id="pgWfO">$0.00</div></div>
+      </div>
+      <div class="reinvest-note">&#8635; 40% of spread reinvested into vault each epoch &mdash; the engine compounds its own AUM continuously</div>
+    </div>
+
+    <!-- Sparkline -->
+    <div class="spark-wrap">
+      <div class="spark-header">
+        <span class="spark-lbl">Yield accumulation &mdash; current simulation day</span>
+        <span class="spark-total" id="pgSparkTotal">$0.00 settled</span>
+      </div>
+      <svg class="spark-svg" viewBox="0 0 300 40" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="sGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="rgba(201,168,76,0.3)"/>
+            <stop offset="100%" stop-color="rgba(201,168,76,0)"/>
+          </linearGradient>
+        </defs>
+        <polygon id="pgSparkFill" fill="url(#sGrad)" points="0,40 300,40"/>
+        <polyline id="pgSparkLine" fill="none" stroke="#C9A84C" stroke-width="1.5" stroke-linejoin="round" points="0,40"/>
+      </svg>
+    </div>
+
+    <!-- Annualized Strip -->
+    <div class="ann-strip">
+      <div class="ann-item"><div class="ann-lbl">Annual Investor Return</div><div class="ann-val green" id="pgAnnI">$800K</div></div>
+      <div class="ann-item"><div class="ann-lbl">Annual $GRX Distribution</div><div class="ann-val" id="pgAnnG">$40K</div></div>
+      <div class="ann-item"><div class="ann-lbl">Annual Treasury Growth</div><div class="ann-val" id="pgAnnT">$80K</div></div>
+      <div class="ann-item"><div class="ann-lbl">Annual Genesis Revenue</div><div class="ann-val" id="pgAnnO">$80K</div></div>
+    </div>
+  </div>
+
+  <!-- ── CTA Column ─────────────────────────────────── -->
+  <div class="cta-col">
+
+    <!-- Annual Projections -->
+    <div>
+      <div class="cta-label">Annual Projections</div>
+      <div class="ann-stat"><span class="ast-lbl">Investor preferred return</span><span class="ast-val green" id="ctaI">$800,000</span></div>
+      <div class="ann-stat"><span class="ast-lbl">$GRX holder distribution</span><span class="ast-val gold" id="ctaG">$40,000</span></div>
+      <div class="ann-stat"><span class="ast-lbl">Treasury AUM growth</span><span class="ast-val lime" id="ctaT">$80,000</span></div>
+      <div class="ann-stat"><span class="ast-lbl">Genesis operations</span><span class="ast-val" id="ctaO">$80,000</span></div>
+      <div class="total-row">
+        <span class="total-lbl">Total annual gross yield</span>
+        <span class="total-val" id="ctaTotal">$1,100,000</span>
+      </div>
+    </div>
+
+    <!-- Request Access Form -->
+    <div style="flex:1">
+      <div class="cta-label">Request Institutional Access</div>
+      <form class="form-wrap" id="accessForm" onsubmit="submitAccess(event)">
+        <div class="form-field">
+          <label for="af-name">Full Name</label>
+          <input class="form-input" id="af-name" type="text" placeholder="Your full name" required>
+        </div>
+        <div class="form-field">
+          <label for="af-org">Organization</label>
+          <input class="form-input" id="af-org" type="text" placeholder="Firm or institution" required>
+        </div>
+        <div class="form-field">
+          <label for="af-capital">Capital Under Management</label>
+          <select class="form-input" id="af-capital" required>
+            <option value="">Select range</option>
+            <option>Under $1M</option>
+            <option>$1M – $10M</option>
+            <option>$10M – $100M</option>
+            <option>$100M – $1B</option>
+            <option>$1B+</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label for="af-msg">Message</label>
+          <textarea class="form-input form-textarea" id="af-msg" placeholder="Tell us about your treasury use case or investment thesis&#8230;"></textarea>
+        </div>
+        <button class="form-submit" type="submit">Request Access &rarr;</button>
+      </form>
+      <div class="success-state" id="accessSuccess">
+        <div class="success-check">&#10003;</div>
+        <div class="success-title">Request Received</div>
+        <div class="success-sub">We'll be in touch within 24 hours to discuss your institutional access and walk through the engine in detail.</div>
+      </div>
+    </div>
+
+    <!-- Trust -->
+    <div class="trust">
+      <span>Secured by Privy</span>
+      <div class="trust-dot"></div>
+      <span>Powered by Arbitrum</span>
+      <div class="trust-dot"></div>
+      <span>Zero Hash licensed</span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  var epoch=0,running=false,timer=null;
+  var baseTVL=10000000,tvl=10000000;
+  var grossApy=0.110,prefRate=0.08,mgmtRate=0.01;
+  var totals={inv:0,grx:0,tres:0,ops:0};
+  var allocs=[30,25,15,12,10,6,2];
+  var sparkPts=new Array(96).fill(0);
+
+  function g(id){return document.getElementById(id);}
+
+  function fmtCompact(n){
+    if(n>=1e9)return '$'+(n/1e9).toFixed(2)+'B';
+    if(n>=1e6)return '$'+(n/1e6).toFixed(n>=100e6?1:3)+'M';
+    if(n>=1e3)return '$'+(n/1e3).toFixed(1)+'K';
+    return '$'+n.toFixed(2);
+  }
+  function fmtFull(n){return '$'+Math.round(n).toLocaleString();}
+
+  function normalize(){
+    var sum=allocs.reduce(function(a,b){return a+b;},0);
+    for(var i=0;i<allocs.length;i++){allocs[i]=allocs[i]/sum*100;}
+  }
+
+  function updateAnnualized(){
+    var aGross=tvl*grossApy;
+    var aFee=tvl*mgmtRate;
+    var aNet=aGross-aFee;
+    var aPref=tvl*prefRate;
+    var aInv=Math.min(aNet,aPref);
+    var aSpread=Math.max(0,aNet-aInv);
+    var aGRX=aSpread*0.2;
+    var aTres=aSpread*0.4;
+    var aOps=aSpread*0.4;
+    if(g('pgAnnI'))g('pgAnnI').textContent=fmtCompact(aInv);
+    if(g('pgAnnG'))g('pgAnnG').textContent=fmtCompact(aGRX);
+    if(g('pgAnnT'))g('pgAnnT').textContent=fmtCompact(aTres);
+    if(g('pgAnnO'))g('pgAnnO').textContent=fmtCompact(aOps);
+    if(g('ctaI'))g('ctaI').textContent=fmtFull(aInv);
+    if(g('ctaG'))g('ctaG').textContent=fmtFull(aGRX);
+    if(g('ctaT'))g('ctaT').textContent=fmtFull(aTres);
+    if(g('ctaO'))g('ctaO').textContent=fmtFull(aOps);
+    if(g('ctaTotal'))g('ctaTotal').textContent=fmtFull(aGross);
+  }
+
+  function pulse(){
+    ['pgVault','wfI','wfG','wfT','wfO'].forEach(function(id){
+      var el=g(id);if(!el)return;
+      el.classList.remove('pulsing');
+      void el.offsetWidth;
+      el.classList.add('pulsing');
+      setTimeout(function(){el.classList.remove('pulsing');},460);
+    });
+  }
+
+  function updateSparkline(){
+    var total=totals.inv+totals.grx+totals.tres+totals.ops;
+    if(epoch>0)sparkPts[epoch-1]=total;
+    var filled=sparkPts.slice(0,Math.max(epoch,1));
+    var maxV=Math.max.apply(null,filled)||1;
+    var W=300,H=38;
+    var pts=filled.map(function(v,i){
+      return [(i/95)*W,(H-(v/maxV)*(H-4))].join(',');
+    }).join(' ');
+    var lastX=((filled.length-1)/95)*W;
+    if(g('pgSparkLine'))g('pgSparkLine').setAttribute('points',pts);
+    if(g('pgSparkFill'))g('pgSparkFill').setAttribute('points','0,'+H+' '+pts+' '+lastX+','+H);
+    if(g('pgSparkTotal'))g('pgSparkTotal').textContent=fmtCompact(total)+' settled';
+  }
+
+  function tick(){
+    epoch++;
+    if(epoch>96){epoch=1;totals={inv:0,grx:0,tres:0,ops:0};sparkPts=new Array(96).fill(0);tvl=baseTVL;}
+    // Per-epoch: annual / 35040 epochs/year
+    var gE=tvl*grossApy/35040;
+    var fE=tvl*mgmtRate/35040;
+    var nE=gE-fE;
+    var pE=tvl*prefRate/35040;
+    var invP=Math.min(nE,pE);
+    var spr=Math.max(0,nE-invP);
+    tvl+=spr*0.4; // treasury reinvest compounds TVL
+    grossApy=0.105+Math.random()*0.010;
+    // Drift two corridors, always normalize
+    var i=Math.floor(Math.random()*7);
+    var j=(i+1+Math.floor(Math.random()*6))%7;
+    var d=(Math.random()-0.5)*3;
+    allocs[i]=Math.max(2,Math.min(52,allocs[i]+d));
+    allocs[j]=Math.max(2,Math.min(52,allocs[j]-d));
+    normalize();
+    totals.inv+=invP;totals.grx+=spr*0.2;totals.tres+=spr*0.4;totals.ops+=spr*0.4;
+    // UI
+    if(g('pgEpoch'))g('pgEpoch').textContent=epoch;
+    if(g('pgEpochBig'))g('pgEpochBig').textContent=epoch;
+    var tvlStr=tvl>=1e9?'$'+(tvl/1e9).toFixed(2)+'B':'$'+(tvl/1e6).toFixed(3)+'M';
+    if(g('pgTVL'))g('pgTVL').textContent=tvlStr;
+    if(g('pgAPY'))g('pgAPY').textContent=(grossApy*100).toFixed(1)+'%';
+    if(g('pgVaultBal'))g('pgVaultBal').textContent='$'+Math.round(tvl).toLocaleString();
+    var arc=g('pgArc');
+    if(arc)arc.setAttribute('stroke-dashoffset',(175.9*(1-epoch/96)).toFixed(1));
+    for(var k=0;k<7;k++){
+      var f=g('pgA'+k),p=g('pgP'+k);
+      if(f)f.style.width=allocs[k].toFixed(0)+'%';
+      if(p)p.textContent=allocs[k].toFixed(0)+'%';
+    }
+    if(g('pgWfI'))g('pgWfI').textContent=fmtCompact(totals.inv);
+    if(g('pgWfG'))g('pgWfG').textContent=fmtCompact(totals.grx);
+    if(g('pgWfT'))g('pgWfT').textContent=fmtCompact(totals.tres);
+    if(g('pgWfO'))g('pgWfO').textContent=fmtCompact(totals.ops);
+    pulse();
+    updateSparkline();
+    updateAnnualized();
+  }
+
+  function pgToggle(){
+    running=!running;
+    var btn=g('pgRunBtn'),diag=g('engineDiag');
+    if(running){
+      if(btn)btn.textContent='&#9646;&#9646; Pause';
+      if(diag)diag.classList.add('running');
+      timer=setInterval(tick,130);
+    } else {
+      if(btn)btn.textContent='&#9654; Run Engine';
+      if(diag)diag.classList.remove('running');
+      clearInterval(timer);
+    }
+  }
+
+  function setScale(btn){
+    document.querySelectorAll('.scale-btn').forEach(function(b){b.classList.remove('active');});
+    btn.classList.add('active');
+    baseTVL=parseFloat(btn.getAttribute('data-tvl'));
+    tvl=baseTVL;epoch=0;totals={inv:0,grx:0,tres:0,ops:0};
+    sparkPts=new Array(96).fill(0);allocs=[30,25,15,12,10,6,2];
+    if(g('pgEpoch'))g('pgEpoch').textContent='0';
+    if(g('pgEpochBig'))g('pgEpochBig').textContent='0';
+    if(g('pgArc'))g('pgArc').setAttribute('stroke-dashoffset','175.9');
+    if(g('pgVaultBal'))g('pgVaultBal').textContent='$'+Math.round(baseTVL).toLocaleString();
+    var ts=baseTVL>=1e9?'$'+(baseTVL/1e9).toFixed(2)+'B':'$'+(baseTVL/1e6).toFixed(3)+'M';
+    if(g('pgTVL'))g('pgTVL').textContent=ts;
+    ['pgWfI','pgWfG','pgWfT','pgWfO'].forEach(function(id){if(g(id))g(id).textContent='$0.00';});
+    if(g('pgSparkLine'))g('pgSparkLine').setAttribute('points','0,40');
+    if(g('pgSparkFill'))g('pgSparkFill').setAttribute('points','0,40 300,40');
+    if(g('pgSparkTotal'))g('pgSparkTotal').textContent='$0.00 settled';
+    updateAnnualized();
+    if(running){clearInterval(timer);timer=setInterval(tick,130);}
+  }
+
+  function submitAccess(e){
+    e.preventDefault();
+    var name=g('af-name').value,org=g('af-org').value,cap=g('af-capital').value,msg=g('af-msg').value;
+    var subj='Genesis Reserve — Institutional Access Request';
+    var body=['Name: '+name,'Organization: '+org,'Capital Under Management: '+cap,'','Message:',msg,'','---','Submitted via Genesis Reserve institutional access page.'].join('\n');
+    g('accessForm').style.display='none';
+    var s=g('accessSuccess');s.style.display='flex';
+    setTimeout(function(){window.open('mailto:crownmcllc@gmail.com?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body),'_self');},700);
+  }
+
+  window.pgToggle=pgToggle;
+  window.setScale=setScale;
+  window.submitAccess=submitAccess;
+  updateAnnualized();
+  setTimeout(function(){pgToggle();},900);
+})();
+</script>
+</body>
+</html>
