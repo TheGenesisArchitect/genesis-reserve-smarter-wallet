@@ -654,6 +654,23 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
 .geo-touring #geoLayerBoundary,.geo-touring #geoLayerRings{animation:none!important}
 .geo-touring #geoBinduDot{animation:none!important}
 
+/* Logo reveal state */
+.geo-symbol-col{position:relative}
+.geo-logo-veil{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;opacity:0;pointer-events:none;transition:opacity 1.4s ease}
+.geo-revealed .geo-logo-veil{opacity:1;pointer-events:auto}
+.geo-logo-veil-glow{position:absolute;width:290px;height:290px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,.18) 0%,transparent 68%);opacity:0;transition:opacity 2.2s ease .4s}
+.geo-revealed .geo-logo-veil-glow{opacity:1}
+.geo-logo-veil-img{width:172px;height:172px;object-fit:contain;filter:drop-shadow(0 0 20px rgba(201,168,76,.55)) drop-shadow(0 0 52px rgba(201,168,76,.28));transform:scale(.48);transition:transform 2.4s cubic-bezier(.16,1,.3,1) .15s;position:relative;z-index:1}
+.geo-revealed .geo-logo-veil-img{transform:scale(1)}
+.geo-logo-veil-wordmark{font-family:'Cormorant Garamond',serif;font-size:12px;font-weight:600;letter-spacing:.44em;color:var(--gold);text-transform:uppercase;opacity:0;transform:translateY(10px);transition:opacity 1.2s ease 1.4s,transform 1.2s ease 1.4s;position:relative;z-index:1}
+.geo-revealed .geo-logo-veil-wordmark{opacity:.65;transform:translateY(0)}
+.geo-revealed .geo-layer{opacity:.055;transition:opacity 1.2s ease}
+.geo-revealed #geoLayerBindu{opacity:.13}
+.geo-revealed #geoLayerBoundary,.geo-revealed #geoLayerRings,.geo-revealed #geoBinduDot{animation:none!important}
+/* Reveal panel */
+.geo-reveal-panel{display:none;flex-direction:column;gap:14px}
+.geo-reveal-panel.visible{display:flex}
+
 /* Pre-state panel */
 .geo-pre{display:flex;flex-direction:column;gap:18px}
 .geo-pre-body{font-family:'Cormorant Garamond',serif;font-size:16px;font-style:italic;color:rgba(255,255,255,.55);line-height:1.65}
@@ -3703,6 +3720,13 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
             <circle class="geo-fill" id="geoBinduDot"  cx="250" cy="250" r="5"  fill="#C9A84C"/>
           </g>
         </svg>
+
+        <!-- ── Logo reveal veil — floats over the SVG on tour completion ── -->
+        <div class="geo-logo-veil" id="geoLogoVeil">
+          <div class="geo-logo-veil-glow"></div>
+          <img src="/genesis-logo.png" class="geo-logo-veil-img" alt="Genesis Reserve" onerror="this.style.opacity='0'"/>
+          <div class="geo-logo-veil-wordmark">Genesis&nbsp;Reserve</div>
+        </div>
       </div>
 
       <!-- ── Right: Info Panel ── -->
@@ -3731,6 +3755,17 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
             <button class="geo-nav-btn" id="geoNextBtn">Next →</button>
           </div>
           <button class="geo-btn geo-btn-ghost" id="geoExitBtn">Exit Tour</button>
+        </div>
+
+        <!-- Reveal state -->
+        <div class="geo-reveal-panel" id="geoRevealPanel">
+          <div class="geo-step-eyebrow">The Mark</div>
+          <div class="geo-step-title">The Geometry Made Manifest</div>
+          <div class="geo-step-body">
+            Everything you have just witnessed — the Flower of Life, the interlocking triangles, the lotus corridors, the central point — collapses into a single symbol.<br><br>
+            The logo is not a brand. It is a diagram. The same perpetual capital engine, compressed into a mark that can be carried in a pocket and recognized at a glance. All of the mathematics. One symbol.
+          </div>
+          <button class="geo-btn geo-btn-ghost" id="geoReturnBtn">← Return to Symbol</button>
         </div>
 
       </div>
@@ -3829,8 +3864,9 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
   var body    = document.getElementById('geoBody');
   var ref     = document.getElementById('geoRef');
   var dots    = document.getElementById('geoDots');
-  var prevBtn = document.getElementById('geoPrevBtn');
-  var nextBtn = document.getElementById('geoNextBtn');
+  var prevBtn      = document.getElementById('geoPrevBtn');
+  var nextBtn      = document.getElementById('geoNextBtn');
+  var revealPanel  = document.getElementById('geoRevealPanel');
   if(!stage) return;
 
   var steps = [
@@ -3927,22 +3963,42 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
 
   function exitTour(){
     stage.classList.remove('geo-touring');
+    stage.classList.remove('geo-revealed');
     allLayers.forEach(function(id){
       var el = document.getElementById(id);
       if(el) el.classList.remove('geo-active');
     });
     pre.style.display = '';
     tour.classList.remove('visible');
+    if(revealPanel) revealPanel.classList.remove('visible');
     current = -1;
     // geo-assembled already present — breathing animations resume automatically
   }
 
+  function exitTourToReveal(){
+    stage.classList.remove('geo-touring');
+    allLayers.forEach(function(id){
+      var el = document.getElementById(id);
+      if(el) el.classList.remove('geo-active');
+    });
+    tour.classList.remove('visible');
+    current = -1;
+    // Transition: dim geometry, float logo in
+    stage.classList.add('geo-revealed');
+    if(revealPanel) revealPanel.classList.add('visible');
+  }
+
   document.getElementById('geoStartBtn').addEventListener('click', startTour);
   document.getElementById('geoExitBtn').addEventListener('click', exitTour);
+  document.getElementById('geoReturnBtn').addEventListener('click', function(){
+    stage.classList.remove('geo-revealed');
+    if(revealPanel) revealPanel.classList.remove('visible');
+    pre.style.display = '';
+  });
   prevBtn.addEventListener('click', function(){ if(current > 0) goTo(current-1); });
   nextBtn.addEventListener('click', function(){
     if(current < steps.length-1){ goTo(current+1); }
-    else { exitTour(); }
+    else { exitTourToReveal(); }
   });
 
   // ── Flower of Life hex grid — fills geoFOLCircles with overlapping circles
