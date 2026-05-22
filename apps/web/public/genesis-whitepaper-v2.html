@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Genesis Reserve v2.1 — The Treasury Intelligence Layer: Institutional Whitepaper</title>
+<title>Genesis Reserve v2.2 — The Treasury Intelligence Layer: Institutional Whitepaper</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
@@ -605,7 +605,7 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
 <!-- FLOATING VERSION BADGE -->
 <div class="version-float" id="versionBadge">
   <div class="version-float-dot"></div>
-  <span class="version-float-label">v2.1</span>
+  <span class="version-float-label">v2.2</span>
   <span class="version-float-sections">20 sections</span>
 </div>
 
@@ -630,7 +630,7 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
     <div class="cover-meta-row">
       <div class="cover-meta-item">
         <div class="cover-meta-label">Document</div>
-        <div class="cover-meta-val">Institutional Whitepaper v2.1</div>
+        <div class="cover-meta-val">Institutional Whitepaper v2.2</div>
       </div>
       <div class="cover-sep"></div>
       <div class="cover-meta-item">
@@ -663,7 +663,7 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
 <nav class="wp-sidebar">
   <div class="toc-header">
     <div class="toc-label">Contents</div>
-    <div class="toc-title">Genesis Reserve<br/>Whitepaper v2.1</div>
+    <div class="toc-title">Genesis Reserve<br/>Whitepaper v2.2</div>
   </div>
   <ul class="toc-list">
     <div class="toc-phase">Phase A — Foundation</div>
@@ -721,7 +721,7 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
   </div>
 
   <p>
-    Genesis Reserve introduces the <strong>Perpetual Capital Engine</strong>: a policy-controlled capital allocation system that routes eligible digital dollar capital across approved yield corridors. The engine follows a disciplined waterfall — investor targeted preferred return first, Genesis spread second, treasury reinvestment and token-holder participation thereafter.
+    Genesis Reserve introduces the <strong>Perpetual Capital Engine</strong>: a policy-controlled capital allocation system that routes eligible digital dollar capital across approved yield corridors. The engine follows a disciplined waterfall — investor cap payment first (up to tier ceiling), Genesis captured excess second, then 50/30/20 distribution across treasury reinvestment, operations, and $GRX participation.
   </p>
 
   <p>
@@ -893,22 +893,22 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
     The stablecoin economy will produce the next generation of institutional-grade yield infrastructure. The entity that builds the best capital routing layer — one that is simultaneously compliant, risk-managed, transparent, and accessible — will capture a disproportionate share of the $321.9 billion (and growing) digital dollar treasury opportunity.
   </p>
   <p>
-    Genesis Reserve is built on the conviction that this layer does not yet exist in its optimal form — and that the combination of ERC-4626 vault composability, StrategyRouter policy enforcement, ComplianceRegistry jurisdiction gating, and the 40/20/40 waterfall discipline creates a structural advantage that compounds over time.
+    Genesis Reserve is built on the conviction that this layer does not yet exist in its optimal form — and that the combination of ERC-4626 vault composability, StrategyRouter policy enforcement, ComplianceRegistry jurisdiction gating, and the investor cap / Genesis capture waterfall discipline creates a structural advantage that compounds over time.
   </p>
 
   <h3>What Genesis Reserve Is</h3>
   <ul>
     <li><strong>Programmable treasury infrastructure</strong> — a policy-controlled system for routing digital dollar capital across approved yield corridors</li>
-    <li><strong>A risk-managed yield delivery network</strong> — with five risk tiers, circuit breakers, and a preferred return reserve buffer</li>
+    <li><strong>A risk-managed yield delivery network</strong> — with three investor tiers, defined yield caps, circuit breakers, and policy-controlled allocation limits</li>
     <li><strong>A dual-market platform</strong> — serving institutional capital through contractual treasury services and retail-eligible users through the Smarter Wallet access layer</li>
-    <li><strong>An aligned economic system</strong> — where Genesis earns only after investor preferred return is satisfied, and treasury reinvestment compounds the engine over time</li>
+    <li><strong>An aligned economic system</strong> — where Genesis earns only yield generated above the investor's elected tier cap, and 50% of captured excess is reinvested to compound the engine over time</li>
   </ul>
 
   <h3>What Genesis Reserve Is Not</h3>
   <ul>
     <li>Not a bank or deposit-taking institution — balances are not FDIC-insured</li>
     <li>Not a fund — Genesis Reserve is infrastructure; certain specific products offered through the platform may constitute securities and are offered only under applicable exemptions</li>
-    <li>Not a guaranteed return product — the 8% annualized rate is a targeted preferred return, payable from net realized yield and subject to market conditions, protocol performance, and the terms of applicable offering documents</li>
+    <li>Not a guaranteed return product — investor yield caps (Preserve 6% / Growth 10% / Accelerate 15%) represent maximum ceilings payable from net realized yield, subject to market conditions, protocol performance, and the terms of applicable offering documents</li>
     <li>Not a custodian — capital is held in non-custodial smart contract vaults; Genesis does not hold user funds in the traditional sense</li>
   </ul>
 
@@ -950,7 +950,7 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
     The Perpetual Capital Engine is Genesis Reserve's core mechanism. Capital enters the system through the ERC-4626 vault interface — from retail Smarter Wallet users, institutional treasury clients, or embedded finance platforms. At each epoch boundary (every 15 minutes, 96 times per day), the StrategyRouter evaluates all active positions against the current risk-policy parameters, rebalances allocation across the seven approved yield corridors, and triggers yield settlement.
   </p>
   <p>
-    Yield settlement follows the waterfall priority precisely: investor targeted preferred return is credited first; Genesis management fee is deducted pro-rata from earned yield; Genesis spread is recognized only if net yield exceeds the preferred return threshold; the spread is then distributed 40% to the Genesis treasury reinvestment pool, 20% to the $GRX participation pool, and 40% to Genesis operations.
+    Yield settlement follows the waterfall priority precisely: management fee is deducted pro-rata from earned yield; investor cap payment is credited (up to their elected tier ceiling); Genesis captured excess — all yield above the cap — is then distributed 50% to the Genesis treasury reinvestment pool, 20% to the $GRX participation pool, and 30% to Genesis operations.
   </p>
 
   <h3>The 96-Epoch Operational Advantage</h3>
@@ -965,15 +965,15 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
 
   <h3>Self-Reinforcing Mechanics</h3>
   <p>
-    The engine's compounding character comes from the 40% treasury reinvestment pool. Each epoch that generates spread above the preferred return threshold contributes 40% of that spread into the Genesis treasury, which is itself deployed into the StrategyRouter as additional managed capital. This creates a self-funded AUM growth mechanic — the treasury grows not from new investor capital alone, but from the accumulated output of the engine itself.
+    The engine's compounding character comes from the 50% treasury reinvestment pool. Each epoch that generates above-cap yield contributes 50% of the Genesis captured excess into the Genesis treasury, which is itself deployed into the StrategyRouter as additional managed capital. This creates a self-funded AUM growth mechanic — the treasury grows not from new investor capital alone, but from the accumulated output of the engine itself.
   </p>
   <p>
-    Over the 72-month base-case scenario, this treasury compounding effect becomes material: by Month 33, treasury-owned capital represents a meaningful percentage of total AUM, reducing the engine's dependence on continuous new capital inflows to sustain operations and preferred return payments.
+    Over the 72-month base-case scenario, this treasury compounding effect becomes material: by Month 33, treasury-owned capital represents a meaningful percentage of total AUM, reducing the engine's dependence on continuous new capital inflows and accelerating the path to operational independence.
   </p>
 
   <div class="callout callout-green">
     <div class="callout-label">The Preferred Return Reserve</div>
-    <p>Genesis maintains a dedicated preferred return reserve buffer — a percentage of TVL held in the lowest-risk corridor (Tokenized Treasuries) specifically to fund the investor preferred return during months where blended gross yield falls below the preferred return threshold. The reserve is replenished from spread allocations during above-threshold months, creating a structural smoothing mechanism that protects investor returns from short-term yield volatility.</p>
+    <p>Genesis maintains a capital quality reserve buffer — a percentage of TVL held in the Preserve tier (Tokenized Treasuries) specifically to support capital integrity during periods of market stress. Under the cap model, there is no preferred return reserve to draw on for shortfalls: investors receive what the engine earns up to their ceiling, and Genesis captures no excess when yield is below the cap. The buffer ensures orderly redemption liquidity rather than return smoothing.</p>
   </div>
 
   <h3>Capital Entry and Exit</h3>
@@ -1106,27 +1106,27 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
       <div class="td-row td-wfall-row">
         <div class="td-wfall td-wf-inv">
           <div class="td-wfall-label">Investor Return</div>
-          <div class="td-wfall-cut">8% preferred</div>
+          <div class="td-wfall-cut">up to tier cap</div>
           <div class="td-wfall-val" id="tdWfInv">$0.00</div>
         </div>
         <div class="td-wfall td-wf-grx">
           <div class="td-wfall-label">$GRX Pool</div>
-          <div class="td-wfall-cut">20% of spread</div>
+          <div class="td-wfall-cut">20% of excess</div>
           <div class="td-wfall-val" id="tdWfGRX">$0.00</div>
         </div>
         <div class="td-wfall td-wf-tres">
           <div class="td-wfall-label">Treasury Reinvest</div>
-          <div class="td-wfall-cut">40% of spread</div>
+          <div class="td-wfall-cut">50% of excess</div>
           <div class="td-wfall-val" id="tdWfTres">$0.00</div>
         </div>
         <div class="td-wfall td-wf-ops">
           <div class="td-wfall-label">Genesis Ops</div>
-          <div class="td-wfall-cut">40% of spread</div>
+          <div class="td-wfall-cut">30% of excess</div>
           <div class="td-wfall-val" id="tdWfOps">$0.00</div>
         </div>
       </div>
 
-      <div class="td-reinvest-note">↺ 40% of spread returns to treasury — each epoch the engine compounds its own AUM, becoming self-reinforcing over time</div>
+      <div class="td-reinvest-note">↺ 50% of captured excess returns to treasury — each epoch the engine compounds its own AUM, becoming self-reinforcing over time</div>
     </div>
   </div>
 </section>
@@ -1220,7 +1220,7 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
 
   <h4>StrategyRouter — The Hero Component</h4>
   <p>
-    The StrategyRouter is the core capital allocation engine. At each epoch boundary, it: evaluates current allocations against policy parameters; executes rebalancing transactions where positions have drifted beyond tolerance bands; and records strategy-level attribution for the Reporting Module. The StrategyRouter enforces maximum allocation caps per risk tier, respects circuit breaker conditions, and maintains the preferred return reserve buffer. It cannot be manually overridden without multi-sig governance approval.
+    The StrategyRouter is the core capital allocation engine. At each epoch boundary, it: evaluates current allocations against policy parameters; executes rebalancing transactions where positions have drifted beyond tolerance bands; and records strategy-level attribution for the Reporting Module. The StrategyRouter enforces maximum allocation caps per investor tier (40/35/25%), respects circuit breaker conditions, and maintains the capital quality reserve buffer. It cannot be manually overridden without multi-sig governance approval.
   </p>
 
   <h4>ComplianceRegistry</h4>
@@ -1235,7 +1235,7 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
 
   <h4>Reporting Module</h4>
   <p>
-    The Reporting Module produces epoch-level attribution reports: gross yield by strategy, management fee deducted, preferred return credited, Genesis spread recognized, and treasury/GRX/operations allocation. These reports are stored on-chain in compressed form and surfaced through the institutional dashboard API, providing the audit trail that institutional clients require.
+    The Reporting Module produces epoch-level attribution reports: gross yield by strategy, management fee deducted, investor cap payment credited, Genesis captured excess recognized, and 50/30/20 treasury/operations/$GRX allocation. These reports are stored on-chain in compressed form and surfaced through the institutional dashboard API, providing the audit trail that institutional clients require.
   </p>
 </section>
 
@@ -1248,11 +1248,11 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
   </div>
   <h2 class="section-title">Yield Source <span class="gold">Taxonomy</span></h2>
   <p class="section-lead">
-    Seven approved yield source categories, organized by institutional risk tier. Each category carries defined allocation caps, circuit breaker conditions, and a documented Genesis gross target corridor and net spread range.
+    Three investor-facing yield tiers, each with a defined ceiling, allocation limit, and Genesis capture rate. Investors receive up to their elected tier cap — Genesis captures 100% of yield generated above that threshold.
   </p>
 
   <p>
-    The yield taxonomy is not a speculative menu — it is a risk policy document. Every yield source Genesis routes capital through must be approved at the governance level, assigned to a risk tier, and subject to the allocation cap for that tier. No yield source operates outside this framework, and no rebalancing occurs without StrategyRouter policy enforcement.
+    The yield taxonomy is a risk policy document and an economic boundary document. Each tier defines the maximum yield an investor can receive; yield generated above the cap is captured entirely by Genesis, not shared pro-rata. This cap structure — analogous to the short leg of a structured note — enables Genesis to build treasury capital rapidly in M0–72 while offering investors predictable, ceiling-bounded yield. Caps will be raised as Genesis achieves operational independence milestones.
   </p>
 
   <div style="overflow-x:auto;">
@@ -1260,98 +1260,50 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
     <thead>
       <tr>
         <th>Tier</th>
-        <th>Source Category</th>
-        <th>Representative Protocol</th>
-        <th>Yield Type</th>
-        <th>Primary Risk</th>
-        <th>Gross Target</th>
-        <th>Genesis Net Spread</th>
+        <th>Investor Yield Cap</th>
+        <th>Representative Protocols</th>
+        <th>Gross Yield Range</th>
+        <th>Genesis Capture (above cap)</th>
         <th>Max Allocation</th>
       </tr>
     </thead>
     <tbody>
       <tr>
         <td><span class="teal-cell">1 — Preserve</span></td>
-        <td>Tokenized Treasuries</td>
-        <td>T-Bill wrappers (OUSG, BUIDL)</td>
-        <td>Cash-equivalent</td>
-        <td>Custody, redemption, smart contract wrapper</td>
-        <td class="gold-cell">4.5–5.5%</td>
-        <td class="mono">0.20–0.80%</td>
+        <td class="gold-cell" style="font-weight:700;">6.0% p.a.</td>
+        <td>OUSG, BUIDL, Aave v3, Compound v3</td>
+        <td class="mono">4.5–7.5%</td>
+        <td class="mono">0–1.5% (100% above 6%)</td>
         <td class="mono">40% max</td>
       </tr>
       <tr>
-        <td><span style="color:var(--teal)">2 — Core DeFi</span></td>
-        <td>Institutional Lending</td>
-        <td>Aave v3, Compound v3</td>
-        <td>Borrow demand yield</td>
-        <td>Utilization rate, protocol risk</td>
-        <td class="gold-cell">5.0–9.0%</td>
-        <td class="mono">0.50–1.50%</td>
+        <td><span style="color:var(--gold-dk)">2 — Growth</span></td>
+        <td class="gold-cell" style="font-weight:700;">10.0% p.a.</td>
+        <td>Pendle Finance (PT/YT), Morpho, Compound v3</td>
+        <td class="mono">8.0–14.0%</td>
+        <td class="mono">0–4.0% (100% above 10%)</td>
         <td class="mono">35% max</td>
       </tr>
       <tr>
-        <td><span style="color:var(--gold-dk)">3 — Structured</span></td>
-        <td>Yield Rate Markets</td>
-        <td>Pendle Finance (PT/YT)</td>
-        <td>Yield discount / rate lock</td>
-        <td>Liquidity, maturity, rate movement</td>
-        <td class="gold-cell">8.0–16.0%</td>
-        <td class="mono">1.00–2.50%</td>
-        <td class="mono">20% max</td>
-      </tr>
-      <tr>
-        <td><span style="color:#E89440">4 — Accelerate</span></td>
-        <td>Leveraged Lending</td>
-        <td>Gearbox Protocol</td>
-        <td>Levered DeFi yield</td>
-        <td>Liquidation risk, leverage amplification</td>
-        <td class="gold-cell">12.0–22.0%</td>
-        <td class="mono">1.50–3.50%</td>
-        <td class="mono">10% max</td>
-      </tr>
-      <tr>
-        <td><span style="color:#C08040">4 — Tactical</span></td>
-        <td>DEX Liquidity Provision</td>
-        <td>Aerodrome, Curve</td>
-        <td>Fee yield + incentives</td>
-        <td>Impermanent loss, incentive expiry</td>
-        <td class="gold-cell">5.0–12.0%</td>
-        <td class="mono">0.50–2.00%</td>
-        <td class="mono">15% max</td>
-      </tr>
-      <tr>
-        <td><span style="color:#E07050">5 — Advanced</span></td>
-        <td>Basis / Funding Carry</td>
-        <td>Perpetual spread strategies</td>
-        <td>Market-neutral carry</td>
-        <td>Funding rate compression, counter-party</td>
-        <td class="gold-cell">8.0–18.0%</td>
-        <td class="mono">1.00–3.00%</td>
-        <td class="mono">8% max</td>
-      </tr>
-      <tr>
-        <td><span style="color:var(--red)">5 — Canary</span></td>
-        <td>Execution Arbitrage</td>
-        <td>Cross-venue statistical arb</td>
-        <td>Execution alpha</td>
-        <td>MEV, gas costs, slippage, execution failure</td>
-        <td class="gold-cell">10.0–30.0%</td>
-        <td class="mono">0.50–2.00%</td>
-        <td class="mono">2% max</td>
+        <td><span style="color:#E89440">3 — Accelerate</span></td>
+        <td class="gold-cell" style="font-weight:700;">15.0% p.a.</td>
+        <td>Gearbox, Aerodrome, Curve, Perpetual carry</td>
+        <td class="mono">12.0–22.0%</td>
+        <td class="mono">0–7.0% (100% above 15%)</td>
+        <td class="mono">25% max</td>
       </tr>
     </tbody>
   </table>
   </div>
 
   <div class="callout">
-    <div class="callout-label">Reading the Spread Column</div>
-    <p>The Genesis Net Spread is not a fixed fee — it is the range of spread that Genesis captures between gross yield delivered by the strategy and net yield distributed to investors (after the preferred return is satisfied and management fee is deducted). In high-yield regimes, spread is wider; in compressed-yield environments, Genesis earns only the management fee. Spread is earned only above the preferred return threshold.</p>
+    <div class="callout-label">Reading the Cap Column</div>
+    <p>The Investor Yield Cap is not a fee — it is a ceiling. Investors receive 100% of yield earned up to their tier cap. All yield generated above the cap belongs entirely to Genesis Reserve. This is structurally analogous to the short leg of a structured note: the investor trades upside above their ceiling for the certainty of receiving everything below it. Genesis uses the captured excess to fund treasury reinvestment, operations, and the $GRX participation pool — accelerating institutional independence in M0–72.</p>
   </div>
 
   <h3>Blended Yield and Allocation Policy</h3>
   <p>
-    At any given time, the StrategyRouter maintains a policy-compliant blended allocation across all seven categories. The blended gross yield target — which drives the preferred return coverage ratio and Genesis spread — is determined by the weighted average of individual strategy positions. The allocation policy prioritizes preferred return coverage: if blended yield is tracking below the 8% preferred return target, the StrategyRouter increases allocation to higher-yield tiers within their caps before touching the preferred return reserve.
+    At any given time, the StrategyRouter maintains a policy-compliant blended allocation across all three investor tiers and their underlying strategy corridors. The blended cap — computed as the weighted average of tier caps by allocation — is approximately 9.65% (40%×6% + 35%×10% + 25%×15%). Yield generated below the blended cap flows to investors; yield above flows to Genesis. The StrategyRouter optimizes for maximum above-cap generation within circuit breaker constraints, not merely for covering a preferred return threshold.
   </p>
 
   <h3>Rebalancing Mechanics</h3>
@@ -1377,9 +1329,9 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
     <div class="wf-step">
       <div class="wf-step-num">1</div>
       <div class="wf-step-body">
-        <div class="wf-step-title">Investor Targeted Preferred Return — Priority Lien</div>
-        <div class="wf-step-desc">First claim on all net realized yield. Investors receive their targeted preferred return before any other distribution. The preferred return reserve covers shortfalls in below-threshold yield months, funded by prior-period spread accumulation.</div>
-        <div class="wf-step-rate">Target: 8.0% annualized (payable from net yield, subject to market conditions and offering document terms)</div>
+        <div class="wf-step-title">Investor Yield Cap by Tier — Priority Payment</div>
+        <div class="wf-step-desc">Investors receive 100% of yield earned up to their elected tier ceiling. This is not a preferred return subject to reserve mechanics — it is a defined cap. Below the cap, all yield belongs to the investor. No Genesis revenue is recognized until the cap is breached.</div>
+        <div class="wf-step-rate">Caps: Preserve 6.0% · Growth 10.0% · Accelerate 15.0% p.a. (payable from net realized yield per epoch)</div>
       </div>
     </div>
     <div class="wf-step">
@@ -1393,27 +1345,27 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
     <div class="wf-step">
       <div class="wf-step-num">3</div>
       <div class="wf-step-body">
-        <div class="wf-step-title">Genesis Spread — Performance Margin Above Preferred</div>
-        <div class="wf-step-desc">The spread Genesis captures when net yield exceeds the preferred return threshold plus management fee. This is not earned unless investors have been made whole. In flat or negative yield months, this line is zero — Genesis earns management fee only.</div>
-        <div class="wf-step-rate">Rate: Variable — scales with risk tier utilization and blended gross yield</div>
+        <div class="wf-step-title">Genesis Captured Excess — 100% Above the Investor Cap</div>
+        <div class="wf-step-desc">All yield generated above an investor's tier cap flows entirely to Genesis Reserve. Unlike a preferred return waterfall where the manager takes a percentage of excess, the cap model assigns 100% of above-cap yield to Genesis. This is structurally analogous to the short leg of a structured note — Genesis retains the excess, investors retain the certainty of their ceiling. In epochs where gross yield does not exceed the tier cap, Genesis earns management fee only.</div>
+        <div class="wf-step-rate">Rate: 100% of yield above tier cap · 0% of yield below cap</div>
       </div>
     </div>
     <div class="wf-step">
       <div class="wf-step-num">4</div>
       <div class="wf-step-body">
-        <div class="wf-step-title">Spread Distribution — 40 / 20 / 40</div>
-        <div class="wf-step-desc">The recognized Genesis spread is distributed across three pools at each epoch: treasury reinvestment (40%), $GRX participation pool (20%), and Genesis operations (40%). The treasury pool is redeployed into the StrategyRouter, compounding AUM organically.</div>
-        <div class="wf-step-rate">40% Treasury Reinvestment · 20% $GRX Pool · 40% Operations</div>
+        <div class="wf-step-title">Genesis Captured Excess Distribution — 50 / 30 / 20</div>
+        <div class="wf-step-desc">The Genesis captured excess is distributed across three pools at each epoch: treasury reinvestment (50%), Genesis operations (30%), and $GRX participation pool (20%). The 50% treasury reinvestment pool is redeployed into the StrategyRouter, compounding AUM organically and funding M0–72 independence milestones.</div>
+        <div class="wf-step-rate">50% Treasury Reinvestment · 30% Genesis Operations · 20% $GRX Pool</div>
       </div>
     </div>
   </div>
 
   <div class="diagram-wrap">
-    <div class="diagram-title">Genesis Spread Distribution — 40/20/40</div>
+    <div class="diagram-title">Genesis Captured Excess Distribution — 50/30/20</div>
     <div class="split-bar">
-      <div class="split-seg investor"><span class="split-pct">40%</span><span class="split-name">Treasury Reinvest</span></div>
+      <div class="split-seg investor"><span class="split-pct">50%</span><span class="split-name">Treasury Reinvest</span></div>
+      <div class="split-seg treasury"><span class="split-pct">30%</span><span class="split-name">Operations</span></div>
       <div class="split-seg grx"><span class="split-pct">20%</span><span class="split-name">$GRX Pool</span></div>
-      <div class="split-seg treasury"><span class="split-pct">40%</span><span class="split-name">Operations</span></div>
     </div>
   </div>
 
@@ -1433,11 +1385,11 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
     </thead>
     <tbody>
       <tr>
-        <td><strong>Preferred Waterfall Priority</strong></td>
-        <td>First lien on net yield — investor distribution</td>
-        <td class="gold-cell">Target 8% p.a.</td>
-        <td>Net realized yield (epoch)</td>
-        <td>Any epoch with positive net yield</td>
+        <td><strong>Investor Yield Cap (by Tier)</strong></td>
+        <td>Ceiling on investor yield — yield above cap flows entirely to Genesis</td>
+        <td class="gold-cell">Preserve 6% · Growth 10% · Accelerate 15%</td>
+        <td>Gross yield earned by tier allocation</td>
+        <td>Any epoch with positive yield</td>
       </tr>
       <tr>
         <td><strong>Protocol Management Fee</strong></td>
@@ -1447,11 +1399,11 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
         <td>Continuous — deducted before distribution</td>
       </tr>
       <tr>
-        <td><strong>Genesis Spread</strong></td>
-        <td>Performance margin above preferred threshold</td>
-        <td class="gold-cell">Varies by strategy mix</td>
-        <td>Yield above preferred + mgmt fee threshold</td>
-        <td>Only recognized after investor preferred is satisfied</td>
+        <td><strong>Genesis Captured Excess</strong></td>
+        <td>100% of yield above investor tier cap — not a percentage of spread</td>
+        <td class="gold-cell">100% above-cap yield (0% below cap)</td>
+        <td>Yield above investor tier cap</td>
+        <td>Only recognized when gross yield exceeds the investor's elected cap</td>
       </tr>
       <tr>
         <td><strong>Deposit / Entry Fee</strong></td>
@@ -1501,19 +1453,19 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
 
   <h3>Interactive Waterfall Calculator</h3>
   <div class="diagram-wrap">
-    <div class="diagram-title">Waterfall Distribution Simulator</div>
+    <div class="diagram-title">Waterfall Distribution Simulator — Cap Model</div>
     <div class="calc-row">
       <div class="calc-label" id="tvl-lbl">TVL: $100M</div>
       <input type="range" class="wp-range" id="tvl-slider" min="10" max="1000" value="100" step="10"/>
     </div>
     <div class="calc-row">
-      <div class="calc-label" id="yield-lbl">Gross Yield: 11%</div>
+      <div class="calc-label" id="yield-lbl">Portfolio Gross Yield: 11%</div>
       <input type="range" class="wp-range" id="yield-slider" min="3" max="22" value="11" step="0.5"/>
     </div>
     <div class="kpi-grid">
       <div class="kpi-card">
         <div class="kpi-val" id="kpi-investor">$8.0M</div>
-        <div class="kpi-lbl">Investor Preferred Return</div>
+        <div class="kpi-lbl">Investor Cap Delivered</div>
       </div>
       <div class="kpi-card">
         <div class="kpi-val" id="kpi-mgmt">$1.0M</div>
@@ -1521,24 +1473,64 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
       </div>
       <div class="kpi-card">
         <div class="kpi-val teal" id="kpi-spread">$2.0M</div>
-        <div class="kpi-lbl">Genesis Spread (above preferred)</div>
+        <div class="kpi-lbl">Genesis Captured Excess</div>
       </div>
       <div class="kpi-card">
-        <div class="kpi-val violet" id="kpi-treasury">$0.8M</div>
-        <div class="kpi-lbl">Treasury Reinvestment (40%)</div>
+        <div class="kpi-val violet" id="kpi-treasury">$1.0M</div>
+        <div class="kpi-lbl">Treasury Reinvestment (50%)</div>
       </div>
     </div>
-    <div class="split-bar" id="wf-bar">
-      <div class="split-seg investor" id="bar-investor" style="flex:40"><span class="split-pct">$8.0M</span><span class="split-name">Investor Preferred</span></div>
-      <div class="split-seg grx" id="bar-grx" style="flex:20"><span class="split-pct">$0.4M</span><span class="split-name">$GRX Pool</span></div>
-      <div class="split-seg treasury" id="bar-treasury" style="flex:40"><span class="split-pct">$2.6M</span><span class="split-name">Genesis Total</span></div>
+    <div style="overflow-x:auto;margin:16px 0 12px;">
+    <table class="wp-table" style="font-size:12px;">
+      <thead>
+        <tr>
+          <th>Tier</th>
+          <th>Allocation</th>
+          <th>Portfolio Gross</th>
+          <th>Investor Cap</th>
+          <th style="color:var(--teal)">Investor Receives</th>
+          <th style="color:var(--gold)">Genesis Captures</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr id="tier-0">
+          <td><span class="teal-cell">1 — Preserve</span></td>
+          <td class="mono">40%</td>
+          <td class="mono" id="t0-gross">11.0%</td>
+          <td class="mono">6.0%</td>
+          <td class="mono teal" id="t0-inv">6.0%</td>
+          <td class="mono gold-cell" id="t0-gen">5.0%</td>
+        </tr>
+        <tr id="tier-1">
+          <td><span style="color:var(--gold-dk)">2 — Growth</span></td>
+          <td class="mono">35%</td>
+          <td class="mono" id="t1-gross">11.0%</td>
+          <td class="mono">10.0%</td>
+          <td class="mono teal" id="t1-inv">10.0%</td>
+          <td class="mono gold-cell" id="t1-gen">1.0%</td>
+        </tr>
+        <tr id="tier-2">
+          <td><span style="color:#E89440">3 — Accelerate</span></td>
+          <td class="mono">25%</td>
+          <td class="mono" id="t2-gross">11.0%</td>
+          <td class="mono">15.0%</td>
+          <td class="mono teal" id="t2-inv">11.0%</td>
+          <td class="mono gold-cell" id="t2-gen">0.0%</td>
+        </tr>
+      </tbody>
+    </table>
     </div>
-    <p style="font-size:12px;color:var(--text-muted);text-align:center;margin:8px 0 0">Illustrative — assumes 1% management fee, 8% preferred return target. Not a projection of actual returns.</p>
+    <div class="split-bar" id="wf-bar">
+      <div class="split-seg investor" id="bar-investor" style="flex:40"><span class="split-pct">$8.0M</span><span class="split-name">Investor Capped Yield</span></div>
+      <div class="split-seg grx" id="bar-grx" style="flex:5"><span class="split-pct">$0.3M</span><span class="split-name">$GRX Pool (20%)</span></div>
+      <div class="split-seg treasury" id="bar-treasury" style="flex:20"><span class="split-pct">$2.8M</span><span class="split-name">Genesis Total</span></div>
+    </div>
+    <p style="font-size:12px;color:var(--text-muted);text-align:center;margin:8px 0 0">Illustrative — assumes 1% management fee, fixed 40/35/25 tier allocation. Tier gross yield equals portfolio gross yield for each tier. Not a projection of actual returns.</p>
   </div>
 
   <div class="callout callout-green">
     <div class="callout-label">Investor-First Principle</div>
-    <p><strong>All Genesis revenue is taken from yield, never from principal.</strong> A depositor's principal is never reduced to satisfy a Genesis fee. Every fee is denominated against earned yield and settled in the same epoch it was earned. This is the deepest form of permissionless design: no one takes a dollar from your balance that your capital did not first generate.</p>
+    <p><strong>All Genesis revenue is taken from yield, never from principal.</strong> A depositor's principal is never reduced to satisfy a Genesis fee. Under the cap model, investors retain 100% of yield up to their elected ceiling — Genesis earns only from yield generated above that ceiling. Every dollar Genesis captures is earned only when capital performs above the investor's guaranteed floor. This is the deepest form of permissionless design: no one takes a dollar from your balance that your capital did not first generate.</p>
   </div>
 
   <h3>Competitive Comparison</h3>
@@ -1561,7 +1553,7 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
       </tr>
       <tr>
         <td>Performance Fee</td>
-        <td class="teal-cell">Spread earned only above preferred (investor first)</td>
+        <td class="teal-cell">100% above tier cap (Preserve 6% / Growth 10% / Accelerate 15%) — 0% below cap</td>
         <td>20% of gross above hurdle</td>
         <td>10–30% of yield</td>
       </tr>
@@ -1584,8 +1576,8 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
         <td>Yield (varies)</td>
       </tr>
       <tr>
-        <td>Preferred Return Priority</td>
-        <td class="teal-cell">Yes — investor always paid first</td>
+        <td>Investor Yield Protection</td>
+        <td class="teal-cell">Yes — 100% of yield up to tier cap delivered to investor before Genesis earns any excess</td>
         <td>Hurdle rate varies</td>
         <td>No priority waterfall</td>
       </tr>
@@ -1619,10 +1611,10 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
 
   <h3>What $GRX Represents</h3>
   <p>
-    $GRX is a revenue participation security — not an equity stake, not a governance token in the traditional sense, and not a utility token. Each $GRX token represents a proportional claim on the 20% of Genesis spread that is allocated to the $GRX pool at each epoch settlement. This pool accumulates across epochs and is distributed to $GRX holders on a defined distribution schedule as specified in the offering documents.
+    $GRX is a revenue participation security — not an equity stake, not a governance token in the traditional sense, and not a utility token. Each $GRX token represents a proportional claim on the 20% of Genesis captured excess that is allocated to the $GRX pool at each epoch settlement. This pool accumulates across epochs and is distributed to $GRX holders on a defined distribution schedule as specified in the offering documents.
   </p>
   <p>
-    The economic structure is straightforward: $GRX holders participate in the revenue upside of the Perpetual Capital Engine proportionally, but only after investors have received their preferred return and Genesis has covered management costs. This creates a meaningful alignment of interests — $GRX holders benefit from Genesis growing its TVL, increasing blended gross yield, and efficiently managing operations, because all three factors expand the spread pool from which $GRX distributions are drawn.
+    The economic structure is straightforward: $GRX holders participate in the revenue upside of the Perpetual Capital Engine proportionally. Distributions are drawn from Genesis captured excess — yield above investor tier caps — after management costs are covered. This creates a meaningful alignment of interests — $GRX holders benefit from Genesis growing its TVL, increasing blended gross yield above the investor cap ceilings, and efficiently managing operations, because all three factors expand the captured excess pool from which $GRX distributions are drawn.
   </p>
 
   <h3>Token Distribution</h3>
@@ -2227,7 +2219,7 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
 
   <h3>Family Offices and Private Wealth</h3>
   <p>
-    Family offices represent the fastest near-term institutional penetration opportunity. The typical single-family office with $50–500M in assets under management maintains meaningful cash and near-cash positions — historically in T-bills, money market funds, or prime brokerage cash accounts earning 4–5%. The Genesis treasury service offers a direct upgrade: the same capital routed through the StrategyRouter targeting 8% annualized preferred return, with institutional-grade attribution reporting, multi-sig governance, and a defined exit liquidity path.
+    Family offices represent the fastest near-term institutional penetration opportunity. The typical single-family office with $50–500M in assets under management maintains meaningful cash and near-cash positions — historically in T-bills, money market funds, or prime brokerage cash accounts earning 4–5%. The Genesis treasury service offers a direct upgrade: the same capital routed through the StrategyRouter with defined yield ceilings (Preserve 6% / Growth 10% / Accelerate 15%), institutional-grade attribution reporting, multi-sig governance, and a defined exit liquidity path.
   </p>
   <p>
     The institutional onboarding for family offices includes: customized vault configuration, dedicated relationship management, monthly attribution reporting in institutional PDF format, and multi-sig wallet setup for governance-level operations. The Genesis treasury service does not compete with the family office's existing advisors — it provides the yield infrastructure those advisors deploy.
@@ -2445,7 +2437,7 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
   </div>
   <h2 class="section-title">Risk <span class="gold">Framework</span></h2>
   <p class="section-lead">
-    Five risk tiers. Defined allocation caps. Automated circuit breakers. A preferred return reserve. Genesis earns more spread in higher-risk corridors because it consumes more risk budget — compensation and risk are explicitly coupled.
+    Three investor tiers. Defined yield caps. Defined allocation limits. Automated circuit breakers. Genesis earns more captured excess in higher-risk corridors because those strategies generate yield above the investor cap threshold — compensation and risk are explicitly coupled.
   </p>
 
   <h3>Five-Tier Risk Architecture</h3>
@@ -2541,7 +2533,7 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
 
   <h3>Preferred Return Reserve</h3>
   <p>
-    The preferred return reserve is a dedicated buffer maintained within the StrategyRouter in Tier 1 assets specifically to fund the investor preferred return during low-yield months. The reserve target is 2% of TVL, maintained as a floor. When blended gross yield falls below the preferred return threshold in any epoch, the reserve funds the shortfall — ensuring investors receive their targeted return without Genesis needing to draw on operational capital.
+    The capital quality reserve is maintained within the StrategyRouter in Preserve tier assets (tokenized treasuries and institutional lending) as a liquidity buffer. The reserve target is 2% of TVL, maintained as a floor. Under the cap model, there is no preferred return shortfall mechanism — investors receive yield generated up to their ceiling, and Genesis captures nothing below the cap. The reserve protects redemption liquidity during stress periods, not investor return levels.
   </p>
   <p>
     The reserve is replenished from Genesis spread during above-threshold months. This creates a structural smoothing mechanism: strong-yield months fund the reserve; weak-yield months draw on it. Investors experience yield stability while Genesis absorbs short-term volatility at the reserve level.
@@ -2557,7 +2549,7 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
 
   <h3>Governance and Risk Committee</h3>
   <p>
-    Risk framework parameters — tier definitions, allocation caps, circuit breaker thresholds, and preferred return reserve targets — are governed by the Genesis Risk Committee, a multi-sig structure requiring 3-of-5 signatures for parameter changes. Risk Committee composition includes protocol engineers, independent risk professionals, and institutional advisor seats. Parameter changes are timelock-delayed by 48 hours, giving all stakeholders visibility into proposed governance actions before they take effect.
+    Risk framework parameters — tier definitions, allocation caps, investor yield caps, circuit breaker thresholds, and capital quality reserve targets — are governed by the Genesis Risk Committee, a multi-sig structure requiring 3-of-5 signatures for parameter changes. Risk Committee composition includes protocol engineers, independent risk professionals, and institutional advisor seats. Parameter changes are timelock-delayed by 48 hours, giving all stakeholders visibility into proposed governance actions before they take effect.
   </p>
 </section>
 
@@ -2686,7 +2678,7 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
 
   <h3>Insurance and Coverage</h3>
   <p>
-    Genesis evaluates smart contract insurance products from established DeFi coverage protocols for core vault contracts. Insurance coverage is an additional layer — not a replacement for the primary security architecture. Coverage terms, limits, and exclusions are disclosed to institutional clients upon request. The preferred return reserve serves a complementary role as an economic buffer against short-term strategy underperformance.
+    Genesis evaluates smart contract insurance products from established DeFi coverage protocols for core vault contracts. Insurance coverage is an additional layer — not a replacement for the primary security architecture. Coverage terms, limits, and exclusions are disclosed to institutional clients upon request. The capital quality reserve serves a complementary role as a liquidity buffer against short-term redemption pressure.
   </p>
 </section>
 
@@ -2777,7 +2769,7 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
   <ul>
     <li>Blended gross yield: 10–13% annualized across active strategy allocations (subject to DeFi market conditions)</li>
     <li>Management fee rate: 1.0% (midpoint of 0.75–1.25% range)</li>
-    <li>Preferred return: 8% targeted — funded from gross yield with preferred return reserve buffer</li>
+    <li>Investor yield caps: Preserve 6% / Growth 10% / Accelerate 15% — funded from gross yield; Genesis captures 100% above caps</li>
     <li>B2C wallet user growth: conservative adoption curve, 18–24 month ramp to meaningful yield activation penetration</li>
     <li>B2B TVL growth: 3–5 institutional clients onboarded per quarter at average $30–50M AUM per client in early periods</li>
     <li>Card spend per active user: $400–600/month (consistent with neobank benchmarks)</li>
@@ -2786,15 +2778,15 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
 
   <h3>Revenue Stress Test — Compressed Yield Scenario</h3>
   <p>
-    A critical institutional stress test: what does Genesis revenue look like if DeFi yields compress to 5% annualized — below the 8% preferred return target?
+    A critical institutional stress test: what does Genesis revenue look like if DeFi yields compress to 5% annualized — below the Preserve tier cap of 6%?
   </p>
   <p>
-    In this scenario: the preferred return reserve funds the investor shortfall for 2–3 months; protocol spread drops to zero (Genesis earns management fee only); card interchange and FX spread continue generating $2.3M+ annualized at M33 scale; B2B service fees continue at contracted rates. Total revenue in compressed-yield scenario at M33 scale: ~$5.6M/yr (vs. ~$9.1M base). The business does not break — it contracts. This revenue floor demonstrates that Genesis is not a pure-DeFi yield bet; Engine 1 provides structural revenue stability.
+    In this scenario: blended gross yield falls below the Preserve cap threshold; Genesis captured excess drops to zero (Genesis earns management fee only on all tiers); investors receive 5% yield (all available net yield, below their cap ceiling); card interchange and FX spread continue generating $2.3M+ annualized at M33 scale; B2B service fees continue at contracted rates. Total revenue in compressed-yield scenario at M33 scale: ~$5.6M/yr (vs. ~$9.1M base). The business does not break — it contracts. This revenue floor demonstrates that Genesis is not a pure-DeFi yield bet; Engine 1 provides structural revenue stability.
   </p>
 
   <h3>Treasury Compounding Effect</h3>
   <p>
-    The 40% treasury reinvestment pool from Genesis spread deployments compounds AUM organically over time. At M33 base case, the treasury-owned AUM represents approximately 8–12% of total TVL — reducing dependence on new external capital to sustain preferred return payments. By M72, under the base-case scenario, treasury-owned AUM contributes meaningfully to the self-sustaining character of the Perpetual Capital Engine.
+    The 50% treasury reinvestment pool from Genesis captured excess compounds AUM organically over time. At M33 base case, the treasury-owned AUM represents approximately 8–12% of total TVL — reducing dependence on new external capital. By M72, under the base-case scenario, treasury-owned AUM contributes meaningfully to the self-sustaining character of the Perpetual Capital Engine, and early investor caps will be revisited for expansion as independence milestones are reached.
   </p>
 </section>
 
@@ -2932,7 +2924,7 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
         </div>
         <div class="tl-item">
           <strong>Self-reinforcing treasury engine</strong>
-          <span>Treasury-owned AUM grown through 72 months of reinvestment provides meaningful structural capital that reduces new-capital dependence for preferred return sustainability.</span>
+          <span>Treasury-owned AUM grown through 72 months of reinvestment provides meaningful structural capital that reduces new-capital dependence and creates the conditions for expanding investor yield caps post-independence.</span>
         </div>
         <div class="tl-item">
           <strong>Infrastructure-layer positioning</strong>
@@ -2971,8 +2963,8 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
     <h4>Regulation D Notice — $GRX Token</h4>
     <p>$GRX tokens are securities offered only to accredited investors, as defined under Rule 501 of Regulation D under the Securities Act of 1933, as amended. The offering is made pursuant to an exemption from registration under Rule 506(c) of Regulation D. $GRX tokens have not been registered under the Securities Act or any state securities law. They may not be resold or transferred unless registered or an exemption from registration is available. Purchasers of $GRX tokens will be required to represent and warrant that they are accredited investors and agree to the transfer restrictions described in the applicable offering documents.</p>
 
-    <h4>No Guarantee of Return</h4>
-    <p>The 8% annualized preferred return described in this document is a <strong>targeted preferred return</strong> — not a guaranteed return, fixed interest rate, or contractual obligation independent of protocol performance. The preferred return is payable from net realized yield and available reserve capacity, subject to market conditions, strategy performance, protocol liquidity, operating expenses, and the specific terms of applicable offering documents. In periods where net realized yield is insufficient to fund the preferred return and the preferred return reserve is depleted, investors may receive less than the targeted preferred return or no return. Principal is also at risk.</p>
+    <h4>No Guarantee of Return — Investor Yield Caps</h4>
+    <p>The investor yield caps described in this document (Preserve 6.0%, Growth 10.0%, Accelerate 15.0%) represent <strong>maximum ceilings on investor yield</strong> — not guaranteed returns, fixed interest rates, or contractual obligations independent of protocol performance. Investors receive yield up to their elected cap only to the extent that net realized yield covers that amount in a given epoch. In periods where net realized yield is insufficient to reach the investor cap, investors receive all available yield and Genesis captures no excess. In periods where yield exceeds the cap, Genesis captures 100% of the excess above the ceiling. This structure is analogous to a structured note with a defined maximum payout, not a preferred return vault with a reserve buffer. The caps may be raised by Genesis at future milestones. Principal is at risk.</p>
 
     <h4>Not FDIC Insured / Not a Bank</h4>
     <p>Genesis Reserve is not a bank, savings institution, or deposit-taking entity. Balances held in Genesis Reserve vaults are not insured by the FDIC, SIPC, or any government agency. Users bear the risk of loss of their deposited capital, including from smart contract vulnerabilities, strategy underperformance, protocol failures, and other risks described in this document and in applicable offering documents.</p>
@@ -2981,7 +2973,7 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
     <p>The following is a non-exhaustive summary of material risk factors. Complete risk factors are contained in the applicable offering documents and should be reviewed in full:</p>
     <ul style="font-size:13px;color:var(--text-muted);">
       <li><strong>Smart contract risk:</strong> ERC-4626 vaults, StrategyRouter, and all related contracts are subject to bugs, vulnerabilities, and exploits despite audit programs. Historical DeFi losses total ~$16.5B.</li>
-      <li><strong>Yield compression risk:</strong> DeFi yields can compress materially and rapidly. If blended gross yield falls below the preferred return target for extended periods, investor returns may be reduced.</li>
+      <li><strong>Yield compression risk:</strong> DeFi yields can compress materially and rapidly. If blended gross yield falls below an investor's elected tier cap, investors receive all available net yield and Genesis captures no excess. Sustained compression may reduce investor returns below their tier ceiling.</li>
       <li><strong>Regulatory risk:</strong> Digital asset regulation is evolving rapidly. Regulatory actions could restrict or prohibit Genesis Reserve products in certain jurisdictions, require product modifications, or impose unforeseen compliance costs.</li>
       <li><strong>Liquidity risk:</strong> While ERC-4626 redemptions are designed to be immediate, extreme market conditions may create redemption delays if strategy positions cannot be unwound at current market prices without material impact.</li>
       <li><strong>Counterparty risk:</strong> Genesis's yield strategies rely on third-party protocols (Aave, Pendle, Gearbox, etc.). Failure or impairment of any counterparty protocol could reduce available yield or cause capital loss.</li>
@@ -3030,7 +3022,7 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
     <li><strong>Strategy harvest:</strong> Pending yield harvested from all active strategy positions; gross yield computed by strategy</li>
     <li><strong>Risk check:</strong> Risk Engine evaluates all positions against circuit breaker parameters; rebalancing instructions generated if any threshold is breached</li>
     <li><strong>Rebalancing execution:</strong> StrategyRouter executes any required rebalancing transactions in batch</li>
-    <li><strong>Waterfall settlement:</strong> Management fee deducted; preferred return credited to investor NAV; excess spread distributed 40/20/40; preferred return reserve funded or drawn as appropriate</li>
+    <li><strong>Waterfall settlement:</strong> Management fee deducted; investor cap payment credited to investor NAV (up to tier ceiling); Genesis captured excess distributed 50/30/20 (treasury reinvestment / operations / $GRX pool)</li>
     <li><strong>NAV update:</strong> ERC-4626 totalAssets() updated to reflect settled values; share price updated</li>
     <li><strong>Attribution record:</strong> Epoch-level attribution data written to Reporting Module on-chain storage</li>
   </ol>
@@ -3159,13 +3151,13 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
 
   <div class="callout">
     <div class="callout-label">Version Note</div>
-    <p>This is Genesis Reserve Whitepaper v2.1, issued May 2026. This document supersedes all prior versions. Genesis Reserve reserves the right to update this whitepaper at any time. Material updates will be versioned and dated. The current version of all Genesis Reserve documents is available through the official Genesis Reserve platform.</p>
+    <p>This is Genesis Reserve Whitepaper v2.2, issued May 2026. This document supersedes all prior versions. Genesis Reserve reserves the right to update this whitepaper at any time. Material updates will be versioned and dated. The current version of all Genesis Reserve documents is available through the official Genesis Reserve platform.</p>
   </div>
 
   <div style="margin-top:48px;padding-top:32px;border-top:1px solid var(--border-light);text-align:center;">
     <div style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:600;color:var(--text-primary);margin-bottom:8px;">Genesis Reserve</div>
     <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:16px;">The Treasury Intelligence Layer for the Stablecoin Economy</div>
-    <div style="font-size:13px;color:var(--text-muted);">Whitepaper v2.1 · May 2026 · Private &amp; Confidential</div>
+    <div style="font-size:13px;color:var(--text-muted);">Whitepaper v2.2 · May 2026 · Private &amp; Confidential</div>
     <div style="font-size:12px;color:var(--text-muted);margin-top:8px;">© 2026 Genesis Reserve. All rights reserved.</div>
   </div>
 </section>
@@ -3213,34 +3205,52 @@ function updateWaterfall() {
   const tvl = parseFloat(document.getElementById('tvl-slider').value) * 1e6;
   const grossYieldPct = parseFloat(document.getElementById('yield-slider').value) / 100;
   const mgmtFeeRate = 0.01;
-  const preferredRate = 0.08;
 
-  const grossIncome = tvl * grossYieldPct;
+  // Three tiers: fixed allocation, investor yield cap
+  const tiers = [
+    { alloc: 0.40, cap: 0.06, grossId: 't0-gross', invId: 't0-inv', genId: 't0-gen' },
+    { alloc: 0.35, cap: 0.10, grossId: 't1-gross', invId: 't1-inv', genId: 't1-gen' },
+    { alloc: 0.25, cap: 0.15, grossId: 't2-gross', invId: 't2-inv', genId: 't2-gen' }
+  ];
+
+  let investorTotal = 0;
+  let genesisCapture = 0;
+
+  tiers.forEach(function(t) {
+    const tierTVL = tvl * t.alloc;
+    const tierInvAmt = Math.min(grossYieldPct, t.cap) * tierTVL;
+    const tierGenAmt = Math.max(0, grossYieldPct - t.cap) * tierTVL;
+    investorTotal += tierInvAmt;
+    genesisCapture += tierGenAmt;
+    const invRate = Math.min(grossYieldPct, t.cap) * 100;
+    const genRate = Math.max(0, grossYieldPct - t.cap) * 100;
+    if(document.getElementById(t.grossId)) document.getElementById(t.grossId).textContent = (grossYieldPct*100).toFixed(1) + '%';
+    if(document.getElementById(t.invId))   document.getElementById(t.invId).textContent   = invRate.toFixed(1) + '%';
+    if(document.getElementById(t.genId))   document.getElementById(t.genId).textContent   = genRate.toFixed(1) + '%';
+  });
+
   const mgmtFee = tvl * mgmtFeeRate;
-  const netIncome = grossIncome - mgmtFee;
-  const preferredPay = Math.min(netIncome, tvl * preferredRate);
-  const spread = Math.max(0, netIncome - preferredPay);
-  const grxPool = spread * 0.2;
-  const treasuryReinvest = spread * 0.4;
-  const genesisOps = spread * 0.4;
-  const genesisTotal = mgmtFee + spread;
+  const genesisTotal = mgmtFee + genesisCapture;
+  const treasuryReinvest = genesisCapture * 0.50;
+  const grxPool = genesisCapture * 0.20;
+  const grossIncome = tvl * grossYieldPct;
 
   document.getElementById('tvl-lbl').textContent = 'TVL: ' + fmt(tvl);
-  document.getElementById('yield-lbl').textContent = 'Gross Yield: ' + (grossYieldPct*100).toFixed(1) + '%';
-  document.getElementById('kpi-investor').textContent = fmt(preferredPay);
+  document.getElementById('yield-lbl').textContent = 'Portfolio Gross Yield: ' + (grossYieldPct*100).toFixed(1) + '%';
+  document.getElementById('kpi-investor').textContent = fmt(investorTotal);
   document.getElementById('kpi-mgmt').textContent = fmt(mgmtFee);
-  document.getElementById('kpi-spread').textContent = fmt(spread);
+  document.getElementById('kpi-spread').textContent = fmt(genesisCapture);
   document.getElementById('kpi-treasury').textContent = fmt(treasuryReinvest);
 
-  const investorFlex = preferredPay / (grossIncome || 1) * 60;
+  const investorFlex = investorTotal / (grossIncome || 1) * 60;
   const grxFlex = grxPool / (grossIncome || 1) * 60;
   const genFlex = genesisTotal / (grossIncome || 1) * 60;
 
-  document.getElementById('bar-investor').style.flex = Math.max(investorFlex,5);
-  document.getElementById('bar-investor').querySelector('.split-pct').textContent = fmt(preferredPay);
-  document.getElementById('bar-grx').style.flex = Math.max(grxFlex,5);
+  document.getElementById('bar-investor').style.flex = Math.max(investorFlex, 5);
+  document.getElementById('bar-investor').querySelector('.split-pct').textContent = fmt(investorTotal);
+  document.getElementById('bar-grx').style.flex = Math.max(grxFlex, 3);
   document.getElementById('bar-grx').querySelector('.split-pct').textContent = fmt(grxPool);
-  document.getElementById('bar-treasury').style.flex = Math.max(genFlex,5);
+  document.getElementById('bar-treasury').style.flex = Math.max(genFlex, 5);
   document.getElementById('bar-treasury').querySelector('.split-pct').textContent = fmt(genesisTotal);
 }
 
@@ -3461,7 +3471,7 @@ if(tvlSlider) { tvlSlider.addEventListener('input', updateWaterfall); yieldSlide
   var timer = null;
   var tvl = 10000000;           // $10M starting TVL
   var grossApy = 0.11;          // 11% blended gross
-  var prefRate = 0.08;          // 8% preferred return
+  var capRate = 0.0965;         // Blended tier cap (40%×6% + 35%×10% + 25%×15%)
   var mgmtRate = 0.01;          // 1% management fee
   var totals = {inv:0, grx:0, tres:0, ops:0};
   // Corridor allocations (sum ≈ 100)
@@ -3487,13 +3497,12 @@ if(tvlSlider) { tvlSlider.addEventListener('input', updateWaterfall); yieldSlide
     // Epoch yield math: annual / 365 days / 96 epochs
     var grossE = tvl * grossApy / 35040;
     var feeE   = tvl * mgmtRate / 35040;
-    var netE   = grossE - feeE;
-    var prefE  = tvl * prefRate / 35040;
-    var invPay = Math.min(netE, prefE);
-    var spread = Math.max(0, netE - invPay);
-    var grxPay = spread * 0.20;
-    var tresPay= spread * 0.40;
-    var opsPay = spread * 0.40;
+    var capE   = tvl * capRate  / 35040;
+    var invPay = Math.min(grossE - feeE, capE);
+    var spread = Math.max(0, grossE - feeE - invPay);
+    var grxPay  = spread * 0.20;
+    var tresPay = spread * 0.50;
+    var opsPay  = spread * 0.30;
 
     // Treasury reinvestment compounds TVL
     tvl += tresPay;
