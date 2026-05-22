@@ -3643,56 +3643,56 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
               <feGaussianBlur stdDeviation="4" result="blur"/>
               <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
             </filter>
+            <!-- Donut clip: outer r=226 minus inner r=193 → Flower of Life band -->
+            <clipPath id="gFolClip">
+              <path fill-rule="evenodd" d="M250,24 A226,226 0 0,1 250,476 A226,226 0 0,1 250,24 Z M250,57 A193,193 0 0,0 250,443 A193,193 0 0,0 250,57 Z"/>
+            </clipPath>
           </defs>
 
-          <!-- ── Layer 1: Outer Boundary Ring ── -->
+          <!-- ── Layer 1: Outer Boundary Ring (thick gold) ── -->
           <g class="geo-layer" id="geoLayerBoundary">
-            <circle class="geo-path" cx="250" cy="250" r="228" fill="none" stroke="#C9A84C" stroke-width="1.6" opacity="0.75"/>
-            <circle class="geo-path" cx="250" cy="250" r="214" fill="none" stroke="#C9A84C" stroke-width="0.5" opacity="0.35" stroke-dasharray="4 6"/>
+            <circle class="geo-path" cx="250" cy="250" r="228" fill="none" stroke="#C9A84C" stroke-width="5.5" opacity="0.92"/>
+            <circle class="geo-path" cx="250" cy="250" r="218" fill="none" stroke="#C9A84C" stroke-width="0.55" opacity="0.28" stroke-dasharray="3 5"/>
           </g>
 
-          <!-- ── Layer 2: Three Tier Rings ── -->
+          <!-- ── Layer 2: Flower of Life + Inner Ring ── -->
+          <!-- geoFOLCircles filled dynamically by JS hex-grid generator -->
           <g class="geo-layer" id="geoLayerRings">
-            <circle class="geo-path" cx="250" cy="250" r="193" fill="none" stroke="#C9A84C" stroke-width="1.1" opacity="0.55"/>
-            <circle class="geo-path" cx="250" cy="250" r="162" fill="none" stroke="#C9A84C" stroke-width="0.9" opacity="0.45"/>
-            <circle class="geo-path" cx="250" cy="250" r="128" fill="none" stroke="#C9A84C" stroke-width="0.7" opacity="0.35"/>
+            <g id="geoFOLCircles" clip-path="url(#gFolClip)"></g>
+            <circle class="geo-path" cx="250" cy="250" r="193" fill="none" stroke="#C9A84C" stroke-width="4.8" opacity="0.88"/>
           </g>
 
-          <!-- ── Layer 3: Shiva — Upward Triangles (Active / Deployment) ── -->
-          <!-- R=210: apex(250,40) BL(68,355) BR(432,355) -->
-          <!-- R=175: apex(250,75) BL(98,337) BR(402,337) -->
-          <!-- R=135: apex(250,115) BL(133,317) BR(367,317) -->
-          <!-- R=88:  apex(250,162) BL(174,294) BR(326,294) -->
+          <!-- ── Layer 3: Shiva — 4 Upward Triangles (Active / Deployment) ── -->
+          <!-- Equilateral triangles inscribed in circles R=192,157,116,73 -->
           <g class="geo-layer" id="geoLayerShiva">
-            <path class="geo-path" d="M250,40 L68,355 L432,355 Z"  fill="none" stroke="#C9A84C" stroke-width="1.5" opacity="0.85"/>
-            <path class="geo-path" d="M250,75 L98,337 L402,337 Z"  fill="none" stroke="#C9A84C" stroke-width="1.1" opacity="0.6"/>
-            <path class="geo-path" d="M250,115 L133,317 L367,317 Z" fill="none" stroke="#C9A84C" stroke-width="0.8" opacity="0.45"/>
-            <path class="geo-path" d="M250,162 L174,294 L326,294 Z" fill="none" stroke="#C9A84C" stroke-width="0.55" opacity="0.32"/>
+            <path class="geo-path" d="M250,58 L84,346 L416,346 Z"  fill="none" stroke="#C9A84C" stroke-width="1.6" opacity="0.92"/>
+            <path class="geo-path" d="M250,93 L114,329 L386,329 Z"  fill="none" stroke="#C9A84C" stroke-width="1.1" opacity="0.65"/>
+            <path class="geo-path" d="M250,134 L150,308 L350,308 Z" fill="none" stroke="#C9A84C" stroke-width="0.8" opacity="0.48"/>
+            <path class="geo-path" d="M250,177 L187,287 L313,287 Z" fill="none" stroke="#C9A84C" stroke-width="0.55" opacity="0.32"/>
           </g>
 
-          <!-- ── Layer 4: Shakti — Downward Triangles (Receptive / Distribution) ── -->
-          <!-- R=210: apex(250,460) TL(68,145) TR(432,145) -->
-          <!-- R=175: apex(250,425) TL(98,163) TR(402,163) -->
-          <!-- R=135: apex(250,385) TL(133,183) TR(367,183) -->
-          <!-- R=88:  apex(250,338) TL(174,206) TR(326,206) -->
+          <!-- ── Layer 4: Shakti — 5 Downward Triangles (Receptive / Distribution) ── -->
+          <!-- 5 triangles (true Sri Yantra count): R=192,157,124,94,67 -->
           <g class="geo-layer" id="geoLayerShakti">
-            <path class="geo-path" d="M250,460 L68,145 L432,145 Z"  fill="none" stroke="#C9A84C" stroke-width="1.5" opacity="0.85"/>
-            <path class="geo-path" d="M250,425 L98,163 L402,163 Z"  fill="none" stroke="#C9A84C" stroke-width="1.1" opacity="0.6"/>
-            <path class="geo-path" d="M250,385 L133,183 L367,183 Z" fill="none" stroke="#C9A84C" stroke-width="0.8" opacity="0.45"/>
-            <path class="geo-path" d="M250,338 L174,206 L326,206 Z" fill="none" stroke="#C9A84C" stroke-width="0.55" opacity="0.32"/>
+            <path class="geo-path" d="M250,442 L84,154 L416,154 Z"  fill="none" stroke="#C9A84C" stroke-width="1.6" opacity="0.92"/>
+            <path class="geo-path" d="M250,407 L114,172 L386,172 Z"  fill="none" stroke="#C9A84C" stroke-width="1.1" opacity="0.65"/>
+            <path class="geo-path" d="M250,374 L143,188 L357,188 Z" fill="none" stroke="#C9A84C" stroke-width="0.8" opacity="0.48"/>
+            <path class="geo-path" d="M250,344 L169,203 L331,203 Z" fill="none" stroke="#C9A84C" stroke-width="0.6" opacity="0.36"/>
+            <path class="geo-path" d="M250,317 L192,217 L308,217 Z" fill="none" stroke="#C9A84C" stroke-width="0.45" opacity="0.26"/>
           </g>
 
           <!-- ── Layer 5: Inner Lotus — 8 Petals (Yield Corridors) ── -->
-          <!-- Each petal: ellipse cx=250 cy=192, rx=14 ry=32, rotated n×45° around (250,250) -->
+          <!-- Inner ring + 8 ellipses cx=250 cy=184, rx=11 ry=26, rotated n×45° around (250,250) -->
           <g class="geo-layer" id="geoLayerPetals">
-            <ellipse class="geo-path" cx="250" cy="192" rx="14" ry="32" fill="none" stroke="#C9A84C" stroke-width="0.9" opacity="0.6" transform="rotate(0 250 250)"/>
-            <ellipse class="geo-path" cx="250" cy="192" rx="14" ry="32" fill="none" stroke="#C9A84C" stroke-width="0.9" opacity="0.6" transform="rotate(45 250 250)"/>
-            <ellipse class="geo-path" cx="250" cy="192" rx="14" ry="32" fill="none" stroke="#C9A84C" stroke-width="0.9" opacity="0.6" transform="rotate(90 250 250)"/>
-            <ellipse class="geo-path" cx="250" cy="192" rx="14" ry="32" fill="none" stroke="#C9A84C" stroke-width="0.9" opacity="0.6" transform="rotate(135 250 250)"/>
-            <ellipse class="geo-path" cx="250" cy="192" rx="14" ry="32" fill="none" stroke="#C9A84C" stroke-width="0.9" opacity="0.6" transform="rotate(180 250 250)"/>
-            <ellipse class="geo-path" cx="250" cy="192" rx="14" ry="32" fill="none" stroke="#C9A84C" stroke-width="0.9" opacity="0.6" transform="rotate(225 250 250)"/>
-            <ellipse class="geo-path" cx="250" cy="192" rx="14" ry="32" fill="none" stroke="#C9A84C" stroke-width="0.9" opacity="0.6" transform="rotate(270 250 250)"/>
-            <ellipse class="geo-path" cx="250" cy="192" rx="14" ry="32" fill="none" stroke="#C9A84C" stroke-width="0.9" opacity="0.6" transform="rotate(315 250 250)"/>
+            <circle class="geo-path" cx="250" cy="250" r="66" fill="none" stroke="#C9A84C" stroke-width="0.8" opacity="0.52"/>
+            <ellipse class="geo-path" cx="250" cy="184" rx="11" ry="26" fill="none" stroke="#C9A84C" stroke-width="0.9" opacity="0.62" transform="rotate(0 250 250)"/>
+            <ellipse class="geo-path" cx="250" cy="184" rx="11" ry="26" fill="none" stroke="#C9A84C" stroke-width="0.9" opacity="0.62" transform="rotate(45 250 250)"/>
+            <ellipse class="geo-path" cx="250" cy="184" rx="11" ry="26" fill="none" stroke="#C9A84C" stroke-width="0.9" opacity="0.62" transform="rotate(90 250 250)"/>
+            <ellipse class="geo-path" cx="250" cy="184" rx="11" ry="26" fill="none" stroke="#C9A84C" stroke-width="0.9" opacity="0.62" transform="rotate(135 250 250)"/>
+            <ellipse class="geo-path" cx="250" cy="184" rx="11" ry="26" fill="none" stroke="#C9A84C" stroke-width="0.9" opacity="0.62" transform="rotate(180 250 250)"/>
+            <ellipse class="geo-path" cx="250" cy="184" rx="11" ry="26" fill="none" stroke="#C9A84C" stroke-width="0.9" opacity="0.62" transform="rotate(225 250 250)"/>
+            <ellipse class="geo-path" cx="250" cy="184" rx="11" ry="26" fill="none" stroke="#C9A84C" stroke-width="0.9" opacity="0.62" transform="rotate(270 250 250)"/>
+            <ellipse class="geo-path" cx="250" cy="184" rx="11" ry="26" fill="none" stroke="#C9A84C" stroke-width="0.9" opacity="0.62" transform="rotate(315 250 250)"/>
           </g>
 
           <!-- ── Layer 6: Bindu — The Genesis Point ── -->
@@ -3712,7 +3712,7 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
         <div class="geo-pre" id="geoPre">
           <div class="geo-pre-body">
             What you have just read — every yield tier, every waterfall step, every compounding mechanic — is encoded in this symbol.<br><br>
-            The <strong>upward triangles</strong> deploy capital. The <strong>downward triangles</strong> return yield. The <strong>concentric rings</strong> are your tier caps. The <strong>lotus petals</strong> are the 7 corridors. The <strong>central point</strong> is your deposit.<br><br>
+            The <strong>upward triangles</strong> deploy capital. The <strong>downward triangles</strong> return yield. The <strong>Flower of Life</strong> is the infinite source field. The <strong>lotus petals</strong> are the 7 corridors. The <strong>central point</strong> is your deposit.<br><br>
             This is not metaphor. It is the same geometry.
           </div>
           <button class="geo-btn geo-btn-primary" id="geoStartBtn">Begin Tour &nbsp;→</button>
@@ -3843,10 +3843,10 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
     },
     {
       layer: 'geoLayerRings',
-      eyebrow: 'Three Concentric Rings',
-      title: 'The Yield Tier Caps',
-      body: 'Three harmonic rings, each an octave of the same fundamental frequency. Preserve caps at 6% — the most stable, widest allocation. Growth at 10%. Accelerate at 15%. Genesis captures 100% above each cap. The rings breathe as the torus rotates — tighter rings hold more energy at the center.',
-      ref: '→ §07 Yield Source Taxonomy · §08 Capital Waterfall'
+      eyebrow: 'The Flower of Life',
+      title: 'Infinite Source — The Living Field',
+      body: 'The oldest geometric pattern known to humanity: overlapping circles generating an infinite, self-replicating field. It appears in the Temple of Osiris, the Forbidden City, and Leonardo\'s notebooks. Here it encodes a single truth — yield is not manufactured, it is harvested from a field that already exists. The inner ring that contains it is the boundary between the infinite and the structured. Your capital enters the field. The field returns yield.',
+      ref: '→ §07 Yield Source Taxonomy · §05 Perpetual Capital Engine'
     },
     {
       layer: 'geoLayerShiva',
@@ -3859,7 +3859,7 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
       layer: 'geoLayerShakti',
       eyebrow: 'Downward Triangles',
       title: 'Receptive Force — Yield Distribution',
-      body: 'The Shakti principle: receptive, inward, distributive. Four nested downward triangles are the mirror: yield returning through the waterfall. Investor cap paid first. Genesis captured excess split 50% treasury reinvestment · 30% operations · 20% $GRX. The two forces interlock — neither can exist without the other.',
+      body: 'The Shakti principle: receptive, inward, distributive. Five nested downward triangles are the mirror: yield returning through the waterfall. In the Sri Yantra, Shakti has one more triangle than Shiva — the receptive always slightly exceeds the active. Investor cap paid first. Excess split 50% treasury reinvestment · 30% operations · 20% $GRX. The two forces interlock — neither can exist without the other.',
       ref: '→ §08 Capital Waterfall · §09 $GRX Revenue Participation'
     },
     {
@@ -3944,6 +3944,37 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
     if(current < steps.length-1){ goTo(current+1); }
     else { exitTour(); }
   });
+
+  // ── Flower of Life hex grid — fills geoFOLCircles with overlapping circles
+  // clipped to the annular band (r=193 → r=226) by the gFolClip clipPath
+  (function(){
+    var folGroup = document.getElementById('geoFOLCircles');
+    if(!folGroup) return;
+    var ns = 'http://www.w3.org/2000/svg';
+    var cx = 250, cy = 250, rFol = 32;
+    var seen = {};
+    var e1x = rFol, e2x = rFol / 2, e2y = rFol * Math.sqrt(3) / 2;
+    for(var a = -8; a <= 8; a++){
+      for(var b = -8; b <= 8; b++){
+        var x = cx + a * e1x + b * e2x;
+        var y = cy + b * e2y;
+        var d = Math.sqrt((x - cx) * (x - cx) + (y - cy) * (y - cy));
+        if(d < 155 || d > 262) continue;
+        var key = x.toFixed(1) + ',' + y.toFixed(1);
+        if(seen[key]) continue;
+        seen[key] = true;
+        var c = document.createElementNS(ns, 'circle');
+        c.setAttribute('cx', x.toFixed(2));
+        c.setAttribute('cy', y.toFixed(2));
+        c.setAttribute('r', rFol);
+        c.setAttribute('fill', 'none');
+        c.setAttribute('stroke', '#C9A84C');
+        c.setAttribute('stroke-width', '0.65');
+        c.setAttribute('opacity', '0.30');
+        folGroup.appendChild(c);
+      }
+    }
+  })();
 
   // Assembly: fire when §22 enters viewport
   var geoObs = new IntersectionObserver(function(entries){
