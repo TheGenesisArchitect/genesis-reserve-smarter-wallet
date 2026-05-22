@@ -503,7 +503,7 @@ export function CashOutPage({ onNavigate }: { onNavigate: (v: ViewKey) => void }
               <div style={{ fontSize: 12, color: 'rgba(245,240,232,0.55)' }}>${fmt(net)} USD is on its way to your •••• {selectedCard?.last4}</div>
             </div>
             <div style={{ padding: '16px', borderRadius: 12, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.09)' }}>
-              <div style={{ fontSize: 10, letterSpacing: '0.12em', color: 'rgba(245,240,232,0.4)', textTransform: 'uppercase', marginBottom: 12 }}>What's next?</div>
+              <div style={{ fontSize: 10, letterSpacing: '0.12em', color: 'rgba(245,240,232,0.4)', textTransform: 'uppercase', marginBottom: 12 }}>What&apos;s next?</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 {[
                   { label: '→ Add money again', color: '#00D4AA', bg: 'rgba(0,212,170,0.08)', border: 'rgba(0,212,170,0.22)', action: () => onNavigate('deposit') },
