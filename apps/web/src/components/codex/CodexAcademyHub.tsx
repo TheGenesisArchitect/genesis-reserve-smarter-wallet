@@ -518,7 +518,7 @@ export function CodexAcademyHub() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 12 }}>
           {filteredConcepts.length === 0 && (
             <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '40px 0', color: 'rgba(245,240,232,0.30)', fontFamily: F.tenor, fontSize: 12 }}>
-              No concepts match "{searchQuery}"
+              {`No concepts match "${searchQuery}"`}
             </div>
           )}
           {filteredConcepts.map(entry => (
@@ -537,7 +537,7 @@ export function CodexAcademyHub() {
         <div>
           {filteredProtocols.length === 0 && (
             <div style={{ textAlign: 'center', padding: '40px 0', color: 'rgba(245,240,232,0.30)', fontFamily: F.tenor, fontSize: 12 }}>
-              No protocols match "{searchQuery}"
+              {`No protocols match "${searchQuery}"`}
             </div>
           )}
           {TIER_ORDER.map(tier => {
@@ -574,7 +574,7 @@ export function CodexAcademyHub() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 12 }}>
           {filteredChains.length === 0 && (
             <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '40px 0', color: 'rgba(245,240,232,0.30)', fontFamily: F.tenor, fontSize: 12 }}>
-              No chains match "{searchQuery}"
+              {`No chains match "${searchQuery}"`}
             </div>
           )}
           {filteredChains.map(entry => (

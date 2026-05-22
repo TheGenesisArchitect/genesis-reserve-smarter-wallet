@@ -365,7 +365,7 @@ function StrategyDrillDownCard({
         </div>
         {localDeposit > 0 && (
           <div style={{ marginTop: 12, padding: '8px 12px', background: 'rgba(232,64,64,0.07)', border: '1px solid rgba(232,64,64,0.20)', borderRadius: 8, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: 11, color: 'rgba(245,240,232,0.55)' }}>Purchasing power you'd lose idle (at {inflationRate.toFixed(1)}% inflation)</span>
+            <span style={{ fontSize: 11, color: 'rgba(245,240,232,0.55)' }}>Purchasing power you&apos;d lose idle (at {inflationRate.toFixed(1)}% inflation)</span>
             <span style={{ fontSize: 13, color: '#E84040', fontFamily: "'Cormorant Garamond', serif", fontWeight: 600, flexShrink: 0, marginLeft: 8 }}>
               −${inflationErosion.toFixed(0)}/yr
             </span>

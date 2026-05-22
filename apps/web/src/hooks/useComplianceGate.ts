@@ -95,6 +95,30 @@ export function useComplianceGate(addressOverride?: string | null): ComplianceGa
     },
   })
 
+  // Compute before early returns so useQuery is always called unconditionally
+  const chainTier = Number(readTupleValue<bigint | number>(data, 0) ?? 0) as KYCTier
+  const needsServerFallback = !!address && !KYC_DEV_BYPASS && (!!readError || chainTier === KYCTier.NONE)
+
+  const { data: serverCompliance, isLoading: isServerLoading } = useQuery({
+    queryKey: ['kyc-activate-fallback', address],
+    enabled: needsServerFallback,
+    staleTime: 60_000,
+    retry: 1,
+    queryFn: async (): Promise<{ kycLevel: number } | null> => {
+      const res = await fetch('/api/gr/kyc/activate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ address }),
+      })
+
+      if (!res.ok) return null
+      const json = await res.json() as { kycLevel?: number }
+      if (typeof json.kycLevel !== 'number') return null
+      return { kycLevel: json.kycLevel }
+    },
+  })
+
+  // Early returns after all hooks are unconditionally called
   if (KYC_DEV_BYPASS) {
     const limits = TIER_LIMITS[KYCTier.BASIC]
     return {
@@ -127,28 +151,6 @@ export function useComplianceGate(addressOverride?: string | null): ComplianceGa
       complianceError: null,
     }
   }
-
-  const chainTier = Number(readTupleValue<bigint | number>(data, 0) ?? 0) as KYCTier
-  const needsServerFallback = !!address && !KYC_DEV_BYPASS && (!!readError || chainTier === KYCTier.NONE)
-
-  const { data: serverCompliance, isLoading: isServerLoading } = useQuery({
-    queryKey: ['kyc-activate-fallback', address],
-    enabled: needsServerFallback,
-    staleTime: 60_000,
-    retry: 1,
-    queryFn: async (): Promise<{ kycLevel: number } | null> => {
-      const res = await fetch('/api/gr/kyc/activate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ address }),
-      })
-
-      if (!res.ok) return null
-      const json = await res.json() as { kycLevel?: number }
-      if (typeof json.kycLevel !== 'number') return null
-      return { kycLevel: json.kycLevel }
-    },
-  })
 
   // `records(address)` returns a named tuple; destructure kycLevel and sanctionStatus.
   // If no record exists all fields default to zero values.
