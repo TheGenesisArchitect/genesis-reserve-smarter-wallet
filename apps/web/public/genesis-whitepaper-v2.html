@@ -710,6 +710,27 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
 /* Final caption */
 .geo-caption{text-align:center;margin-top:48px;padding:28px 0 0;border-top:1px solid var(--border-light);font-family:'Cormorant Garamond',serif;font-size:21px;font-style:italic;color:var(--text-secondary);letter-spacing:.03em;line-height:1.5}
 
+/* Correspondence table */
+.geo-corr{margin:36px 0;border:1px solid rgba(201,168,76,.18);border-radius:12px;overflow:hidden;background:rgba(4,3,7,.7)}
+.geo-corr-head{display:grid;grid-template-columns:172px 1fr 1.35fr 72px;padding:11px 24px;border-bottom:1px solid rgba(201,168,76,.22);background:rgba(201,168,76,.08)}
+.geo-corr-head>span{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.17em;text-transform:uppercase;color:rgba(201,168,76,.62)}
+.geo-corr-row{display:grid;grid-template-columns:172px 1fr 1.35fr 72px;padding:17px 24px;border-bottom:1px solid rgba(201,168,76,.07);align-items:start;transition:background .22s,border-color .22s;border-left:2px solid transparent}
+.geo-corr-row:last-child{border-bottom:none}
+.geo-corr-row:hover{background:rgba(201,168,76,.042);border-left-color:rgba(201,168,76,.5)}
+.geo-corr-el{font-family:'Cormorant Garamond',serif;font-size:15.5px;font-weight:600;color:rgba(201,168,76,.92);line-height:1.3;padding-right:14px}
+.geo-corr-principle{font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;color:rgba(255,255,255,.40);line-height:1.6;padding-right:18px}
+.geo-corr-pce{font-size:12.5px;line-height:1.65;color:rgba(255,255,255,.65);padding-right:14px}
+.geo-corr-ref{display:flex;flex-direction:column;gap:5px;align-items:flex-end;padding-top:1px}
+.geo-corr-pill{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.05em;color:var(--gold);background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);border-radius:4px;padding:3px 9px;white-space:nowrap}
+@media(max-width:720px){
+  .geo-corr-head{display:none}
+  .geo-corr-row{grid-template-columns:1fr auto;grid-template-rows:auto auto auto;row-gap:5px;border-left:none;border-left-width:0}
+  .geo-corr-el{grid-column:1;grid-row:1}
+  .geo-corr-ref{grid-column:2;grid-row:1}
+  .geo-corr-principle{grid-column:1/-1;grid-row:2}
+  .geo-corr-pce{grid-column:1/-1;grid-row:3;padding-right:0}
+}
+
 /* §01 foreshadow */
 .geo-foreshadow{text-align:center;margin-top:28px;padding:12px 20px;border:1px solid rgba(201,168,76,.1);border-radius:6px;background:rgba(201,168,76,.025)}
 .geo-foreshadow-text{font-family:'Cormorant Garamond',serif;font-size:12.5px;font-style:italic;color:rgba(201,168,76,.45);letter-spacing:.04em}
@@ -3787,72 +3808,77 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
   <h3>The Correspondence Table</h3>
   <p>Every layer of the symbol maps to a specific section of this whitepaper. The geometry is not illustration — it is the operating architecture rendered in its most reduced form.</p>
 
-  <table class="data-table" style="font-size:13px;">
-    <thead>
-      <tr>
-        <th>Geometric Element</th>
-        <th>Sacred Geometry Principle</th>
-        <th>PCE Equivalent</th>
-        <th>Section</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><strong>Outer Circle</strong></td>
-        <td>The field boundary — defines what enters and what does not</td>
-        <td>ComplianceRegistry.sol — KYC tiers, jurisdiction gates</td>
-        <td>§15</td>
-      </tr>
-      <tr>
-        <td><strong>Three Concentric Rings</strong></td>
-        <td>Harmonic intervals — octaves of the same fundamental</td>
-        <td>Preserve 6% · Growth 10% · Accelerate 15% tier caps</td>
-        <td>§07 · §08</td>
-      </tr>
-      <tr>
-        <td><strong>Upward Triangles (Shiva)</strong></td>
-        <td>Active force — outward emanation, masculine principle</td>
-        <td>Capital deployment across 7 yield corridors via StrategyRouter</td>
-        <td>§05 · §06</td>
-      </tr>
-      <tr>
-        <td><strong>Downward Triangles (Shakti)</strong></td>
-        <td>Receptive force — inward return, feminine principle</td>
-        <td>Yield waterfall — investor cap → 50% treasury · 30% ops · 20% $GRX</td>
-        <td>§08 · §09</td>
-      </tr>
-      <tr>
-        <td><strong>Interlocking Star (Sri Yantra)</strong></td>
-        <td>Dynamic tension — two forces always in balance, never resolved</td>
-        <td>Every epoch: deployment and distribution running simultaneously</td>
-        <td>§05</td>
-      </tr>
-      <tr>
-        <td><strong>Eight-Petal Lotus</strong></td>
-        <td>Complete expression — 7 is the number of full manifestation + 1</td>
-        <td>7 yield source categories + 1 compliance layer</td>
-        <td>§07</td>
-      </tr>
-      <tr>
-        <td><strong>Vesica Piscis (lens)</strong></td>
-        <td>The overlap of two worlds — creation emerges at the intersection</td>
-        <td>IUL dual-asset compounding — vault yield crosses into insurance circle</td>
-        <td>§11</td>
-      </tr>
-      <tr>
-        <td><strong>Torus (implied flow)</strong></td>
-        <td>The only self-sustaining form — flows outward and curves back to feed itself</td>
-        <td>50% treasury reinvestment loop — captured excess seeds next epoch</td>
-        <td>§08</td>
-      </tr>
-      <tr>
-        <td><strong>Bindu (central point)</strong></td>
-        <td>The primordial point — before form, before division, pure potential</td>
-        <td>Your USDC deposit — the single genesis point of all yield activity</td>
-        <td>§05 · §10</td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="geo-corr">
+    <div class="geo-corr-head">
+      <span>Geometric Element</span>
+      <span>Sacred Geometry Principle</span>
+      <span>PCE Equivalent</span>
+      <span>Ref</span>
+    </div>
+
+    <div class="geo-corr-row">
+      <div class="geo-corr-el">Outer Circle</div>
+      <div class="geo-corr-principle">The field boundary — defines what enters and what does not</div>
+      <div class="geo-corr-pce">ComplianceRegistry.sol — KYC tiers, jurisdiction gates, sanction screening</div>
+      <div class="geo-corr-ref"><span class="geo-corr-pill">§15</span></div>
+    </div>
+
+    <div class="geo-corr-row">
+      <div class="geo-corr-el">Flower of Life</div>
+      <div class="geo-corr-principle">The oldest pattern — infinite, self-replicating, present in all traditions</div>
+      <div class="geo-corr-pce">The yield field that already exists — DeFi pools, T-Bills, RWA markets your capital harvests from</div>
+      <div class="geo-corr-ref"><span class="geo-corr-pill">§05</span><span class="geo-corr-pill">§07</span></div>
+    </div>
+
+    <div class="geo-corr-row">
+      <div class="geo-corr-el">Upward Triangles (Shiva)</div>
+      <div class="geo-corr-principle">Active force — outward emanation, the masculine principle of creation</div>
+      <div class="geo-corr-pce">Capital deployment across 7 yield corridors via StrategyRouter</div>
+      <div class="geo-corr-ref"><span class="geo-corr-pill">§05</span><span class="geo-corr-pill">§06</span></div>
+    </div>
+
+    <div class="geo-corr-row">
+      <div class="geo-corr-el">Downward Triangles (Shakti)</div>
+      <div class="geo-corr-principle">Receptive force — inward return, the feminine principle of distribution</div>
+      <div class="geo-corr-pce">Yield waterfall — investor cap → 50% treasury · 30% ops · 20% $GRX</div>
+      <div class="geo-corr-ref"><span class="geo-corr-pill">§08</span><span class="geo-corr-pill">§09</span></div>
+    </div>
+
+    <div class="geo-corr-row">
+      <div class="geo-corr-el">Interlocking Star (Sri Yantra)</div>
+      <div class="geo-corr-principle">Dynamic tension — two forces always in balance, never resolved</div>
+      <div class="geo-corr-pce">Every epoch: deployment and distribution running simultaneously, neither complete without the other</div>
+      <div class="geo-corr-ref"><span class="geo-corr-pill">§05</span></div>
+    </div>
+
+    <div class="geo-corr-row">
+      <div class="geo-corr-el">Eight-Petal Lotus</div>
+      <div class="geo-corr-principle">Complete expression — 7 is the number of full manifestation, plus one</div>
+      <div class="geo-corr-pce">7 yield source categories + 1 compliance layer that makes every corridor safe</div>
+      <div class="geo-corr-ref"><span class="geo-corr-pill">§07</span></div>
+    </div>
+
+    <div class="geo-corr-row">
+      <div class="geo-corr-el">Vesica Piscis</div>
+      <div class="geo-corr-principle">The overlap of two worlds — creation emerges at the intersection</div>
+      <div class="geo-corr-pce">IUL dual-asset compounding — vault yield crosses into the insurance circle</div>
+      <div class="geo-corr-ref"><span class="geo-corr-pill">§11</span></div>
+    </div>
+
+    <div class="geo-corr-row">
+      <div class="geo-corr-el">Torus (implied flow)</div>
+      <div class="geo-corr-principle">The only self-sustaining form — flows outward and curves back to feed itself</div>
+      <div class="geo-corr-pce">50% treasury reinvestment loop — captured excess seeds the next epoch</div>
+      <div class="geo-corr-ref"><span class="geo-corr-pill">§08</span></div>
+    </div>
+
+    <div class="geo-corr-row">
+      <div class="geo-corr-el">Bindu</div>
+      <div class="geo-corr-principle">The primordial point — before form, before division, pure potential</div>
+      <div class="geo-corr-pce">Your USDC deposit — the single genesis point from which all yield activity emanates</div>
+      <div class="geo-corr-ref"><span class="geo-corr-pill">§05</span><span class="geo-corr-pill">§10</span></div>
+    </div>
+  </div>
 
 </section>
 
