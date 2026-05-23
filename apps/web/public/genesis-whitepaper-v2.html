@@ -3949,6 +3949,7 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
   ];
 
   var current = -1;
+  var introTimeout = null;
   var allLayers = ['geoLayerBoundary','geoLayerRings','geoLayerShiva','geoLayerShakti','geoLayerPetals','geoLayerBindu'];
 
   // Build dots
@@ -4068,15 +4069,38 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
     }
   })();
 
-  // Assembly: fire when §22 enters viewport
-  // Logo holds for ~900ms while paths begin drawing, then fades to reveal geometry
+  // Persistent observer — logo-first intro replays every time §22 re-enters viewport
+  function resetToIntro(){
+    clearTimeout(introTimeout);
+    introTimeout = null;
+    stage.classList.remove('geo-assembled');
+    stage.classList.remove('geo-touring');
+    stage.classList.remove('geo-revealed');
+    allLayers.forEach(function(id){
+      var el = document.getElementById(id);
+      if(el) el.classList.remove('geo-active');
+    });
+    tour.classList.remove('visible');
+    if(revealPanel) revealPanel.classList.remove('visible');
+    pre.style.display = '';
+    stage.classList.add('geo-intro');
+  }
+
   var geoObs = new IntersectionObserver(function(entries){
-    if(entries[0].isIntersecting && !stage.classList.contains('geo-assembled') && !stage.classList.contains('geo-touring')){
+    var entry = entries[0];
+    if(entry.isIntersecting){
+      // Re-entered: reset state, restart draw-in, hold logo for 5s then dissolve
+      resetToIntro();
+      void stage.offsetWidth; // flush so draw-in animation restarts from scratch
       stage.classList.add('geo-assembled');
-      geoObs.disconnect();
-      setTimeout(function(){ stage.classList.remove('geo-intro'); }, 5000);
+      introTimeout = setTimeout(function(){
+        stage.classList.remove('geo-intro');
+      }, 5000);
+    } else {
+      // Left viewport: cancel any pending fade, park in clean logo state
+      resetToIntro();
     }
-  }, { threshold: 0.2 });
+  }, { threshold: 0.15 });
   geoObs.observe(stage);
 })();
 
