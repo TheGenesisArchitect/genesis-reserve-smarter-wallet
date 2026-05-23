@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Genesis Reserve — Reel Ad</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+body{
+  background:#0a0a0a;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:'Inter',system-ui,sans-serif;
+  overflow:hidden;
+}
+
+/* ── Ad Container — 9:16 vertical ── */
+.ad{
+  position:relative;
+  width:390px;
+  height:844px;
+  background:#000;
+  overflow:hidden;
+  border-radius:20px;
+  box-shadow:0 0 0 1px rgba(255,255,255,.06),0 40px 100px rgba(0,0,0,.9);
+  flex-shrink:0;
+}
+
+/* Responsive: fill screen on small viewports */
+@media(max-height:900px){
+  .ad{transform:scale(0.92);transform-origin:center center}
+}
+@media(max-height:800px){
+  .ad{transform:scale(0.82)}
+}
+
+/* ── Story Progress Bar ── */
+.story-bar{
+  position:absolute;
+  top:14px;left:12px;right:12px;
+  display:flex;gap:3px;
+  z-index:200;
+}
+.seg{
+  flex:1;height:2px;
+  background:rgba(255,255,255,.22);
+  border-radius:2px;overflow:hidden;
+}
+.seg-fill{
+  height:100%;
+  background:#C9A84C;
+  width:0%;
+}
+
+/* ── Scenes ── */
+.scene{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;
+  opacity:0;pointer-events:none;
+}
+.scene.active{opacity:1;pointer-events:auto}
+
+/* Backgrounds */
+.bg-black{background:#000}
+.bg-dark{background:linear-gradient(175deg,#06060a 0%,#0c0a12 100%)}
+.bg-money{background:radial-gradient(ellipse 80% 60% at 50% 40%,rgba(201,168,76,.08) 0%,transparent 60%),linear-gradient(175deg,#040208 0%,#080610 100%)}
+
+/* ── Caption — center seam, bold all-caps ── */
+.caption{
+  position:absolute;
+  left:0;right:0;
+  text-align:center;
+  z-index:100;
+  pointer-events:none;
+}
+.cap-text{
+  display:inline;
+  font-size:25px;
+  font-weight:900;
+  letter-spacing:.07em;
+  text-transform:uppercase;
+  color:#fff;
+  background:rgba(0,0,0,.6);
+  padding:3px 10px;
+  line-height:1.3;
+  -webkit-box-decoration-break:clone;
+  box-decoration-break:clone;
+}
+.cap-gold .cap-text{color:#C9A84C;background:rgba(0,0,0,.55)}
+
+/* Caption positions */
+.cap-seam{bottom:308px}
+.cap-seam-up{bottom:340px}
+
+/* ── Logo small — top left ── */
+.logo-sm{
+  position:absolute;
+  top:34px;left:16px;
+  display:flex;align-items:center;gap:9px;
+  z-index:150;
+  opacity:0;
+  animation:fadeIn .35s ease .1s forwards;
+}
+.logo-sm img{width:24px;height:24px;object-fit:contain;opacity:.9}
+.logo-sm-word{
+  font-size:10px;font-weight:700;
+  letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(201,168,76,.85);
+}
+@keyframes fadeIn{to{opacity:1}}
+
+/* ── Presenter Strip — bottom 300px ── */
+.presenter{
+  position:absolute;
+  bottom:0;left:0;right:0;height:300px;
+  background:linear-gradient(0deg,rgba(0,0,0,.98) 0%,rgba(0,0,0,.85) 55%,transparent 100%);
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:16px 16px 28px;
+  z-index:80;
+}
+.pres-top{display:flex;align-items:center;gap:11px;margin-bottom:9px}
+.pres-avatar{
+  width:38px;height:38px;border-radius:50%;
+  background:rgba(201,168,76,.12);
+  border:1.5px solid rgba(201,168,76,.35);
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;flex-shrink:0;
+}
+.pres-avatar img{width:24px;height:24px;object-fit:contain}
+.pres-meta{flex:1}
+.pres-handle{font-size:12px;font-weight:700;color:#fff}
+.pres-tag{font-size:10px;color:rgba(201,168,76,.65);letter-spacing:.03em;margin-top:1px}
+.pres-follow-btn{
+  font-size:11px;font-weight:700;letter-spacing:.04em;
+  background:#C9A84C;color:#000;
+  border:none;border-radius:6px;padding:7px 15px;cursor:pointer;
+  white-space:nowrap;
+}
+.pres-copy{
+  font-size:12px;line-height:1.5;color:rgba(255,255,255,.55);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+
+/* ── SCENE 1: Pattern Interrupt ── */
+.s1-content{
+  position:absolute;
+  top:50px;left:0;right:0;bottom:300px;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:20px;padding:0 32px;
+}
+.s1-logo-wrap{
+  display:flex;flex-direction:column;align-items:center;gap:14px;
+  opacity:0;transform:scale(.8);
+  transition:opacity .7s ease .2s,transform .7s cubic-bezier(.16,1,.3,1) .2s;
+}
+.s1-logo-wrap.in{opacity:1;transform:scale(1)}
+.s1-logo{
+  width:88px;height:88px;object-fit:contain;
+  filter:drop-shadow(0 0 28px rgba(201,168,76,.55)) drop-shadow(0 0 60px rgba(201,168,76,.22));
+}
+.s1-wordmark{
+  font-size:12px;font-weight:700;letter-spacing:.44em;
+  text-transform:uppercase;color:rgba(201,168,76,.78);
+}
+.s1-divider{
+  width:100%;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(201,168,76,.2),transparent);
+  opacity:0;transition:opacity .5s ease .7s;
+}
+.s1-logo-wrap.in ~ .s1-divider{opacity:1}
+.ticker-wrap{
+  width:100%;overflow:hidden;
+  padding:8px 0;
+  border-top:1px solid rgba(201,168,76,.1);
+  border-bottom:1px solid rgba(201,168,76,.1);
+  opacity:0;transition:opacity .5s ease .9s;
+}
+.s1-logo-wrap.in ~ .ticker-wrap{opacity:1}
+.ticker-track{
+  display:flex;white-space:nowrap;gap:0;
+  font-size:9px;font-weight:600;letter-spacing:.22em;
+  text-transform:uppercase;color:rgba(201,168,76,.4);
+  animation:tickerMove 12s linear infinite;
+}
+.ticker-track span{padding-right:40px}
+@keyframes tickerMove{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ── SCENE 2: Contrarian Hook ── */
+.headline-card{
+  position:absolute;
+  top:74px;left:16px;right:16px;
+  background:rgba(255,255,255,.97);
+  border-radius:10px;
+  padding:20px 20px 22px;
+  opacity:0;transform:translateY(32px);
+  transition:opacity .4s ease .1s,transform .4s cubic-bezier(.16,1,.3,1) .1s;
+}
+.headline-card.in{opacity:1;transform:translateY(0)}
+.hc-kicker{
+  font-size:8px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;
+  color:rgba(0,0,0,.35);margin-bottom:12px;
+  display:flex;align-items:center;gap:8px;
+}
+.hc-kicker::before{
+  content:'';display:block;width:6px;height:6px;border-radius:50%;background:#C9A84C;flex-shrink:0;
+}
+.hc-body{
+  font-size:24px;font-weight:800;line-height:1.18;
+  color:#000;letter-spacing:-.02em;
+}
+.hc-gold{color:#C9A84C}
+.hc-sub{
+  font-size:12.5px;color:rgba(0,0,0,.45);
+  margin-top:12px;line-height:1.5;
+  border-top:1px solid rgba(0,0,0,.08);padding-top:10px;
+}
+
+/* ── SCENE 3: Source Card ── */
+.source-card{
+  position:absolute;
+  top:74px;left:16px;right:16px;
+  background:#fff;
+  border-radius:10px;
+  overflow:hidden;
+  opacity:0;transform:translateY(24px);
+  transition:opacity .4s ease .1s,transform .4s cubic-bezier(.16,1,.3,1) .1s;
+}
+.source-card.in{opacity:1;transform:translateY(0)}
+.sc-bar{
+  height:3px;
+  background:linear-gradient(90deg,#C9A84C,#e8c96a);
+}
+.sc-inner{padding:16px 18px 18px}
+.sc-meta{
+  display:flex;align-items:center;gap:8px;margin-bottom:11px;
+}
+.sc-outlet{font-size:9px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(0,0,0,.35)}
+.sc-pipe{color:rgba(0,0,0,.18);font-size:11px}
+.sc-date{font-size:9px;color:rgba(0,0,0,.28)}
+.sc-headline{font-size:19px;font-weight:800;line-height:1.25;color:#000;letter-spacing:-.02em}
+.sc-sub{
+  font-size:12px;color:rgba(0,0,0,.48);line-height:1.5;
+  margin-top:10px;padding-top:10px;
+  border-top:1px solid rgba(0,0,0,.07);
+}
+.sc-stat{
+  margin-top:14px;
+  display:flex;gap:16px;
+}
+.sc-stat-item{display:flex;flex-direction:column;gap:2px}
+.sc-stat-num{font-size:20px;font-weight:900;color:#000;letter-spacing:-.03em}
+.sc-stat-num span{color:#C9A84C}
+.sc-stat-label{font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(0,0,0,.35)}
+
+/* ── SCENE 4: Money Shot ── */
+.money-zone{
+  position:absolute;
+  top:50px;left:0;right:0;bottom:300px;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:4px;padding:0 24px;
+}
+.money-pre{
+  font-size:12px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(255,255,255,.4);margin-bottom:4px;
+  opacity:0;transform:translateY(8px);
+  transition:opacity .4s ease .05s,transform .4s ease .05s;
+}
+.money-pre.in{opacity:1;transform:translateY(0)}
+.money-number{
+  font-size:118px;font-weight:900;line-height:.85;
+  color:#C9A84C;letter-spacing:-.05em;
+  text-shadow:0 0 80px rgba(201,168,76,.45),0 0 160px rgba(201,168,76,.18);
+  opacity:0;transform:scale(.65);
+  transition:opacity .55s ease .2s,transform .55s cubic-bezier(.16,1,.3,1) .2s;
+}
+.money-number.in{opacity:1;transform:scale(1)}
+.money-pct{font-size:52px;letter-spacing:-.02em}
+.money-apy{
+  font-size:28px;font-weight:900;letter-spacing:.08em;
+  color:rgba(201,168,76,.65);margin-top:6px;
+  opacity:0;transition:opacity .4s ease .55s;
+}
+.money-apy.in{opacity:1}
+.money-label{
+  font-size:13px;letter-spacing:.12em;text-transform:uppercase;
+  color:rgba(255,255,255,.4);margin-top:12px;
+  opacity:0;transition:opacity .4s ease .7s;
+}
+.money-label.in{opacity:1}
+.money-pills{
+  display:flex;gap:7px;flex-wrap:wrap;justify-content:center;
+  margin-top:18px;
+  opacity:0;transition:opacity .4s ease .9s;
+}
+.money-pills.in{opacity:1}
+.mpill{
+  font-size:9.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(201,168,76,.7);
+  border:1px solid rgba(201,168,76,.22);
+  border-radius:20px;padding:5px 12px;
+}
+
+/* ── SCENE 5: Protocol Stack ── */
+.proto-zone{
+  position:absolute;
+  top:72px;left:0;right:0;bottom:300px;
+  padding:0 16px;overflow:hidden;
+  display:flex;flex-direction:column;gap:8px;
+}
+.proto-kicker{
+  font-size:8.5px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;
+  color:rgba(201,168,76,.45);margin-bottom:2px;
+}
+.proto-card{
+  background:rgba(255,255,255,.055);
+  border:1px solid rgba(201,168,76,.15);
+  border-radius:10px;padding:13px 16px;
+  display:flex;align-items:center;gap:13px;
+  opacity:0;transform:translateX(-28px);
+  transition:opacity .38s ease,transform .38s cubic-bezier(.16,1,.3,1);
+}
+.proto-card.in{opacity:1;transform:translateX(0)}
+.proto-icon{
+  width:38px;height:38px;border-radius:9px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:900;flex-shrink:0;
+  letter-spacing:-.02em;
+}
+.proto-info{flex:1;min-width:0}
+.proto-name{font-size:14.5px;font-weight:700;color:#fff;letter-spacing:-.01em}
+.proto-desc{font-size:10.5px;color:rgba(255,255,255,.38);margin-top:2px}
+.proto-yield{
+  font-size:14px;font-weight:800;color:#C9A84C;
+  flex-shrink:0;letter-spacing:-.01em;
+}
+
+/* ── SCENE 6: Credibility ── */
+.cred-zone{
+  position:absolute;
+  top:72px;left:0;right:0;bottom:300px;
+  padding:0 16px;
+  display:flex;flex-direction:column;gap:9px;
+}
+.cred-kicker{
+  font-size:8.5px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;
+  color:rgba(201,168,76,.45);margin-bottom:2px;
+}
+.cred-row{
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(201,168,76,.12);
+  border-radius:10px;padding:13px 16px;
+  display:flex;align-items:center;gap:13px;
+  opacity:0;transform:translateX(-24px);
+  transition:opacity .36s ease,transform .36s cubic-bezier(.16,1,.3,1);
+}
+.cred-row.in{opacity:1;transform:translateX(0)}
+.cred-check{
+  width:30px;height:30px;border-radius:50%;
+  background:rgba(201,168,76,.12);
+  border:1px solid rgba(201,168,76,.35);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;color:#C9A84C;flex-shrink:0;font-weight:700;
+}
+.cred-title{font-size:14px;font-weight:700;color:#fff}
+.cred-sub{font-size:10.5px;color:rgba(255,255,255,.36);margin-top:2px}
+
+/* ── SCENE 7: CTA ── */
+.cta-zone{
+  position:absolute;
+  top:50px;left:0;right:0;bottom:0;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:0 32px 180px;
+  text-align:center;gap:0;
+}
+.cta-logo{
+  width:76px;height:76px;object-fit:contain;
+  filter:drop-shadow(0 0 24px rgba(201,168,76,.55));
+  opacity:0;transform:scale(.65);
+  transition:opacity .55s ease,transform .55s cubic-bezier(.16,1,.3,1);
+}
+.cta-logo.in{opacity:1;transform:scale(1)}
+.cta-brand{
+  font-size:10px;font-weight:700;letter-spacing:.46em;text-transform:uppercase;
+  color:rgba(201,168,76,.7);margin-top:14px;
+  opacity:0;transition:opacity .45s ease .18s;
+}
+.cta-brand.in{opacity:1}
+.cta-line{
+  width:44px;height:1px;background:rgba(201,168,76,.3);
+  margin:16px auto;
+  opacity:0;transition:opacity .4s ease .32s;
+}
+.cta-line.in{opacity:1}
+.cta-h{
+  font-size:32px;font-weight:900;line-height:1.08;
+  color:#fff;letter-spacing:-.025em;
+  opacity:0;transform:translateY(12px);
+  transition:opacity .5s ease .42s,transform .5s ease .42s;
+}
+.cta-h.in{opacity:1;transform:translateY(0)}
+.cta-h span{color:#C9A84C}
+.cta-sub{
+  font-size:12.5px;color:rgba(255,255,255,.4);line-height:1.55;
+  margin-top:10px;
+  opacity:0;transition:opacity .4s ease .58s;
+}
+.cta-sub.in{opacity:1}
+.cta-url{
+  font-size:12px;font-weight:600;letter-spacing:.08em;
+  color:rgba(201,168,76,.65);
+  border-bottom:1px solid rgba(201,168,76,.25);
+  padding-bottom:2px;margin-top:18px;
+  opacity:0;transition:opacity .4s ease .72s;
+}
+.cta-url.in{opacity:1}
+.cta-btn{
+  margin-top:22px;
+  background:#C9A84C;color:#000;
+  font-family:'Inter',sans-serif;
+  font-size:11.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+  padding:14px 38px;border-radius:8px;border:none;cursor:pointer;
+  box-shadow:0 0 32px rgba(201,168,76,.35);
+  opacity:0;transform:translateY(8px);
+  transition:opacity .4s ease .88s,transform .4s ease .88s;
+}
+.cta-btn.in{opacity:1;transform:translateY(0)}
+
+/* ── Replay overlay ── */
+.replay{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:14px;
+  background:rgba(0,0,0,.75);
+  backdrop-filter:blur(10px);
+  z-index:300;
+  opacity:0;pointer-events:none;
+  transition:opacity .4s ease;
+}
+.replay.show{opacity:1;pointer-events:auto}
+.replay-label{
+  font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+  color:rgba(255,255,255,.45);
+}
+.replay-btn{
+  font-family:'Inter',sans-serif;
+  font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  background:#C9A84C;color:#000;
+  padding:14px 40px;border-radius:9px;border:none;cursor:pointer;
+}
+</style>
+</head>
+<body>
+
+<div class="ad" id="ad">
+
+  <!-- Story progress bar -->
+  <div class="story-bar" id="storyBar"></div>
+
+  <!-- ─────────────────────────────────────────────────── -->
+  <!-- SCENE 1 — Pattern Interrupt                        -->
+  <!-- ─────────────────────────────────────────────────── -->
+  <div class="scene bg-dark" id="s1">
+    <div class="s1-content">
+      <div class="s1-logo-wrap" id="s1Logo">
+        <img src="/genesis-logo.png" class="s1-logo" alt="Genesis Reserve"
+             onerror="this.style.opacity=0">
+        <div class="s1-wordmark">Genesis Reserve</div>
+      </div>
+      <div class="s1-divider"></div>
+      <div class="ticker-wrap">
+        <div class="ticker-track">
+          <span>USDC · STABLECOINS · YIELD · DIGITAL WALLET · FINTECH · WEALTH · DeFi · COMPLIANCE ·</span>
+          <span>USDC · STABLECOINS · YIELD · DIGITAL WALLET · FINTECH · WEALTH · DeFi · COMPLIANCE ·</span>
+        </div>
+      </div>
+    </div>
+    <div class="caption cap-seam">
+      <span class="cap-text">A DIGITAL WALLET</span>
+    </div>
+    <div class="presenter">
+      <div class="pres-top">
+        <div class="pres-avatar">
+          <img src="/genesis-logo.png" alt="" onerror="this.style.opacity=0">
+        </div>
+        <div class="pres-meta">
+          <div class="pres-handle">@thegenesisarchitect</div>
+          <div class="pres-tag">Fintech · Stablecoins · Wealth Building</div>
+        </div>
+        <button class="pres-follow-btn">Follow</button>
+      </div>
+      <div class="pres-copy">Genesis Reserve just changed how yield works on USDC — and most people missed it...</div>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────────────── -->
+  <!-- SCENE 2 — The Contrarian Hook                      -->
+  <!-- ─────────────────────────────────────────────────── -->
+  <div class="scene bg-black" id="s2">
+    <div class="logo-sm">
+      <img src="/genesis-logo.png" alt="" onerror="this.style.opacity=0">
+      <span class="logo-sm-word">Genesis Reserve</span>
+    </div>
+    <div class="headline-card" id="hc">
+      <div class="hc-kicker">The Take · Fintech &amp; Stablecoins</div>
+      <div class="hc-body">
+        Everyone Chases Token&nbsp;Prices.<br>
+        <span class="hc-gold">This Wallet Earns 15% on Dollars.</span>
+      </div>
+      <div class="hc-sub">While your bank still pays 0.01% on savings — smart money earns yield on stablecoins.</div>
+    </div>
+    <div class="caption cap-seam">
+      <span class="cap-text">LITERALLY EARNING</span>
+    </div>
+    <div class="presenter">
+      <div class="pres-top">
+        <div class="pres-avatar">
+          <img src="/genesis-logo.png" alt="" onerror="this.style.opacity=0">
+        </div>
+        <div class="pres-meta">
+          <div class="pres-handle">@thegenesisarchitect</div>
+          <div class="pres-tag">Fintech · Stablecoins · Wealth Building</div>
+        </div>
+        <button class="pres-follow-btn">Follow</button>
+      </div>
+      <div class="pres-copy">Banks pay 0.01%. This is 15%. On dollars. Not speculation.</div>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────────────── -->
+  <!-- SCENE 3 — Source / Credibility Card                -->
+  <!-- ─────────────────────────────────────────────────── -->
+  <div class="scene bg-black" id="s3">
+    <div class="logo-sm">
+      <img src="/genesis-logo.png" alt="" onerror="this.style.opacity=0">
+      <span class="logo-sm-word">Genesis Reserve</span>
+    </div>
+    <div class="source-card" id="sc">
+      <div class="sc-bar"></div>
+      <div class="sc-inner">
+        <div class="sc-meta">
+          <div class="sc-outlet">CoinDesk Research</div>
+          <div class="sc-pipe">·</div>
+          <div class="sc-date">May 2026</div>
+        </div>
+        <div class="sc-headline">Stablecoin TVL Crosses $227B as Institutions Flood Into Yield-Bearing Digital Dollar Protocols</div>
+        <div class="sc-sub">The smart money already moved. Retail is still catching up.</div>
+        <div class="sc-stat">
+          <div class="sc-stat-item">
+            <div class="sc-stat-num">$<span>227</span>B</div>
+            <div class="sc-stat-label">Stablecoin TVL</div>
+          </div>
+          <div class="sc-stat-item">
+            <div class="sc-stat-num"><span>↑ 340</span>%</div>
+            <div class="sc-stat-label">YoY Growth</div>
+          </div>
+          <div class="sc-stat-item">
+            <div class="sc-stat-num"><span>15</span>%</div>
+            <div class="sc-stat-label">Avg DeFi APY</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="caption cap-seam">
+      <span class="cap-text">THE SMART MONEY</span>
+    </div>
+    <div class="presenter">
+      <div class="pres-top">
+        <div class="pres-avatar">
+          <img src="/genesis-logo.png" alt="" onerror="this.style.opacity=0">
+        </div>
+        <div class="pres-meta">
+          <div class="pres-handle">@thegenesisarchitect</div>
+          <div class="pres-tag">Fintech · Stablecoins · Wealth Building</div>
+        </div>
+        <button class="pres-follow-btn">Follow</button>
+      </div>
+      <div class="pres-copy">$227 billion is already in yield-bearing protocols. The question is — are you?</div>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────────────── -->
+  <!-- SCENE 4 — The Money Shot                           -->
+  <!-- ─────────────────────────────────────────────────── -->
+  <div class="scene bg-money" id="s4">
+    <div class="money-zone">
+      <div class="money-pre" id="mp">Genesis Reserve earns up to</div>
+      <div class="money-number" id="mn">15<span class="money-pct">%</span></div>
+      <div class="money-apy" id="ma">APY</div>
+      <div class="money-label" id="ml">on USDC · Insured · Compliant</div>
+      <div class="money-pills" id="mpills">
+        <span class="mpill">Non-Custodial</span>
+        <span class="mpill">Arbitrum</span>
+        <span class="mpill">KYC Verified</span>
+      </div>
+    </div>
+    <div class="caption cap-seam cap-gold">
+      <span class="cap-text">WHILE YOU SLEEP</span>
+    </div>
+    <div class="presenter">
+      <div class="pres-top">
+        <div class="pres-avatar">
+          <img src="/genesis-logo.png" alt="" onerror="this.style.opacity=0">
+        </div>
+        <div class="pres-meta">
+          <div class="pres-handle">@thegenesisarchitect</div>
+          <div class="pres-tag">Fintech · Stablecoins · Wealth Building</div>
+        </div>
+        <button class="pres-follow-btn">Follow</button>
+      </div>
+      <div class="pres-copy">Up to 15% APY on USDC. Your dollars. Working 24/7.</div>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────────────── -->
+  <!-- SCENE 5 — Protocol Stack                           -->
+  <!-- ─────────────────────────────────────────────────── -->
+  <div class="scene bg-dark" id="s5">
+    <div class="logo-sm">
+      <img src="/genesis-logo.png" alt="" onerror="this.style.opacity=0">
+      <span class="logo-sm-word">Genesis Reserve</span>
+    </div>
+    <div class="proto-zone">
+      <div class="proto-kicker">Powered by</div>
+      <div class="proto-card" id="p1">
+        <div class="proto-icon" style="background:rgba(180,80,140,.2);color:#c96caa">Aa</div>
+        <div class="proto-info">
+          <div class="proto-name">Aave Protocol</div>
+          <div class="proto-desc">Lending &amp; liquidity — battle-tested, $10B+ TVL</div>
+        </div>
+        <div class="proto-yield">4–8%</div>
+      </div>
+      <div class="proto-card" id="p2">
+        <div class="proto-icon" style="background:rgba(50,200,120,.15);color:#32c878">Pe</div>
+        <div class="proto-info">
+          <div class="proto-name">Pendle Finance</div>
+          <div class="proto-desc">Fixed yield — lock in rates before they drop</div>
+        </div>
+        <div class="proto-yield">8–12%</div>
+      </div>
+      <div class="proto-card" id="p3">
+        <div class="proto-icon" style="background:rgba(50,100,220,.15);color:#5b8ee8">TB</div>
+        <div class="proto-info">
+          <div class="proto-name">US T-Bills (RWA)</div>
+          <div class="proto-desc">Real-world assets — the risk-free yield floor</div>
+        </div>
+        <div class="proto-yield">4–5%</div>
+      </div>
+      <div class="proto-card" id="p4">
+        <div class="proto-icon" style="background:rgba(130,80,220,.15);color:#9b6ee8">Mo</div>
+        <div class="proto-info">
+          <div class="proto-name">Morpho · Euler · More</div>
+          <div class="proto-desc">StrategyRouter optimizes across all simultaneously</div>
+        </div>
+        <div class="proto-yield">6–15%</div>
+      </div>
+    </div>
+    <div class="caption cap-seam">
+      <span class="cap-text">POWERED BY</span>
+    </div>
+    <div class="presenter">
+      <div class="pres-top">
+        <div class="pres-avatar">
+          <img src="/genesis-logo.png" alt="" onerror="this.style.opacity=0">
+        </div>
+        <div class="pres-meta">
+          <div class="pres-handle">@thegenesisarchitect</div>
+          <div class="pres-tag">Fintech · Stablecoins · Wealth Building</div>
+        </div>
+        <button class="pres-follow-btn">Follow</button>
+      </div>
+      <div class="pres-copy">The StrategyRouter allocates across all of these — simultaneously, automatically.</div>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────────────── -->
+  <!-- SCENE 6 — Institutional Credibility                -->
+  <!-- ─────────────────────────────────────────────────── -->
+  <div class="scene bg-dark" id="s6">
+    <div class="logo-sm">
+      <img src="/genesis-logo.png" alt="" onerror="this.style.opacity=0">
+      <span class="logo-sm-word">Genesis Reserve</span>
+    </div>
+    <div class="cred-zone">
+      <div class="cred-kicker">Institutional Grade Infrastructure</div>
+      <div class="cred-row" id="c1">
+        <div class="cred-check">✓</div>
+        <div>
+          <div class="cred-title">KYC / AML Verified</div>
+          <div class="cred-sub">ComplianceRegistry.sol — on-chain, immutable</div>
+        </div>
+      </div>
+      <div class="cred-row" id="c2">
+        <div class="cred-check">✓</div>
+        <div>
+          <div class="cred-title">Multi-Sig Protected</div>
+          <div class="cred-sub">3-of-5 threshold — no single point of control</div>
+        </div>
+      </div>
+      <div class="cred-row" id="c3">
+        <div class="cred-check">✓</div>
+        <div>
+          <div class="cred-title">Circle CCTP · Native USDC</div>
+          <div class="cred-sub">Cross-chain protocol — Arbitrum native</div>
+        </div>
+      </div>
+      <div class="cred-row" id="c4">
+        <div class="cred-check">✓</div>
+        <div>
+          <div class="cred-title">IUL Insurance Layer</div>
+          <div class="cred-sub">Legacy protection built into every account</div>
+        </div>
+      </div>
+    </div>
+    <div class="caption cap-seam">
+      <span class="cap-text">INSTITUTIONAL GRADE</span>
+    </div>
+    <div class="presenter">
+      <div class="pres-top">
+        <div class="pres-avatar">
+          <img src="/genesis-logo.png" alt="" onerror="this.style.opacity=0">
+        </div>
+        <div class="pres-meta">
+          <div class="pres-handle">@thegenesisarchitect</div>
+          <div class="pres-tag">Fintech · Stablecoins · Wealth Building</div>
+        </div>
+        <button class="pres-follow-btn">Follow</button>
+      </div>
+      <div class="pres-copy">This isn't a DeFi gamble. This is institutional infrastructure — built for everyone.</div>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────────────── -->
+  <!-- SCENE 7 — CTA                                      -->
+  <!-- ─────────────────────────────────────────────────── -->
+  <div class="scene bg-dark" id="s7">
+    <div class="cta-zone">
+      <img src="/genesis-logo.png" class="cta-logo" id="ctaLogo" alt="Genesis Reserve"
+           onerror="this.style.opacity=0">
+      <div class="cta-brand" id="ctaBrand">Genesis Reserve</div>
+      <div class="cta-line" id="ctaLine"></div>
+      <div class="cta-h" id="ctaH">Earn <span>15% APY</span><br>on Your Dollars.</div>
+      <div class="cta-sub" id="ctaSub">Compliant · Insured · Non-Custodial<br>Live on Arbitrum</div>
+      <div class="cta-url" id="ctaUrl">genesisreserve.io</div>
+      <button class="cta-btn" id="ctaBtn">Join the Waitlist →</button>
+    </div>
+    <div class="caption" style="bottom:175px">
+      <span class="cap-text">DON'T BE MOST PEOPLE</span>
+    </div>
+  </div>
+
+  <!-- Replay -->
+  <div class="replay" id="replay">
+    <div class="replay-label">Watch Again</div>
+    <button class="replay-btn" id="replayBtn">↺ &nbsp;Replay</button>
+  </div>
+
+</div><!-- end .ad -->
+
+<script>
+(function(){
+
+  var SCENES = [
+    { id:'s1', dur:2800 },
+    { id:'s2', dur:3600 },
+    { id:'s3', dur:3400 },
+    { id:'s4', dur:4400 },
+    { id:'s5', dur:4200 },
+    { id:'s6', dur:3800 },
+    { id:'s7', dur:5500 },
+  ];
+
+  var bar      = document.getElementById('storyBar');
+  var replay   = document.getElementById('replay');
+  var replayBtn= document.getElementById('replayBtn');
+  var current  = -1;
+  var mainTimer= null;
+
+  // ── Build progress segments
+  SCENES.forEach(function(_, i){
+    var seg  = document.createElement('div');
+    seg.className = 'seg';
+    var fill = document.createElement('div');
+    fill.className = 'seg-fill';
+    fill.id = 'f' + i;
+    seg.appendChild(fill);
+    bar.appendChild(seg);
+  });
+
+  // ── Animated elements per scene
+  var ANIMS = {
+    0: ['s1Logo'],
+    1: ['hc'],
+    2: ['sc'],
+    3: ['mp','mn','ma','ml','mpills'],
+    4: ['p1','p2','p3','p4'],
+    5: ['c1','c2','c3','c4'],
+    6: ['ctaLogo','ctaBrand','ctaLine','ctaH','ctaSub','ctaUrl','ctaBtn'],
+  };
+
+  // Stagger delays (ms) per scene
+  var STAGGER = {
+    3: [0, 120, 420, 600, 820],
+    4: [120, 340, 560, 780],
+    5: [120, 320, 520, 720],
+    6: [0, 120, 240, 340, 500, 660, 820],
+  };
+
+  function resetAnimated(){
+    Object.values(ANIMS).forEach(function(ids){
+      ids.forEach(function(id){
+        var el = document.getElementById(id);
+        if(el) el.classList.remove('in');
+      });
+    });
+  }
+
+  function activateScene(n){
+    var ids = ANIMS[n];
+    if(!ids) return;
+    var delays = STAGGER[n] || [];
+    ids.forEach(function(id, i){
+      var delay = delays[i] !== undefined ? delays[i] : i * 260 + 150;
+      setTimeout(function(){
+        var el = document.getElementById(id);
+        if(el) el.classList.add('in');
+      }, delay);
+    });
+  }
+
+  function goTo(n){
+    // Hide all scenes
+    SCENES.forEach(function(s){
+      document.getElementById(s.id).classList.remove('active');
+    });
+
+    // Past end → show replay
+    if(n >= SCENES.length){
+      replay.classList.add('show');
+      return;
+    }
+
+    current = n;
+    clearTimeout(mainTimer);
+
+    // Activate scene
+    document.getElementById(SCENES[n].id).classList.add('active');
+
+    // Update progress fills
+    for(var i = 0; i < SCENES.length; i++){
+      var fill = document.getElementById('f' + i);
+      fill.style.transition = 'none';
+      fill.style.width = (i < n) ? '100%' : '0%';
+    }
+    var curFill = document.getElementById('f' + n);
+    void curFill.offsetWidth;
+    curFill.style.transition = 'width ' + SCENES[n].dur + 'ms linear';
+    curFill.style.width = '100%';
+
+    // Trigger in-scene animations
+    activateScene(n);
+
+    // Auto-advance
+    mainTimer = setTimeout(function(){ goTo(n + 1); }, SCENES[n].dur);
+  }
+
+  function restart(){
+    replay.classList.remove('show');
+    resetAnimated();
+    goTo(0);
+  }
+
+  replayBtn.addEventListener('click', restart);
+
+  // Click left/right to step
+  document.getElementById('ad').addEventListener('click', function(e){
+    if(e.target.closest('.pres-follow-btn') || e.target.closest('.cta-btn') || e.target.closest('.replay-btn')) return;
+    var rect = document.getElementById('ad').getBoundingClientRect();
+    var x = e.clientX - rect.left;
+    if(x < rect.width * 0.35){
+      // tap left — go back
+      if(current > 0){ resetAnimated(); goTo(current - 1); }
+    } else {
+      // tap right — skip forward
+      resetAnimated(); goTo(current + 1);
+    }
+  });
+
+  // Start
+  setTimeout(function(){ goTo(0); }, 400);
+
+})();
+</script>
+</body>
+</html>
