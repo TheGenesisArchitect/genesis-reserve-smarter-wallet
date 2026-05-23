@@ -3998,18 +3998,13 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
   }
 
   function exitTour(){
-    stage.classList.remove('geo-touring');
-    stage.classList.remove('geo-revealed');
-    stage.classList.remove('geo-intro');
-    allLayers.forEach(function(id){
-      var el = document.getElementById(id);
-      if(el) el.classList.remove('geo-active');
-    });
-    pre.style.display = '';
-    tour.classList.remove('visible');
-    if(revealPanel) revealPanel.classList.remove('visible');
     current = -1;
-    // geo-assembled already present — breathing animations resume automatically
+    resetToIntro();
+    void stage.offsetWidth;
+    stage.classList.add('geo-assembled');
+    introTimeout = setTimeout(function(){
+      stage.classList.remove('geo-intro');
+    }, 5000);
   }
 
   function exitTourToReveal(){
