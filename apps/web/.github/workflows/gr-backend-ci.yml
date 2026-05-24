@@ -1,0 +1,110 @@
+name: GR Backend CI
+
+on:
+    push:
+        branches: [main, develop]
+        paths:
+            - "genesis-privy-integration/genesis-privy/gr/gr/**"
+            - "genesis-privy-integration/genesis-privy/.github/workflows/gr-backend-ci.yml"
+    pull_request:
+        branches: [main, develop]
+        paths:
+            - "genesis-privy-integration/genesis-privy/gr/gr/**"
+            - "genesis-privy-integration/genesis-privy/.github/workflows/gr-backend-ci.yml"
+    workflow_dispatch:
+
+env:
+    NODE_VERSION: "22"
+
+jobs:
+    backend-validation:
+        name: Backend validation
+        runs-on: ubuntu-latest
+        defaults:
+            run:
+                working-directory: genesis-privy-integration/genesis-privy/gr/gr
+        services:
+            postgres:
+                image: postgres:15-alpine
+                env:
+                    POSTGRES_DB: genesis_test
+                    POSTGRES_USER: genesis
+                    POSTGRES_PASSWORD: test_password
+                ports:
+                    - 5432:5432
+                options: >-
+                    --health-cmd "pg_isready -U genesis -d genesis_test"
+                    --health-interval 5s
+                    --health-timeout 5s
+                    --health-retries 10
+            redis:
+                image: redis:7-alpine
+                ports:
+                    - 6379:6379
+                options: >-
+                    --health-cmd "redis-cli ping"
+                    --health-interval 5s
+                    --health-timeout 5s
+                    --health-retries 10
+        env:
+            NODE_ENV: test
+            DB_HOST: localhost
+            DB_PORT: 5432
+            DB_NAME: genesis_test
+            DB_USER: genesis
+            DB_PASSWORD: test_password
+            REDIS_URL: redis://localhost:6379
+            KAFKA_ENABLED: "false"
+            RPC_URL: https://arb-sepolia.g.alchemy.com/v2/ci-stub
+            CHAIN_ID: "421614"
+            GENESIS_VAULT_ADDRESS: 0x0000000000000000000000000000000000000001
+            STRATEGY_ROUTER_ADDRESS: 0x0000000000000000000000000000000000000002
+            OPERATOR_PRIVATE_KEY: 0x1111111111111111111111111111111111111111111111111111111111111111
+            TEST_API_KEY: test-key-dev
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ env.NODE_VERSION }}
+                  cache: npm
+                  cache-dependency-path: genesis-privy-integration/genesis-privy/gr/gr/package-lock.json
+
+            - name: Install backend dependencies
+              run: npm ci
+
+            - name: Lint backend
+              run: npm run lint
+
+            - name: TypeScript check
+              run: npx tsc --noEmit
+
+            - name: Run database migrations
+              run: npm run db:migrate
+
+            - name: Run backend API tests
+              run: npm run test:api
+
+            - name: Build backend validation summary
+              run: |
+                  node -e "
+                    const fs = require('fs');
+                    const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+                    const summary = {
+                      package: pkg.name,
+                      version: pkg.version,
+                      commit: process.env.GITHUB_SHA,
+                      runId: process.env.GITHUB_RUN_ID,
+                      runNumber: process.env.GITHUB_RUN_NUMBER,
+                      validatedAt: new Date().toISOString(),
+                      checks: ['lint', 'tsc', 'db:migrate', 'test:api']
+                    };
+                    fs.mkdirSync('ci', { recursive: true });
+                    fs.writeFileSync('ci/backend-validation-summary.json', JSON.stringify(summary, null, 2));
+                  "
+
+            - name: Upload backend validation summary
+              uses: actions/upload-artifact@v4
+              with:
+                  name: gr-backend-validation-summary
+                  path: genesis-privy-integration/genesis-privy/gr/gr/ci/backend-validation-summary.json

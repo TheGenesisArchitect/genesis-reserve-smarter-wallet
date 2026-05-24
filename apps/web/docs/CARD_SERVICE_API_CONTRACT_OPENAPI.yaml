@@ -1,0 +1,1867 @@
+﻿openapi: 3.1.0
+info:
+  title: Genesis Reserve Card Service API
+  version: 1.0.0-draft
+  summary: Draft contract for card issuing and linked debit card rails.
+  description: |
+    This contract defines the minimum API surface required to support:
+    1) Virtual and physical Genesis card issuance and controls.
+    2) Linking existing debit cards for add-money and push-to-card withdrawals.
+
+    Design goals:
+    - Idempotent money movement operations.
+    - Processor-agnostic integration surface.
+    - Audit-friendly status transitions.
+
+servers:
+  - url: https://api.genesisreserve.io
+    description: Production
+  - url: https://staging-api.genesisreserve.io
+    description: Staging
+
+tags:
+  - name: Cardholders
+  - name: Cards
+  - name: Authorizations
+  - name: Disputes
+  - name: Linked Debit Cards
+  - name: Funding
+  - name: Payouts
+  - name: Webhooks
+
+security:
+  - bearerAuth: []
+
+paths:
+  /v1/cardholders:
+    post:
+      tags: [ Cardholders ]
+      summary: Create cardholder profile
+      operationId: createCardholder
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCardholderRequest"
+      responses:
+        "429":
+          $ref: "#/components/responses/Error429"
+        "201":
+          headers:
+            X-RateLimit-Limit:
+              $ref: "#/components/headers/XRateLimitLimit"
+            X-RateLimit-Remaining:
+              $ref: "#/components/headers/XRateLimitRemaining"
+            Retry-After:
+              $ref: "#/components/headers/RetryAfter"
+          description: Cardholder created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CardholderResponse"
+        "400":
+          $ref: "#/components/responses/Error400"
+        "409":
+          $ref: "#/components/responses/Error409"
+
+  /v1/cardholders/{cardholderId}:
+    get:
+      tags: [ Cardholders ]
+      summary: Get cardholder
+      operationId: getCardholder
+      parameters:
+        - $ref: "#/components/parameters/CardholderId"
+      responses:
+        "429":
+          $ref: "#/components/responses/Error429"
+        "200":
+          headers:
+            X-RateLimit-Limit:
+              $ref: "#/components/headers/XRateLimitLimit"
+            X-RateLimit-Remaining:
+              $ref: "#/components/headers/XRateLimitRemaining"
+            Retry-After:
+              $ref: "#/components/headers/RetryAfter"
+          description: Cardholder
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CardholderResponse"
+        "404":
+          $ref: "#/components/responses/Error404"
+
+    patch:
+      tags: [ Cardholders ]
+      summary: Update cardholder profile
+      operationId: updateCardholder
+      parameters:
+        - $ref: "#/components/parameters/CardholderId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateCardholderRequest"
+      responses:
+        "429":
+          $ref: "#/components/responses/Error429"
+        "200":
+          headers:
+            X-RateLimit-Limit:
+              $ref: "#/components/headers/XRateLimitLimit"
+            X-RateLimit-Remaining:
+              $ref: "#/components/headers/XRateLimitRemaining"
+            Retry-After:
+              $ref: "#/components/headers/RetryAfter"
+          description: Cardholder updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CardholderResponse"
+        "400":
+          $ref: "#/components/responses/Error400"
+        "404":
+          $ref: "#/components/responses/Error404"
+
+  /v1/cards:
+    post:
+      tags: [ Cards ]
+      summary: Issue card (virtual) or order card (physical)
+      operationId: createCard
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCardRequest"
+      responses:
+        "429":
+          $ref: "#/components/responses/Error429"
+        "201":
+          headers:
+            X-RateLimit-Limit:
+              $ref: "#/components/headers/XRateLimitLimit"
+            X-RateLimit-Remaining:
+              $ref: "#/components/headers/XRateLimitRemaining"
+            Retry-After:
+              $ref: "#/components/headers/RetryAfter"
+          description: Card created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CardResponse"
+        "400":
+          $ref: "#/components/responses/Error400"
+        "403":
+          $ref: "#/components/responses/Error403"
+
+    get:
+      tags: [ Cards ]
+      summary: List cards for account
+      operationId: listCards
+      parameters:
+        - $ref: "#/components/parameters/AccountIdQuery"
+        - $ref: "#/components/parameters/CardholderIdQuery"
+        - $ref: "#/components/parameters/CursorQuery"
+        - $ref: "#/components/parameters/LimitQuery"
+        - $ref: "#/components/parameters/SortCreatedAtQuery"
+        - name: status
+          in: query
+          schema:
+            $ref: "#/components/schemas/CardStatus"
+      responses:
+        "429":
+          $ref: "#/components/responses/Error429"
+        "200":
+          headers:
+            X-RateLimit-Limit:
+              $ref: "#/components/headers/XRateLimitLimit"
+            X-RateLimit-Remaining:
+              $ref: "#/components/headers/XRateLimitRemaining"
+            Retry-After:
+              $ref: "#/components/headers/RetryAfter"
+          description: Card list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Card"
+                  meta:
+                    $ref: "#/components/schemas/ListMeta"
+
+  /v1/cards/{cardId}:
+    get:
+      tags: [ Cards ]
+      summary: Get card
+      operationId: getCard
+      parameters:
+        - $ref: "#/components/parameters/CardId"
+      responses:
+        "429":
+          $ref: "#/components/responses/Error429"
+        "200":
+          headers:
+            X-RateLimit-Limit:
+              $ref: "#/components/headers/XRateLimitLimit"
+            X-RateLimit-Remaining:
+              $ref: "#/components/headers/XRateLimitRemaining"
+            Retry-After:
+              $ref: "#/components/headers/RetryAfter"
+          description: Card
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CardResponse"
+        "404":
+          $ref: "#/components/responses/Error404"
+
+  /v1/cards/{cardId}/freeze:
+    post:
+      tags: [ Cards ]
+      summary: Freeze card
+      operationId: freezeCard
+      parameters:
+        - $ref: "#/components/parameters/CardId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+                  maxLength: 120
+      responses:
+        "429":
+          $ref: "#/components/responses/Error429"
+        "200":
+          headers:
+            X-RateLimit-Limit:
+              $ref: "#/components/headers/XRateLimitLimit"
+            X-RateLimit-Remaining:
+              $ref: "#/components/headers/XRateLimitRemaining"
+            Retry-After:
+              $ref: "#/components/headers/RetryAfter"
+          description: Card frozen
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CardResponse"
+        "404":
+          $ref: "#/components/responses/Error404"
+
+  /v1/cards/{cardId}/unfreeze:
+    post:
+      tags: [ Cards ]
+      summary: Unfreeze card
+      operationId: unfreezeCard
+      parameters:
+        - $ref: "#/components/parameters/CardId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      responses:
+        "429":
+          $ref: "#/components/responses/Error429"
+        "200":
+          headers:
+            X-RateLimit-Limit:
+              $ref: "#/components/headers/XRateLimitLimit"
+            X-RateLimit-Remaining:
+              $ref: "#/components/headers/XRateLimitRemaining"
+            Retry-After:
+              $ref: "#/components/headers/RetryAfter"
+          description: Card unfrozen
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CardResponse"
+        "404":
+          $ref: "#/components/responses/Error404"
+
+  /v1/cards/{cardId}/controls:
+    patch:
+      tags: [ Cards ]
+      summary: Update card controls
+      operationId: updateCardControls
+      parameters:
+        - $ref: "#/components/parameters/CardId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateCardControlsRequest"
+      responses:
+        "429":
+          $ref: "#/components/responses/Error429"
+        "200":
+          headers:
+            X-RateLimit-Limit:
+              $ref: "#/components/headers/XRateLimitLimit"
+            X-RateLimit-Remaining:
+              $ref: "#/components/headers/XRateLimitRemaining"
+            Retry-After:
+              $ref: "#/components/headers/RetryAfter"
+          description: Controls updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CardResponse"
+
+  /v1/cards/{cardId}/pan-reveal-token:
+    post:
+      tags: [ Cards ]
+      summary: Generate ephemeral PAN reveal token
+      description: |
+        Returns a short-lived token for secure hosted PAN/CVV reveal.
+        PAN/CVV should never be persisted in Genesis databases.
+      operationId: createPanRevealToken
+      parameters:
+        - $ref: "#/components/parameters/CardId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      responses:
+        "429":
+          $ref: "#/components/responses/Error429"
+        "201":
+          headers:
+            X-RateLimit-Limit:
+              $ref: "#/components/headers/XRateLimitLimit"
+            X-RateLimit-Remaining:
+              $ref: "#/components/headers/XRateLimitRemaining"
+            Retry-After:
+              $ref: "#/components/headers/RetryAfter"
+          description: Token created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                      expiresAt:
+                        type: string
+                        format: date-time
+                      revealUrl:
+                        type: string
+                        format: uri
+                  meta:
+                    $ref: "#/components/schemas/Meta"
+
+  /v1/cards/{cardId}/cancel:
+    post:
+      tags: [ Cards ]
+      summary: Cancel card permanently
+      description: |
+        Terminal transition. A canceled card cannot be reactivated.
+      operationId: cancelCard
+      parameters:
+        - $ref: "#/components/parameters/CardId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [ reason ]
+              properties:
+                reason:
+                  type: string
+                  maxLength: 120
+      responses:
+        "429":
+          $ref: "#/components/responses/Error429"
+        "200":
+          headers:
+            X-RateLimit-Limit:
+              $ref: "#/components/headers/XRateLimitLimit"
+            X-RateLimit-Remaining:
+              $ref: "#/components/headers/XRateLimitRemaining"
+            Retry-After:
+              $ref: "#/components/headers/RetryAfter"
+          description: Card canceled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CardResponse"
+        "404":
+          $ref: "#/components/responses/Error404"
+
+  /v1/cards/{cardId}/authorizations:
+    get:
+      tags: [ Authorizations ]
+      summary: List card authorizations
+      operationId: listCardAuthorizations
+      parameters:
+        - $ref: "#/components/parameters/CardId"
+        - $ref: "#/components/parameters/CursorQuery"
+        - $ref: "#/components/parameters/LimitQuery"
+        - $ref: "#/components/parameters/SortCreatedAtQuery"
+      responses:
+        "429":
+          $ref: "#/components/responses/Error429"
+        "200":
+          headers:
+            X-RateLimit-Limit:
+              $ref: "#/components/headers/XRateLimitLimit"
+            X-RateLimit-Remaining:
+              $ref: "#/components/headers/XRateLimitRemaining"
+            Retry-After:
+              $ref: "#/components/headers/RetryAfter"
+          description: Authorization list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Authorization"
+                  meta:
+                    $ref: "#/components/schemas/ListMeta"
+
+  /v1/authorizations/{authorizationId}:
+    get:
+      tags: [ Authorizations ]
+      summary: Get authorization details
+      operationId: getAuthorization
+      parameters:
+        - name: authorizationId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "429":
+          $ref: "#/components/responses/Error429"
+        "200":
+          headers:
+            X-RateLimit-Limit:
+              $ref: "#/components/headers/XRateLimitLimit"
+            X-RateLimit-Remaining:
+              $ref: "#/components/headers/XRateLimitRemaining"
+            Retry-After:
+              $ref: "#/components/headers/RetryAfter"
+          description: Authorization
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/Authorization"
+                  meta:
+                    $ref: "#/components/schemas/Meta"
+        "404":
+          $ref: "#/components/responses/Error404"
+
+  /v1/linked-debit-cards:
+    post:
+      tags: [ Linked Debit Cards ]
+      summary: Link existing debit card to account
+      operationId: linkDebitCard
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LinkDebitCardRequest"
+      responses:
+        "429":
+          $ref: "#/components/responses/Error429"
+        "201":
+          headers:
+            X-RateLimit-Limit:
+              $ref: "#/components/headers/XRateLimitLimit"
+            X-RateLimit-Remaining:
+              $ref: "#/components/headers/XRateLimitRemaining"
+            Retry-After:
+              $ref: "#/components/headers/RetryAfter"
+          description: Debit card linked
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LinkedDebitCardResponse"
+        "400":
+          $ref: "#/components/responses/Error400"
+        "402":
+          $ref: "#/components/responses/Error402"
+
+    get:
+      tags: [ Linked Debit Cards ]
+      summary: List linked debit cards
+      operationId: listLinkedDebitCards
+      parameters:
+        - $ref: "#/components/parameters/AccountIdQuery"
+        - $ref: "#/components/parameters/CursorQuery"
+        - $ref: "#/components/parameters/LimitQuery"
+        - $ref: "#/components/parameters/SortCreatedAtQuery"
+      responses:
+        "429":
+          $ref: "#/components/responses/Error429"
+        "200":
+          headers:
+            X-RateLimit-Limit:
+              $ref: "#/components/headers/XRateLimitLimit"
+            X-RateLimit-Remaining:
+              $ref: "#/components/headers/XRateLimitRemaining"
+            Retry-After:
+              $ref: "#/components/headers/RetryAfter"
+          description: Linked card list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/LinkedDebitCard"
+                  meta:
+                    $ref: "#/components/schemas/ListMeta"
+
+  /v1/linked-debit-cards/{linkedCardId}:
+    delete:
+      tags: [ Linked Debit Cards ]
+      summary: Unlink debit card
+      operationId: unlinkDebitCard
+      parameters:
+        - $ref: "#/components/parameters/LinkedCardId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      responses:
+        "429":
+          $ref: "#/components/responses/Error429"
+        "204":
+          headers:
+            X-RateLimit-Limit:
+              $ref: "#/components/headers/XRateLimitLimit"
+            X-RateLimit-Remaining:
+              $ref: "#/components/headers/XRateLimitRemaining"
+            Retry-After:
+              $ref: "#/components/headers/RetryAfter"
+          description: Unlinked
+        "404":
+          $ref: "#/components/responses/Error404"
+
+  /v1/funding/add-money:
+    post:
+      tags: [ Funding ]
+      summary: Add money from linked debit card
+      description: |
+        Creates a card charge flow for wallet funding.
+        If processor requires SCA/3DS, status will return requires_action with challenge payload.
+      operationId: createAddMoney
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddMoneyRequest"
+      responses:
+        "429":
+          $ref: "#/components/responses/Error429"
+        "202":
+          headers:
+            X-RateLimit-Limit:
+              $ref: "#/components/headers/XRateLimitLimit"
+            X-RateLimit-Remaining:
+              $ref: "#/components/headers/XRateLimitRemaining"
+            Retry-After:
+              $ref: "#/components/headers/RetryAfter"
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FundingTransactionResponse"
+        "400":
+          $ref: "#/components/responses/Error400"
+        "403":
+          $ref: "#/components/responses/Error403"
+
+  /v1/funding/conversion-quote:
+    post:
+      tags: [ Funding ]
+      summary: Quote currency conversion for add-money
+      operationId: createFundingConversionQuote
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FundingConversionQuoteRequest"
+      responses:
+        "429":
+          $ref: "#/components/responses/Error429"
+        "200":
+          headers:
+            X-RateLimit-Limit:
+              $ref: "#/components/headers/XRateLimitLimit"
+            X-RateLimit-Remaining:
+              $ref: "#/components/headers/XRateLimitRemaining"
+            Retry-After:
+              $ref: "#/components/headers/RetryAfter"
+          description: Conversion quote
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FundingConversionQuoteResponse"
+
+  /v1/funding/{fundingId}:
+    get:
+      tags: [ Funding ]
+      summary: Get funding transaction status
+      operationId: getFundingStatus
+      parameters:
+        - name: fundingId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "429":
+          $ref: "#/components/responses/Error429"
+        "200":
+          headers:
+            X-RateLimit-Limit:
+              $ref: "#/components/headers/XRateLimitLimit"
+            X-RateLimit-Remaining:
+              $ref: "#/components/headers/XRateLimitRemaining"
+            Retry-After:
+              $ref: "#/components/headers/RetryAfter"
+          description: Funding transaction
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FundingTransactionResponse"
+        "404":
+          $ref: "#/components/responses/Error404"
+
+  /v1/payouts/push-to-card/quote:
+    post:
+      tags: [ Payouts ]
+      summary: Quote push-to-card payout
+      operationId: quotePushToCard
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PushToCardQuoteRequest"
+      responses:
+        "429":
+          $ref: "#/components/responses/Error429"
+        "200":
+          headers:
+            X-RateLimit-Limit:
+              $ref: "#/components/headers/XRateLimitLimit"
+            X-RateLimit-Remaining:
+              $ref: "#/components/headers/XRateLimitRemaining"
+            Retry-After:
+              $ref: "#/components/headers/RetryAfter"
+          description: Quote
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PushToCardQuoteResponse"
+
+  /v1/payouts/push-to-card:
+    post:
+      tags: [ Payouts ]
+      summary: Withdraw or transfer to linked debit card
+      operationId: createPushToCardPayout
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PushToCardPayoutRequest"
+      responses:
+        "429":
+          $ref: "#/components/responses/Error429"
+        "202":
+          headers:
+            X-RateLimit-Limit:
+              $ref: "#/components/headers/XRateLimitLimit"
+            X-RateLimit-Remaining:
+              $ref: "#/components/headers/XRateLimitRemaining"
+            Retry-After:
+              $ref: "#/components/headers/RetryAfter"
+          description: Payout accepted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PayoutResponse"
+        "400":
+          $ref: "#/components/responses/Error400"
+        "403":
+          $ref: "#/components/responses/Error403"
+
+  /v1/payouts/{payoutId}:
+    get:
+      tags: [ Payouts ]
+      summary: Get payout status
+      operationId: getPayout
+      parameters:
+        - name: payoutId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "429":
+          $ref: "#/components/responses/Error429"
+        "200":
+          headers:
+            X-RateLimit-Limit:
+              $ref: "#/components/headers/XRateLimitLimit"
+            X-RateLimit-Remaining:
+              $ref: "#/components/headers/XRateLimitRemaining"
+            Retry-After:
+              $ref: "#/components/headers/RetryAfter"
+          description: Payout
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PayoutResponse"
+        "404":
+          $ref: "#/components/responses/Error404"
+
+  /v1/disputes/{disputeId}:
+    get:
+      tags: [ Disputes ]
+      summary: Get dispute
+      operationId: getDispute
+      parameters:
+        - name: disputeId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "429":
+          $ref: "#/components/responses/Error429"
+        "200":
+          headers:
+            X-RateLimit-Limit:
+              $ref: "#/components/headers/XRateLimitLimit"
+            X-RateLimit-Remaining:
+              $ref: "#/components/headers/XRateLimitRemaining"
+            Retry-After:
+              $ref: "#/components/headers/RetryAfter"
+          description: Dispute
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/Dispute"
+                  meta:
+                    $ref: "#/components/schemas/Meta"
+        "404":
+          $ref: "#/components/responses/Error404"
+
+  /v1/disputes/{disputeId}/evidence:
+    post:
+      tags: [ Disputes ]
+      summary: Submit dispute evidence
+      operationId: submitDisputeEvidence
+      parameters:
+        - name: disputeId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SubmitDisputeEvidenceRequest"
+      responses:
+        "429":
+          $ref: "#/components/responses/Error429"
+        "202":
+          headers:
+            X-RateLimit-Limit:
+              $ref: "#/components/headers/XRateLimitLimit"
+            X-RateLimit-Remaining:
+              $ref: "#/components/headers/XRateLimitRemaining"
+            Retry-After:
+              $ref: "#/components/headers/RetryAfter"
+          description: Evidence accepted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/Dispute"
+                  meta:
+                    $ref: "#/components/schemas/Meta"
+        "404":
+          $ref: "#/components/responses/Error404"
+
+  /v1/disputes/{disputeId}/accept:
+    post:
+      tags: [ Disputes ]
+      summary: Accept dispute liability
+      operationId: acceptDispute
+      parameters:
+        - name: disputeId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/IdempotencyKey"
+      responses:
+        "429":
+          $ref: "#/components/responses/Error429"
+        "202":
+          headers:
+            X-RateLimit-Limit:
+              $ref: "#/components/headers/XRateLimitLimit"
+            X-RateLimit-Remaining:
+              $ref: "#/components/headers/XRateLimitRemaining"
+            Retry-After:
+              $ref: "#/components/headers/RetryAfter"
+          description: Dispute acceptance submitted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/Dispute"
+                  meta:
+                    $ref: "#/components/schemas/Meta"
+        "404":
+          $ref: "#/components/responses/Error404"
+
+  /v1/webhooks/card-processor:
+    post:
+      tags: [ Webhooks ]
+      summary: Inbound processor webhook endpoint
+      description: |
+        Receiver endpoint for issuing/acquiring/payout processor events.
+        Must validate signatures and be replay-safe.
+      parameters:
+        - name: x-webhook-signature
+          in: header
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProcessorWebhookEvent"
+      responses:
+        "429":
+          $ref: "#/components/responses/Error429"
+        "200":
+          headers:
+            X-RateLimit-Limit:
+              $ref: "#/components/headers/XRateLimitLimit"
+            X-RateLimit-Remaining:
+              $ref: "#/components/headers/XRateLimitRemaining"
+            Retry-After:
+              $ref: "#/components/headers/RetryAfter"
+          description: Acknowledged
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    const: true
+
+  /v1/webhooks/events:
+    get:
+      tags: [ Webhooks ]
+      summary: Recover webhook events by time window
+      description: |
+        For consumers that missed webhook deliveries and need replay/reconciliation.
+      operationId: listWebhookEvents
+      parameters:
+        - name: since
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - name: until
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - $ref: "#/components/parameters/CursorQuery"
+        - $ref: "#/components/parameters/LimitQuery"
+      responses:
+        "429":
+          $ref: "#/components/responses/Error429"
+        "200":
+          headers:
+            X-RateLimit-Limit:
+              $ref: "#/components/headers/XRateLimitLimit"
+            X-RateLimit-Remaining:
+              $ref: "#/components/headers/XRateLimitRemaining"
+            Retry-After:
+              $ref: "#/components/headers/RetryAfter"
+          description: Events in requested period
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ProcessorWebhookEvent"
+                  meta:
+                    $ref: "#/components/schemas/ListMeta"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    IdempotencyKey:
+      name: idempotency-key
+      in: header
+      required: true
+      schema:
+        type: string
+        minLength: 8
+        maxLength: 128
+      description: Unique client key per mutation request.
+
+    CardId:
+      name: cardId
+      in: path
+      required: true
+      schema:
+        type: string
+
+    CardholderId:
+      name: cardholderId
+      in: path
+      required: true
+      schema:
+        type: string
+
+    LinkedCardId:
+      name: linkedCardId
+      in: path
+      required: true
+      schema:
+        type: string
+
+    AccountIdQuery:
+      name: accountId
+      in: query
+      required: false
+      schema:
+        type: string
+
+    CardholderIdQuery:
+      name: cardholderId
+      in: query
+      required: false
+      schema:
+        type: string
+
+    CursorQuery:
+      name: cursor
+      in: query
+      required: false
+      schema:
+        type: string
+
+    LimitQuery:
+      name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 50
+        minimum: 1
+        maximum: 200
+
+    SortCreatedAtQuery:
+      name: sort
+      in: query
+      required: false
+      schema:
+        type: string
+        enum: [ createdAt:asc, createdAt:desc ]
+
+  headers:
+    XRateLimitLimit:
+      description: Maximum requests allowed in current window.
+      schema:
+        type: integer
+    XRateLimitRemaining:
+      description: Requests remaining in current window.
+      schema:
+        type: integer
+    RetryAfter:
+      description: Seconds until next retry when throttled.
+      schema:
+        type: integer
+
+  responses:
+    Error400:
+      description: Bad request
+      headers:
+        X-RateLimit-Limit:
+          $ref: "#/components/headers/XRateLimitLimit"
+        X-RateLimit-Remaining:
+          $ref: "#/components/headers/XRateLimitRemaining"
+        Retry-After:
+          $ref: "#/components/headers/RetryAfter"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    Error402:
+      description: Payment required or processor decline
+      headers:
+        X-RateLimit-Limit:
+          $ref: "#/components/headers/XRateLimitLimit"
+        X-RateLimit-Remaining:
+          $ref: "#/components/headers/XRateLimitRemaining"
+        Retry-After:
+          $ref: "#/components/headers/RetryAfter"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    Error403:
+      description: Forbidden by policy/compliance
+      headers:
+        X-RateLimit-Limit:
+          $ref: "#/components/headers/XRateLimitLimit"
+        X-RateLimit-Remaining:
+          $ref: "#/components/headers/XRateLimitRemaining"
+        Retry-After:
+          $ref: "#/components/headers/RetryAfter"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    Error404:
+      description: Not found
+      headers:
+        X-RateLimit-Limit:
+          $ref: "#/components/headers/XRateLimitLimit"
+        X-RateLimit-Remaining:
+          $ref: "#/components/headers/XRateLimitRemaining"
+        Retry-After:
+          $ref: "#/components/headers/RetryAfter"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    Error409:
+      description: Conflict
+      headers:
+        X-RateLimit-Limit:
+          $ref: "#/components/headers/XRateLimitLimit"
+        X-RateLimit-Remaining:
+          $ref: "#/components/headers/XRateLimitRemaining"
+        Retry-After:
+          $ref: "#/components/headers/RetryAfter"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    Error429:
+      description: Too many requests
+      headers:
+        X-RateLimit-Limit:
+          $ref: "#/components/headers/XRateLimitLimit"
+        X-RateLimit-Remaining:
+          $ref: "#/components/headers/XRateLimitRemaining"
+        Retry-After:
+          $ref: "#/components/headers/RetryAfter"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+
+  schemas:
+    Meta:
+      type: object
+      properties:
+        requestId:
+          type: string
+        source:
+          type: string
+          examples: [ processor, fallback ]
+        timestamp:
+          type: string
+          format: date-time
+
+    ListMeta:
+      allOf:
+        - $ref: "#/components/schemas/Meta"
+        - type: object
+          properties:
+            nextCursor:
+              type: string
+              nullable: true
+
+    ErrorResponse:
+      type: object
+      required: [ error ]
+      properties:
+        error:
+          type: object
+          required: [ code, message ]
+          properties:
+            code:
+              type: string
+              examples:
+                - invalid_request
+                - compliance_block
+                - insufficient_funds
+                - card_declined
+                - rate_limited
+            message:
+              type: string
+            details:
+              type: object
+              additionalProperties: true
+            retryable:
+              type: boolean
+              default: false
+        meta:
+          $ref: "#/components/schemas/Meta"
+
+    Address:
+      type: object
+      required: [ line1, city, state, postalCode, country ]
+      properties:
+        line1:
+          type: string
+        line2:
+          type: string
+          nullable: true
+        city:
+          type: string
+        state:
+          type: string
+        postalCode:
+          type: string
+        country:
+          type: string
+          description: ISO-3166-1 alpha-2
+
+    Money:
+      type: object
+      required: [ amount, currency ]
+      properties:
+        amount:
+          type: string
+          pattern: "^[0-9]+(\\\\.[0-9]{1,6})?$"
+          description: Decimal string, max 6 decimals.
+        currency:
+          type: string
+          enum: [ USD, USDC ]
+
+    Cardholder:
+      type: object
+      required: [ id, accountId, legalName, kycTier, status, createdAt ]
+      properties:
+        id:
+          type: string
+        accountId:
+          type: string
+        legalName:
+          type: string
+        email:
+          type: string
+          format: email
+          nullable: true
+        phone:
+          type: string
+          nullable: true
+        kycTier:
+          type: integer
+          minimum: 0
+          maximum: 3
+        status:
+          type: string
+          enum: [ pending, active, restricted, blocked ]
+        billingAddress:
+          $ref: "#/components/schemas/Address"
+        createdAt:
+          type: string
+          format: date-time
+
+    CreateCardholderRequest:
+      type: object
+      required: [ accountId, legalName, billingAddress ]
+      properties:
+        accountId:
+          type: string
+        legalName:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        billingAddress:
+          $ref: "#/components/schemas/Address"
+
+    UpdateCardholderRequest:
+      type: object
+      properties:
+        legalName:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        billingAddress:
+          $ref: "#/components/schemas/Address"
+        reason:
+          type: string
+          maxLength: 120
+
+    CardType:
+      type: string
+      enum: [ virtual, physical ]
+
+    CardStatus:
+      type: string
+      enum:
+        - requested
+        - pending_kyc
+        - pending_fulfillment
+        - active
+        - frozen
+        - blocked
+        - canceled
+
+    CardControlSet:
+      type: object
+      properties:
+        online:
+          type: boolean
+        atm:
+          type: boolean
+        international:
+          type: boolean
+        mccBlocklist:
+          type: array
+          items:
+            type: string
+        spendLimit:
+          type: object
+          properties:
+            amount:
+              type: string
+            currency:
+              type: string
+              enum: [ USD ]
+            interval:
+              type: string
+              enum: [ daily, weekly, monthly ]
+
+    Card:
+      type: object
+      required:
+        [
+          id,
+          accountId,
+          cardholderId,
+          type,
+          brand,
+          status,
+          last4,
+          controls,
+          createdAt,
+        ]
+      properties:
+        id:
+          type: string
+        accountId:
+          type: string
+        cardholderId:
+          type: string
+        type:
+          $ref: "#/components/schemas/CardType"
+        brand:
+          type: string
+          enum: [ visa, mastercard ]
+        status:
+          $ref: "#/components/schemas/CardStatus"
+        last4:
+          type: string
+          minLength: 4
+          maxLength: 4
+        expiryMonth:
+          type: integer
+          minimum: 1
+          maximum: 12
+        expiryYear:
+          type: integer
+          minimum: 2026
+        controls:
+          $ref: "#/components/schemas/CardControlSet"
+        shipping:
+          type: object
+          nullable: true
+          properties:
+            carrier:
+              type: string
+            trackingNumber:
+              type: string
+            etaDate:
+              type: string
+              format: date
+        createdAt:
+          type: string
+          format: date-time
+
+    CreateCardRequest:
+      type: object
+      required: [ accountId, cardholderId, type ]
+      properties:
+        accountId:
+          type: string
+        cardholderId:
+          type: string
+        type:
+          $ref: "#/components/schemas/CardType"
+        brand:
+          type: string
+          enum: [ visa, mastercard ]
+        spendLimitPreset:
+          type: integer
+          enum: [ 500, 1000, 5000, 25000 ]
+        shippingAddress:
+          $ref: "#/components/schemas/Address"
+        metadata:
+          type: object
+          additionalProperties: true
+
+    Authorization:
+      type: object
+      required: [ id, cardId, accountId, amount, status, createdAt ]
+      properties:
+        id:
+          type: string
+        cardId:
+          type: string
+        accountId:
+          type: string
+        merchantName:
+          type: string
+          nullable: true
+        mcc:
+          type: string
+          nullable: true
+        amount:
+          $ref: "#/components/schemas/Money"
+        settledAmount:
+          $ref: "#/components/schemas/Money"
+        status:
+          type: string
+          enum: [ approved, declined, reversed, cleared ]
+        declineCode:
+          type: string
+          nullable: true
+        processorReference:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    UpdateCardControlsRequest:
+      type: object
+      properties:
+        online:
+          type: boolean
+        atm:
+          type: boolean
+        international:
+          type: boolean
+        mccBlocklist:
+          type: array
+          items:
+            type: string
+        spendLimit:
+          type: object
+          properties:
+            amount:
+              type: string
+            interval:
+              type: string
+              enum: [ daily, weekly, monthly ]
+
+    CardholderResponse:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/Cardholder"
+        meta:
+          $ref: "#/components/schemas/Meta"
+
+    CardResponse:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/Card"
+        meta:
+          $ref: "#/components/schemas/Meta"
+
+    LinkedDebitCardStatus:
+      type: string
+      enum: [ pending, verified, blocked, removed ]
+
+    LinkedDebitCard:
+      type: object
+      required: [ id, accountId, brand, last4, expMonth, expYear, status, createdAt ]
+      properties:
+        id:
+          type: string
+        accountId:
+          type: string
+        cardholderName:
+          type: string
+        brand:
+          type: string
+        bin:
+          type: string
+          nullable: true
+        last4:
+          type: string
+        expMonth:
+          type: integer
+        expYear:
+          type: integer
+        fundingEligible:
+          type: boolean
+        payoutEligible:
+          type: boolean
+        status:
+          $ref: "#/components/schemas/LinkedDebitCardStatus"
+        networkTokenRef:
+          type: string
+          nullable: true
+        processorTokenRef:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+
+    LinkDebitCardRequest:
+      type: object
+      required: [ accountId, cardholderName, processorSetupToken ]
+      properties:
+        accountId:
+          type: string
+        cardholderName:
+          type: string
+        processorSetupToken:
+          type: string
+          description: Token from hosted card collection SDK; no raw PAN accepted.
+        billingAddress:
+          $ref: "#/components/schemas/Address"
+        metadata:
+          type: object
+          additionalProperties: true
+
+    LinkedDebitCardResponse:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/LinkedDebitCard"
+        meta:
+          $ref: "#/components/schemas/Meta"
+
+    FundingStatus:
+      type: string
+      enum:
+        - created
+        - requires_action
+        - authorized
+        - captured
+        - settled
+        - failed
+        - reversed
+
+    FundingTransaction:
+      type: object
+      required: [ id, accountId, linkedCardId, amount, status, createdAt ]
+      properties:
+        id:
+          type: string
+        accountId:
+          type: string
+        linkedCardId:
+          type: string
+        amount:
+          $ref: "#/components/schemas/Money"
+        fee:
+          $ref: "#/components/schemas/Money"
+        netAmount:
+          $ref: "#/components/schemas/Money"
+        status:
+          $ref: "#/components/schemas/FundingStatus"
+        challenge:
+          type: object
+          nullable: true
+          properties:
+            type:
+              type: string
+              enum: [ 3ds2 ]
+            clientSecret:
+              type: string
+        processorReference:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    AddMoneyRequest:
+      type: object
+      required: [ accountId, linkedCardId, amount ]
+      properties:
+        accountId:
+          type: string
+        linkedCardId:
+          type: string
+        amount:
+          $ref: "#/components/schemas/Money"
+        conversionQuoteId:
+          type: string
+          nullable: true
+        destinationWalletAddress:
+          type: string
+          description: Optional destination EVM wallet.
+        metadata:
+          type: object
+          additionalProperties: true
+
+    FundingConversionQuoteRequest:
+      type: object
+      required: [ accountId, linkedCardId, sourceAmount, sourceCurrency, targetCurrency ]
+      properties:
+        accountId:
+          type: string
+        linkedCardId:
+          type: string
+        sourceAmount:
+          type: string
+          pattern: "^[0-9]+(\\\\.[0-9]{1,6})?$"
+        sourceCurrency:
+          type: string
+          enum: [ USD, USDC ]
+        targetCurrency:
+          type: string
+          enum: [ USD, USDC ]
+
+    FundingConversionQuoteResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            quoteId:
+              type: string
+            sourceAmount:
+              $ref: "#/components/schemas/Money"
+            targetAmount:
+              $ref: "#/components/schemas/Money"
+            exchangeRate:
+              type: string
+            fee:
+              $ref: "#/components/schemas/Money"
+            expiresAt:
+              type: string
+              format: date-time
+        meta:
+          $ref: "#/components/schemas/Meta"
+
+    FundingTransactionResponse:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/FundingTransaction"
+        meta:
+          $ref: "#/components/schemas/Meta"
+
+    PayoutStatus:
+      type: string
+      enum:
+        - created
+        - pending_network
+        - paid
+        - failed
+        - returned
+
+    PushToCardQuoteRequest:
+      type: object
+      required: [ accountId, linkedCardId, amount ]
+      properties:
+        accountId:
+          type: string
+        linkedCardId:
+          type: string
+        amount:
+          $ref: "#/components/schemas/Money"
+
+    PushToCardQuoteResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            quoteId:
+              type: string
+            amount:
+              $ref: "#/components/schemas/Money"
+            fee:
+              $ref: "#/components/schemas/Money"
+            netAmount:
+              $ref: "#/components/schemas/Money"
+            expiresAt:
+              type: string
+              format: date-time
+        meta:
+          $ref: "#/components/schemas/Meta"
+
+    PushToCardPayoutRequest:
+      type: object
+      required: [ accountId, linkedCardId, amount ]
+      properties:
+        accountId:
+          type: string
+        linkedCardId:
+          type: string
+        amount:
+          $ref: "#/components/schemas/Money"
+        transferType:
+          type: string
+          enum: [ withdrawal, transfer ]
+          default: withdrawal
+        quoteId:
+          type: string
+          nullable: true
+        statementDescriptor:
+          type: string
+          maxLength: 22
+        metadata:
+          type: object
+          additionalProperties: true
+
+    Payout:
+      type: object
+      required: [ id, accountId, linkedCardId, amount, status, createdAt ]
+      properties:
+        id:
+          type: string
+        accountId:
+          type: string
+        linkedCardId:
+          type: string
+        amount:
+          $ref: "#/components/schemas/Money"
+        fee:
+          $ref: "#/components/schemas/Money"
+        netAmount:
+          $ref: "#/components/schemas/Money"
+        status:
+          $ref: "#/components/schemas/PayoutStatus"
+        processorReference:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    PayoutResponse:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/Payout"
+        meta:
+          $ref: "#/components/schemas/Meta"
+
+    Dispute:
+      type: object
+      required: [ id, status, reason, amount, createdAt ]
+      properties:
+        id:
+          type: string
+        accountId:
+          type: string
+        cardId:
+          type: string
+          nullable: true
+        authorizationId:
+          type: string
+          nullable: true
+        fundingId:
+          type: string
+          nullable: true
+        reason:
+          type: string
+        status:
+          type: string
+          enum: [ opened, under_review, won, lost, accepted ]
+        amount:
+          $ref: "#/components/schemas/Money"
+        dueAt:
+          type: string
+          format: date-time
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    SubmitDisputeEvidenceRequest:
+      type: object
+      required: [ summary ]
+      properties:
+        summary:
+          type: string
+        documents:
+          type: array
+          items:
+            type: object
+            required: [ fileName, url ]
+            properties:
+              fileName:
+                type: string
+              url:
+                type: string
+                format: uri
+
+    ProcessorWebhookEvent:
+      type: object
+      required: [ id, type, createdAt, data ]
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum:
+            - card.issued
+            - card.shipped
+            - card.activated
+            - card.frozen
+            - card.unfrozen
+            - card.authorization.approved
+            - card.authorization.declined
+            - card.clearing.posted
+            - funding.requires_action
+            - funding.captured
+            - funding.settled
+            - funding.failed
+            - payout.paid
+            - payout.failed
+            - payout.returned
+            - dispute.opened
+            - dispute.closed
+        createdAt:
+          type: string
+          format: date-time
+        accountId:
+          type: string
+        cardId:
+          type: string
+          nullable: true
+        fundingId:
+          type: string
+          nullable: true
+        payoutId:
+          type: string
+          nullable: true
+        disputeId:
+          type: string
+          nullable: true
+        data:
+          type: object
+          additionalProperties: true
+
+x-contract-notes:
+  mutation_idempotency:
+    - All POST/PATCH mutations require idempotency-key.
+    - Card issuance (POST /v1/cards) idempotency key retention minimum is 7 days.
+    - All other mutation key retention minimum is 24 hours.
+  webhook_security:
+    - Validate x-webhook-signature using shared secret and timestamp tolerance.
+    - Reject duplicates by webhook event id.
+    - Retry schedule for non-2xx deliveries: 1m, 5m, 30m, 2h, 24h.
+    - After max retries, mark event dead-lettered and require recovery via GET
+      /v1/webhooks/events.
+  pci_scope:
+    - No raw PAN/CVV in any request payload.
+    - Linking must use hosted-field token (processorSetupToken).
+  ledger_rules:
+    - Funding and payout statuses must mirror ledger state transitions.
+    - Auth hold and cleared settlement must be represented as separate ledger
+      events.
+  x-state-machine:
+    card_status:
+      - requested -> pending_kyc -> active
+      - requested -> pending_fulfillment -> active
+      - active -> frozen -> active
+      - active -> canceled (terminal)
+      - frozen -> canceled (terminal)
+      - any -> blocked (compliance-triggered)
+  rate_limit_headers:
+    - X-RateLimit-Limit
+    - X-RateLimit-Remaining
+    - Retry-After

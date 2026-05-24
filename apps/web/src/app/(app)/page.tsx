@@ -4,38 +4,38 @@ import { useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
 import { usePrivy } from '@privy-io/react-auth'
 
-import { AppShell, type ViewKey } from '../components/AppShell'
-import { WalletHome } from '../components/WalletHome'
-import { CardPage } from '../components/CardPage'
-import { VaultsPage } from '../components/VaultsPage'
-import { FundPage } from '../components/FundPage'
-import { CashOutPage } from '../components/CashOutPage'
-import { WithdrawPage } from '../components/WithdrawPage'
-import { ActivityPage } from '../components/ActivityPage'
-import { SettingsPanel } from '../components/SettingsPanel'
-import { GenesisLandingPage } from '../components/GenesisLandingPage'
-import { useAccountResolver } from '../hooks/useAccountResolver'
-import { useActiveWalletAddress } from '../hooks/useActiveWalletAddress'
-import { useSmartAccount } from '../hooks/useSmartAccount'
+import { AppShell, type ViewKey } from '../../components/AppShell'
+import { WalletHome } from '../../components/WalletHome'
+import { CardPage } from '../../components/CardPage'
+import { VaultsPage } from '../../components/VaultsPage'
+import { FundPage } from '../../components/FundPage'
+import { CashOutPage } from '../../components/CashOutPage'
+import { WithdrawPage } from '../../components/WithdrawPage'
+import { ActivityPage } from '../../components/ActivityPage'
+import { SettingsPanel } from '../../components/SettingsPanel'
+import { GenesisLandingPage } from '../../components/GenesisLandingPage'
+import { useAccountResolver } from '../../hooks/useAccountResolver'
+import { useActiveWalletAddress } from '../../hooks/useActiveWalletAddress'
+import { useSmartAccount } from '../../hooks/useSmartAccount'
 
 const PRIVY_APP_ID = process.env.NEXT_PUBLIC_PRIVY_APP_ID
 const PRIVY_ENABLED = typeof PRIVY_APP_ID === 'string' && PRIVY_APP_ID.length > 0
 
-const SendPage = dynamic(() => import('../components/SendPage').then((mod) => mod.SendPage), { ssr: false })
+const SendPage = dynamic(() => import('../../components/SendPage').then((mod) => mod.SendPage), { ssr: false })
 // RecipientBookPanel is used from within SendPage, not directly in PanelRouter
-const ScheduledSendsPanel = dynamic(() => import('../components/ScheduledSendsPanel').then((mod) => mod.ScheduledSendsPanel), { ssr: false })
-const BatchOperationsPanel = dynamic(() => import('../components/BatchOperationsPanel').then((mod) => mod.BatchOperationsPanel), { ssr: false })
-const ComplianceViewPanel = dynamic(() => import('../components/ComplianceViewPanel').then((mod) => mod.ComplianceViewPanel), { ssr: false })
-const AdminConsolePanel = dynamic(() => import('../components/AdminConsolePanel').then((mod) => mod.AdminConsolePanel), { ssr: false })
-const AnalyticsDashboard = dynamic(() => import('../components/AnalyticsDashboard').then((mod) => mod.AnalyticsDashboard), { ssr: false })
-const YieldMonitorPanel = dynamic(() => import('../components/YieldMonitorPanel').then((mod) => mod.YieldMonitorPanel), { ssr: false })
-const ConsultiveForecastPanel = dynamic(() => import('../components/ConsultiveForecastPanel').then((mod) => mod.ConsultiveForecastPanel), { ssr: false })
-const AgentUniversePanel = dynamic(() => import('../components/AgentUniversePanel').then((mod) => mod.AgentUniversePanel), { ssr: false })
-const CodexAcademyHub = dynamic(() => import('../components/codex/CodexAcademyHub').then((mod) => mod.CodexAcademyHub), { ssr: false })
-const InsurancePage = dynamic(() => import('../components/InsurancePage').then((mod) => mod.InsurancePage), { ssr: false })
-const BridgePanel = dynamic(() => import('../components/BridgePanel').then((mod) => mod.BridgePanel), { ssr: false })
-const SwapPanel = dynamic(() => import('../components/SwapPanel').then((mod) => mod.SwapPanel), { ssr: false })
-const ReceiveFlow = dynamic(() => import('../components/ReceiveFlow').then((mod) => mod.ReceiveFlow), { ssr: false })
+const ScheduledSendsPanel = dynamic(() => import('../../components/ScheduledSendsPanel').then((mod) => mod.ScheduledSendsPanel), { ssr: false })
+const BatchOperationsPanel = dynamic(() => import('../../components/BatchOperationsPanel').then((mod) => mod.BatchOperationsPanel), { ssr: false })
+const ComplianceViewPanel = dynamic(() => import('../../components/ComplianceViewPanel').then((mod) => mod.ComplianceViewPanel), { ssr: false })
+const AdminConsolePanel = dynamic(() => import('../../components/AdminConsolePanel').then((mod) => mod.AdminConsolePanel), { ssr: false })
+const AnalyticsDashboard = dynamic(() => import('../../components/AnalyticsDashboard').then((mod) => mod.AnalyticsDashboard), { ssr: false })
+const YieldMonitorPanel = dynamic(() => import('../../components/YieldMonitorPanel').then((mod) => mod.YieldMonitorPanel), { ssr: false })
+const ConsultiveForecastPanel = dynamic(() => import('../../components/ConsultiveForecastPanel').then((mod) => mod.ConsultiveForecastPanel), { ssr: false })
+const AgentUniversePanel = dynamic(() => import('../../components/AgentUniversePanel').then((mod) => mod.AgentUniversePanel), { ssr: false })
+const CodexAcademyHub = dynamic(() => import('../../components/codex/CodexAcademyHub').then((mod) => mod.CodexAcademyHub), { ssr: false })
+const InsurancePage = dynamic(() => import('../../components/InsurancePage').then((mod) => mod.InsurancePage), { ssr: false })
+const BridgePanel = dynamic(() => import('../../components/BridgePanel').then((mod) => mod.BridgePanel), { ssr: false })
+const SwapPanel = dynamic(() => import('../../components/SwapPanel').then((mod) => mod.SwapPanel), { ssr: false })
+const ReceiveFlow = dynamic(() => import('../../components/ReceiveFlow').then((mod) => mod.ReceiveFlow), { ssr: false })
 
 export default function GenesisDashboardPage() {
   const [forcePreview, setForcePreview] = useState(false)

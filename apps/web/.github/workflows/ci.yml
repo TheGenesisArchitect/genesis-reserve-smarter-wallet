@@ -1,0 +1,110 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# genesis-privy/.github/workflows/ci.yml
+#
+# CI for the Genesis Reserve frontend.
+# Runs on every PR against main and on every push to main.
+#
+# Jobs:
+#   1. lint     — ESLint (0 warnings/errors required)
+#   2. typecheck — tsc --noEmit (0 type errors required)
+#   3. test     — Vitest unit tests
+#   4. build    — Next.js production build
+#
+# All 4 must pass before merge is allowed (configure as branch protection rules)
+# ─────────────────────────────────────────────────────────────────────────────
+
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+env:
+  # Provide stub values so Next.js build succeeds without real API keys
+  NEXT_PUBLIC_PRIVY_APP_ID:            ${{ secrets.PRIVY_APP_ID || 'ci-stub' }}
+  NEXT_PUBLIC_ZERODEV_PROJECT_ID:      ci-stub
+  NEXT_PUBLIC_ZERODEV_BUNDLER_URL:     https://rpc.zerodev.app/api/v2/bundler/ci-stub
+  NEXT_PUBLIC_ZERODEV_PAYMASTER_URL:   https://rpc.zerodev.app/api/v2/paymaster/ci-stub
+  NEXT_PUBLIC_ALCHEMY_API_KEY:         ${{ secrets.ALCHEMY_API_KEY || 'ci-stub' }}
+  NEXT_PUBLIC_ALCHEMY_RPC_URL:         https://arb-mainnet.g.alchemy.com/v2/ci-stub
+  NEXT_PUBLIC_ALCHEMY_WS_URL:          wss://arb-mainnet.g.alchemy.com/v2/ci-stub
+  NEXT_PUBLIC_GENESIS_VAULT_ADDRESS:   0xe164997D48395B4e24aB0f9F66c57DEA38C5E041
+  NEXT_PUBLIC_STRATEGY_ROUTER_ADDRESS: 0xD7ff8383eBBE3B1023d95A3f14c32D9941Ac9e84
+  NEXT_PUBLIC_COMPLIANCE_REGISTRY_ADDRESS: 0x6D58678562387c400964737884E78f2f12e1c495
+  NEXT_PUBLIC_USDC_ADDRESS:            0xaf88d065e77c8cC2239327C5EDb3A432268e5831
+  NEXT_PUBLIC_GENESIS_API_URL:         http://localhost:3001
+  NEXT_PUBLIC_CHAIN_ID:                42161
+
+jobs:
+  # ── 1. Lint ─────────────────────────────────────────────────────────────────
+  lint:
+    name: ESLint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run lint
+        # Fail on any warning (not just errors) — enforce from day one
+        env:
+          ESLINT_MAX_WARNINGS: 0
+
+  # ── 2. TypeScript ────────────────────────────────────────────────────────────
+  typecheck:
+    name: TypeScript
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run typecheck
+
+  # ── 3. Unit Tests ────────────────────────────────────────────────────────────
+  test:
+    name: Vitest
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - run: npx vitest run --reporter=verbose
+      - name: Upload coverage (optional)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage/
+
+  # ── 4. Build ─────────────────────────────────────────────────────────────────
+  build:
+    name: Next.js Build
+    runs-on: ubuntu-latest
+    needs: [ lint, typecheck, test ]  # Only build if all checks pass
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run build
+        env:
+          # Next.js build needs all NEXT_PUBLIC_ vars defined (stubs are fine)
+          NEXT_TELEMETRY_DISABLED: 1
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: next-build
+          path: .next/
+          retention-days: 3

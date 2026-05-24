@@ -1,14 +1,5 @@
-// ─────────────────────────────────────────────────────────────────────────────
-// genesis-privy/src/app/layout.tsx
-//
-// Root Next.js 14 App Router layout.
-// CRITICAL: GenesisProviders must wrap the entire app here.
-// Without this file the app does not render — all hooks throw immediately.
-// ─────────────────────────────────────────────────────────────────────────────
-
 import type { Metadata, Viewport } from 'next'
 import { Analytics } from '@vercel/analytics/next'
-import { GenesisProviders } from '../providers'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -35,15 +26,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      {/*
-        suppressHydrationWarning on body: Privy injects attributes during
-        client-side hydration. Without this, Next.js throws a hydration
-        mismatch warning in development.
-      */}
       <body suppressHydrationWarning>
-        <GenesisProviders>
-          {children}
-        </GenesisProviders>
+        {children}
         <Analytics />
       </body>
     </html>

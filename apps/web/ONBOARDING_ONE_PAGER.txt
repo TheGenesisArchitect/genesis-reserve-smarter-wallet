@@ -1,0 +1,76 @@
+GENESIS RESERVE BETA ONBOARDING (ONE PAGER)
+
+Welcome
+You are joining the Genesis Reserve beta to help validate core treasury flows on real devices and networks.
+
+Beta Goal
+Confirm that the product is reliable and usable for:
+- Sign in and wallet connection
+- Deposit flow
+- Vault and yield visibility
+- Withdraw flow
+
+Who This Is For
+- Internal testers
+- Pilot users
+- Design partners
+
+What You Need
+- Mobile device (iOS or Android)
+- Reliable internet connection
+- Wallet account for testing
+- 20 to 30 minutes for first pass
+
+Access
+- App URL: [INSERT APP URL]
+- TestFlight link (iOS, if available): [INSERT LINK]
+- Play Internal Test link (Android, if available): [INSERT LINK]
+- Support contact: [INSERT EMAIL OR SLACK]
+
+First Session Checklist
+1. Open the app and sign in.
+2. Connect wallet.
+3. Open Vaults and select a strategy.
+4. Start and complete a test deposit.
+5. Verify position appears in portfolio.
+6. Open yield section and confirm data loads.
+7. Start and complete a test withdraw.
+8. Log out and log back in.
+
+Edge-Case Checks
+- Disable network mid-flow, then reconnect and retry.
+- Background the app for 2 minutes and resume.
+- Trigger an expected error and verify message clarity.
+
+How To Report Feedback
+Submit each issue with:
+- Device + OS version
+- App version/build
+- Exact steps to reproduce
+- Expected result
+- Actual result
+- Screenshot or screen recording
+- Suggested severity (Critical, High, Medium, Low)
+
+Feedback Form
+[INSERT FORM LINK]
+
+Severity Guide
+- Critical: app crash, data integrity issue, or blocked core flow
+- High: major feature broken with no practical workaround
+- Medium: feature works with workaround or partial degradation
+- Low: cosmetic or minor UX issue
+
+Success Criteria For Beta Exit
+- Core flow completion >= 90%
+- No open Critical issues
+- High issues are addressed or have approved mitigations
+- Crash-free sessions >= 99%
+
+Data and Privacy Notes
+- Use only approved test accounts and test funds.
+- Do not share private keys or recovery phrases.
+- Do not post screenshots containing sensitive wallet details publicly.
+
+Thank You
+Your feedback directly shapes production readiness.
