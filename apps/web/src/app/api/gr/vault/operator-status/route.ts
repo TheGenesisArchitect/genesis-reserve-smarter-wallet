@@ -11,7 +11,11 @@ const RPC_URL = process.env.ARBITRUM_RPC_URL
 const GENESIS_VAULT    = CONTRACTS.GENESIS_VAULT
 const STRATEGY_ROUTER  = CONTRACTS.STRATEGY_ROUTER
 
-const HARVESTER_ROLE = '0x7a8dc26796a1e50e6e190b70259f58f6a4edd5b22280ceecc82b687b8e982d8e' as const
+// keccak256("VAULT_ROLE") — the role that controls harvest() on StrategyRouter
+const VAULT_ROLE     = '0x31e0210044b4f6757ce6aa31f9c6e8d4896d24a755014887391a926c5224d959' as const
+// keccak256("HARVESTER_ROLE") — alternative harvest role
+const HARVESTER_ROLE = '0x3fc733b4d20d27a28452ddf0e9351aced28242fe03389a653cdb783955316b9b' as const
+// keccak256("OPERATOR_ROLE") — controls activateAccount on GenesisVault
 const OPERATOR_ROLE  = '0x97667070c54ef182b0f5858b034beac1b6f3089aa2d3188bb1e8929f4fa9b929' as const
 
 const HAS_ROLE_ABI = [
@@ -74,8 +78,8 @@ export async function GET() {
 
         const [
             vaultOperatorRole,
+            routerVaultRole,
             routerHarvesterRole,
-            routerOperatorRole,
             circuitBreakerActive,
         ] = await Promise.all([
             client.readContract({
@@ -88,13 +92,13 @@ export async function GET() {
                 address: STRATEGY_ROUTER,
                 abi: HAS_ROLE_ABI,
                 functionName: 'hasRole',
-                args: [HARVESTER_ROLE, operatorAddress],
+                args: [VAULT_ROLE, operatorAddress],
             }) as Promise<boolean>,
             client.readContract({
                 address: STRATEGY_ROUTER,
                 abi: HAS_ROLE_ABI,
                 functionName: 'hasRole',
-                args: [OPERATOR_ROLE, operatorAddress],
+                args: [HARVESTER_ROLE, operatorAddress],
             }) as Promise<boolean>,
             client.readContract({
                 address: STRATEGY_ROUTER,
@@ -104,21 +108,24 @@ export async function GET() {
         ])
 
         const canActivate = vaultOperatorRole
-        const canHarvest  = routerHarvesterRole || routerOperatorRole
+        const canHarvest  = routerVaultRole || routerHarvesterRole
 
         return NextResponse.json({
             configured: true,
             operatorAddress: maskAddress(operatorAddress),
             roles: {
                 vault_OPERATOR_ROLE: vaultOperatorRole,
+                router_VAULT_ROLE: routerVaultRole,
                 router_HARVESTER_ROLE: routerHarvesterRole,
-                router_OPERATOR_ROLE: routerOperatorRole,
             },
             capabilities: {
                 canActivateAccounts: canActivate,
                 canHarvestYield: canHarvest,
             },
             circuitBreakerActive,
+            action_needed: !canHarvest
+                ? 'Deployer (0x3e435c4dbb4e74119c4267d1f3b8335b31c80a0f) must call grantRole(VAULT_ROLE, <operator>) on StrategyRouter'
+                : null,
             contracts: {
                 genesisVault: GENESIS_VAULT,
                 strategyRouter: STRATEGY_ROUTER,

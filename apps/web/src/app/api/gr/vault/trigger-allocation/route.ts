@@ -10,10 +10,14 @@ const STRATEGY_ROUTER = (
     (process.env.NEXT_PUBLIC_STRATEGY_ROUTER_ADDRESS || '').trim() || CONTRACTS.STRATEGY_ROUTER
 ) as `0x${string}`
 
-// keccak256("HARVESTER_ROLE") — role required to call harvest() on StrategyRouter
-const HARVESTER_ROLE = '0x7a8dc26796a1e50e6e190b70259f58f6a4edd5b22280ceecc82b687b8e982d8e' as const
-// keccak256("OPERATOR_ROLE") — fallback if operator key is used for harvesting
-const OPERATOR_ROLE  = '0x97667070c54ef182b0f5858b034beac1b6f3089aa2d3188bb1e8929f4fa9b929' as const
+// keccak256("VAULT_ROLE") — role required to call harvest() on StrategyRouter.
+// The Router grants this to the GenesisVault contract and the deployer.
+// The Vercel operator also needs this role for out-of-band harvest.
+const VAULT_ROLE     = '0x31e0210044b4f6757ce6aa31f9c6e8d4896d24a755014887391a926c5224d959' as const
+// keccak256("HARVESTER_ROLE") — alternative role checked as fallback
+const HARVESTER_ROLE = '0x3fc733b4d20d27a28452ddf0e9351aced28242fe03389a653cdb783955316b9b' as const
+// DEFAULT_ADMIN (0x00...0) — deployer fallback
+const DEFAULT_ADMIN  = '0x0000000000000000000000000000000000000000000000000000000000000000' as const
 
 const DEV_BYPASS =
     process.env.VAULT_ACTIVATION_DEV_BYPASS === 'true' ||
@@ -96,8 +100,14 @@ export async function POST(req: NextRequest) {
 
         const account = privateKeyToAccount(operatorKey as `0x${string}`)
 
-        // Verify signer has HARVESTER_ROLE or OPERATOR_ROLE
-        const [hasHarvester, hasOperator] = await Promise.all([
+        // Verify signer has VAULT_ROLE, HARVESTER_ROLE, or DEFAULT_ADMIN on the Router
+        const [hasVault, hasHarvester, hasAdmin] = await Promise.all([
+            publicClient.readContract({
+                address: STRATEGY_ROUTER,
+                abi: ROUTER_ABI,
+                functionName: 'hasRole',
+                args: [VAULT_ROLE, account.address],
+            }) as Promise<boolean>,
             publicClient.readContract({
                 address: STRATEGY_ROUTER,
                 abi: ROUTER_ABI,
@@ -108,13 +118,16 @@ export async function POST(req: NextRequest) {
                 address: STRATEGY_ROUTER,
                 abi: ROUTER_ABI,
                 functionName: 'hasRole',
-                args: [OPERATOR_ROLE, account.address],
+                args: [DEFAULT_ADMIN, account.address],
             }) as Promise<boolean>,
         ])
 
-        if (!hasHarvester && !hasOperator) {
+        if (!hasVault && !hasHarvester && !hasAdmin) {
             return NextResponse.json(
-                { status: 'role_required', detail: `Signer ${account.address} has neither HARVESTER_ROLE nor OPERATOR_ROLE on StrategyRouter` },
+                {
+                    status: 'role_required',
+                    detail: `Signer ${account.address} needs VAULT_ROLE or HARVESTER_ROLE on StrategyRouter. Ask the deployer (0x3e435c4dbb4e74119c4267d1f3b8335b31c80a0f) to call grantRole(VAULT_ROLE, ${account.address}) on the Router.`,
+                },
                 { status: 409 }
             )
         }
