@@ -1,0 +1,1468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Genesis Reserve — Presenter Script & Q&A · 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@300;400;500&family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ── SCREEN VIEW ──────────────────────────────────────────────────────────── */
+:root {
+  --bg:#020305; --bg1:#070B10; --bg2:#0D1117; --bg3:#141B22;
+  --gold:#C9A84C; --gold2:#E8CB6E; --gold-d:#8A6E2A; --gold-dd:#5A4618;
+  --gold-10:rgba(201,168,76,.10); --gold-20:rgba(201,168,76,.20); --gold-30:rgba(201,168,76,.30);
+  --teal:#00D4AA; --green:#1ABF6A; --violet:#9B6DFF; --red:#E84040;
+  --text:#F5F0E8; --muted:#7A7670; --border:rgba(255,255,255,.07);
+}
+
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Sora', sans-serif;
+  font-size: 14px;
+  line-height: 1.75;
+  min-height: 100vh;
+}
+
+/* ── PRINT BUTTON ─────────────────────────────────────────────────────────── */
+#printBar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  background: rgba(4,6,8,.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--gold-20);
+  padding: 10px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 999;
+  gap: 16px;
+}
+#printBar .brand {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 15px;
+  color: var(--gold);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+#printBar .actions { display:flex; gap:10px; align-items:center; }
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 18px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: .06em;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all .2s;
+  white-space: nowrap;
+}
+.btn-gold {
+  background: var(--gold-10);
+  border: 1px solid var(--gold-30);
+  color: var(--gold);
+}
+.btn-gold:hover { background: var(--gold-20); }
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+.btn-outline:hover { border-color: var(--gold-20); color: var(--gold); }
+
+/* ── PAGE WRAPPER ─────────────────────────────────────────────────────────── */
+.page {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 80px 48px 80px;
+}
+
+/* ── GEO GRID ─────────────────────────────────────────────────────────────── */
+.geo-bg {
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.012) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.012) 1px, transparent 1px);
+  background-size: 56px 56px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── COVER ────────────────────────────────────────────────────────────────── */
+.cover {
+  text-align: center;
+  padding: 60px 0 48px;
+  border-bottom: 1px solid var(--gold-20);
+  margin-bottom: 48px;
+}
+.cover-logo {
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  margin: 0 auto 20px;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px rgba(201,168,76,.25), 0 0 32px rgba(201,168,76,.15);
+}
+.cover-logo img { width:100%; height:100%; display:block; }
+.cover-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-size: 38px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, var(--gold2), var(--gold), var(--gold-d));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.2;
+  margin-bottom: 10px;
+}
+.cover-sub {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 18px;
+  color: rgba(201,168,76,.65);
+  letter-spacing: .06em;
+  margin-bottom: 18px;
+}
+.cover-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  line-height: 2;
+}
+.rule {
+  width: 60px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  margin: 16px auto;
+}
+
+/* ── TOC ──────────────────────────────────────────────────────────────────── */
+.toc {
+  background: rgba(13,17,23,.8);
+  border: 1px solid var(--gold-20);
+  border-radius: 16px;
+  padding: 24px 28px;
+  margin-bottom: 48px;
+  position: relative;
+  overflow: hidden;
+}
+.toc::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201,168,76,.4), transparent);
+}
+.toc h3 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--gold-d);
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.toc-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 32px;
+}
+.toc-item {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  text-decoration: none;
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+  transition: color .2s;
+}
+.toc-item:hover { color: var(--gold); }
+.toc-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--muted);
+  min-width: 20px;
+}
+.toc-label { font-size: 12px; color: var(--muted); flex: 1; }
+.toc-item:hover .toc-label { color: var(--gold); }
+
+/* ── PART HEADERS ─────────────────────────────────────────────────────────── */
+.part-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 48px 0 28px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--gold-20);
+}
+.part-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--gold-d);
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.part-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-size: 28px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, var(--gold2), var(--gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.part-sub { font-size: 12px; color: var(--muted); margin-left: auto; white-space: nowrap; }
+
+/* ── SLIDE BLOCKS ─────────────────────────────────────────────────────────── */
+.slide-block {
+  margin-bottom: 36px;
+  position: relative;
+}
+.slide-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.slide-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--gold-d);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  background: var(--gold-10);
+  border: 1px solid var(--gold-20);
+  border-radius: 10px;
+  padding: 2px 8px;
+}
+.slide-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 400;
+  font-size: 20px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--gold2);
+}
+.slide-script {
+  background: rgba(13,17,23,.7);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--gold-d);
+  border-radius: 0 14px 14px 0;
+  padding: 20px 24px;
+  position: relative;
+  overflow: hidden;
+}
+.slide-script::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201,168,76,.12), transparent);
+}
+.slide-script p {
+  margin-bottom: 10px;
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--text);
+}
+.slide-script p:last-child { margin-bottom: 0; }
+.stage-dir {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  font-style: italic;
+  margin-bottom: 12px;
+  letter-spacing: .04em;
+}
+.advance {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: rgba(201,168,76,.4);
+  margin-top: 12px;
+  letter-spacing: .06em;
+}
+
+/* ── TALKING POINTS BLOCKS ────────────────────────────────────────────────── */
+.tp-block {
+  margin-bottom: 40px;
+  scroll-margin-top: 80px;
+}
+.tp-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(201,168,76,.12);
+}
+.tp-slide-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--gold-d);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.tp-slide-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 400;
+  font-size: 22px;
+  letter-spacing: .08em;
+  color: var(--gold2);
+  text-transform: uppercase;
+}
+.tp-core {
+  background: rgba(201,168,76,.05);
+  border: 1px solid var(--gold-20);
+  border-radius: 12px;
+  padding: 12px 18px;
+  margin-bottom: 14px;
+  font-size: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--gold);
+  letter-spacing: .03em;
+}
+.tp-section {
+  margin-bottom: 16px;
+}
+.tp-section h4 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--muted);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+}
+.tp-section p, .tp-section li {
+  font-size: 13px;
+  line-height: 1.75;
+  color: rgba(245,240,232,.85);
+  margin-bottom: 6px;
+}
+.tp-section ul, .tp-section ol {
+  padding-left: 20px;
+}
+.tp-section li { margin-bottom: 4px; }
+.quote-block {
+  background: rgba(13,17,23,.8);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--gold);
+  border-radius: 0 12px 12px 0;
+  padding: 14px 18px;
+  margin: 12px 0;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 15px;
+  color: var(--text);
+  line-height: 1.7;
+}
+.stat-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+}
+.stat-label { font-size: 12px; color: var(--muted); flex:1; }
+.stat-val { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--gold); }
+.stat-val.g { color: var(--green); }
+.stat-val.t { color: var(--teal); }
+
+/* ── Q&A BLOCKS ───────────────────────────────────────────────────────────── */
+.qa-category {
+  margin-bottom: 32px;
+}
+.qa-cat-header {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--gold-d);
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  padding: 6px 0;
+  margin-bottom: 14px;
+  border-bottom: 1px solid var(--gold-20);
+}
+.qa-item {
+  background: rgba(13,17,23,.7);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  margin-bottom: 12px;
+  overflow: hidden;
+  position: relative;
+}
+.qa-item::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.06), transparent);
+}
+.qa-q {
+  padding: 14px 18px 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gold2);
+  line-height: 1.5;
+}
+.qa-q::before {
+  content: 'Q  ';
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--gold-d);
+  letter-spacing: .1em;
+}
+.qa-a {
+  padding: 10px 18px 16px;
+  font-size: 12px;
+  color: rgba(245,240,232,.8);
+  line-height: 1.8;
+  border-top: 1px solid rgba(255,255,255,.04);
+  margin-top: 10px;
+}
+.qa-a::before {
+  content: 'A  ';
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--green);
+  letter-spacing: .1em;
+}
+
+/* ── BREAKOUT BLOCKS ──────────────────────────────────────────────────────── */
+.breakout-block {
+  background: rgba(13,17,23,.7);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 28px;
+  position: relative;
+  overflow: hidden;
+}
+.breakout-block::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201,168,76,.18), transparent);
+}
+.breakout-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255,255,255,.05);
+}
+.breakout-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--gold-d);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  background: var(--gold-10);
+  border: 1px solid var(--gold-20);
+  border-radius: 8px;
+  padding: 2px 8px;
+}
+.breakout-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: .06em;
+  color: var(--gold2);
+  text-transform: uppercase;
+}
+.breakout-audience {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--muted);
+  letter-spacing: .1em;
+  margin-left: auto;
+}
+.breakout-section {
+  margin-bottom: 16px;
+}
+.breakout-section h4 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--teal);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.breakout-section p, .breakout-section li {
+  font-size: 12px;
+  color: rgba(245,240,232,.8);
+  line-height: 1.75;
+  margin-bottom: 4px;
+}
+.breakout-section ul, .breakout-section ol { padding-left: 18px; }
+.code-block {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  background: rgba(4,6,8,.9);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 10px;
+  padding: 14px 16px;
+  color: var(--teal);
+  margin: 10px 0;
+  line-height: 1.7;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+/* ── DELIVERY NOTES ───────────────────────────────────────────────────────── */
+.delivery-notes {
+  background: rgba(26,191,106,.04);
+  border: 1px solid rgba(26,191,106,.2);
+  border-radius: 16px;
+  padding: 24px;
+  margin-top: 40px;
+}
+.delivery-notes h3 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--green);
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.delivery-notes li {
+  font-size: 13px;
+  color: rgba(245,240,232,.8);
+  line-height: 1.75;
+  margin-bottom: 6px;
+  padding-left: 2px;
+}
+.delivery-notes ul { padding-left: 18px; }
+
+/* ── FOOTER ───────────────────────────────────────────────────────────────── */
+.doc-footer {
+  margin-top: 60px;
+  padding-top: 20px;
+  border-top: 1px solid var(--gold-20);
+  text-align: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: rgba(201,168,76,.4);
+  letter-spacing: .06em;
+  line-height: 2;
+}
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--gold);
+  text-decoration: none;
+  font-size: 11px;
+  margin-top: 10px;
+  padding: 6px 14px;
+  border: 1px solid var(--gold-20);
+  border-radius: 14px;
+  background: var(--gold-10);
+  transition: all .2s;
+}
+.back-link:hover { background: var(--gold-20); }
+
+/* ── DIVIDERS ─────────────────────────────────────────────────────────────── */
+.section-divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201,168,76,.15), transparent);
+  margin: 40px 0;
+}
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--gold-10);
+  border: 1px solid var(--gold-20);
+  border-radius: 14px;
+  padding: 2px 10px;
+  font-size: 9px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--gold);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.pill.green { background: rgba(26,191,106,.08); border-color: rgba(26,191,106,.2); color: var(--green); }
+.pill.teal { background: rgba(0,212,170,.08); border-color: rgba(0,212,170,.2); color: var(--teal); }
+
+/* ── PRINT STYLES ─────────────────────────────────────────────────────────── */
+@media print {
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  :root {
+    --bg: #ffffff;
+    --bg1: #f8f6f2;
+    --bg2: #f0ede8;
+    --bg3: #e8e4dc;
+    --gold: #7A5C20;
+    --gold2: #8A6B28;
+    --gold-d: #5A4010;
+    --gold-dd: #3D2A08;
+    --gold-10: rgba(122,92,32,.06);
+    --gold-20: rgba(122,92,32,.15);
+    --gold-30: rgba(122,92,32,.25);
+    --teal: #007A60;
+    --green: #0F7A40;
+    --violet: #5A35AA;
+    --text: #1A1612;
+    --muted: #6B6358;
+    --border: rgba(0,0,0,.1);
+  }
+
+  body { background: #fff; color: #1A1612; font-size: 11px; }
+
+  .geo-bg, #printBar { display: none !important; }
+
+  .page { padding: 0; max-width: 100%; margin: 0; }
+
+  .cover { padding: 24px 0 20px; margin-bottom: 24px; }
+  .cover-title { font-size: 28px; }
+  .cover-sub { font-size: 14px; }
+
+  .part-header { margin: 28px 0 16px; }
+  .part-title { font-size: 22px; }
+
+  .slide-block { margin-bottom: 20px; page-break-inside: avoid; }
+  .slide-script { border-left-color: #8A6B28; }
+  .slide-script p { font-size: 11px; }
+
+  .tp-block { margin-bottom: 24px; page-break-inside: avoid; }
+  .tp-slide-name { font-size: 16px; }
+
+  .qa-item { page-break-inside: avoid; margin-bottom: 8px; }
+  .qa-q { font-size: 11px; }
+  .qa-a { font-size: 10px; }
+
+  .breakout-block { page-break-inside: avoid; margin-bottom: 18px; }
+  .breakout-title { font-size: 16px; }
+  .breakout-section p, .breakout-section li { font-size: 10px; }
+
+  .quote-block { border-left-color: #8A6B28; }
+  .code-block { background: #f0ede8; color: #007A60; border-color: rgba(0,0,0,.12); }
+
+  .toc { page-break-after: always; }
+  .part-header.break-before { page-break-before: always; }
+
+  .delivery-notes { border-color: rgba(15,122,64,.3); background: rgba(15,122,64,.04); }
+  .doc-footer { border-top-color: rgba(122,92,32,.2); }
+  .back-link { display: none; }
+  #printBar { display: none; }
+
+  h2, h3, .part-header { page-break-after: avoid; }
+}
+</style>
+</head>
+<body>
+<div class="geo-bg"></div>
+
+<!-- ── PRINT BAR ──────────────────────────────────────────────────────────── -->
+<div id="printBar">
+  <div class="brand">Genesis Reserve — Presenter Script</div>
+  <div class="actions">
+    <a href="/genesis-keynote.html" class="btn btn-outline">← Back to Deck</a>
+    <button class="btn btn-gold" onclick="window.print()">⬇ Print / Save PDF</button>
+  </div>
+</div>
+
+<div class="page" style="position:relative;z-index:1">
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     COVER
+══════════════════════════════════════════════════════════════════════════════ -->
+<div class="cover">
+  <div class="cover-logo">
+    <img src="/genesis-logo.png" alt="Genesis Reserve" onerror="this.parentElement.style.background='rgba(201,168,76,.1)';this.style.display='none'">
+  </div>
+  <div class="cover-title">Genesis Reserve</div>
+  <div class="cover-sub">Presenter Script · Talking Points · Q&A · Breakout Sessions</div>
+  <div class="rule"></div>
+  <div class="cover-meta">
+    Perpetual Capital Engine · Keynote 2026<br>
+    Confidential — For Presenter Use Only · Not For Distribution<br>
+    5-Minute Core Script · 60-Minute Extended Depth · 20 Q&amp;A Responses · 4 Breakout Modules
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     TABLE OF CONTENTS
+══════════════════════════════════════════════════════════════════════════════ -->
+<div class="toc">
+  <h3>Contents</h3>
+  <div class="toc-grid">
+    <a href="#part1" class="toc-item"><span class="toc-num">01</span><span class="toc-label">Part 1 — 5-Minute Core Script</span></a>
+    <a href="#part3" class="toc-item"><span class="toc-num">03</span><span class="toc-label">Part 3 — Q&amp;A Preparation (20 Questions)</span></a>
+    <a href="#part2" class="toc-item"><span class="toc-num">02</span><span class="toc-label">Part 2 — Expanded Talking Points (Per Slide)</span></a>
+    <a href="#part4" class="toc-item"><span class="toc-num">04</span><span class="toc-label">Part 4 — Breakout Sessions (4 Modules)</span></a>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     PART 1 — 5-MINUTE SCRIPT
+══════════════════════════════════════════════════════════════════════════════ -->
+<div class="part-header" id="part1">
+  <span class="part-num">Part 01</span>
+  <span class="part-title">The 5-Minute Script</span>
+  <span class="part-sub">~780 words · 150 wpm · 5:10</span>
+</div>
+
+<div class="slide-block">
+  <div class="slide-tag">
+    <span class="slide-num">Slide 1</span>
+    <span class="slide-name">The Hook</span>
+  </div>
+  <div class="slide-script">
+    <div class="stage-dir">[Advance to Slide 1. Pause. Let the particles and logo settle.]</div>
+    <p>Before I show you what Genesis Reserve does, let me give you the headline.</p>
+    <p>One deposit. Four superpowers. Fifteen percent yield. Twenty times estate leverage. Zero dollars out of pocket. And it compounds forever.</p>
+    <p>That is not a marketing promise. That is the architecture. And by the end of this presentation, you will understand exactly how it works — and why it works right now, and not five years ago.</p>
+    <div class="advance">[Advance →]</div>
+  </div>
+</div>
+
+<div class="slide-block">
+  <div class="slide-tag">
+    <span class="slide-num">Slide 2</span>
+    <span class="slide-name">The Villain</span>
+  </div>
+  <div class="slide-script">
+    <p>For one hundred years, every financial instrument has forced you to choose.</p>
+    <p>You can chase equity returns — but you absorb thirty percent volatility, and one bad year erases a decade. You can choose credit safety — but two to four percent yield gets quietly destroyed by inflation every single year. Or you can pursue tax efficiency — but those structures require accreditation, complexity, and access that ninety-nine percent of people on earth simply do not have.</p>
+    <p>Michael Saylor defined this as <em>the investor dilemma</em>. His exact words: <em>"Equity returns or credit safety or tax efficiency — never all three at once."</em></p>
+    <p>MicroStrategy's STRC gave institutions all three. For the first time. The world took notice. The question is: what comes next?</p>
+    <div class="advance">[Advance →]</div>
+  </div>
+</div>
+
+<div class="slide-block">
+  <div class="slide-tag">
+    <span class="slide-num">Slide 3</span>
+    <span class="slide-name">Why Now</span>
+  </div>
+  <div class="slide-script">
+    <p>Three forces converged. This specific combination did not exist five years ago.</p>
+    <p>Force one: three hundred and twenty-two billion dollars in programmable, stable capital — USDC. The digital dollar is already built. No volatility to manage. No collateral needed. The asset exists. The operating system to run it didn't.</p>
+    <p>Force two: yield that settles every fifteen minutes. Ninety-six times a day. Across seven corridors. The DeFi infrastructure is live. StrategyRouter is the first system designed to run it at institutional scale.</p>
+    <p>Force three: for the first time in history, vault yield can automatically pay life insurance premiums. A structurally new product category. Zero incumbents. Near-zero churn by design.</p>
+    <p>The window is open. First-mover advantage in a new category compounds forever.</p>
+    <div class="advance">[Advance →]</div>
+  </div>
+</div>
+
+<div class="slide-block">
+  <div class="slide-tag">
+    <span class="slide-num">Slide 4</span>
+    <span class="slide-name">The Hero Metric</span>
+  </div>
+  <div class="slide-script">
+    <p>Here is the number that changes everything.</p>
+    <p>One ten-thousand-dollar USDC deposit gives you this: fifteen percent annual yield. Plus twenty times estate leverage. Plus zero dollars out of pocket.</p>
+    <p>Chase Savings: zero-point-zero-one percent. US Treasuries: five-point-two percent. MicroStrategy STRC: eleven-point-three percent. Genesis Reserve: fifteen percent — plus infinite legacy.</p>
+    <p>This is not a better savings account. This is a new financial category.</p>
+    <div class="advance">[Advance →]</div>
+  </div>
+</div>
+
+<div class="slide-block">
+  <div class="slide-tag">
+    <span class="slide-num">Slide 5</span>
+    <span class="slide-name">Saylor's Discovery</span>
+  </div>
+  <div class="slide-script">
+    <p>To understand what we built, you have to understand what Saylor built first.</p>
+    <p>Bitcoin at the base. Volatile — thirty percent annual returns — but borderless and unseizable. That powers STRC preferred credit at layer two: eleven-point-three percent, tax-deferred, principal-protected. And layer three — the product ecosystem — Saylor deliberately left for partners to build.</p>
+    <p>He solved three dimensions. Double-digit returns. Principal protection. Tax efficiency. But two boxes stayed empty. Life insurance. Universal access. Genesis fills both.</p>
+    <div class="advance">[Advance →]</div>
+  </div>
+</div>
+
+<div class="slide-block">
+  <div class="slide-tag">
+    <span class="slide-num">Slide 6</span>
+    <span class="slide-name">The Genesis Stack</span>
+  </div>
+  <div class="slide-script">
+    <p>We built all four layers. Including the one Saylor said partners would handle.</p>
+    <p>Layer one: USDC. Three-hundred-twenty-two billion in programmable stable capital. Layer two: StrategyRouter — ninety-six settlements per day, seven corridors, six to fifteen percent APY. Layer three: the Smarter Wallet — debit card, remittance, sends, and a B2B API. Layer four: yield-funded legacy protection. The vault pays your insurance premiums. Ten to twenty times estate leverage. Near-zero churn. No competitor has this.</p>
+    <p>Saylor said: <em>"How about your bank just pays eight percent to everybody tax-free?"</em> Genesis is that bank. Paying fifteen.</p>
+    <div class="advance">[Advance →]</div>
+  </div>
+</div>
+
+<div class="slide-block">
+  <div class="slide-tag">
+    <span class="slide-num">Slide 7</span>
+    <span class="slide-name">The Flywheel</span>
+  </div>
+  <div class="slide-script">
+    <p>Two flywheels. One critical difference.</p>
+    <p>MicroStrategy's flywheel requires Bitcoin to appreciate. If Bitcoin goes sideways, the flywheel stalls. That is a structural dependency on an external variable.</p>
+    <p>The Genesis flywheel has one requirement: yield must exceed routing cost. In DeFi, that is structurally permanent. Every fifteen minutes, the engine captures yield, reinvests fifty percent into treasury, and funds insurance trails. The engine funds its own growth. It doesn't need Bitcoin. It doesn't need the market to go up. It just needs to run.</p>
+    <div class="advance">[Advance →]</div>
+  </div>
+</div>
+
+<div class="slide-block">
+  <div class="slide-tag">
+    <span class="slide-num">Slide 8</span>
+    <span class="slide-name">The Moat</span>
+  </div>
+  <div class="slide-script">
+    <p>Saylor solved three dimensions. We solve four.</p>
+    <p>Dimension four is the moat. Vault yield automatically pays life insurance premiums. The user never touches the premium. That means there is no financial trigger to cancel. Near-zero voluntary lapse rate. And every renewal generates a trail commission that compounds for the lifetime of the policy.</p>
+    <p>No DeFi protocol. No digital bank. No fintech wallet. Nobody has this.</p>
+    <div class="advance">[Advance →]</div>
+  </div>
+</div>
+
+<div class="slide-block">
+  <div class="slide-tag">
+    <span class="slide-num">Slide 9</span>
+    <span class="slide-name">The IUL Breakthrough</span>
+  </div>
+  <div class="slide-script">
+    <p>One deposit. Two compounding engines. One legacy.</p>
+    <p>Ten thousand dollars USDC enters the vault at Growth tier — ten percent APY. The vault yield automatically pays an IUL premium. That IUL builds a death benefit of one hundred thousand to five hundred thousand dollars — indexed to equity markets, growing tax-free.</p>
+    <p>The vault still compounds at full APY. Principal untouched. The insurance runs for life. And if the user ever leaves Genesis, they have to pay the premium out of pocket. That is the switching cost. Near-zero voluntary churn is not a goal. It is a structural outcome.</p>
+    <div class="advance">[Advance →]</div>
+  </div>
+</div>
+
+<div class="slide-block">
+  <div class="slide-tag">
+    <span class="slide-num">Slide 10</span>
+    <span class="slide-name">The Economics</span>
+  </div>
+  <div class="slide-script">
+    <p>Insurance is not a feature. At scale it is the most durable revenue stream in the stack.</p>
+    <p>Phase one: IMO partnership. Zero licensing risk. Revenue from referral commissions. Phase two at one billion TVL with forty percent user adoption: twelve to eighteen million dollars per year in renewal trail income — recurring, lifetime, independent of market conditions. Phase three: Genesis forms a captive. The premium book becomes a balance-sheet asset. Full economics retained forever.</p>
+    <p>Revenue stack at one billion TVL: twenty-five to thirty-five million from yield spread. Eight to fourteen from card interchange and FX. Twelve to eighteen from insurance renewal. Four to eight from GRX participation. Four independent revenue streams. One engine.</p>
+    <div class="advance">[Advance →]</div>
+  </div>
+</div>
+
+<div class="slide-block">
+  <div class="slide-tag">
+    <span class="slide-num">Slide 11</span>
+    <span class="slide-name">The Universe</span>
+  </div>
+  <div class="slide-script">
+    <p>Saylor is building for the top zero-point-one percent. Corporate treasuries. Accredited investors. Institutional funds.</p>
+    <p>Genesis is building for the next billion. One-point-four billion underbanked. Eight hundred billion in annual remittances. Three-hundred-twenty-two billion in stablecoin holders — today. Minimum entry: five dollars and an app download.</p>
+    <p>One percent of the stablecoin market is three-point-two billion in AUM. Forty percent insurance adoption is the moat. And the renewal trail duration is the lifetime of the policy.</p>
+    <div class="advance">[Advance →]</div>
+  </div>
+</div>
+
+<div class="slide-block">
+  <div class="slide-tag">
+    <span class="slide-num">Slide 12</span>
+    <span class="slide-name">The Close — Good News Finale</span>
+  </div>
+  <div class="slide-script">
+    <p>Saylor solved the investor dilemma for institutions. Genesis Reserve solves it for everyone.</p>
+    <p>Earn — fifteen percent on USDC. Bank — debit card, remittance, sends. Compound — the self-reinforcing flywheel. Protect — ten to twenty times estate leverage at zero out-of-pocket.</p>
+    <p>And here is the good news — the news we saved for last. The Genesis Terminal is live. USDC is flowing. The debit card is shipping. This is not a concept. This is infrastructure.</p>
+    <p><em>One deposit. Four superpowers. Zero out-of-pocket. Infinite legacy. This is the Perpetual Capital Engine.</em></p>
+  </div>
+</div>
+
+<div class="section-divider"></div>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     PART 2 — EXPANDED TALKING POINTS
+══════════════════════════════════════════════════════════════════════════════ -->
+<div class="part-header break-before" id="part2">
+  <span class="part-num">Part 02</span>
+  <span class="part-title">Expanded Talking Points</span>
+  <span class="part-sub">Per slide · 30–60 min version</span>
+</div>
+
+<div class="tp-block">
+  <div class="tp-header">
+    <span class="tp-slide-num">Slide 1</span>
+    <span class="tp-slide-name">The Hook</span>
+  </div>
+  <div class="tp-core">Core message: Reframe the audience's mental model before they can categorize you.</div>
+  <div class="tp-section">
+    <h4>Open with tension</h4>
+    <div class="quote-block">"Most financial pitches start with a market size slide. We're going to start with a confession: nobody asked for another savings account. We're not building one."</div>
+  </div>
+  <div class="tp-section">
+    <h4>The four superpowers — expanded</h4>
+    <ul>
+      <li><strong>Earn</strong> — 15% APY on USDC. No volatility exposure. Stable principal. This alone beats STRC by 3.7 percentage points.</li>
+      <li><strong>Bank</strong> — A debit card that draws from your vault. Remittance rails that beat Western Union on cost. A B2B API for embedded finance.</li>
+      <li><strong>Protect</strong> — Your yield automatically buys life insurance. 10–20× estate leverage. IUL cash value grows tax-free alongside vault.</li>
+      <li><strong>Compound</strong> — 50% of excess yield reinvests into treasury. The engine funds itself. Never needs a capital raise to grow.</li>
+    </ul>
+  </div>
+  <div class="tp-section">
+    <h4>The Saylor framing</h4>
+    <div class="quote-block">"Saylor described the architecture in January 2026. He said 'How about your bank just pays 8% to everybody tax-free?' He was describing Genesis Reserve. He just hadn't built it yet. We did."</div>
+  </div>
+</div>
+
+<div class="tp-block">
+  <div class="tp-header">
+    <span class="tp-slide-num">Slide 2</span>
+    <span class="tp-slide-name">The Villain</span>
+  </div>
+  <div class="tp-core">Core message: Every person in the room has lived this dilemma. Name it precisely.</div>
+  <div class="tp-section">
+    <h4>Make it personal</h4>
+    <div class="quote-block">"Raise your hand if you have money sitting in a savings account earning under one percent. [Pause.] That is the dilemma at work. You chose safety. You paid for it with purchasing power."</div>
+  </div>
+  <div class="tp-section">
+    <h4>The three choices — deconstructed</h4>
+    <ul>
+      <li><strong>Equity returns:</strong> S&P 500 averages 10% long-term — but with 15–30% annual volatility. In 2022, the index fell 20%. A 20% drawdown at $1M is $200K gone. Mark-to-market quarterly forces panic selling.</li>
+      <li><strong>Credit safety:</strong> Treasury bills at 5.2%. But CPI has averaged 3.4% over the past decade. Real return: 1–2%. You're running in place.</li>
+      <li><strong>Tax efficiency:</strong> Opportunity zones, QSBS, oil and gas partnerships. Each requires accreditation ($1M net worth), 5–10 year lock-ups, and CPAs to navigate. The average person in Lagos, Manila, or São Paulo cannot access any of these.</li>
+    </ul>
+  </div>
+  <div class="tp-section">
+    <h4>The gap</h4>
+    <div class="quote-block">"STRC has a $250M minimum. Genesis Reserve starts at $5."</div>
+  </div>
+</div>
+
+<div class="tp-block">
+  <div class="tp-header">
+    <span class="tp-slide-num">Slide 3</span>
+    <span class="tp-slide-name">Why Now</span>
+  </div>
+  <div class="tp-core">Core message: Timing is the most underrated competitive advantage. Prove the timing is structurally right.</div>
+  <div class="tp-section">
+    <h4>The Webvan test</h4>
+    <div class="quote-block">"Every good idea in history failed at the wrong time. Webvan was right about grocery delivery — but 3G internet didn't exist. We need to prove we're not Webvan."</div>
+  </div>
+  <div class="tp-section">
+    <h4>Force 1 — USDC ($321.9B)</h4>
+    <ul>
+      <li>Fully collateralized by US Treasuries and cash equivalents. Circle publishes monthly attestations.</li>
+      <li>$321.9B in circulation — up from $44B in 2022. Real, growing asset base.</li>
+      <li>USDC is programmable: moved, split, yielded, settled by code every 15 minutes. Wire transfers: 1–3 business days. Genesis: every 900 seconds.</li>
+    </ul>
+  </div>
+  <div class="tp-section">
+    <h4>Force 2 — 96-Epoch Settlement</h4>
+    <ul>
+      <li>Infrastructure maturity curve: 2020 (gas fees too high), 2022 (protocols survive bear market), 2024 (L2 dominance, fees near zero), 2025–2026 (institutional-grade routing layer exists).</li>
+      <li>96 epochs per day × 365 = 35,040 optimization decisions per year. No human portfolio manager makes 35,040 decisions.</li>
+    </ul>
+  </div>
+  <div class="tp-section">
+    <h4>Force 3 — Yield-Funded Insurance</h4>
+    <ul>
+      <li>Before programmable money, premiums required manual decision every month. Manual decision = churn risk.</li>
+      <li>Now: vault yield flows directly to carrier. No user decision. No billing event. No lapse trigger.</li>
+      <li>No fintech, DeFi protocol, or digital bank has connected these two instruments. A structural first.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="tp-block">
+  <div class="tp-header">
+    <span class="tp-slide-num">Slide 4</span>
+    <span class="tp-slide-name">The Hero Metric</span>
+  </div>
+  <div class="tp-core">Core message: Make the economics undeniable with a single, concrete example.</div>
+  <div class="tp-section">
+    <h4>The $10,000 deposit — compounded</h4>
+    <div class="stat-row"><span class="stat-label">Year 1</span><span class="stat-val">$11,500</span></div>
+    <div class="stat-row"><span class="stat-label">Year 5</span><span class="stat-val">~$20,114</span></div>
+    <div class="stat-row"><span class="stat-label">Year 10</span><span class="stat-val">~$40,456</span></div>
+    <div class="stat-row"><span class="stat-label">Year 20</span><span class="stat-val">~$163,665</span></div>
+    <div class="stat-row"><span class="stat-label">Additional contributions needed</span><span class="stat-val g">$0</span></div>
+  </div>
+  <div class="tp-section">
+    <h4>The 20× leverage — made concrete</h4>
+    <ul>
+      <li>$10K at 10% = $1,000/year yield</li>
+      <li>IUL premium for $200K policy, 35yo non-smoker: ~$600–$1,200/year</li>
+      <li>The yield covers the premium entirely. User out-of-pocket: $0</li>
+      <li>Policy is in force from day one. Legacy starts immediately.</li>
+    </ul>
+  </div>
+  <div class="tp-section">
+    <h4>The comparison — say this</h4>
+    <div class="quote-block">"This is not a better savings account. This is a new financial category."</div>
+  </div>
+</div>
+
+<div class="tp-block">
+  <div class="tp-header">
+    <span class="tp-slide-num">Slide 5</span>
+    <span class="tp-slide-name">Saylor's Discovery</span>
+  </div>
+  <div class="tp-core">Core message: Give credit where it's due. This makes you credible and sets up the contrast.</div>
+  <div class="tp-section">
+    <h4>Why we cite Saylor</h4>
+    <div class="quote-block">"Michael Saylor is arguably the most sophisticated capital architect alive. If he defined the framework, and we are extending it, that is the highest form of validation."</div>
+  </div>
+  <div class="tp-section">
+    <h4>What STRC does NOT have (the two empty boxes)</h4>
+    <ul>
+      <li>✕ Life insurance / estate leverage — not in the mandate</li>
+      <li>✕ Universal access — $250M institutional minimum</li>
+      <li>✕ Stablecoin-native yield (STRC is Bitcoin-denominated)</li>
+      <li>✕ Remittance rails or debit card infrastructure</li>
+    </ul>
+  </div>
+  <div class="tp-section">
+    <h4>The Saylor quote to memorize</h4>
+    <div class="quote-block">"Equity returns or credit safety or tax efficiency — never all three at once. STRC gives all three."<br><br>Your response: "Genesis gives all four — and starts at $5."</div>
+  </div>
+</div>
+
+<div class="tp-block">
+  <div class="tp-header">
+    <span class="tp-slide-num">Slide 6</span>
+    <span class="tp-slide-name">The Genesis Stack</span>
+  </div>
+  <div class="tp-core">Core message: We built what Saylor described as the partner layer. Plus a fourth layer nobody imagined.</div>
+  <div class="tp-section">
+    <h4>Layer-by-layer briefing</h4>
+    <ul>
+      <li><strong>L1 — USDC:</strong> Base asset, stable, programmable. No volatility input = no volatility output. $1.00 stays $1.00.</li>
+      <li><strong>L2 — Perpetual Capital Engine:</strong> StrategyRouter evaluates 7 corridors every 15 minutes. 50% of excess yield auto-reinvests to treasury. 96 settlements/day. No human required.</li>
+      <li><strong>L3 — Smarter Wallet + B2B API:</strong> The layer Saylor said partners would build. Genesis built it. Debit card, remittance (beats Western Union 6×), B2B API.</li>
+      <li><strong>L4 — Yield-Funded Legacy:</strong> THE MOAT. Vault yield routes to insurance carrier automatically. 10–20× estate leverage. Near-zero voluntary lapse.</li>
+    </ul>
+  </div>
+  <div class="tp-section">
+    <h4>The Saylor quote on layer 3</h4>
+    <div class="quote-block">"How about your bank just pays 8% to everybody tax-free? Just wire me a hundred billion dollars. I pay 8% instead of JP Morgan's 2%."<br><br>Your response: "We are that bank. Paying 15%."</div>
+  </div>
+</div>
+
+<div class="tp-block">
+  <div class="tp-header">
+    <span class="tp-slide-num">Slide 7</span>
+    <span class="tp-slide-name">The Flywheel</span>
+  </div>
+  <div class="tp-core">Core message: Our flywheel does not require an external variable to keep spinning.</div>
+  <div class="tp-section">
+    <h4>MicroStrategy flywheel — honest analysis</h4>
+    <div class="quote-block">"I want to give MicroStrategy full credit. Their flywheel is elegant. But it has one structural dependency: Bitcoin must appreciate. If BTC is flat for 12 months, the flywheel slows."</div>
+  </div>
+  <div class="tp-section">
+    <h4>Genesis flywheel — the one requirement</h4>
+    <ul>
+      <li>Yield &gt; routing cost. In DeFi, lending protocols have averaged 4–12% APY on USDC since 2021.</li>
+      <li>Routing cost (gas on Arbitrum) is measured in cents. Yield wins by a structural margin.</li>
+      <li>The flywheel doesn't need the market to go up. It requires one thing: stablecoin lending yields stay above zero. They have for five years.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="tp-block">
+  <div class="tp-header">
+    <span class="tp-slide-num">Slide 8</span>
+    <span class="tp-slide-name">The Moat</span>
+  </div>
+  <div class="tp-core">Core message: The switching cost is not a lock-in trick. It is a structural outcome.</div>
+  <div class="tp-section">
+    <h4>Why this is a moat, not a feature</h4>
+    <ul>
+      <li>A feature can be copied in 6 months.</li>
+      <li>This moat requires: (a) DeFi yield infrastructure, (b) licensed insurance carrier relationship, (c) regulatory structure to route yield to premium, (d) actuarial underwriting to price IUL at yield-funded economics.</li>
+      <li>No DeFi protocol has a licensed insurance relationship. No digital bank has DeFi yield routing. No insurance company has a stablecoin vault. Genesis is the intersection.</li>
+    </ul>
+  </div>
+  <div class="tp-section">
+    <h4>The churn math</h4>
+    <div class="quote-block">"The average voluntary lapse rate for traditional life insurance is 4–7% per year. On Genesis, voluntary lapse requires actively choosing to start paying premiums out-of-pocket. The rate approaches zero. Not an assumption — a structural outcome of removing the billing event."</div>
+  </div>
+</div>
+
+<div class="tp-block">
+  <div class="tp-header">
+    <span class="tp-slide-num">Slide 9</span>
+    <span class="tp-slide-name">The IUL Breakthrough</span>
+  </div>
+  <div class="tp-core">Core message: This is the mechanical proof of the moat. Show the math.</div>
+  <div class="tp-section">
+    <h4>IUL for non-insurance audiences</h4>
+    <ul>
+      <li>Cash value is credited with returns linked to a market index (e.g., S&amp;P 500).</li>
+      <li><strong>Floor: 0%.</strong> Market drops 30% — your cash value stays. You get 0%.</li>
+      <li><strong>Cap: typically 10–12%.</strong> Market up 25% — you get the cap.</li>
+      <li>Cash value grows tax-deferred. Loans against it are income-tax-free. Death benefit passes to heirs income-tax-free.</li>
+    </ul>
+  </div>
+  <div class="tp-section">
+    <h4>The Saylor comparison</h4>
+    <div class="quote-block">"Saylor's personal strategy: hold Bitcoin 20+ years to generate 25× income at death. Brilliant. But requires patience, volatility tolerance, and a 20-year horizon. Genesis delivers 10–20× estate leverage on day one, from dollar one, at zero out-of-pocket."</div>
+  </div>
+</div>
+
+<div class="tp-block">
+  <div class="tp-header">
+    <span class="tp-slide-num">Slide 10</span>
+    <span class="tp-slide-name">The Economics</span>
+  </div>
+  <div class="tp-core">Core message: Four independent revenue streams. Insurance is the most durable.</div>
+  <div class="tp-section">
+    <h4>Revenue at $1B TVL</h4>
+    <div class="stat-row"><span class="stat-label">Yield Spread (AUM)</span><span class="stat-val">$25–35M / yr</span></div>
+    <div class="stat-row"><span class="stat-label">Card Interchange + FX</span><span class="stat-val">$8–14M / yr</span></div>
+    <div class="stat-row"><span class="stat-label">Insurance Renewal Trail</span><span class="stat-val g">$12–18M / yr ✦</span></div>
+    <div class="stat-row"><span class="stat-label">GRX Participation</span><span class="stat-val">$4–8M / yr</span></div>
+    <div class="stat-row"><span class="stat-label">Total Revenue</span><span class="stat-val">$49–75M / yr</span></div>
+  </div>
+  <div class="tp-section">
+    <h4>Why renewal trail is the strategic prize</h4>
+    <div class="quote-block">"Yield spread is good. Card interchange is good. Both are transactional — they require ongoing activity. Insurance renewal trail is structural. The policy is in force. The commission accrues. No user action required. That is the highest-quality revenue in the stack."</div>
+  </div>
+</div>
+
+<div class="tp-block">
+  <div class="tp-header">
+    <span class="tp-slide-num">Slide 11</span>
+    <span class="tp-slide-name">The Universe</span>
+  </div>
+  <div class="tp-core">Core message: Saylor is going after $5T. Genesis is going after $150T.</div>
+  <div class="tp-section">
+    <h4>Market comparison</h4>
+    <div class="stat-row"><span class="stat-label">MicroStrategy addressable market</span><span class="stat-val">~$5T</span></div>
+    <div class="stat-row"><span class="stat-label">Genesis addressable market</span><span class="stat-val g">~$150T</span></div>
+    <div class="stat-row"><span class="stat-label">Stablecoin market today</span><span class="stat-val t">$321.9B</span></div>
+    <div class="stat-row"><span class="stat-label">Underbanked population</span><span class="stat-val">1.4B people</span></div>
+    <div class="stat-row"><span class="stat-label">Annual remittance market</span><span class="stat-val">$800B</span></div>
+    <div class="stat-row"><span class="stat-label">Minimum entry — Genesis</span><span class="stat-val g">$5 + app</span></div>
+  </div>
+</div>
+
+<div class="tp-block">
+  <div class="tp-header">
+    <span class="tp-slide-num">Slide 12</span>
+    <span class="tp-slide-name">The Close</span>
+  </div>
+  <div class="tp-core">Core message: Bring it home. The Good News Finale is the proof point.</div>
+  <div class="tp-section">
+    <h4>The Good News Finale — deliver with conviction</h4>
+    <div class="quote-block">"The Genesis Terminal is live. USDC is flowing. The debit card infrastructure is deployed. The answer to 'is this real?' is yes. The answer to 'when does it start?' is: it already did."</div>
+  </div>
+  <div class="tp-section">
+    <h4>The closing line</h4>
+    <div class="quote-block">"One deposit. Four superpowers. Zero out-of-pocket. Infinite legacy. This is the Perpetual Capital Engine."</div>
+  </div>
+</div>
+
+<div class="section-divider"></div>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     PART 3 — Q&A
+══════════════════════════════════════════════════════════════════════════════ -->
+<div class="part-header break-before" id="part3">
+  <span class="part-num">Part 03</span>
+  <span class="part-title">Q&amp;A Preparation</span>
+  <span class="part-sub">20 questions · Study the hard ones first</span>
+</div>
+
+<div class="qa-category">
+  <div class="qa-cat-header">Category A — Skeptic Questions</div>
+  <div class="qa-item">
+    <div class="qa-q">"15% APY sounds too good to be true. What's the catch?"</div>
+    <div class="qa-a">There is no hidden catch, but there is a risk profile. DeFi lending yields fluctuate. 15% is the Accelerate tier — the highest tier with the longest commitment. Preserve tier is 6%. Growth is 10%. The yield comes from real interest payments from borrowers using USDC for productive economic activity — leverage, arbitrage, institutional liquidity. If aggregate yields compress below 10%, the Accelerate tier adjusts. We communicate this transparently in advance.</div>
+  </div>
+  <div class="qa-item">
+    <div class="qa-q">"Who audited your smart contracts?"</div>
+    <div class="qa-a">We are in final audit with [firm — insert when complete]. We do not deploy AUM until the audit is complete and published. The audit scope covers StrategyRouter, yield settlement, treasury reinvestment, and insurance premium routing. Full audit report is made public. No hidden findings.</div>
+  </div>
+  <div class="qa-item">
+    <div class="qa-q">"What happens if a DeFi protocol in your routing gets hacked?"</div>
+    <div class="qa-a">StrategyRouter enforces a 25% maximum allocation per protocol via smart contract logic — it cannot be overridden. Worst-case exposure in a single-protocol exploit: 25% of routed AUM. We maintain a protocol reserve fund from treasury reinvestment specifically for this scenario. Smart contract insurance through Nexus Mutual or equivalent is being evaluated as an additional hedge.</div>
+  </div>
+  <div class="qa-item">
+    <div class="qa-q">"USDC is controlled by Circle. What if Circle fails?"</div>
+    <div class="qa-a">Circle holds $321.9B in US Treasuries and cash equivalents held at BNY Mellon and in BlackRock money market funds. If Circle collapsed, reserve assets would be distributed to USDC holders. This is a systemic financial risk — the same risk applies to PayPal, Venmo, Chase. USDC is arguably safer than bank deposits, which are only insured to $250K per account.</div>
+  </div>
+  <div class="qa-item">
+    <div class="qa-q">"This sounds like a Ponzi — early depositors paid by new depositors."</div>
+    <div class="qa-a">Yield is not paid by new depositor capital. It is generated by lending USDC to creditworthy DeFi protocols (Aave, Compound, Morpho) who pay interest to borrow stable capital. The interest comes from real borrowers. This is identical to how a bank works — deposits are lent, and the interest is shared. The only difference: we share far more of it. 10–15% vs. 0.01–0.5% at Chase.</div>
+  </div>
+</div>
+
+<div class="qa-category">
+  <div class="qa-cat-header">Category B — Technical Questions</div>
+  <div class="qa-item">
+    <div class="qa-q">"How exactly does StrategyRouter decide where to allocate?"</div>
+    <div class="qa-a">Every 15 minutes, StrategyRouter calculates for each of the 7 corridors: (a) current APY, (b) risk score (protocol TVL, audit history, exploit rate), (c) liquidity depth, and (d) gas cost of reallocation. It then solves for maximum risk-adjusted yield subject to constraints: no corridor &gt; 25%, minimum liquidity threshold, and a capital buffer for instant withdrawals. All on-chain, on Arbitrum, gas costs in cents per epoch.</div>
+  </div>
+  <div class="qa-item">
+    <div class="qa-q">"What are the seven yield corridors?"</div>
+    <div class="qa-a">Aave V3, Compound V3, Morpho Blue (peer-to-peer efficiency), Pendle (yield tokenization), Curve/Convex (stablecoin AMM yields), direct USDC lending to creditworthy counterparties, and a reserve buffer in T-bill-backed yield products (Ondo Finance, Superstate). New corridors are added via governance vote after a security review period.</div>
+  </div>
+  <div class="qa-item">
+    <div class="qa-q">"How do you handle the insurance premium routing technically?"</div>
+    <div class="qa-a">Each insured user has a premium reserve balance. After each epoch, the settlement layer calculates the pro-rata premium due (annual premium ÷ 365 ÷ 96), routes that micro-allocation to a premium escrow contract. Escrow accumulates until reaching the monthly/quarterly threshold, then executes an off-chain payment via ACH or wire to the carrier. This is our settlement layer, not the DeFi routing layer.</div>
+  </div>
+  <div class="qa-item">
+    <div class="qa-q">"What chain are you on? What are the bridging risks?"</div>
+    <div class="qa-a">Arbitrum One. Gas fees are cents, finality under 1 second, deepest DeFi liquidity outside Ethereum mainnet. Critically: there is no cross-chain bridge in the user deposit flow. User funds move from their bank or wallet directly to the Arbitrum vault. No bridging exposure in the core product.</div>
+  </div>
+</div>
+
+<div class="qa-category">
+  <div class="qa-cat-header">Category C — Regulatory Questions</div>
+  <div class="qa-item">
+    <div class="qa-q">"Are you a registered investment advisor? Is this securities law compliant?"</div>
+    <div class="qa-a">Genesis Reserve does not offer investment advice or discretionary management. Users select their own tier. The yield is structured as interest income — not a return on a security. We have obtained a legal opinion confirming the USDC vault product does not constitute a security under current SEC guidance. Insurance is offered via licensed IMO partnership. We are in ongoing dialogue with legal counsel as the regulatory landscape evolves.</div>
+  </div>
+  <div class="qa-item">
+    <div class="qa-q">"What about KYC/AML compliance?"</div>
+    <div class="qa-a">Full KYC/AML at onboarding via Privy embedded wallets with identity verification. We comply with FinCEN requirements as a money services business. Users from OFAC-sanctioned jurisdictions are blocked at wallet creation. SARs filed as required. Compliance is the price of operating at institutional scale — we built for it from day one.</div>
+  </div>
+  <div class="qa-item">
+    <div class="qa-q">"Insurance is highly regulated. How are you selling it without a license?"</div>
+    <div class="qa-a">We are not the producer of record in Phase 1. We are a technology platform that refers users to licensed insurance professionals through our IMO partner. The IMO holds the licenses. Licensed agents issue the policies. Genesis earns a technology platform referral fee — a well-established, compliant model. In Phase 2 and 3, we acquire direct licenses or carrier partnerships. A planned regulatory evolution, not a gap.</div>
+  </div>
+</div>
+
+<div class="qa-category">
+  <div class="qa-cat-header">Category D — Business Model &amp; Competition</div>
+  <div class="qa-item">
+    <div class="qa-q">"What stops Aave or Compound from building this directly?"</div>
+    <div class="qa-a">Aave and Compound are lending protocols — pipes, not products. Building a consumer product requires KYC, wallet UX, debit card, remittance, insurance partnerships, and customer support. None of that is in their mandate, team composition, or token holder incentive structure. More importantly, they cannot offer yield-funded insurance without a licensed insurance relationship, which requires building an entirely different business. They are our infrastructure. We route through them.</div>
+  </div>
+  <div class="qa-item">
+    <div class="qa-q">"What stops JPMorgan from doing this?"</div>
+    <div class="qa-a">Structural prevention. Regulatory constraints prevent large banks from holding DeFi protocol exposure. Their compliance teams require 3–5 years to approve a product like this. Their technology cannot settle 96 times per day across 7 protocols. And critically: they earn $0 on USDC deposits held at the Fed. We earn 10–15%. The incentive to build this does not exist inside the traditional banking system.</div>
+  </div>
+  <div class="qa-item">
+    <div class="qa-q">"What is your defensible moat against a better-funded copycat?"</div>
+    <div class="qa-a">Four layers: (1) Insurance carrier relationships take 12–18 months to establish. (2) A user with an active IUL policy has near-zero incentive to leave — they cannot bring their policy. (3) Larger AUM = deeper corridor liquidity = better yield = more users — this compounds. (4) Our compliance infrastructure costs $2–5M and 18+ months to replicate — it is itself a moat.</div>
+  </div>
+</div>
+
+<div class="qa-category">
+  <div class="qa-cat-header">Category E — Investor Questions</div>
+  <div class="qa-item">
+    <div class="qa-q">"What are your key risks and how do you mitigate them?"</div>
+    <div class="qa-a"><strong>Risk 1 — DeFi yield compression:</strong> Multi-corridor routing eliminates single protocol dependency. Tiers adjust transparently. <strong>Risk 2 — Smart contract exploit:</strong> 25% per-corridor cap, protocol reserve fund, smart contract insurance. <strong>Risk 3 — Regulatory shift:</strong> Modular architecture — insurance layer can be switched off in adverse jurisdictions without affecting vault yield product. <strong>Risk 4 — USDC depeg:</strong> User disclosure — same risk as holding USDC in any wallet. Not a Genesis structural risk.</div>
+  </div>
+  <div class="qa-item">
+    <div class="qa-q">"Why should I believe the 40% insurance adoption rate?"</div>
+    <div class="qa-a">It is a design outcome, not an assumption. When insurance costs the user $0 and the alternative is having no life insurance at all, the question becomes: why would a rational person decline? The $0-premium framing flips the default. Traditional insurance has low penetration because premiums compete with rent and lifestyle. On Genesis, the premium is paid before the user sees the yield. There is no trade-off. We target 40% as our conservative model assumption.</div>
+  </div>
+  <div class="qa-item">
+    <div class="qa-q">"How do you make money in year one before scale?"</div>
+    <div class="qa-a">Year 1 revenue is yield spread: the 2% difference between DeFi APY captured (~12%) and APY paid to users (~10%). On $10M AUM: $200K. Not the story. The story is the structural economics that activate at $100M+ AUM. IMO referral commissions also contribute in year one — each insured user generates a first-year commission. At 5,000 insured users, that is meaningful year-one insurance revenue while we build toward scale.</div>
+  </div>
+</div>
+
+<div class="section-divider"></div>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     PART 4 — BREAKOUT SESSIONS
+══════════════════════════════════════════════════════════════════════════════ -->
+<div class="part-header break-before" id="part4">
+  <span class="part-num">Part 04</span>
+  <span class="part-title">Breakout Sessions</span>
+  <span class="part-sub">4 modules · 20–30 min each</span>
+</div>
+
+<div class="breakout-block">
+  <div class="breakout-header">
+    <span class="breakout-label">Breakout A</span>
+    <span class="breakout-title">The Technology Deep Dive</span>
+    <span class="breakout-audience">Engineers · CTOs · Technical investors</span>
+  </div>
+  <div class="breakout-section">
+    <h4>StrategyRouter Architecture</h4>
+    <p>A Solidity smart contract on Arbitrum One. Every 900 seconds, Chainlink Automation triggers <code>routeEpoch()</code>:</p>
+    <div class="code-block">routeEpoch() logic:
+1. Read current allocations from each registered protocol adapter
+2. Query current APYs via each protocol's oracle
+3. Calculate risk-adjusted yield per corridor (weighted score)
+4. Optimize: maximize Σ(allocation[i] × APY[i])
+   Constraints: allocation[i] ≤ 25%, liquidity_buffer ≥ MIN_BUFFER
+5. Execute reallocation transactions via protocol adapters
+6. Emit epoch events for settlement layer</div>
+    <p>Protocol adapters are modular. Adding a corridor requires deploying a new adapter contract + governance whitelist. No core contract changes needed.</p>
+  </div>
+  <div class="breakout-section">
+    <h4>Insurance Premium Routing</h4>
+    <p>Off-chain settlement layer, not DeFi routing. Each insured user has a <code>premiumReserve</code> balance. After each epoch:</p>
+    <div class="code-block">premiumReserve += epochYield × premiumAllocationRatio
+
+When premiumReserve ≥ scheduledPremiumAmount:
+  → Execute ACH/wire payment to carrier
+  → Log policy payment event on-chain</div>
+    <p>The user's vault balance never decreases. Premium comes from the yield spread — the difference between gross DeFi yield and net APY paid to the user.</p>
+  </div>
+  <div class="breakout-section">
+    <h4>Privy + Wallet Architecture</h4>
+    <ul>
+      <li><code>@privy-io/react-auth</code> v3.27.1 — authentication via email, SMS, or social login</li>
+      <li><code>@privy-io/wagmi</code> v4.0.8 — wallet-to-wagmi bridge</li>
+      <li>Arbitrum One as default chain. USDC deposit flow: Bank → Circle ACH → USDC → Privy wallet → Genesis vault contract</li>
+      <li>Security model: Genesis never holds private keys. Privy MPC key management. No single party can unilaterally access user funds.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="breakout-block">
+  <div class="breakout-header">
+    <span class="breakout-label">Breakout B</span>
+    <span class="breakout-title">The Insurance Deep Dive</span>
+    <span class="breakout-audience">Insurance professionals · Wealth managers · Financial advisors</span>
+  </div>
+  <div class="breakout-section">
+    <h4>IUL Mechanics</h4>
+    <p>Two accounts in every IUL policy: (1) Term Cost of Insurance — covers pure death benefit risk. (2) Accumulation Account — the cash value.</p>
+    <div class="code-block">Index Credit = min(cap, max(floor, index_return × participation_rate))
+
+Example: S&P returns +18%, cap = 11%, floor = 0%
+→ Credit = min(11%, max(0%, 18%)) = 11%  ← Capped upside
+
+Example: S&P returns -25%, floor = 0%
+→ Credit = max(0%, -25%) = 0%            ← Zero downside</div>
+    <p>Cash value grows tax-deferred. Policy loans are income-tax-free. Death benefit passes to heirs income-tax-free.</p>
+  </div>
+  <div class="breakout-section">
+    <h4>The Yield-Premium Arbitrage</h4>
+    <ul>
+      <li>DeFi USDC yields (10–15%) structurally exceed the actuarial cost of life insurance (6–8% of annual premium as % of death benefit for 35yo non-smoker).</li>
+      <li>$10,000 at 10% = $1,000/year yield. IUL premium for $200K policy: ~$600–$900/year.</li>
+      <li>Net yield retained by user after premium: $100–$400/year. User receives full vault growth AND $200K death benefit.</li>
+      <li>The arbitrage exists because DeFi yields compensate for market-making utility — an economic function unrelated to actuarial risk. The two pricing systems don't know about each other. Genesis is the bridge.</li>
+    </ul>
+  </div>
+  <div class="breakout-section">
+    <h4>The Renewal Trail Business Model</h4>
+    <div class="stat-row"><span class="stat-label">First-year commission (typical IMO)</span><span class="stat-val">70–110% of annualized premium</span></div>
+    <div class="stat-row"><span class="stat-label">Renewal commission (ongoing)</span><span class="stat-val">3–10% per year</span></div>
+    <div class="stat-row"><span class="stat-label">Genesis referral (platform fee)</span><span class="stat-val">10–15% of first-year · 5–8% renewal</span></div>
+    <div class="stat-row"><span class="stat-label">At 400K insured users × $1,200 avg. premium</span><span class="stat-val g">$12–18M/yr steady state</span></div>
+    <p style="margin-top:10px;font-size:12px;color:var(--muted)">This cohort is additive each year. Industry voluntary lapse: 4–7%. Genesis projected: &lt;1%. Higher persistency = better commission terms from carriers over time.</p>
+  </div>
+</div>
+
+<div class="breakout-block">
+  <div class="breakout-header">
+    <span class="breakout-label">Breakout C</span>
+    <span class="breakout-title">The Economics Deep Dive</span>
+    <span class="breakout-audience">Financial analysts · Institutional investors · Hedge fund managers</span>
+  </div>
+  <div class="breakout-section">
+    <h4>Unit Economics</h4>
+    <div class="stat-row"><span class="stat-label">Customer Acquisition Cost (CAC)</span><span class="stat-val">~$30–50 per user</span></div>
+    <div class="stat-row"><span class="stat-label">Avg. deposit assumption</span><span class="stat-val">$5,000</span></div>
+    <div class="stat-row"><span class="stat-label">Avg. tenure (IUL switching cost)</span><span class="stat-val">8 years</span></div>
+    <div class="stat-row"><span class="stat-label">LTV — yield spread</span><span class="stat-val">$1,000</span></div>
+    <div class="stat-row"><span class="stat-label">LTV — card interchange</span><span class="stat-val">$144</span></div>
+    <div class="stat-row"><span class="stat-label">LTV — insurance renewal</span><span class="stat-val g">$480</span></div>
+    <div class="stat-row"><span class="stat-label">Total LTV per insured user</span><span class="stat-val">$1,624</span></div>
+    <div class="stat-row"><span class="stat-label">LTV : CAC ratio</span><span class="stat-val g">~32–54×</span></div>
+  </div>
+  <div class="breakout-section">
+    <h4>Path to Profitability</h4>
+    <div class="stat-row"><span class="stat-label">Annual fixed costs (12-person team)</span><span class="stat-val">~$4.2M</span></div>
+    <div class="stat-row"><span class="stat-label">Revenue per $ AUM (yield spread)</span><span class="stat-val">2.5%</span></div>
+    <div class="stat-row"><span class="stat-label">Break-even AUM</span><span class="stat-val">$168M</span></div>
+    <div class="stat-row"><span class="stat-label">Expected timeline to break-even</span><span class="stat-val">18–24 months</span></div>
+  </div>
+  <div class="breakout-section">
+    <h4>The $1B TVL Model</h4>
+    <div class="code-block">Revenue at $1B TVL:
+  Yield spread (2.5%):        $25,000,000
+  Card interchange:            $10,000,000
+  Insurance renewal trail:     $15,000,000
+  GRX participation:            $6,000,000
+  Total revenue:               $56,000,000
+
+Cost at $1B TVL:
+  Engineering (40 people):     $8,000,000
+  Compliance/legal:             $2,000,000
+  Operations/support:           $3,000,000
+  Marketing/acquisition:       $10,000,000
+  Infrastructure:               $1,500,000
+  Total cost:                  $24,500,000
+
+EBITDA:                        $31,500,000
+EBITDA margin:                       56%
+
+Comparable multiples (fintech SaaS w/ recurring rev):
+  $56M revenue × 15× = $840M valuation at $1B TVL</div>
+  </div>
+</div>
+
+<div class="breakout-block">
+  <div class="breakout-header">
+    <span class="breakout-label">Breakout D</span>
+    <span class="breakout-title">The Market Timing Deep Dive</span>
+    <span class="breakout-audience">Strategic investors · Board members · Partnership discussions</span>
+  </div>
+  <div class="breakout-section">
+    <h4>Five things that had to be true simultaneously (and just became true)</h4>
+    <ol>
+      <li><strong>USDC scale ($300B+):</strong> Crossed the critical mass threshold in 2024. Enough AUM to fund significant vault without depending on volatile crypto markets.</li>
+      <li><strong>L2 gas costs near zero:</strong> At 2021 Ethereum mainnet gas ($15–100/tx), 96 daily settlements were economically impossible. On Arbitrum in 2026: &lt;$0.01 per tx.</li>
+      <li><strong>DeFi protocol maturity:</strong> Aave, Compound, Morpho have operated 3+ years at scale without critical exploits. Institutional risk committees can now approve exposure.</li>
+      <li><strong>Embedded wallet UX:</strong> Privy, Dynamic, Turnkey solved the seed-phrase problem. Email login → embedded wallet = frictionless onboarding. 30%+ drop-off problem: solved.</li>
+      <li><strong>IMO partnership clarity:</strong> Regulatory framework for technology platforms to refer to licensed insurance producers without holding their own license was clarified in 2023–2024.</li>
+    </ol>
+  </div>
+  <div class="breakout-section">
+    <h4>Why competitors haven't built this</h4>
+    <ul>
+      <li><strong>Coinbase:</strong> Has cbBTC yield products. Regulatory posture too conservative to combine DeFi yield with insurance referral in one product.</li>
+      <li><strong>Robinhood:</strong> Has Robinhood Gold (3% APY). No DeFi routing, no insurance ambition, brokerage mindset.</li>
+      <li><strong>Revolut:</strong> European regulatory constraints make DeFi yield complex. Country-by-country insurance licensing required.</li>
+      <li><strong>Ondo / Superstate:</strong> Tokenized T-bills (4–5% yield). Lower yield, no insurance, no card product.</li>
+    </ul>
+    <p>None of these competitors occupy the intersection: DeFi yield routing × embedded wallet × insurance referral × debit card × B2B API. That intersection is Genesis Reserve. Today, it is unoccupied.</p>
+  </div>
+  <div class="breakout-section">
+    <h4>How the moat compounds over time</h4>
+    <ul>
+      <li><strong>Year 1:</strong> First-mover. 18+ months for any competitor to replicate just the insurance carrier relationship.</li>
+      <li><strong>Year 2:</strong> 100,000 insured users with active IUL policies. Emotional and financial cost of leaving exceeds any APY differential from a competitor.</li>
+      <li><strong>Year 3:</strong> Captive insurance vehicle. Premium book has actuarial value of $50–100M as standalone asset. Any acquirer buys both fintech and insurance book.</li>
+      <li><strong>Year 5:</strong> $5B+ AUM. $60M+/year renewal trail. Protocol reliability track record makes Genesis the default for institutional USDC yield. The brand is the infrastructure.</li>
+    </ul>
+    <div class="quote-block">"Moats don't exist at launch. They are earned. We are building the mechanisms that create the moat — and every day we are ahead, the moat gets deeper."</div>
+  </div>
+</div>
+
+<!-- ── DELIVERY NOTES ───────────────────────────────────────────────────────── -->
+<div class="delivery-notes">
+  <h3>Delivery Notes</h3>
+  <ul>
+    <li><strong>Pacing:</strong> 5-minute script = 150 words/minute. Practice with a timer. Record yourself. One run-through cold, one in front of a mirror, one out loud without looking at this sheet.</li>
+    <li><strong>Avoid:</strong> Don't apologize for the 15% number. Own it, explain it, it's real. Don't start with "we're the Airbnb of finance." Don't skip the Saylor framing — it provides credibility. Don't over-explain the IUL on first pass. "Your yield pays your family's future" is the sentence.</li>
+    <li><strong>Do:</strong> End on the Good News Finale every time. The terminal is live. Lead with proof, not promise. Pause after "The Genesis Terminal is live." Let it land.</li>
+    <li><strong>For Q&A:</strong> If you don't know the answer, say "That's the right question. Let me get you the exact numbers after this session." Never speculate on regulatory matters — redirect to "we have legal counsel engaged on that specifically."</li>
+    <li><strong>The one thing to internalize:</strong> The motion is the soul in the code. We are not a deck. We are infrastructure that moves like the company of the future. Present like that is already true — because it is.</li>
+  </ul>
+</div>
+
+<!-- ── FOOTER ───────────────────────────────────────────────────────────────── -->
+<div class="doc-footer">
+  Copyright &copy; 2026 Genesis App, Inc., doing business as Genesis Reserve. All rights reserved.<br>
+  Confidential &amp; Proprietary · For Presenter Use Only · Not For Distribution<br>
+  <a href="/genesis-keynote.html" class="back-link">← Return to Live Deck</a>
+</div>
+
+</div><!-- /page -->
+</body>
+</html>
