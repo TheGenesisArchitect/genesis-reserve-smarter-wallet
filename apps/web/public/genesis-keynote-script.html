@@ -683,7 +683,7 @@ body {
 </div>
 
 <!-- ── HIDDEN CERTIFICATE TEMPLATE (rendered offscreen for PDF export) ──── -->
-<div id="certTemplate" style="position:fixed;left:-9999px;top:0;width:816px;background:#fff;font-family:'Libre Baskerville',Georgia,serif;visibility:hidden;z-index:-1">
+<div id="certTemplate" style="position:fixed;left:-9999px;top:0;width:816px;background:#fff;font-family:'Libre Baskerville',Georgia,serif;opacity:0;pointer-events:none;z-index:-1">
 
   <!-- PAGE 1 -->
   <div id="certPage1" style="width:816px;min-height:1056px;background:#fff;position:relative;padding:48px 60px 44px;box-sizing:border-box;page-break-after:always">
@@ -905,9 +905,22 @@ function downloadCertificate() {
   btn.disabled = true;
 
   const tmpl = document.getElementById('certTemplate');
-  // Make visible so html2canvas can measure it
-  tmpl.style.visibility = 'visible';
-  tmpl.style.left = '-9999px';
+
+  // html2canvas cannot capture off-screen or opacity:0 elements.
+  // Bring the template fully on-screen (behind a scroll-lock body)
+  // so the canvas renderer sees it, then restore after save.
+  document.body.style.overflow = 'hidden';
+  tmpl.style.left      = '0';
+  tmpl.style.top       = '0';
+  tmpl.style.opacity   = '1';
+  tmpl.style.zIndex    = '99999';
+
+  function restoreTemplate() {
+    tmpl.style.left    = '-9999px';
+    tmpl.style.opacity = '0';
+    tmpl.style.zIndex  = '-1';
+    document.body.style.overflow = '';
+  }
 
   html2pdf()
     .set({
@@ -920,7 +933,9 @@ function downloadCertificate() {
         letterRendering: true,
         backgroundColor: '#ffffff',
         logging:         false,
-        windowWidth:     816
+        windowWidth:     816,
+        scrollX:         0,
+        scrollY:         0
       },
       jsPDF: {
         unit:        'in',
@@ -936,23 +951,23 @@ function downloadCertificate() {
     .from(tmpl)
     .save()
     .then(() => {
-      tmpl.style.visibility = 'hidden';
+      restoreTemplate();
       btn.innerHTML = '✓ Downloaded';
-      btn.style.background = 'rgba(26,191,106,.2)';
-      btn.style.borderColor = 'rgba(26,191,106,.5)';
-      btn.style.color = '#1ABF6A';
+      btn.style.background   = 'rgba(26,191,106,.2)';
+      btn.style.borderColor  = 'rgba(26,191,106,.5)';
+      btn.style.color        = '#1ABF6A';
       setTimeout(() => {
-        btn.innerHTML = '⬇ Share Certificate';
+        btn.innerHTML        = '⬇ Share Certificate';
         btn.style.background = '';
-        btn.style.borderColor = '';
-        btn.style.color = '';
-        btn.disabled = false;
+        btn.style.borderColor= '';
+        btn.style.color      = '';
+        btn.disabled         = false;
       }, 3000);
     })
     .catch(() => {
-      tmpl.style.visibility = 'hidden';
+      restoreTemplate();
       btn.textContent = '⬇ Share Certificate';
-      btn.disabled = false;
+      btn.disabled    = false;
     });
 }
 </script>
