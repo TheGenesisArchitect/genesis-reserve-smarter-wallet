@@ -900,75 +900,58 @@ body {
 
 <script>
 function downloadCertificate() {
-  const btn = document.getElementById('certDlBtn');
+  var btn = document.getElementById('certDlBtn');
   btn.textContent = '⏳ Generating…';
   btn.disabled = true;
 
-  const tmpl = document.getElementById('certTemplate');
+  // Extract cert HTML from the hidden template
+  var certInner = document.getElementById('certTemplate').innerHTML;
 
-  // html2canvas cannot capture off-screen or opacity:0 elements.
-  // Bring the template fully on-screen (behind a scroll-lock body)
-  // so the canvas renderer sees it, then restore after save.
-  document.body.style.overflow = 'hidden';
-  tmpl.style.left      = '0';
-  tmpl.style.top       = '0';
-  tmpl.style.opacity   = '1';
-  tmpl.style.zIndex    = '99999';
+  // Build a fully self-contained document — rendered fresh in its own window
+  // so html2canvas sees a fully painted, font-loaded, visible page.
+  var doc = '<!DOCTYPE html><html><head>' +
+    '<meta charset="UTF-8">' +
+    '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">' +
+    '<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"><\/script>' +
+    '<style>*{box-sizing:border-box}body{margin:0;padding:0;background:#fff}' +
+    '#certPage1{page-break-after:always}</style>' +
+    '</head><body>' +
+    '<div id="cert" style="width:816px;background:#fff;font-family:\'Libre Baskerville\',Georgia,serif;">' +
+    certInner +
+    '<\/div>' +
+    '<script>' +
+    'document.fonts.ready.then(function(){' +
+    '  return html2pdf().set({' +
+    '    margin:0,' +
+    '    filename:"Genesis-App-Inc-Stock-Certificate-CS-001.pdf",' +
+    '    image:{type:"jpeg",quality:0.98},' +
+    '    html2canvas:{scale:2,useCORS:true,letterRendering:true,backgroundColor:"#ffffff"},' +
+    '    jsPDF:{unit:"in",format:"letter",orientation:"portrait",compress:true},' +
+    '    pagebreak:{mode:["css","legacy"],before:"#certPage2"}' +
+    '  }).from(document.getElementById("cert")).save();' +
+    '}).then(function(){ setTimeout(function(){ window.close(); },800); });' +
+    '<\/script>' +
+    '<\/body><\/html>';
 
-  function restoreTemplate() {
-    tmpl.style.left    = '-9999px';
-    tmpl.style.opacity = '0';
-    tmpl.style.zIndex  = '-1';
-    document.body.style.overflow = '';
-  }
+  var blob = new Blob([doc], { type: 'text/html;charset=utf-8' });
+  var url  = URL.createObjectURL(blob);
+  window.open(url, '_blank');
 
-  html2pdf()
-    .set({
-      margin:      0,
-      filename:    'Genesis-App-Inc-Stock-Certificate-CS-001.pdf',
-      image:       { type: 'jpeg', quality: 0.98 },
-      html2canvas: {
-        scale:           2,
-        useCORS:         true,
-        letterRendering: true,
-        backgroundColor: '#ffffff',
-        logging:         false,
-        windowWidth:     816,
-        scrollX:         0,
-        scrollY:         0
-      },
-      jsPDF: {
-        unit:        'in',
-        format:      'letter',
-        orientation: 'portrait',
-        compress:    true
-      },
-      pagebreak: {
-        mode:   ['css', 'legacy'],
-        before: '#certPage2'
-      }
-    })
-    .from(tmpl)
-    .save()
-    .then(() => {
-      restoreTemplate();
-      btn.innerHTML = '✓ Downloaded';
-      btn.style.background   = 'rgba(26,191,106,.2)';
-      btn.style.borderColor  = 'rgba(26,191,106,.5)';
-      btn.style.color        = '#1ABF6A';
-      setTimeout(() => {
-        btn.innerHTML        = '⬇ Share Certificate';
-        btn.style.background = '';
-        btn.style.borderColor= '';
-        btn.style.color      = '';
-        btn.disabled         = false;
-      }, 3000);
-    })
-    .catch(() => {
-      restoreTemplate();
-      btn.textContent = '⬇ Share Certificate';
-      btn.disabled    = false;
-    });
+  // Restore button after PDF generation window has had time to complete
+  setTimeout(function() {
+    try { URL.revokeObjectURL(url); } catch(e) {}
+    btn.innerHTML          = '✓ Downloaded';
+    btn.style.background   = 'rgba(26,191,106,.2)';
+    btn.style.borderColor  = 'rgba(26,191,106,.5)';
+    btn.style.color        = '#1ABF6A';
+    setTimeout(function() {
+      btn.innerHTML        = '⬇ Share Certificate';
+      btn.style.background = '';
+      btn.style.borderColor= '';
+      btn.style.color      = '';
+      btn.disabled         = false;
+    }, 3000);
+  }, 9000);
 }
 </script>
 
