@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Genesis Reserve — Presenter Script & Q&A · 2026</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@300;400;500&family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,600&family=JetBrains+Mono:wght@300;400;500&family=Sora:wght@300;400;500;600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
 /* ── SCREEN VIEW ──────────────────────────────────────────────────────────── */
 :root {
@@ -676,9 +677,285 @@ body {
   <div class="brand">Genesis Reserve — Presenter Script</div>
   <div class="actions">
     <a href="/genesis-keynote.html" class="btn btn-outline">← Back to Deck</a>
-    <button class="btn btn-gold" onclick="window.print()">⬇ Print / Save PDF</button>
+    <button class="btn btn-gold" onclick="window.print()" title="Print or save this script as PDF">🖨 Print Script</button>
+    <button class="btn btn-gold" id="certDlBtn" onclick="downloadCertificate()" title="Download Share Certificate PDF">⬇ Share Certificate</button>
   </div>
 </div>
+
+<!-- ── HIDDEN CERTIFICATE TEMPLATE (rendered offscreen for PDF export) ──── -->
+<div id="certTemplate" style="position:fixed;left:-9999px;top:0;width:816px;background:#fff;font-family:'Libre Baskerville',Georgia,serif;visibility:hidden;z-index:-1">
+
+  <!-- PAGE 1 -->
+  <div id="certPage1" style="width:816px;min-height:1056px;background:#fff;position:relative;padding:48px 60px 44px;box-sizing:border-box;page-break-after:always">
+
+    <!-- outer border -->
+    <div style="position:absolute;inset:14px;border:1px solid #8A6B28;pointer-events:none">
+      <div style="position:absolute;inset:5px;border:0.5px solid rgba(138,107,40,.3)"></div>
+      <span style="position:absolute;top:-8px;left:-8px;font-size:13px;color:#8A6B28;background:#fff;padding:1px 3px">✦</span>
+      <span style="position:absolute;top:-8px;right:-8px;font-size:13px;color:#8A6B28;background:#fff;padding:1px 3px">✦</span>
+      <span style="position:absolute;bottom:-8px;left:-8px;font-size:13px;color:#8A6B28;background:#fff;padding:1px 3px">✦</span>
+      <span style="position:absolute;bottom:-8px;right:-8px;font-size:13px;color:#8A6B28;background:#fff;padding:1px 3px">✦</span>
+    </div>
+
+    <!-- letterhead -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:14px;border-bottom:2px solid #8A6B28;margin-bottom:10px">
+      <div style="display:flex;align-items:center;gap:14px">
+        <div style="width:52px;height:52px;border-radius:50%;border:1.5px solid rgba(138,107,40,.4);display:flex;align-items:center;justify-content:center;font-size:28px;color:#8A6B28;flex-shrink:0">◈</div>
+        <div>
+          <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:20px;letter-spacing:.12em;text-transform:uppercase;color:#1A1612;line-height:1.1">Genesis App Inc.</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;color:#8A6B28;letter-spacing:.06em">d/b/a Genesis Reserve</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#8A6B28;letter-spacing:.06em;margin-top:2px">8735 Dunwoody Pl, Ste 10305 · Atlanta, GA 30350</div>
+        </div>
+      </div>
+      <div style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:10px;color:#6B5B45;line-height:2">
+        <div>EIN: 39-2527497</div><div>State: Georgia</div><div>Entity Type: C Corporation</div><div>Incorporated: May 6, 2025</div>
+      </div>
+    </div>
+
+    <!-- title -->
+    <div style="text-align:center;margin:22px 0 18px">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:12px">
+        <div style="flex:1;height:1px;background:linear-gradient(90deg,transparent,#8A6B28,transparent)"></div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#8A6B28;letter-spacing:.16em;text-transform:uppercase;border:1px solid rgba(138,107,40,.4);padding:3px 12px;border-radius:20px">Certificate No. 001</span>
+        <div style="flex:1;height:1px;background:linear-gradient(90deg,transparent,#8A6B28,transparent)"></div>
+      </div>
+      <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:28px;letter-spacing:.22em;text-transform:uppercase;color:#1A1612">Common Stock Certificate</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;color:#8A6B28;letter-spacing:.06em;margin-top:5px">Class A Common Stock · Genesis App Inc.</div>
+    </div>
+
+    <!-- preamble -->
+    <div style="font-size:13px;line-height:1.85;color:#1A1612;text-align:center;padding:0 8px;margin-bottom:18px">
+      <p>This certifies that <strong>ANTHONY BEEDLES</strong> is the registered holder of</p>
+      <p style="margin:10px 0;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:17px;color:#5A3E10;letter-spacing:.04em">TEN MILLION (10,000,000)</p>
+      <p>fully paid and non-assessable shares of <strong>Class A Common Stock</strong> of <strong>Genesis App Inc.</strong>, a C Corporation organized and existing under the laws of the State of Georgia, transferable only on the books of the Corporation by the holder hereof in person or by duly authorized attorney upon surrender of this Certificate properly endorsed.</p>
+    </div>
+
+    <!-- ownership box -->
+    <div style="border:1px solid #8A6B28;border-radius:4px;background:rgba(138,107,40,.03);padding:22px 28px;margin-bottom:18px;position:relative">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#8A6B28,transparent)"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px 32px">
+        <div><div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#8A6B28;letter-spacing:.14em;text-transform:uppercase">Registered Shareholder</div><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:16px;color:#1A1612">Anthony Beedles</div></div>
+        <div><div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#8A6B28;letter-spacing:.14em;text-transform:uppercase">Percentage Ownership</div><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:24px;color:#5A3E10">100.00%</div></div>
+        <div style="grid-column:1/-1;height:1px;background:rgba(138,107,40,.18)"></div>
+        <div><div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#8A6B28;letter-spacing:.14em;text-transform:uppercase">Shares Issued to Holder</div><div style="font-family:'JetBrains Mono',monospace;font-weight:400;font-size:14px;color:#1A1612">10,000,000</div></div>
+        <div><div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#8A6B28;letter-spacing:.14em;text-transform:uppercase">Total Authorized Shares</div><div style="font-family:'JetBrains Mono',monospace;font-weight:400;font-size:14px;color:#1A1612">10,000,000</div></div>
+        <div><div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#8A6B28;letter-spacing:.14em;text-transform:uppercase">Class of Stock</div><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:16px;color:#1A1612">Class A Common</div></div>
+        <div><div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#8A6B28;letter-spacing:.14em;text-transform:uppercase">Par Value Per Share</div><div style="font-family:'JetBrains Mono',monospace;font-weight:400;font-size:14px;color:#1A1612">$0.001</div></div>
+        <div><div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#8A6B28;letter-spacing:.14em;text-transform:uppercase">Date of Issuance</div><div style="font-family:'JetBrains Mono',monospace;font-weight:400;font-size:14px;color:#1A1612">May 6, 2025</div></div>
+        <div><div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#8A6B28;letter-spacing:.14em;text-transform:uppercase">Certificate Number</div><div style="font-family:'JetBrains Mono',monospace;font-weight:400;font-size:14px;color:#1A1612">CS-001</div></div>
+      </div>
+    </div>
+
+    <!-- transfer restrictions -->
+    <div style="font-size:10.5px;line-height:1.75;color:#4A4035;padding:14px 16px;border:1px solid rgba(138,107,40,.2);border-radius:4px;background:rgba(138,107,40,.02);margin-bottom:24px">
+      <strong style="color:#1A1612">Transfer Restrictions.</strong> The shares represented by this Certificate have not been registered under the Securities Act of 1933, as amended (the "Act"), or any applicable state securities laws. These shares may not be offered, sold, transferred, pledged, hypothecated or otherwise disposed of except pursuant to (i) an effective registration statement under the Act, (ii) an applicable exemption from registration under the Act and applicable state securities laws, or (iii) a written opinion of counsel acceptable to the Corporation that such registration is not required.
+    </div>
+
+    <!-- signatures -->
+    <div style="margin-top:8px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:24px">
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#8A6B28;letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px">Date of Issue</div>
+          <div style="width:240px;border-bottom:1px solid #1A1612;padding-bottom:3px;font-size:12px;color:#4A4035;font-style:italic">May 6, 2025</div>
+        </div>
+        <div style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:9px;color:#8A6B28;letter-spacing:.1em;text-transform:uppercase">Issued by authority of the Board of Directors</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:20px;align-items:end">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+          <div style="width:100%;height:52px;border-bottom:1px solid #1A1612"></div>
+          <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:13px;color:#1A1612">Anthony Beedles</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#8A6B28;letter-spacing:.1em;text-transform:uppercase">Chief Executive Officer &amp; Secretary</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:5px">
+          <div style="width:80px;height:80px;border-radius:50%;border:1.5px dashed rgba(138,107,40,.4);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px">
+            <div style="font-family:'Cormorant Garamond',serif;font-size:20px;color:rgba(138,107,40,.35)">◈</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:6.5px;color:rgba(138,107,40,.55);text-transform:uppercase;text-align:center;line-height:1.5">Genesis<br>App Inc.<br>Georgia</div>
+          </div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:7px;color:rgba(138,107,40,.4);text-transform:uppercase">Corporate Seal</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+          <div style="width:100%;height:52px;border-bottom:1px solid #1A1612"></div>
+          <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:13px;color:#1A1612">Anthony Beedles</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#8A6B28;letter-spacing:.1em;text-transform:uppercase">Sole Director &amp; Authorized Signatory</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- cert footer -->
+    <div style="margin-top:18px;padding-top:10px;border-top:1px solid rgba(138,107,40,.25);display:flex;justify-content:space-between;align-items:center">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:rgba(90,62,16,.55);letter-spacing:.07em;line-height:1.7">Genesis App Inc. · EIN 39-2527497 · Atlanta, GA 30350<br>Certificate No. CS-001 · Class A Common Stock · 10,000,000 Shares</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;color:rgba(138,107,40,.55);text-align:right;line-height:1.6">Issued pursuant to the laws of the<br>State of Georgia · C Corporation</div>
+    </div>
+  </div>
+
+  <!-- PAGE 2 -->
+  <div id="certPage2" style="width:816px;min-height:1056px;background:#fff;position:relative;padding:48px 60px 44px;box-sizing:border-box">
+
+    <!-- outer border -->
+    <div style="position:absolute;inset:14px;border:1px solid #8A6B28;pointer-events:none">
+      <div style="position:absolute;inset:5px;border:0.5px solid rgba(138,107,40,.3)"></div>
+      <span style="position:absolute;top:-8px;left:-8px;font-size:13px;color:#8A6B28;background:#fff;padding:1px 3px">✦</span>
+      <span style="position:absolute;top:-8px;right:-8px;font-size:13px;color:#8A6B28;background:#fff;padding:1px 3px">✦</span>
+      <span style="position:absolute;bottom:-8px;left:-8px;font-size:13px;color:#8A6B28;background:#fff;padding:1px 3px">✦</span>
+      <span style="position:absolute;bottom:-8px;right:-8px;font-size:13px;color:#8A6B28;background:#fff;padding:1px 3px">✦</span>
+    </div>
+
+    <!-- letterhead -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:14px;border-bottom:2px solid #8A6B28;margin-bottom:10px">
+      <div style="display:flex;align-items:center;gap:14px">
+        <div style="width:52px;height:52px;border-radius:50%;border:1.5px solid rgba(138,107,40,.4);display:flex;align-items:center;justify-content:center;font-size:28px;color:#8A6B28;flex-shrink:0">◈</div>
+        <div>
+          <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:20px;letter-spacing:.12em;text-transform:uppercase;color:#1A1612">Genesis App Inc.</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;color:#8A6B28;letter-spacing:.06em">d/b/a Genesis Reserve</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#8A6B28;letter-spacing:.06em;margin-top:2px">8735 Dunwoody Pl, Ste 10305 · Atlanta, GA 30350</div>
+        </div>
+      </div>
+      <div style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:10px;color:#6B5B45;line-height:2">
+        <div>EIN: 39-2527497</div><div>State: Georgia</div><div>Exhibit B — Ownership Summary</div>
+      </div>
+    </div>
+
+    <!-- page 2 title -->
+    <div style="text-align:center;margin:22px 0 18px;padding-bottom:14px;border-bottom:1.5px solid #8A6B28">
+      <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:20px;letter-spacing:.18em;text-transform:uppercase;color:#1A1612">Share Ownership Summary</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#8A6B28;letter-spacing:.12em;text-transform:uppercase;margin-top:5px">Beneficial Ownership · As of May 6, 2025 · Prepared for KYB Review</div>
+    </div>
+
+    <!-- certification statement -->
+    <div style="border:1px solid rgba(138,107,40,.3);border-radius:4px;padding:16px 20px;margin-bottom:20px;background:rgba(138,107,40,.02)">
+      <p style="font-size:11.5px;line-height:1.8;color:#2A1E0A">I, <strong>Anthony Beedles</strong>, Chief Executive Officer and Sole Director of <strong>Genesis App Inc.</strong> (EIN 39-2527497), a C Corporation incorporated in the State of Georgia on May 6, 2025, hereby certify that the following table accurately reflects the complete issued share capital and beneficial ownership of Genesis App Inc. as of the date indicated below. No other shares have been authorized, issued, or are outstanding as of this date. There are no outstanding warrants, options, convertible instruments, or other rights to acquire shares except as disclosed herein.</p>
+    </div>
+
+    <!-- ownership table -->
+    <table style="width:100%;border-collapse:collapse;margin-bottom:20px;font-size:12px">
+      <thead>
+        <tr>
+          <th style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:#8A6B28;background:rgba(138,107,40,.05);padding:9px 14px;text-align:left;border:1px solid rgba(138,107,40,.25);font-weight:400">Shareholder Name</th>
+          <th style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:#8A6B28;background:rgba(138,107,40,.05);padding:9px 14px;text-align:left;border:1px solid rgba(138,107,40,.25);font-weight:400">Share Class</th>
+          <th style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:#8A6B28;background:rgba(138,107,40,.05);padding:9px 14px;text-align:left;border:1px solid rgba(138,107,40,.25);font-weight:400">Shares Issued</th>
+          <th style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:#8A6B28;background:rgba(138,107,40,.05);padding:9px 14px;text-align:left;border:1px solid rgba(138,107,40,.25);font-weight:400">Par Value</th>
+          <th style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:#8A6B28;background:rgba(138,107,40,.05);padding:9px 14px;text-align:left;border:1px solid rgba(138,107,40,.25);font-weight:400">% Ownership</th>
+          <th style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:#8A6B28;background:rgba(138,107,40,.05);padding:9px 14px;text-align:left;border:1px solid rgba(138,107,40,.25);font-weight:400">Country</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="padding:10px 14px;border:1px solid rgba(138,107,40,.15);color:#1A1612;vertical-align:top;line-height:1.5"><strong>Anthony Beedles</strong><br><span style="font-size:10px;color:#6B5B45">CEO · Sole Director · Founder</span></td>
+          <td style="padding:10px 14px;border:1px solid rgba(138,107,40,.15);color:#1A1612">Class A Common</td>
+          <td style="padding:10px 14px;border:1px solid rgba(138,107,40,.15);font-family:'JetBrains Mono',monospace;font-size:11px;color:#1A1612">10,000,000</td>
+          <td style="padding:10px 14px;border:1px solid rgba(138,107,40,.15);font-family:'JetBrains Mono',monospace;font-size:11px;color:#1A1612">$0.001</td>
+          <td style="padding:10px 14px;border:1px solid rgba(138,107,40,.15);font-weight:700;color:#5A3E10;font-size:14px">100%</td>
+          <td style="padding:10px 14px;border:1px solid rgba(138,107,40,.15);color:#1A1612">United States</td>
+        </tr>
+        <tr>
+          <td style="padding:10px 14px;border:1px solid rgba(138,107,40,.3);font-weight:700;background:rgba(138,107,40,.03);color:#1A1612"><strong>TOTAL</strong></td>
+          <td style="padding:10px 14px;border:1px solid rgba(138,107,40,.3);background:rgba(138,107,40,.03);color:#1A1612">—</td>
+          <td style="padding:10px 14px;border:1px solid rgba(138,107,40,.3);font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;background:rgba(138,107,40,.03);color:#1A1612">10,000,000</td>
+          <td style="padding:10px 14px;border:1px solid rgba(138,107,40,.3);background:rgba(138,107,40,.03);color:#1A1612">—</td>
+          <td style="padding:10px 14px;border:1px solid rgba(138,107,40,.3);font-weight:700;font-size:14px;background:rgba(138,107,40,.03);color:#5A3E10">100%</td>
+          <td style="padding:10px 14px;border:1px solid rgba(138,107,40,.3);background:rgba(138,107,40,.03);color:#1A1612">—</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- disclosures grid -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px">
+      <div style="border:1px solid rgba(138,107,40,.2);border-radius:4px;padding:14px 16px;background:rgba(138,107,40,.02)">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#8A6B28;letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px">Outstanding Instruments</div>
+        <div style="font-size:11px;line-height:1.9;color:#1A1612">Options: <strong>None</strong><br>Warrants: <strong>None</strong><br>Convertible notes: <strong>None</strong><br>RSUs: <strong>None</strong><br>Other dilutive instruments: <strong>None</strong></div>
+      </div>
+      <div style="border:1px solid rgba(138,107,40,.2);border-radius:4px;padding:14px 16px;background:rgba(138,107,40,.02)">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#8A6B28;letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px">Beneficial Ownership ≥25%</div>
+        <div style="font-size:11px;line-height:1.9;color:#1A1612">Count: <strong>1</strong><br>Name: <strong>Anthony Beedles</strong><br>Ownership: <strong>100%</strong><br>DOB: <strong>August 20, 1979</strong><br>Nationality: <strong>American (USA)</strong></div>
+      </div>
+    </div>
+
+    <!-- officer certification -->
+    <div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#8A6B28;letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid rgba(138,107,40,.2)">Officer Certification</div>
+    <div style="border:1px solid rgba(138,107,40,.3);border-radius:4px;padding:16px 20px;margin-bottom:20px;background:rgba(138,107,40,.02)">
+      <p style="font-size:11.5px;line-height:1.8;color:#2A1E0A">I certify under penalty of perjury that the foregoing information is true, correct, and complete, and that I have authority to execute this document on behalf of Genesis App Inc. This Share Ownership Summary has been prepared in connection with Know Your Business (KYB) requirements and is intended for regulatory and compliance review purposes only.</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:16px">
+      <div>
+        <div style="height:44px;border-bottom:1px solid #1A1612;margin-bottom:4px"></div>
+        <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:12px;color:#1A1612">Anthony Beedles</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#8A6B28;text-transform:uppercase;letter-spacing:.1em">Chief Executive Officer &amp; Sole Director</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#4A4035;margin-top:4px">Date: ____________________</div>
+      </div>
+      <div style="border:1px solid rgba(138,107,40,.2);border-radius:4px;padding:14px 16px;background:rgba(138,107,40,.02)">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#8A6B28;letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px">Document Details</div>
+        <div style="font-size:11px;line-height:1.9;color:#1A1612;font-family:'JetBrains Mono',monospace">Certificate No.: CS-001<br>Document Date: May 6, 2025<br>Entity: Genesis App Inc.<br>EIN: 39-2527497<br>Jurisdiction: Georgia, USA<br>Prepared for: Transak KYB</div>
+      </div>
+    </div>
+
+    <!-- page 2 footer -->
+    <div style="margin-top:auto;padding-top:14px;border-top:1px solid rgba(138,107,40,.25);display:flex;justify-content:space-between;align-items:center;position:absolute;bottom:28px;left:60px;right:60px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:rgba(90,62,16,.55);letter-spacing:.07em;line-height:1.7">Genesis App Inc. · EIN 39-2527497 · 8735 Dunwoody Pl Ste 10305, Atlanta, GA 30350<br>Confidential — prepared solely for KYB/AML compliance review.</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;color:rgba(138,107,40,.55);text-align:right;line-height:1.6">Page 2 of 2<br>Exhibit B — Ownership Summary</div>
+    </div>
+  </div>
+
+</div><!-- /certTemplate -->
+
+<script>
+function downloadCertificate() {
+  const btn = document.getElementById('certDlBtn');
+  btn.textContent = '⏳ Generating…';
+  btn.disabled = true;
+
+  const tmpl = document.getElementById('certTemplate');
+  // Make visible so html2canvas can measure it
+  tmpl.style.visibility = 'visible';
+  tmpl.style.left = '-9999px';
+
+  html2pdf()
+    .set({
+      margin:      0,
+      filename:    'Genesis-App-Inc-Stock-Certificate-CS-001.pdf',
+      image:       { type: 'jpeg', quality: 0.98 },
+      html2canvas: {
+        scale:           2,
+        useCORS:         true,
+        letterRendering: true,
+        backgroundColor: '#ffffff',
+        logging:         false,
+        windowWidth:     816
+      },
+      jsPDF: {
+        unit:        'in',
+        format:      'letter',
+        orientation: 'portrait',
+        compress:    true
+      },
+      pagebreak: {
+        mode:   ['css', 'legacy'],
+        before: '#certPage2'
+      }
+    })
+    .from(tmpl)
+    .save()
+    .then(() => {
+      tmpl.style.visibility = 'hidden';
+      btn.innerHTML = '✓ Downloaded';
+      btn.style.background = 'rgba(26,191,106,.2)';
+      btn.style.borderColor = 'rgba(26,191,106,.5)';
+      btn.style.color = '#1ABF6A';
+      setTimeout(() => {
+        btn.innerHTML = '⬇ Share Certificate';
+        btn.style.background = '';
+        btn.style.borderColor = '';
+        btn.style.color = '';
+        btn.disabled = false;
+      }, 3000);
+    })
+    .catch(() => {
+      tmpl.style.visibility = 'hidden';
+      btn.textContent = '⬇ Share Certificate';
+      btn.disabled = false;
+    });
+}
+</script>
 
 <div class="page" style="position:relative;z-index:1">
 
