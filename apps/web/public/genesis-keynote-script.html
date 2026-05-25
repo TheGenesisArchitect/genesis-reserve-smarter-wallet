@@ -904,40 +904,49 @@ function downloadCertificate() {
   btn.textContent = '⏳ Generating…';
   btn.disabled = true;
 
-  // Extract cert HTML from the hidden template
   var certInner = document.getElementById('certTemplate').innerHTML;
 
-  // Build a fully self-contained document — rendered fresh in its own window
-  // so html2canvas sees a fully painted, font-loaded, visible page.
+  // Open an isolated popup with both pages fully rendered.
+  // Use html2canvas directly on each page div separately, then stitch
+  // into a 2-page jsPDF manually — avoids all pagebreak detection bugs.
   var doc = '<!DOCTYPE html><html><head>' +
     '<meta charset="UTF-8">' +
-    '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">' +
+    '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400' +
+      '&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,600' +
+      '&family=JetBrains+Mono:wght@300;400;500&display=swap">' +
     '<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"><\/script>' +
-    '<style>*{box-sizing:border-box}body{margin:0;padding:0;background:#fff}' +
-    '#certPage1{page-break-after:always}</style>' +
+    '<style>' +
+    '* { box-sizing: border-box; }' +
+    'body { margin: 0; padding: 0; background: #fff; }' +
+    /* Pin each page to exactly letter-page height so html2canvas clips cleanly */
+    '#certPage1, #certPage2 { width: 816px !important; height: 1056px !important; overflow: hidden !important; min-height: 0 !important; }' +
+    '<\/style>' +
     '</head><body>' +
-    '<div id="cert" style="width:816px;background:#fff;font-family:\'Libre Baskerville\',Georgia,serif;">' +
+    '<div id="cert" style="width:816px;font-family:\'Libre Baskerville\',Georgia,serif;">' +
     certInner +
     '<\/div>' +
     '<script>' +
-    'document.fonts.ready.then(function(){' +
-    '  return html2pdf().set({' +
-    '    margin:0,' +
-    '    filename:"Genesis-App-Inc-Stock-Certificate-CS-001.pdf",' +
-    '    image:{type:"jpeg",quality:0.98},' +
-    '    html2canvas:{scale:2,useCORS:true,letterRendering:true,backgroundColor:"#ffffff"},' +
-    '    jsPDF:{unit:"in",format:"letter",orientation:"portrait",compress:true},' +
-    '    pagebreak:{mode:["css","legacy"],before:"#certPage2"}' +
-    '  }).from(document.getElementById("cert")).save();' +
-    '}).then(function(){ setTimeout(function(){ window.close(); },800); });' +
+    'document.fonts.ready.then(function() {' +
+    '  var opts = { scale: 2, useCORS: true, backgroundColor: "#ffffff", windowWidth: 816 };' +
+    '  return Promise.all([' +
+    '    html2canvas(document.getElementById("certPage1"), opts),' +
+    '    html2canvas(document.getElementById("certPage2"), opts)' +
+    '  ]);' +
+    '}).then(function(cvs) {' +
+    '  var pdf = new jspdf.jsPDF({ unit: "in", format: "letter", orientation: "portrait", compress: true });' +
+    '  pdf.addImage(cvs[0].toDataURL("image/jpeg", 0.98), "JPEG", 0, 0, 8.5, 11);' +
+    '  pdf.addPage();' +
+    '  pdf.addImage(cvs[1].toDataURL("image/jpeg", 0.98), "JPEG", 0, 0, 8.5, 11);' +
+    '  pdf.save("Genesis-App-Inc-Stock-Certificate-CS-001.pdf");' +
+    '  setTimeout(function() { window.close(); }, 800);' +
+    '});' +
     '<\/script>' +
-    '<\/body><\/html>';
+    '</body></html>';
 
   var blob = new Blob([doc], { type: 'text/html;charset=utf-8' });
   var url  = URL.createObjectURL(blob);
   window.open(url, '_blank');
 
-  // Restore button after PDF generation window has had time to complete
   setTimeout(function() {
     try { URL.revokeObjectURL(url); } catch(e) {}
     btn.innerHTML          = '✓ Downloaded';
@@ -951,7 +960,7 @@ function downloadCertificate() {
       btn.style.color      = '';
       btn.disabled         = false;
     }, 3000);
-  }, 9000);
+  }, 12000);
 }
 </script>
 
