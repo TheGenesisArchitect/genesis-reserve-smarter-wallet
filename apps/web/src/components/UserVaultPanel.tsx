@@ -256,7 +256,7 @@ export function UserVaultPanel({
           + Add Funds
         </button>
         <button
-          onClick={() => onNavigate?.('cashout')}
+          onClick={() => onNavigate?.('vault-withdraw')}
           style={{
             padding: '7px 16px',
             borderRadius: 7,

@@ -225,6 +225,13 @@ export function useGenesisVault(): VaultState {
       throw new Error('Wallet not ready. Reconnect wallet and try again.')
     }
 
+    // Read pool tier from localStorage (set by VaultsPage pool selection)
+    let pendingTier = 'grow'
+    try {
+      const raw = typeof window !== 'undefined' && window.localStorage.getItem('gr:pending-tier')
+      if (raw) pendingTier = (JSON.parse(raw) as { tierKey?: string }).tierKey ?? 'grow'
+    } catch { /* ignore */ }
+
     const { walletClient } = await getConnectedWallet()
     const assets = parseUnits(usdcAmount, PROTOCOL.USDC_DECIMALS)
 
@@ -235,6 +242,41 @@ export function useGenesisVault(): VaultState {
       chain: ACTIVE_CHAIN,
       transport: http(RELIABLE_RPC),
     })
+
+    // Pre-flight: activate account with the correct pool mode if not already active
+    try {
+      const policy = await reliableClient.readContract({
+        address: vaultAddress,
+        abi: GENESIS_VAULT_ABI,
+        functionName: 'policies',
+        args: [resolvedAddress],
+      }) as readonly unknown[]
+
+      if (!Boolean(policy?.[6])) {
+        const activateRes = await fetch('/api/gr/vault/activate-account', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ address: resolvedAddress, tier: pendingTier }),
+        })
+        const activateData = await activateRes.json().catch(() => ({})) as Record<string, unknown>
+        const nowActive = activateData.status === 'activated' || activateData.status === 'already_active'
+        if (!nowActive) {
+          if (activateData.status === 'kyc_required')
+            throw new Error('KYC verification is required before depositing.')
+          if (!activateRes.ok)
+            throw new Error('Account activation failed. Please try again or contact support.')
+        }
+        if (typeof activateData.txHash === 'string') {
+          await reliableClient.waitForTransactionReceipt({
+            hash: activateData.txHash as `0x${string}`,
+            timeout: 30_000,
+          })
+        }
+      }
+    } catch (err) {
+      if (err instanceof Error && (err.message.includes('KYC') || err.message.includes('activation failed'))) throw err
+      // RPC read failure — proceed optimistically; vault call will surface the real error
+    }
 
     try {
       const currentAllowance = await reliableClient.readContract({
@@ -267,6 +309,28 @@ export function useGenesisVault(): VaultState {
       })
 
       setLatestTxHash(depositHash)
+
+      // Post-deposit: record intent, strategy preference, and trigger immediate allocation
+      try {
+        await Promise.all([
+          fetch('/api/gr/deposit/intent', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ walletAddress: resolvedAddress, tier: pendingTier, txHash: depositHash }),
+          }),
+          fetch('/api/gr/deposit/strategy-preference', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ walletAddress: resolvedAddress, strategy: pendingTier }),
+          }),
+          fetch('/api/gr/vault/trigger-allocation', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ walletAddress: resolvedAddress, tier: pendingTier }),
+          }),
+        ])
+      } catch { /* non-critical telemetry — deposit already succeeded */ }
+
       return depositHash
     } catch (err) {
       throw parseDepositError(err)
@@ -301,6 +365,13 @@ export function useGenesisVault(): VaultState {
     const assets = parseUnits(usdcAmount, PROTOCOL.USDC_DECIMALS)
     const receiver = smartAccount.smartAddress
 
+    // Read pool tier from VaultsPage selection so mode is set correctly on-chain
+    let pendingTier = 'grow'
+    try {
+      const raw = typeof window !== 'undefined' && window.localStorage.getItem('gr:pending-tier')
+      if (raw) pendingTier = (JSON.parse(raw) as { tierKey?: string }).tierKey ?? 'grow'
+    } catch { /* ignore */ }
+
     // Pre-flight: ensure vault policy is active for the smart account receiver.
     // This is separate from the EOA KYC check — the smart account address needs
     // its own activation on the vault even when the EOA is already active.
@@ -314,13 +385,6 @@ export function useGenesisVault(): VaultState {
       }) as readonly unknown[]
 
       if (!Boolean(policy?.[6])) {
-        // Read pool tier from VaultsPage selection so mode is set correctly on-chain
-        let pendingTier = 'grow'
-        try {
-          const raw = typeof window !== 'undefined' && window.localStorage.getItem('gr:pending-tier')
-          if (raw) pendingTier = (JSON.parse(raw) as { tierKey?: string }).tierKey ?? 'grow'
-        } catch { /* ignore */ }
-
         const activateRes = await fetch('/api/gr/vault/activate-account', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -368,19 +432,26 @@ export function useGenesisVault(): VaultState {
       ])
       setLatestTxHash(txHash)
 
-      // Record deposit intent + strategy preference so backend can track allocation
+      // Record intent + preference, then immediately trigger yield deployment
       try {
-        await fetch('/api/gr/deposit/intent', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ walletAddress: receiver, tier: pendingTier, txHash }),
-        })
-        await fetch('/api/gr/deposit/strategy-preference', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ walletAddress: receiver, strategy: pendingTier }),
-        })
-      } catch { /* non-critical telemetry — don't fail the deposit */ }
+        await Promise.all([
+          fetch('/api/gr/deposit/intent', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ walletAddress: receiver, tier: pendingTier, txHash }),
+          }),
+          fetch('/api/gr/deposit/strategy-preference', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ walletAddress: receiver, strategy: pendingTier }),
+          }),
+          fetch('/api/gr/vault/trigger-allocation', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ walletAddress: receiver, tier: pendingTier }),
+          }),
+        ])
+      } catch { /* non-critical — deposit already succeeded */ }
 
       return txHash
     } catch (err) {
