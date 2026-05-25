@@ -62,7 +62,7 @@ export async function POST(req: NextRequest) {
                     'Authorization': `Bearer ${process.env.CIRCLE_API_KEY}`,
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ recoveryFile: ciphertext }),
+                body: JSON.stringify({ entitySecretCiphertext: ciphertext }),
             })
             if (!registerRes.ok) {
                 const err = await registerRes.json()

@@ -72,7 +72,7 @@ export function encryptEntitySecret(secret: string, publicKeyPem: string): strin
 export async function registerEntity(secretHex: string): Promise<{ ciphertext: string }> {
     const publicKey = await getEntityPublicKey()
     const ciphertext = encryptEntitySecret(secretHex, publicKey)
-    await circleRequest('POST', '/config/entity', { recoveryFile: ciphertext })
+    await circleRequest('POST', '/config/entity', { entitySecretCiphertext: ciphertext })
     return { ciphertext }
 }
 
