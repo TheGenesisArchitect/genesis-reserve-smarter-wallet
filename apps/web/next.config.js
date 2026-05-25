@@ -22,6 +22,11 @@ const nextConfig = {
 			__dirname,
 			'src/shims/asyncStorage.ts'
 		)
+		// Privy v3 bundles Farcaster/Solana integrations we don't use.
+		// Shim them to prevent webpack from failing on missing optional peer deps.
+		config.resolve.alias['@farcaster/mini-app-solana'] = false
+		config.resolve.alias['@farcaster/miniapp-sdk'] = false
+		config.resolve.alias['@solana/wallet-adapter-react'] = false
 		return config
 	},
 }

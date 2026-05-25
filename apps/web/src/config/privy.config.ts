@@ -28,11 +28,12 @@ export const PRIVY_CONFIG: PrivyClientConfig = {
 
   // ── Embedded Wallet ───────────────────────────────────────────────────────
   embeddedWallets: {
-    createOnLogin: 'users-without-wallets',  // Auto-create wallet on first login
-    requireUserPasswordOnCreate: false,      // No extra password — Privy handles security
-    showWalletUIs: false,                    // We build our own UI (the Genesis Terminal)
+    ethereum: {
+      createOnLogin: 'users-without-wallets',
+    },
+    showWalletUIs: false,
     priceDisplay: {
-      primary: 'fiat-currency',             // Show USD, not ETH
+      primary: 'fiat-currency',
       secondary: 'native-token',
     },
   },
