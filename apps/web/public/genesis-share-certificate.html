@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Genesis App Inc. — Stock Certificate No. 001</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,600&family=JetBrains+Mono:wght@300;400;500&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* ─── SCREEN CHROME ───────────────────────────────────────────────────────── */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #1a1a1a;
+  font-family: 'Libre Baskerville', Georgia, serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0;
+}
+
+/* Print bar — hidden in print */
+#printBar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  background: #111;
+  border-bottom: 1px solid rgba(201,168,76,.3);
+  padding: 10px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 999;
+  gap: 16px;
+}
+#printBar .brand {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 14px;
+  color: rgba(201,168,76,.8);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+.btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 7px 20px; border-radius: 20px; font-size: 12px;
+  font-family: 'JetBrains Mono', monospace; letter-spacing: .06em;
+  cursor: pointer; text-decoration: none; border: none;
+  transition: all .2s; white-space: nowrap;
+}
+.btn-gold { background: rgba(201,168,76,.15); border: 1px solid rgba(201,168,76,.4); color: #C9A84C; }
+.btn-gold:hover { background: rgba(201,168,76,.28); }
+.btn-out { background: transparent; border: 1px solid rgba(255,255,255,.15); color: rgba(255,255,255,.5); }
+.btn-out:hover { border-color: rgba(201,168,76,.3); color: rgba(201,168,76,.8); }
+
+/* ─── CERTIFICATE PAGES ───────────────────────────────────────────────────── */
+.page-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  padding: 80px 24px 60px;
+  width: 100%;
+}
+
+.page {
+  background: #fff;
+  width: 100%;
+  max-width: 816px; /* 8.5in at 96dpi */
+  min-height: 1056px; /* 11in at 96dpi */
+  position: relative;
+  box-shadow: 0 8px 48px rgba(0,0,0,.5);
+  page-break-after: always;
+}
+
+/* ─── OUTER ORNAMENTAL BORDER ─────────────────────────────────────────────── */
+.cert-border {
+  position: absolute;
+  inset: 14px;
+  border: 1px solid #8A6B28;
+  pointer-events: none;
+  z-index: 1;
+}
+.cert-border::before {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  border: 0.5px solid rgba(138,107,40,.35);
+}
+/* Corner ornaments */
+.cert-border::after {
+  content: '✦';
+  position: absolute;
+  top: -8px; left: -8px;
+  font-size: 14px;
+  color: #8A6B28;
+  background: #fff;
+  padding: 1px 3px;
+}
+.corner { position: absolute; font-size: 13px; color: #8A6B28; background: #fff; padding: 1px 3px; }
+.corner.tr { top: -8px; right: -8px; }
+.corner.bl { bottom: -8px; left: -8px; }
+.corner.br { bottom: -8px; right: -8px; }
+
+/* ─── CERT INNER CONTENT ──────────────────────────────────────────────────── */
+.cert-inner {
+  position: relative;
+  z-index: 2;
+  padding: 48px 60px 44px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 1056px;
+}
+
+/* ─── HEADER / LETTERHEAD ─────────────────────────────────────────────────── */
+.letterhead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding-bottom: 14px;
+  border-bottom: 2px solid #8A6B28;
+}
+.lh-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.lh-logo {
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1.5px solid rgba(138,107,40,.4);
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.lh-logo img { width: 100%; height: 100%; display: block; }
+.lh-logo-fallback {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  color: #8A6B28;
+  line-height: 1;
+}
+.lh-company {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.lh-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-size: 20px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: #1A1612;
+  line-height: 1.1;
+}
+.lh-dba {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 12px;
+  color: #8A6B28;
+  letter-spacing: .06em;
+}
+.lh-right {
+  text-align: right;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: #6B5B45;
+  line-height: 2;
+  letter-spacing: .04em;
+}
+
+/* ─── CERT TITLE ──────────────────────────────────────────────────────────── */
+.cert-title-wrap {
+  text-align: center;
+  margin: 22px 0 18px;
+  position: relative;
+}
+.cert-title-rule {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+.cert-title-rule::before, .cert-title-rule::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #8A6B28, transparent);
+}
+.cert-num-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: #8A6B28;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  border: 1px solid rgba(138,107,40,.4);
+  padding: 3px 12px;
+  border-radius: 20px;
+  background: rgba(138,107,40,.04);
+  white-space: nowrap;
+}
+.cert-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-size: 28px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: #1A1612;
+  line-height: 1.2;
+}
+.cert-subtitle {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 14px;
+  color: #8A6B28;
+  letter-spacing: .06em;
+  margin-top: 5px;
+}
+
+/* ─── BODY TEXT ───────────────────────────────────────────────────────────── */
+.cert-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.cert-preamble {
+  font-size: 13px;
+  line-height: 1.85;
+  color: #1A1612;
+  text-align: center;
+  padding: 0 8px;
+}
+.cert-preamble .highlight {
+  font-weight: 700;
+  color: #1A1612;
+  font-size: 14px;
+}
+.cert-preamble .share-count {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-size: 17px;
+  color: #5A3E10;
+  letter-spacing: .04em;
+}
+
+/* ─── OWNERSHIP BOX ───────────────────────────────────────────────────────── */
+.ownership-box {
+  border: 1px solid #8A6B28;
+  border-radius: 4px;
+  background: rgba(138,107,40,.03);
+  padding: 22px 28px;
+  position: relative;
+  overflow: hidden;
+}
+.ownership-box::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #8A6B28, transparent);
+}
+.ownership-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 32px;
+}
+.ownership-row {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.ow-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8.5px;
+  color: #8A6B28;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+.ow-value {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-size: 16px;
+  color: #1A1612;
+  letter-spacing: .04em;
+  line-height: 1.2;
+}
+.ow-value.mono {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  font-weight: 400;
+}
+.ow-value.pct {
+  font-size: 24px;
+  color: #5A3E10;
+}
+
+.ownership-divider {
+  grid-column: 1 / -1;
+  height: 1px;
+  background: rgba(138,107,40,.18);
+}
+
+/* ─── TERMS / CONDITIONS ──────────────────────────────────────────────────── */
+.cert-terms {
+  font-size: 10.5px;
+  line-height: 1.75;
+  color: #4A4035;
+  padding: 14px 16px;
+  border: 1px solid rgba(138,107,40,.2);
+  border-radius: 4px;
+  background: rgba(138,107,40,.02);
+}
+.cert-terms strong {
+  color: #1A1612;
+  font-weight: 700;
+}
+
+/* ─── SIGNATURE BLOCK ─────────────────────────────────────────────────────── */
+.sig-section {
+  margin-top: auto;
+  padding-top: 20px;
+}
+.sig-date-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 24px;
+}
+.sig-date-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: #8A6B28;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.sig-date-line {
+  width: 240px;
+  border-bottom: 1px solid #1A1612;
+  padding-bottom: 3px;
+  font-size: 12px;
+  color: #4A4035;
+  font-style: italic;
+}
+.issued-text {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: #8A6B28;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.sig-grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 20px;
+  align-items: end;
+}
+.sig-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.sig-line-area {
+  width: 100%;
+  height: 52px;
+  border-bottom: 1px solid #1A1612;
+  position: relative;
+}
+.sig-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-size: 13px;
+  color: #1A1612;
+  letter-spacing: .05em;
+  text-align: center;
+}
+.sig-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8.5px;
+  color: #8A6B28;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  text-align: center;
+}
+.seal-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+.seal-circle {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  border: 1.5px dashed rgba(138,107,40,.4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+.seal-text {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 6.5px;
+  color: rgba(138,107,40,.55);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  text-align: center;
+  line-height: 1.5;
+}
+.seal-glyph {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  color: rgba(138,107,40,.35);
+  line-height: 1;
+}
+.seal-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 7px;
+  color: rgba(138,107,40,.4);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+/* ─── CERT FOOTER ─────────────────────────────────────────────────────────── */
+.cert-footer {
+  margin-top: 18px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(138,107,40,.25);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.cert-footer-left {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  color: rgba(90,62,16,.55);
+  letter-spacing: .07em;
+  line-height: 1.7;
+}
+.cert-footer-right {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 11px;
+  color: rgba(138,107,40,.55);
+  letter-spacing: .04em;
+  text-align: right;
+  line-height: 1.6;
+}
+
+/* ─── PAGE 2 — OWNERSHIP SUMMARY TABLE ───────────────────────────────────── */
+.page2-header {
+  text-align: center;
+  margin-bottom: 28px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #8A6B28;
+}
+.page2-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-size: 20px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: #1A1612;
+  margin-bottom: 4px;
+}
+.page2-sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: #8A6B28;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.summary-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 24px;
+  font-size: 12px;
+}
+.summary-table th {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8.5px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: #8A6B28;
+  background: rgba(138,107,40,.05);
+  padding: 9px 14px;
+  text-align: left;
+  border: 1px solid rgba(138,107,40,.25);
+  font-weight: 400;
+}
+.summary-table td {
+  padding: 10px 14px;
+  border: 1px solid rgba(138,107,40,.15);
+  color: #1A1612;
+  vertical-align: top;
+  line-height: 1.5;
+}
+.summary-table tr:last-child td {
+  font-weight: 700;
+  background: rgba(138,107,40,.03);
+  border-color: rgba(138,107,40,.3);
+}
+.summary-table .mono { font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+.summary-table .pct { font-weight: 700; color: #5A3E10; font-size: 14px; }
+
+.cert-statement {
+  border: 1px solid rgba(138,107,40,.3);
+  border-radius: 4px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  background: rgba(138,107,40,.02);
+}
+.cert-statement p {
+  font-size: 11.5px;
+  line-height: 1.8;
+  color: #2A1E0A;
+}
+
+.officer-cert {
+  margin-top: 28px;
+}
+.officer-cert-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8.5px;
+  color: #8A6B28;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(138,107,40,.2);
+}
+.officer-sig-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  margin-top: 16px;
+}
+.officer-sig-block { display: flex; flex-direction: column; gap: 3px; }
+.officer-sig-line {
+  height: 44px;
+  border-bottom: 1px solid #1A1612;
+  margin-bottom: 4px;
+}
+.officer-sig-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-size: 12px;
+  color: #1A1612;
+}
+.officer-sig-role {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  color: #8A6B28;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.officer-sig-date {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: #4A4035;
+  margin-top: 4px;
+}
+
+/* ─── PRINT STYLES ────────────────────────────────────────────────────────── */
+@media print {
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { background: white; padding: 0; }
+  #printBar { display: none !important; }
+  .page-wrap { padding: 0; gap: 0; }
+  .page {
+    box-shadow: none;
+    max-width: 100%;
+    min-height: 100vh;
+    page-break-after: always;
+  }
+  .page:last-child { page-break-after: avoid; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── PRINT BAR ──────────────────────────────────────────────────────────── -->
+<div id="printBar">
+  <div class="brand">Genesis App Inc. — Stock Certificate No. 001</div>
+  <div style="display:flex;gap:10px;align-items:center">
+    <a href="/genesis-keynote.html" class="btn btn-out">← Back to Deck</a>
+    <button class="btn btn-gold" onclick="window.print()">⬇ Print / Save PDF</button>
+  </div>
+</div>
+
+<div class="page-wrap">
+
+<!-- ════════════════════════════════════════════════════════════════════════════
+     PAGE 1 — OFFICIAL STOCK CERTIFICATE
+════════════════════════════════════════════════════════════════════════════════ -->
+<div class="page" id="page1">
+  <!-- Ornamental border -->
+  <div class="cert-border">
+    <span class="corner tr">✦</span>
+    <span class="corner bl">✦</span>
+    <span class="corner br">✦</span>
+  </div>
+
+  <div class="cert-inner">
+
+    <!-- LETTERHEAD -->
+    <div class="letterhead">
+      <div class="lh-left">
+        <div class="lh-logo">
+          <img src="/genesis-logo.png" alt="Genesis Reserve"
+               onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'lh-logo-fallback\'>◈</span>'">
+        </div>
+        <div class="lh-company">
+          <div class="lh-name">Genesis App Inc.</div>
+          <div class="lh-dba">d/b/a Genesis Reserve</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#8A6B28;letter-spacing:.06em;margin-top:2px">8735 Dunwoody Pl, Ste 10305 · Atlanta, GA 30350</div>
+        </div>
+      </div>
+      <div class="lh-right">
+        <div>EIN: 39-2527497</div>
+        <div>State: Georgia</div>
+        <div>Entity Type: C Corporation</div>
+        <div>Incorporated: May 6, 2025</div>
+      </div>
+    </div>
+
+    <!-- CERTIFICATE TITLE -->
+    <div class="cert-title-wrap">
+      <div class="cert-title-rule">
+        <div class="cert-num-badge">Certificate No. 001</div>
+      </div>
+      <div class="cert-title">Common Stock Certificate</div>
+      <div class="cert-subtitle">Class A Common Stock · Genesis App Inc.</div>
+    </div>
+
+    <!-- BODY -->
+    <div class="cert-body">
+
+      <!-- Preamble -->
+      <div class="cert-preamble">
+        <p>
+          This certifies that
+          <span class="highlight">&nbsp;ANTHONY BEEDLES&nbsp;</span>
+          is the registered holder of
+        </p>
+        <p style="margin:10px 0">
+          <span class="share-count">TEN MILLION (10,000,000)</span>
+        </p>
+        <p>
+          fully paid and non-assessable shares of <strong>Class A Common Stock</strong> of
+          <strong>Genesis App Inc.</strong>, a C Corporation organized and existing under the laws
+          of the State of Georgia, transferable only on the books of the Corporation
+          by the holder hereof in person or by duly authorized attorney
+          upon surrender of this Certificate properly endorsed.
+        </p>
+      </div>
+
+      <!-- Ownership summary box -->
+      <div class="ownership-box">
+        <div class="ownership-grid">
+          <div class="ownership-row">
+            <div class="ow-label">Registered Shareholder</div>
+            <div class="ow-value">Anthony Beedles</div>
+          </div>
+          <div class="ownership-row">
+            <div class="ow-label">Percentage Ownership</div>
+            <div class="ow-value pct">100.00%</div>
+          </div>
+          <div class="ownership-divider"></div>
+          <div class="ownership-row">
+            <div class="ow-label">Shares Issued to Holder</div>
+            <div class="ow-value mono">10,000,000</div>
+          </div>
+          <div class="ownership-row">
+            <div class="ow-label">Total Authorized Shares</div>
+            <div class="ow-value mono">10,000,000</div>
+          </div>
+          <div class="ownership-row">
+            <div class="ow-label">Class of Stock</div>
+            <div class="ow-value">Class A Common</div>
+          </div>
+          <div class="ownership-row">
+            <div class="ow-label">Par Value Per Share</div>
+            <div class="ow-value mono">$0.001</div>
+          </div>
+          <div class="ownership-row">
+            <div class="ow-label">Date of Issuance</div>
+            <div class="ow-value mono">May 6, 2025</div>
+          </div>
+          <div class="ownership-row">
+            <div class="ow-label">Certificate Number</div>
+            <div class="ow-value mono">CS-001</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Terms -->
+      <div class="cert-terms">
+        <strong>Transfer Restrictions.</strong> The shares represented by this Certificate have not been registered
+        under the Securities Act of 1933, as amended (the "Act"), or any applicable state securities laws.
+        These shares may not be offered, sold, transferred, pledged, hypothecated or otherwise disposed of
+        except pursuant to (i) an effective registration statement under the Act, (ii) an applicable exemption
+        from registration under the Act and applicable state securities laws, or (iii) a written opinion of
+        counsel acceptable to the Corporation that such registration is not required. The shares represented
+        by this Certificate are also subject to such additional restrictions on transfer as may be set forth
+        in any Stockholders Agreement, Right of First Refusal Agreement, or other agreements between the
+        Corporation and the holder of this Certificate, copies of which are on file at the principal office
+        of the Corporation.
+      </div>
+
+    </div><!-- /cert-body -->
+
+    <!-- SIGNATURE BLOCK -->
+    <div class="sig-section">
+      <div class="sig-date-row">
+        <div>
+          <div class="sig-date-label">Date of Issue</div>
+          <div class="sig-date-line">May 6, 2025</div>
+        </div>
+        <div style="text-align:right">
+          <div class="issued-text">Issued by the authority of the</div>
+          <div class="issued-text">Board of Directors of Genesis App Inc.</div>
+        </div>
+      </div>
+
+      <div class="sig-grid">
+        <div class="sig-block">
+          <div class="sig-line-area"></div>
+          <div class="sig-name">Anthony Beedles</div>
+          <div class="sig-title">Chief Executive Officer &amp; Secretary</div>
+        </div>
+
+        <div class="seal-area">
+          <div class="seal-circle">
+            <div class="seal-glyph">◈</div>
+            <div class="seal-text">Genesis<br>App Inc.<br>Georgia</div>
+          </div>
+          <div class="seal-label">Corporate Seal</div>
+        </div>
+
+        <div class="sig-block">
+          <div class="sig-line-area"></div>
+          <div class="sig-name">Anthony Beedles</div>
+          <div class="sig-title">Sole Director &amp; Authorized Signatory</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CERT FOOTER -->
+    <div class="cert-footer">
+      <div class="cert-footer-left">
+        Genesis App Inc. · EIN 39-2527497 · Atlanta, GA 30350<br>
+        Certificate No. CS-001 · Class A Common Stock · 10,000,000 Shares
+      </div>
+      <div class="cert-footer-right">
+        Issued pursuant to the laws of the<br>
+        State of Georgia · C Corporation
+      </div>
+    </div>
+
+  </div><!-- /cert-inner -->
+</div><!-- /page1 -->
+
+
+<!-- ════════════════════════════════════════════════════════════════════════════
+     PAGE 2 — OWNERSHIP SUMMARY (KYB Exhibit)
+════════════════════════════════════════════════════════════════════════════════ -->
+<div class="page" id="page2">
+  <div class="cert-border">
+    <span class="corner tr">✦</span>
+    <span class="corner bl">✦</span>
+    <span class="corner br">✦</span>
+  </div>
+
+  <div class="cert-inner">
+
+    <!-- LETTERHEAD (repeated on page 2) -->
+    <div class="letterhead">
+      <div class="lh-left">
+        <div class="lh-logo">
+          <img src="/genesis-logo.png" alt="Genesis Reserve"
+               onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'lh-logo-fallback\'>◈</span>'">
+        </div>
+        <div class="lh-company">
+          <div class="lh-name">Genesis App Inc.</div>
+          <div class="lh-dba">d/b/a Genesis Reserve</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#8A6B28;letter-spacing:.06em;margin-top:2px">8735 Dunwoody Pl, Ste 10305 · Atlanta, GA 30350</div>
+        </div>
+      </div>
+      <div class="lh-right">
+        <div>EIN: 39-2527497</div>
+        <div>State: Georgia</div>
+        <div>Exhibit B — Ownership Summary</div>
+      </div>
+    </div>
+
+    <!-- PAGE 2 TITLE -->
+    <div style="text-align:center;margin:22px 0 18px;padding-bottom:14px;border-bottom:1.5px solid #8A6B28">
+      <div class="page2-title">Share Ownership Summary</div>
+      <div class="page2-sub" style="margin-top:5px">Beneficial Ownership · As of May 6, 2025 · Prepared for KYB Review</div>
+    </div>
+
+    <!-- CERT STATEMENT -->
+    <div class="cert-statement">
+      <p>
+        I, <strong>Anthony Beedles</strong>, Chief Executive Officer and Sole Director of <strong>Genesis App Inc.</strong>
+        (EIN 39-2527497), a C Corporation incorporated in the State of Georgia on May 6, 2025, hereby certify
+        that the following table accurately reflects the complete issued share capital and beneficial ownership
+        of Genesis App Inc. as of the date indicated below. No other shares have been authorized, issued,
+        or are outstanding as of this date. There are no outstanding warrants, options, convertible instruments,
+        or other rights to acquire shares except as disclosed herein.
+      </p>
+    </div>
+
+    <!-- OWNERSHIP TABLE -->
+    <table class="summary-table">
+      <thead>
+        <tr>
+          <th>Shareholder Name</th>
+          <th>Share Class</th>
+          <th>Shares Issued</th>
+          <th>Par Value</th>
+          <th>Total Authorized</th>
+          <th>% Ownership</th>
+          <th>Country of Residence</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Anthony Beedles</strong><br><span style="font-size:10px;color:#6B5B45">CEO · Sole Director · Founder</span></td>
+          <td>Class A Common</td>
+          <td class="mono">10,000,000</td>
+          <td class="mono">$0.001</td>
+          <td class="mono">10,000,000</td>
+          <td class="pct">100%</td>
+          <td>United States of America</td>
+        </tr>
+        <tr>
+          <td><strong>TOTAL</strong></td>
+          <td>—</td>
+          <td class="mono">10,000,000</td>
+          <td class="mono">$0.001</td>
+          <td class="mono">10,000,000</td>
+          <td class="pct">100%</td>
+          <td>—</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Additional disclosures -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+      <div style="border:1px solid rgba(138,107,40,.2);border-radius:4px;padding:14px 16px;background:rgba(138,107,40,.02)">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#8A6B28;letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px">Outstanding Instruments</div>
+        <div style="font-size:11px;line-height:1.75;color:#1A1612">
+          Options outstanding: <strong>None</strong><br>
+          Warrants outstanding: <strong>None</strong><br>
+          Convertible notes: <strong>None</strong><br>
+          Restricted stock units: <strong>None</strong><br>
+          Any other dilutive instruments: <strong>None</strong>
+        </div>
+      </div>
+      <div style="border:1px solid rgba(138,107,40,.2);border-radius:4px;padding:14px 16px;background:rgba(138,107,40,.02)">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#8A6B28;letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px">Beneficial Ownership ≥25%</div>
+        <div style="font-size:11px;line-height:1.75;color:#1A1612">
+          Number of 25%+ owners: <strong>1</strong><br>
+          Name: <strong>Anthony Beedles</strong><br>
+          Ownership: <strong>100%</strong><br>
+          DOB: <strong>August 20, 1979</strong><br>
+          Nationality: <strong>American (USA)</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- Officer certification -->
+    <div class="officer-cert">
+      <div class="officer-cert-title">Officer Certification</div>
+      <div class="cert-statement" style="margin-bottom:0">
+        <p>
+          I certify under penalty of perjury that the foregoing information is true, correct, and complete,
+          and that I have authority to execute this document on behalf of Genesis App Inc. This Share Ownership
+          Summary has been prepared in connection with Know Your Business (KYB) requirements and is intended
+          for regulatory and compliance review purposes only.
+        </p>
+      </div>
+
+      <div class="officer-sig-grid">
+        <div class="officer-sig-block">
+          <div class="officer-sig-line"></div>
+          <div class="officer-sig-name">Anthony Beedles</div>
+          <div class="officer-sig-role">Chief Executive Officer &amp; Sole Director</div>
+          <div class="officer-sig-date">Date: ____________________</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px;padding:14px 16px;border:1px solid rgba(138,107,40,.2);border-radius:4px;background:rgba(138,107,40,.02)">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#8A6B28;letter-spacing:.12em;text-transform:uppercase">Document Details</div>
+          <div style="font-size:11px;line-height:1.9;color:#1A1612;font-family:'JetBrains Mono',monospace">
+            Certificate No.: CS-001<br>
+            Document Date: May 6, 2025<br>
+            Entity: Genesis App Inc.<br>
+            EIN: 39-2527497<br>
+            Jurisdiction: Georgia, USA<br>
+            Prepared for: Transak KYB
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CERT FOOTER -->
+    <div class="cert-footer" style="margin-top:auto;padding-top:14px">
+      <div class="cert-footer-left">
+        Genesis App Inc. · EIN 39-2527497 · 8735 Dunwoody Pl Ste 10305, Atlanta, GA 30350<br>
+        This document is confidential and prepared solely for KYB/AML compliance review.
+      </div>
+      <div class="cert-footer-right">
+        Page 2 of 2<br>
+        Exhibit B — Ownership Summary
+      </div>
+    </div>
+
+  </div><!-- /cert-inner -->
+</div><!-- /page2 -->
+
+</div><!-- /page-wrap -->
+</body>
+</html>
