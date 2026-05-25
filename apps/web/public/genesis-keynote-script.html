@@ -899,6 +899,30 @@ body {
 </div><!-- /certTemplate -->
 
 <script>
+// Receive PDF data from the popup and trigger the download in THIS window,
+// which has full download permissions (unlike a blob:// popup window).
+window.addEventListener('message', function(e) {
+  if (!e.data || e.data.type !== 'genesis-cert-pdf') return;
+  var a = document.createElement('a');
+  a.href = e.data.data;
+  a.download = 'Genesis-App-Inc-Stock-Certificate-CS-001.pdf';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  var btn = document.getElementById('certDlBtn');
+  btn.innerHTML          = '✓ Downloaded';
+  btn.style.background   = 'rgba(26,191,106,.2)';
+  btn.style.borderColor  = 'rgba(26,191,106,.5)';
+  btn.style.color        = '#1ABF6A';
+  setTimeout(function() {
+    btn.innerHTML        = '⬇ Share Certificate';
+    btn.style.background = '';
+    btn.style.borderColor= '';
+    btn.style.color      = '';
+    btn.disabled         = false;
+  }, 3000);
+});
+
 function downloadCertificate() {
   var btn = document.getElementById('certDlBtn');
   btn.textContent = '⏳ Generating…';
@@ -906,9 +930,9 @@ function downloadCertificate() {
 
   var certInner = document.getElementById('certTemplate').innerHTML;
 
-  // Open an isolated popup — load html2canvas + jsPDF as standalone CDN scripts
-  // (html2pdf bundle does NOT expose these as window globals reliably).
-  // Render each page div separately, stitch into a guaranteed 2-page PDF.
+  // Popup renders the certificate with full fonts, generates the PDF,
+  // then sends the data URI back via postMessage so the PARENT triggers
+  // the download — Chrome blocks downloads originating from blob:// popups.
   var doc = '<!DOCTYPE html><html><head>' +
     '<meta charset="UTF-8">' +
     '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400' +
@@ -918,7 +942,7 @@ function downloadCertificate() {
     '<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"><\/script>' +
     '<style>' +
     '* { box-sizing: border-box; }' +
-    'body { margin: 0; padding: 0; background: #fff; }' +
+    'body { margin: 0; padding: 0; background: #fff; font-family: serif; }' +
     '#certPage1, #certPage2 { width: 816px !important; height: 1056px !important; overflow: hidden !important; min-height: 0 !important; }' +
     '<\/style>' +
     '</head><body>' +
@@ -933,15 +957,19 @@ function downloadCertificate() {
     '    html2canvas(document.getElementById("certPage2"), opts)' +
     '  ]);' +
     '}).then(function(cvs) {' +
-    '  var jsPDF = window.jspdf.jsPDF;' +
-    '  var pdf = new jsPDF({ unit: "in", format: "letter", orientation: "portrait", compress: true });' +
+    '  var pdf = new window.jspdf.jsPDF({ unit: "in", format: "letter", orientation: "portrait", compress: true });' +
     '  pdf.addImage(cvs[0].toDataURL("image/jpeg", 0.98), "JPEG", 0, 0, 8.5, 11);' +
     '  pdf.addPage();' +
     '  pdf.addImage(cvs[1].toDataURL("image/jpeg", 0.98), "JPEG", 0, 0, 8.5, 11);' +
-    '  pdf.save("Genesis-App-Inc-Stock-Certificate-CS-001.pdf");' +
-    '  setTimeout(function() { window.close(); }, 1000);' +
+    '  var pdfBlob = pdf.output("blob");' +
+    '  var reader = new FileReader();' +
+    '  reader.onload = function() {' +
+    '    if (window.opener) window.opener.postMessage({ type: "genesis-cert-pdf", data: reader.result }, "*");' +
+    '    setTimeout(function() { window.close(); }, 400);' +
+    '  };' +
+    '  reader.readAsDataURL(pdfBlob);' +
     '}).catch(function(e) {' +
-    '  document.body.innerHTML += "<p style=\'color:red;font-family:monospace;padding:20px\'>PDF error: "+e.message+"<\/p>";' +
+    '  document.body.innerHTML += "<p style=\'color:red;font-family:monospace;padding:20px\'>Error: " + e.message + "<\/p>";' +
     '});' +
     '<\/script>' +
     '</body></html>';
@@ -950,20 +978,14 @@ function downloadCertificate() {
   var url  = URL.createObjectURL(blob);
   window.open(url, '_blank');
 
+  // Fallback: restore button after 30s if message never arrives
   setTimeout(function() {
     try { URL.revokeObjectURL(url); } catch(e) {}
-    btn.innerHTML          = '✓ Downloaded';
-    btn.style.background   = 'rgba(26,191,106,.2)';
-    btn.style.borderColor  = 'rgba(26,191,106,.5)';
-    btn.style.color        = '#1ABF6A';
-    setTimeout(function() {
-      btn.innerHTML        = '⬇ Share Certificate';
-      btn.style.background = '';
-      btn.style.borderColor= '';
-      btn.style.color      = '';
-      btn.disabled         = false;
-    }, 3000);
-  }, 12000);
+    if (btn.disabled) {
+      btn.textContent = '⬇ Share Certificate';
+      btn.disabled    = false;
+    }
+  }, 30000);
 }
 </script>
 
