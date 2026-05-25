@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Genesis App Inc. — Stock Certificate No. 001</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,600&family=JetBrains+Mono:wght@300;400;500&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
 /* ─── SCREEN CHROME ───────────────────────────────────────────────────────── */
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -579,6 +580,10 @@ body {
   }
   .page:last-child { page-break-after: avoid; }
 }
+
+/* Explicit page break for html2pdf */
+#page1 { page-break-after: always; }
+
 </style>
 </head>
 <body>
@@ -587,12 +592,74 @@ body {
 <div id="printBar">
   <div class="brand">Genesis App Inc. — Stock Certificate No. 001</div>
   <div style="display:flex;gap:10px;align-items:center">
-    <a href="/genesis-keynote.html" class="btn btn-out">← Back to Deck</a>
-    <button class="btn btn-gold" onclick="window.print()">⬇ Print / Save PDF</button>
+    <a href="/genesis-keynote-script.html" class="btn btn-out">← Presenter Script</a>
+    <button class="btn btn-out" onclick="window.print()" title="Open browser print dialog">🖨 Print</button>
+    <button class="btn btn-gold" id="dlBtn" onclick="downloadPDF()">⬇ Download PDF</button>
   </div>
 </div>
 
-<div class="page-wrap">
+<script>
+function downloadPDF() {
+  const btn = document.getElementById('dlBtn');
+  btn.textContent = '⏳ Generating…';
+  btn.disabled = true;
+
+  // Temporarily hide the print bar so it doesn't appear in the PDF
+  const bar = document.getElementById('printBar');
+  bar.style.display = 'none';
+
+  const content = document.getElementById('pdfContent');
+
+  html2pdf()
+    .set({
+      margin:       0,
+      filename:     'Genesis-App-Inc-Stock-Certificate-CS-001.pdf',
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  {
+        scale:           2,
+        useCORS:         true,
+        letterRendering: true,
+        backgroundColor: '#ffffff',
+        logging:         false,
+        // Ensure full-width capture at US Letter size (816px @ 96dpi)
+        windowWidth:     816
+      },
+      jsPDF: {
+        unit:        'in',
+        format:      'letter',
+        orientation: 'portrait',
+        compress:    true
+      },
+      pagebreak: {
+        mode:   ['css', 'legacy'],
+        before: '#page2'
+      }
+    })
+    .from(content)
+    .save()
+    .then(() => {
+      bar.style.display = '';
+      btn.innerHTML = '✓ Downloaded';
+      btn.style.background = 'rgba(26,191,106,.2)';
+      btn.style.borderColor = 'rgba(26,191,106,.5)';
+      btn.style.color = '#1ABF6A';
+      setTimeout(() => {
+        btn.innerHTML = '⬇ Download PDF';
+        btn.style.background = '';
+        btn.style.borderColor = '';
+        btn.style.color = '';
+        btn.disabled = false;
+      }, 3000);
+    })
+    .catch(() => {
+      bar.style.display = '';
+      btn.textContent = '⬇ Download PDF';
+      btn.disabled = false;
+    });
+}
+</script>
+
+<div id="pdfContent"><div class="page-wrap">
 
 <!-- ════════════════════════════════════════════════════════════════════════════
      PAGE 1 — OFFICIAL STOCK CERTIFICATE
@@ -923,6 +990,6 @@ body {
   </div><!-- /cert-inner -->
 </div><!-- /page2 -->
 
-</div><!-- /page-wrap -->
+</div></div><!-- /page-wrap /pdfContent -->
 </body>
 </html>
