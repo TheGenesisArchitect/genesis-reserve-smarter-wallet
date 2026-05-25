@@ -39,12 +39,16 @@ interface CachedVaultSnapshot {
   totalAUM: string
 }
 
+// 0 = FlexibleReserve (Preserve), 1 = IncomeVault (Grow), 2 = GrowthMode (Accelerate)
+export type VaultMode = 0 | 1 | 2
+
 export interface VaultState {
   usdcBalance: string
   rawShares: bigint
   sharePrice: number
   walletUsdcBalance: string
   totalAUM: string
+  vaultMode: VaultMode | null   // null = not yet activated / loading
   isVaultReady: boolean
   isLoading: boolean
   error: Error | null
@@ -132,8 +136,11 @@ export function useGenesisVault(): VaultState {
   const totalAUMRawFresh = (data?.[3]?.result ?? 0n) as bigint
   const maxWithdrawFresh = (data?.[4]?.result ?? 0n) as bigint
   const policyFresh = (data?.[5]?.result ?? null) as readonly unknown[] | null
-  // policy tuple index 6 = active: bool
+  // policy tuple index 0 = mode: uint8, index 6 = active: bool
   const isVaultReady = hasFreshResults ? Boolean(policyFresh?.[6]) : false
+  const vaultMode: VaultMode | null = hasFreshResults && policyFresh?.[6]
+    ? ((Number(policyFresh[0]) as VaultMode) ?? null)
+    : null
 
   useEffect(() => {
     if (!hasFreshResults || !snapshotKey || typeof window === 'undefined') return
@@ -307,10 +314,17 @@ export function useGenesisVault(): VaultState {
       }) as readonly unknown[]
 
       if (!Boolean(policy?.[6])) {
+        // Read pool tier from VaultsPage selection so mode is set correctly on-chain
+        let pendingTier = 'grow'
+        try {
+          const raw = typeof window !== 'undefined' && window.localStorage.getItem('gr:pending-tier')
+          if (raw) pendingTier = (JSON.parse(raw) as { tierKey?: string }).tierKey ?? 'grow'
+        } catch { /* ignore */ }
+
         const activateRes = await fetch('/api/gr/vault/activate-account', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ address: receiver }),
+          body: JSON.stringify({ address: receiver, tier: pendingTier }),
         })
         const activateData = await activateRes.json().catch(() => ({})) as Record<string, unknown>
         const nowActive = activateData.status === 'activated' || activateData.status === 'already_active'
@@ -353,6 +367,21 @@ export function useGenesisVault(): VaultState {
         { to: vaultAddress, data: depositData },
       ])
       setLatestTxHash(txHash)
+
+      // Record deposit intent + strategy preference so backend can track allocation
+      try {
+        await fetch('/api/gr/deposit/intent', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ walletAddress: receiver, tier: pendingTier, txHash }),
+        })
+        await fetch('/api/gr/deposit/strategy-preference', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ walletAddress: receiver, strategy: pendingTier }),
+        })
+      } catch { /* non-critical telemetry — don't fail the deposit */ }
+
       return txHash
     } catch (err) {
       throw parseDepositError(err)
@@ -377,7 +406,7 @@ export function useGenesisVault(): VaultState {
 
   return {
     usdcBalance, rawShares, sharePrice, walletUsdcBalance, totalAUM,
-    isVaultReady, isLoading, error: error as Error | null, deposit, withdraw,
+    vaultMode, isVaultReady, isLoading, error: error as Error | null, deposit, withdraw,
     latestTxHash, isConfirmed, isGasless: smartAccount.isReady, refresh: refetch
   }
 }

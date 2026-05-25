@@ -91,8 +91,13 @@ const COMPLIANCE_ABI = [
 
 export async function POST(req: NextRequest) {
     try {
-        const body = await req.json().catch(() => ({})) as { address?: string }
+        const body = await req.json().catch(() => ({})) as { address?: string; tier?: string }
         const rawAddress = String(body?.address || '')
+
+        // Map user's pool choice to vault mode uint8
+        // 0 = FlexibleReserve (Preserve), 1 = IncomeVault (Grow), 2 = GrowthMode (Accelerate)
+        const TIER_TO_MODE: Record<string, number> = { preserve: 0, grow: 1, accelerate: 2 }
+        const requestedMode = TIER_TO_MODE[String(body?.tier ?? 'grow').toLowerCase()] ?? 1
 
         if (!isAddress(rawAddress)) {
             return NextResponse.json({ error: 'Invalid wallet address' }, { status: 400 })
@@ -111,7 +116,7 @@ export async function POST(req: NextRequest) {
                 console.warn('[vault/activate-account] No operator key — returning dev bypass for', rawAddress)
                 return NextResponse.json({
                     status: 'activated',
-                    mode: 'dev_bypass',
+                    mode: requestedMode,
                     txHash: null,
                     blockNumber: null,
                     detail: 'Set GENESIS_VAULT_OPERATOR_PRIVATE_KEY in production to activate on-chain',
@@ -160,7 +165,7 @@ export async function POST(req: NextRequest) {
                 console.warn('[vault/activate-account] Compliance not active on-chain — returning dev bypass for', rawAddress)
                 return NextResponse.json({
                     status: 'activated',
-                    mode: 'dev_bypass',
+                    mode: requestedMode,
                     txHash: null,
                     blockNumber: null,
                     detail: 'KYC was a dev bypass — skipping vault on-chain activation in non-production',
@@ -196,7 +201,7 @@ export async function POST(req: NextRequest) {
             address: GENESIS_VAULT,
             abi: VAULT_ABI,
             functionName: 'activateAccount',
-            args: [address, 1, kycLevel, riskTier, travelRuleRequired],
+            args: [address, requestedMode, kycLevel, riskTier, travelRuleRequired],
         })
 
         const receipt = await publicClient.waitForTransactionReceipt({ hash })

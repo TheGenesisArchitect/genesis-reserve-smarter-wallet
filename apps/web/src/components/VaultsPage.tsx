@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import { YieldEngineDashboard } from './YieldEngineDashboard'
+import { UserVaultPanel } from './UserVaultPanel'
 import { useYieldEngine } from '../hooks/useYieldEngine'
 import { useVaultStrategies } from '../hooks/useVaultStrategies'
 import { useAnalytics } from '../hooks/useAnalytics'
@@ -924,11 +925,14 @@ export function VaultsPage({ onNavigate, accountId }: { onNavigate?: (v: ViewKey
       </div>
 
       {/* ── Intro text ─────────────────────────────────────────────── */}
-      <div style={{ marginBottom: 28, maxWidth: 600 }}>
+      <div style={{ marginBottom: 24, maxWidth: 600 }}>
         <p style={{ fontSize: 13, color: 'rgba(245,240,232,0.6)', lineHeight: 1.7, margin: 0 }}>
           Choose your opportunity. Each category reveals the best-performing strategies in real time—handpicked, ranked by yield, and ready to deploy your capital.
         </p>
       </div>
+
+      {/* ── User's live vault position ─────────────────────────────── */}
+      <UserVaultPanel onNavigate={onNavigate} isMobile={isMobile} />
 
       {/* ── Category Drawers ───────────────────────────────────────── */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16, marginBottom: 40 }}>
