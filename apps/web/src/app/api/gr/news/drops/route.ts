@@ -138,20 +138,23 @@ function buildMocks(): NewsDrop[] {
 
 // ── In-process cache (5 min) ──────────────────────────────────────────────────
 
-let _cache: { drops: NewsDrop[]; ts: number } | null = null
+// BUILD_ID changes on every Vercel deployment — ensures stale cached drops
+// from a previous build never survive a redeployment.
+const BUILD_ID = process.env.VERCEL_DEPLOYMENT_ID ?? process.env.BUILD_ID ?? String(Date.now())
+let _cache: { drops: NewsDrop[]; ts: number; buildId: string } | null = null
 const TTL = 5 * 60 * 1000
 
 // ── Main aggregation logic ────────────────────────────────────────────────────
 
 async function buildDrops(): Promise<NewsDrop[]> {
-  if (_cache && Date.now() - _cache.ts < TTL) return _cache.drops
+  if (_cache && _cache.buildId === BUILD_ID && Date.now() - _cache.ts < TTL) return _cache.drops
 
   const results = await Promise.allSettled(
     RSS_SOURCES.map(async ({ name, url }) => {
       const res = await fetch(url, {
         signal:  AbortSignal.timeout(5000),
         headers: { 'User-Agent': 'GenesisReserve/1.0', Accept: 'application/rss+xml, application/xml, text/xml' },
-        next:    { revalidate: 300 },
+        cache:   'no-store',
       })
       if (!res.ok) throw new Error(`${name}: ${res.status}`)
       return parseRss(await res.text(), name)
@@ -217,7 +220,7 @@ async function buildDrops(): Promise<NewsDrop[]> {
     }
   })
 
-  _cache = { drops, ts: Date.now() }
+  _cache = { drops, ts: Date.now(), buildId: BUILD_ID }
   return drops
 }
 
