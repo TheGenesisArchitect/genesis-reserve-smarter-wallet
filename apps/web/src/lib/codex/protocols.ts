@@ -59,6 +59,7 @@ export const CODEX_PROTOCOLS: Record<string, CodexProtocolEntry> = {
     auditFirms: ['Trail of Bits', 'OpenZeppelin', 'Certora'],
     peerKeys: ['compound', 'spark', 'morpho'],
     launchYear: 2020,
+    defiLlamaSlug: 'aave-v3',
   },
 
   compound: {
@@ -107,6 +108,7 @@ export const CODEX_PROTOCOLS: Record<string, CodexProtocolEntry> = {
     auditFirms: ['OpenZeppelin', 'Trail of Bits', 'Gauntlet'],
     peerKeys: ['aave', 'spark'],
     launchYear: 2018,
+    defiLlamaSlug: 'compound-v3',
   },
 
   spark: {
@@ -152,6 +154,7 @@ export const CODEX_PROTOCOLS: Record<string, CodexProtocolEntry> = {
     auditFirms: ['OpenZeppelin', 'ChainSecurity', 'Trail of Bits'],
     peerKeys: ['sky', 'aave', 'ondo'],
     launchYear: 2023,
+    defiLlamaSlug: 'spark',
   },
 
   sky: {
@@ -197,6 +200,7 @@ export const CODEX_PROTOCOLS: Record<string, CodexProtocolEntry> = {
     auditFirms: ['Trail of Bits', 'OpenZeppelin', 'Runtime Verification'],
     peerKeys: ['spark', 'ondo'],
     launchYear: 2019,
+    defiLlamaSlug: 'sky',
   },
 
   ondo: {
@@ -242,6 +246,7 @@ export const CODEX_PROTOCOLS: Record<string, CodexProtocolEntry> = {
     auditFirms: ['Certora', 'Sherlock', 'OpenZeppelin'],
     peerKeys: ['spark', 'sky'],
     launchYear: 2022,
+    defiLlamaSlug: 'ondo-finance',
   },
 
   // ── GROW ──────────────────────────────────────────────────────────────────
@@ -289,6 +294,7 @@ export const CODEX_PROTOCOLS: Record<string, CodexProtocolEntry> = {
     auditFirms: ['Trail of Bits', 'Ackee', 'Spearbit'],
     peerKeys: ['notional', 'term'],
     launchYear: 2021,
+    defiLlamaSlug: 'pendle',
   },
 
   morpho: {
@@ -337,6 +343,7 @@ export const CODEX_PROTOCOLS: Record<string, CodexProtocolEntry> = {
     auditFirms: ['Trail of Bits', 'Spearbit', 'Dedaub'],
     peerKeys: ['aave', 'fluid', 'gearbox'],
     launchYear: 2021,
+    defiLlamaSlug: 'morpho',
   },
 
   resolv: {
@@ -385,6 +392,7 @@ export const CODEX_PROTOCOLS: Record<string, CodexProtocolEntry> = {
     auditFirms: ['Spearbit', 'Cantina', 'Code4rena'],
     peerKeys: ['ethena'],
     launchYear: 2024,
+    defiLlamaSlug: 'resolv',
   },
 
   maple: {
@@ -430,6 +438,7 @@ export const CODEX_PROTOCOLS: Record<string, CodexProtocolEntry> = {
     auditFirms: ['Spearbit', 'Trail of Bits'],
     peerKeys: ['term', 'notional'],
     launchYear: 2021,
+    defiLlamaSlug: 'maple-finance',
   },
 
   fluid: {
@@ -478,6 +487,7 @@ export const CODEX_PROTOCOLS: Record<string, CodexProtocolEntry> = {
     auditFirms: ['Spearbit', 'Code4rena', 'Cantina'],
     peerKeys: ['aave', 'morpho'],
     launchYear: 2024,
+    defiLlamaSlug: 'fluid',
   },
 
   notional: {
@@ -523,6 +533,7 @@ export const CODEX_PROTOCOLS: Record<string, CodexProtocolEntry> = {
     auditFirms: ['ABDK', 'Certora', 'OpenZeppelin'],
     peerKeys: ['pendle', 'term'],
     launchYear: 2020,
+    defiLlamaSlug: 'notional-v3',
   },
 
   term: {
@@ -568,6 +579,7 @@ export const CODEX_PROTOCOLS: Record<string, CodexProtocolEntry> = {
     auditFirms: ['Spearbit', 'Code4rena'],
     peerKeys: ['notional', 'pendle'],
     launchYear: 2023,
+    defiLlamaSlug: 'term-finance',
   },
 
   // ── ACCELERATE ────────────────────────────────────────────────────────────
@@ -618,6 +630,7 @@ export const CODEX_PROTOCOLS: Record<string, CodexProtocolEntry> = {
     auditFirms: ['Spearbit', 'Cyfrin', 'Code4rena'],
     peerKeys: ['resolv', 'gearbox'],
     launchYear: 2024,
+    defiLlamaSlug: 'ethena',
   },
 
   gearbox: {
@@ -663,6 +676,7 @@ export const CODEX_PROTOCOLS: Record<string, CodexProtocolEntry> = {
     auditFirms: ['ChainSecurity', 'Consensys Diligence', 'Code4rena'],
     peerKeys: ['ethena', 'morpho'],
     launchYear: 2021,
+    defiLlamaSlug: 'gearbox',
   },
 }
 

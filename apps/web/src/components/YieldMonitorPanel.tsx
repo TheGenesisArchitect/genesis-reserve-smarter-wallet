@@ -97,6 +97,7 @@ function ChainDrawer({
 
     const chainAlerts = alerts.filter((a) => a.chain === chain)
     const chainPaused = pausedItems.filter((i) => i.strategy.chain === chain)
+    const [researchId, setResearchId] = useState<string | null>(null)
 
     function handleAllocate(alert: YieldMonitorAlert) {
         const tierKey = alert.promotableTiers[0] ?? 'grow'
@@ -339,10 +340,21 @@ function ChainDrawer({
                                             </button>
                                         </div>
                                     </div>
-                                    {/* ◈ Codex chip — full width, below the strategy header */}
+                                    {/* ◈ Codex chip + Research toggle */}
                                     {codexEntry && (
-                                        <div style={{ padding: '0 14px 12px' }}>
+                                        <div style={{ padding: '0 14px 12px', display: 'flex', flexDirection: 'column', gap: 6 }}>
                                             <CodexChip entry={codexEntry} compact fullWidth />
+                                            <button
+                                                type="button"
+                                                onClick={() => setResearchId((prev) => prev === alert.strategyId ? null : alert.strategyId)}
+                                                style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: `1px solid ${color}28`, borderRadius: 6, padding: '5px 10px', cursor: 'pointer', width: 'fit-content' }}
+                                            >
+                                                <span style={{ fontSize: 10, color, fontFamily: "'Tenor Sans', sans-serif", letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: 700 }}>◈ Research</span>
+                                                <span style={{ fontSize: 10, color: 'rgba(245,240,232,0.40)' }}>{researchId === alert.strategyId ? '▲' : '▼'}</span>
+                                            </button>
+                                            {researchId === alert.strategyId && (
+                                                <GoDeeper entry={codexEntry} accentColor={color} />
+                                            )}
                                         </div>
                                     )}
                                 </div>
@@ -567,6 +579,50 @@ function ChainCard({ row, isSelected, onClick }: { row: ChainRangeRow; isSelecte
     )
 }
 
+// ── Go Deeper — visual research panel (risk pills, worked example, DefiLlama) ─
+function GoDeeper({ entry, accentColor }: { entry: import('@/lib/codex/types').CodexProtocolEntry; accentColor: string }) {
+    const scenarioBgs = ['rgba(232,64,64,0.12)', 'rgba(245,158,11,0.10)', 'rgba(155,109,255,0.10)']
+    const scenarioBorders = ['rgba(232,64,64,0.28)', 'rgba(245,158,11,0.25)', 'rgba(155,109,255,0.25)']
+    const scenarioLabels = ['High Impact', 'Moderate', 'Edge Case']
+    const scenarioLabelColors = ['#E84040', '#F59E0B', '#9B6DFF']
+    return (
+        <div style={{ paddingTop: 14, borderTop: `1px solid ${accentColor}18` }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 12 }}>
+                <span style={{ color: accentColor, fontSize: 11 }}>◈</span>
+                <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: accentColor, fontFamily: "'Tenor Sans', sans-serif" }}>
+                    Research · {entry.displayName}
+                </span>
+            </div>
+            {/* Worked example */}
+            <div style={{ padding: '11px 13px', borderRadius: 8, background: 'rgba(0,212,170,0.06)', border: '1px solid rgba(0,212,170,0.20)', borderLeft: '3px solid #00D4AA', marginBottom: 10 }}>
+                <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#00D4AA', marginBottom: 5, fontFamily: "'Tenor Sans', sans-serif" }}>Worked Example</div>
+                <div style={{ fontSize: 12, color: 'rgba(245,240,232,0.88)', lineHeight: 1.6, fontFamily: "'Cormorant Garamond', serif" }}>{entry.workedExample}</div>
+            </div>
+            {/* Risk scenario pills */}
+            <div style={{ marginBottom: 10 }}>
+                <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(201,168,76,0.70)', marginBottom: 7, fontFamily: "'Tenor Sans', sans-serif" }}>What Happens If...</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                    {entry.riskScenarios.map((scenario, i) => (
+                        <div key={i} style={{ padding: '9px 11px', borderRadius: 8, background: scenarioBgs[i] ?? 'rgba(255,255,255,0.04)', border: `1px solid ${scenarioBorders[i] ?? 'rgba(255,255,255,0.10)'}` }}>
+                            <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: scenarioLabelColors[i] ?? 'rgba(255,255,255,0.5)', marginBottom: 3, fontFamily: "'Tenor Sans', sans-serif" }}>{scenarioLabels[i] ?? `Scenario ${i + 1}`}</div>
+                            <div style={{ fontSize: 12, color: 'rgba(245,240,232,0.80)', lineHeight: 1.55, fontFamily: "'Cormorant Garamond', serif" }}>{scenario}</div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+            {/* Historical context + DefiLlama link */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, flexWrap: 'wrap' }}>
+                <div style={{ fontSize: 11, color: 'rgba(245,240,232,0.52)', fontFamily: "'Cormorant Garamond', serif", lineHeight: 1.55, flex: '1 1 180px' }}>{entry.historicalContext}</div>
+                {entry.defiLlamaSlug && (
+                    <a href={`https://defillama.com/protocol/${entry.defiLlamaSlug}`} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '7px 13px', borderRadius: 8, border: '1px solid rgba(201,168,76,0.35)', background: 'rgba(201,168,76,0.08)', color: '#C9A84C', fontSize: 10, fontWeight: 700, letterSpacing: '0.10em', textTransform: 'uppercase', fontFamily: "'Tenor Sans', sans-serif", textDecoration: 'none', flexShrink: 0 }}>
+                        ↗ DefiLlama
+                    </a>
+                )}
+            </div>
+        </div>
+    )
+}
+
 function tierTone(tiers: string[]): { line: string; fill: string } {
     if (tiers.includes('accelerate')) {
         return { line: '#22d3ee', fill: 'rgba(34,211,238,0.14)' }
@@ -615,6 +671,7 @@ export function YieldMonitorPanel({ onNavigate }: { onNavigate?: (view: string) 
     )
     const [drilldownId, setDrilldownId] = useState<string | null>(null)
     const [selectedChain, setSelectedChain] = useState<string | null>(null)
+    const [alertResearchId, setAlertResearchId] = useState<string | null>(null)
     const [progressionOpen, setProgressionOpen] = useState(false)
 
     useEffect(() => {
@@ -895,10 +952,21 @@ export function YieldMonitorPanel({ onNavigate }: { onNavigate?: (view: string) 
                                                     <div style={S.alertSub}>Tiers: {alert.promotableTiers.join(', ')}</div>
                                                 </div>
                                             </div>
-                                            {/* ◈ Codex chip below the row — full container width when panel opens */}
+                                            {/* ◈ Codex chip + Research toggle */}
                                             {alertCodexEntry && (
-                                                <div style={{ padding: '6px 2px 2px' }}>
+                                                <div style={{ padding: '6px 2px 2px', display: 'flex', flexDirection: 'column', gap: 6 }}>
                                                     <CodexChip entry={alertCodexEntry} compact fullWidth />
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setAlertResearchId((prev) => prev === alert.strategyId ? null : alert.strategyId)}
+                                                        style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: '1px solid rgba(201,168,76,0.28)', borderRadius: 6, padding: '5px 10px', cursor: 'pointer', width: 'fit-content' }}
+                                                    >
+                                                        <span style={{ fontSize: 10, color: '#C9A84C', fontFamily: "'Tenor Sans', sans-serif", letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: 700 }}>◈ Research</span>
+                                                        <span style={{ fontSize: 10, color: 'rgba(245,240,232,0.40)' }}>{alertResearchId === alert.strategyId ? '▲' : '▼'}</span>
+                                                    </button>
+                                                    {alertResearchId === alert.strategyId && (
+                                                        <GoDeeper entry={alertCodexEntry} accentColor="#C9A84C" />
+                                                    )}
                                                 </div>
                                             )}
                                         </div>
@@ -980,14 +1048,20 @@ export function YieldMonitorPanel({ onNavigate }: { onNavigate?: (view: string) 
                                                         </div>
                                                     ))}
                                                 </div>
-                                                {/* ◈ Codex Academy — embedded education for this paused strategy */}
+                                                {/* ◈ Codex Academy + DefiLlama due diligence link */}
                                                 {(() => {
                                                     const watchCodexEntry = getCodexEntry(item.strategy.protocol)
-                                                    return watchCodexEntry ? (
-                                                        <div style={{ marginTop: 14 }}>
+                                                    if (!watchCodexEntry) return null
+                                                    return (
+                                                        <div style={{ marginTop: 14, display: 'flex', flexDirection: 'column', gap: 8 }}>
                                                             <CodexChip entry={watchCodexEntry} compact fullWidth />
+                                                            {watchCodexEntry.defiLlamaSlug && (
+                                                                <a href={`https://defillama.com/protocol/${watchCodexEntry.defiLlamaSlug}`} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '6px 12px', borderRadius: 8, border: '1px solid rgba(201,168,76,0.35)', background: 'rgba(201,168,76,0.08)', color: '#C9A84C', fontSize: 10, fontWeight: 700, letterSpacing: '0.10em', textTransform: 'uppercase', fontFamily: "'Tenor Sans', sans-serif", textDecoration: 'none', width: 'fit-content' }}>
+                                                                    ↗ DefiLlama Due Diligence
+                                                                </a>
+                                                            )}
                                                         </div>
-                                                    ) : null
+                                                    )
                                                 })()}
                                             </div>
                                         )}

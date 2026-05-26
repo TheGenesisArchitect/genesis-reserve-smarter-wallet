@@ -74,6 +74,8 @@ export interface CodexProtocolEntry {
   peerKeys?: string[]
   /** Year protocol launched */
   launchYear?: number
+  /** DefiLlama protocol slug for the external due-diligence link */
+  defiLlamaSlug?: string
 }
 
 export interface CodexConceptEntry {
