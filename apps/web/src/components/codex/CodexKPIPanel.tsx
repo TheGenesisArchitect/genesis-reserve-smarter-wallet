@@ -81,10 +81,12 @@ function ApySparkline({
   history,
   tierColor,
   entryKey,
+  liveApyPct,
 }: {
   history: NonNullable<CodexProtocolEntry['apyHistory']>
   tierColor: string
   entryKey: string
+  liveApyPct?: number
 }) {
   const W = 400
   const H = 90
@@ -92,26 +94,31 @@ function ApySparkline({
   const plotW = W - padL - padR
   const plotH = H - padT - padB
 
-  const values = history.map(d => d.apy)
+  // Replace last point with live APY when available so the chart end reflects current market
+  const effectiveHistory = liveApyPct != null && history.length > 0
+    ? [...history.slice(0, -1), { ...history[history.length - 1], apy: liveApyPct }]
+    : history
+
+  const values = effectiveHistory.map(d => d.apy)
   const maxV = Math.max(...values)
   const minV = Math.min(...values)
   const span = maxV - minV || 1
 
-  const px = (i: number) => padL + (i / (history.length - 1)) * plotW
+  const px = (i: number) => padL + (i / (effectiveHistory.length - 1)) * plotW
   const py = (v: number) => padT + plotH - ((v - minV) / span) * plotH
 
-  const linePoints = history.map((d, i) => `${px(i)},${py(d.apy)}`).join(' ')
+  const linePoints = effectiveHistory.map((d, i) => `${px(i)},${py(d.apy)}`).join(' ')
   const areaD = [
     `M${px(0)},${padT + plotH}`,
-    ...history.map((d, i) => `L${px(i)},${py(d.apy)}`),
-    `L${px(history.length - 1)},${padT + plotH}`,
+    ...effectiveHistory.map((d, i) => `L${px(i)},${py(d.apy)}`),
+    `L${px(effectiveHistory.length - 1)},${padT + plotH}`,
     'Z',
   ].join(' ')
 
   const gradId = `apyGrad-${entryKey}`
-  const last = history[history.length - 1]
+  const last = effectiveHistory[effectiveHistory.length - 1]
 
-  // Y-axis labels
+  // Y-axis labels recalculate from the updated range
   const yLabels = [minV, (minV + maxV) / 2, maxV]
 
   return (
@@ -144,7 +151,7 @@ function ApySparkline({
       <polyline points={linePoints} fill="none" stroke={tierColor} strokeWidth="1.8" strokeLinejoin="round" strokeLinecap="round" />
 
       {/* X-axis labels (every 2nd) */}
-      {history.map((d, i) => i % 2 === 0 && (
+      {effectiveHistory.map((d, i) => i % 2 === 0 && (
         <text key={i} x={px(i)} y={H - 4} textAnchor="middle"
           fontSize="7" fill="rgba(245,240,232,0.30)" fontFamily={F.tenor}>
           {d.label}
@@ -154,16 +161,16 @@ function ApySparkline({
       {/* End-point dot + label */}
       {last && (
         <>
-          <circle cx={px(history.length - 1)} cy={py(last.apy)} r="3.5" fill={tierColor} />
-          <circle cx={px(history.length - 1)} cy={py(last.apy)} r="6" fill={tierColor} fillOpacity="0.18" />
+          <circle cx={px(effectiveHistory.length - 1)} cy={py(last.apy)} r="3.5" fill={tierColor} />
+          <circle cx={px(effectiveHistory.length - 1)} cy={py(last.apy)} r="6" fill={tierColor} fillOpacity="0.18" />
           <rect
-            x={px(history.length - 1) - 22} y={py(last.apy) - 17}
-            width="44" height="14" rx="3"
+            x={px(effectiveHistory.length - 1) - 26} y={py(last.apy) - 17}
+            width={liveApyPct != null ? 52 : 44} height="14" rx="3"
             fill="rgba(2,3,5,0.85)" stroke={tierColor} strokeWidth="0.75"
           />
-          <text x={px(history.length - 1)} y={py(last.apy) - 7} textAnchor="middle"
+          <text x={px(effectiveHistory.length - 1)} y={py(last.apy) - 7} textAnchor="middle"
             fontSize="8" fill={tierColor} fontFamily={F.tenor} fontWeight="700">
-            {fmt(last.apy)}% APY
+            {fmt(last.apy)}% {liveApyPct != null ? 'live' : 'APY'}
           </text>
         </>
       )}
@@ -639,7 +646,7 @@ export function ProtocolKPIPanel({ entry, liveApyPct }: { entry: CodexProtocolEn
           12-Month APY History
         </div>
         <div style={{ padding: '12px 8px 4px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 8 }}>
-          <ApySparkline history={apyHistory} tierColor={tierColor} entryKey={entry.key} />
+          <ApySparkline history={apyHistory} tierColor={tierColor} entryKey={entry.key} liveApyPct={liveApyPct} />
         </div>
       </div>
 
