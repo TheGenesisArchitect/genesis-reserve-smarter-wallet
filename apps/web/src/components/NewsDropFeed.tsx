@@ -42,109 +42,327 @@ function fmtPubDate(iso: string): string {
 
 // ── Social share panel ────────────────────────────────────────────────────────
 
-const SOCIAL_TABS = [
-  { key: 'twitter',   label: 'X (Twitter)' },
-  { key: 'instagram', label: 'Instagram' },
-  { key: 'linkedin',  label: 'LinkedIn' },
-  { key: 'tiktok',    label: 'TikTok' },
-] as const
+function XIcon() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+    </svg>
+  )
+}
 
-function SharePanel({ social }: { social: NewsDrop['social'] }) {
-  const [tab, setTab] = useState<keyof NewsDrop['social']>('twitter')
-  const [copied, setCopied] = useState(false)
+function LinkedInIcon() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+      <rect x="2" y="9" width="4" height="12" />
+      <circle cx="4" cy="4" r="2" />
+    </svg>
+  )
+}
 
-  const copy = useCallback(() => {
-    navigator.clipboard.writeText(social[tab]).then(() => {
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    })
-  }, [social, tab])
+function InstagramIcon() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+    </svg>
+  )
+}
+
+function TikTokIcon() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.79a4.85 4.85 0 0 1-1.01-.1z" />
+    </svg>
+  )
+}
+
+interface PlatformDef {
+  key: string
+  label: string
+  subLabel: string
+  action: 'open' | 'copy'
+  url?: string
+  copy: string
+  hint?: string
+  bg: string
+  border: string
+  hoverBorder: string
+  color: string
+  icon: React.ReactNode
+}
+
+function SharePanel({ drop }: { drop: NewsDrop }) {
+  const [copiedKey, setCopiedKey] = useState<string | null>(null)
+  const [previewKey, setPreviewKey] = useState<string | null>(null)
+  const [canNativeShare, setCanNativeShare] = useState(false)
+
+  useEffect(() => {
+    setCanNativeShare(typeof navigator !== 'undefined' && !!navigator.share)
+  }, [])
+
+  const xUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(drop.social.twitter)}`
+  const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(drop.sourceUrl)}`
+
+  const PLATFORMS: PlatformDef[] = [
+    {
+      key: 'twitter', label: 'Post to X', subLabel: 'Opens tweet composer',
+      action: 'open', url: xUrl, copy: drop.social.twitter,
+      bg: 'rgba(0,0,0,0.65)', border: 'rgba(255,255,255,0.18)', hoverBorder: 'rgba(255,255,255,0.42)',
+      color: '#ffffff', icon: <XIcon />,
+    },
+    {
+      key: 'linkedin', label: 'Post to LinkedIn', subLabel: 'Opens share dialog',
+      action: 'open', url: linkedInUrl, copy: drop.social.linkedin,
+      bg: 'rgba(10,102,194,0.10)', border: 'rgba(10,102,194,0.30)', hoverBorder: 'rgba(10,102,194,0.60)',
+      color: '#5b9bd5', icon: <LinkedInIcon />,
+    },
+    {
+      key: 'instagram', label: 'Copy for Instagram', subLabel: 'Caption to clipboard',
+      action: 'copy', copy: drop.social.instagram, hint: 'Open Instagram → New Post → paste caption',
+      bg: 'rgba(131,58,180,0.08)', border: 'rgba(225,48,108,0.22)', hoverBorder: 'rgba(225,48,108,0.50)',
+      color: '#e1306c', icon: <InstagramIcon />,
+    },
+    {
+      key: 'tiktok', label: 'Copy for TikTok', subLabel: 'Script to clipboard',
+      action: 'copy', copy: drop.social.tiktok, hint: 'Open TikTok → Upload → paste caption',
+      bg: 'rgba(0,0,0,0.65)', border: 'rgba(105,201,208,0.22)', hoverBorder: 'rgba(105,201,208,0.55)',
+      color: '#69c9d0', icon: <TikTokIcon />,
+    },
+  ]
+
+  function handleAction(p: PlatformDef) {
+    if (p.action === 'open' && p.url) {
+      window.open(p.url, '_blank', 'noopener,noreferrer')
+    } else {
+      navigator.clipboard.writeText(p.copy).then(() => {
+        setCopiedKey(p.key)
+        setTimeout(() => setCopiedKey(null), 3500)
+      })
+    }
+  }
+
+  function handleNativeShare() {
+    navigator.share({ title: drop.headline, text: drop.social.twitter, url: drop.sourceUrl }).catch(() => {})
+  }
+
+  const activePreview = previewKey ? PLATFORMS.find(p => p.key === previewKey) : null
 
   return (
     <div
       style={{
         marginTop: 14,
-        background: 'rgba(255,255,255,0.025)',
+        background: 'rgba(2,3,5,0.92)',
         border: '1px solid rgba(201,168,76,0.18)',
-        borderRadius: 10,
-        overflow: 'hidden',
+        borderRadius: 12,
+        padding: '14px 14px 12px',
         animation: 'newsSlideIn 0.18s ease',
       }}
     >
-      {/* Tab row */}
-      <div style={{ display: 'flex', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
-        {SOCIAL_TABS.map(({ key, label }) => (
-          <button
-            key={key}
-            type="button"
-            onClick={() => { setTab(key); setCopied(false) }}
-            style={{
-              flex: 1,
-              padding: '9px 4px',
-              background: tab === key ? 'rgba(201,168,76,0.1)' : 'transparent',
-              border: 'none',
-              borderBottom: tab === key ? '2px solid #c9a84c' : '2px solid transparent',
-              color: tab === key ? '#c9a84c' : 'rgba(245,240,232,0.4)',
-              fontSize: 10,
-              fontWeight: 600,
-              letterSpacing: '0.05em',
-              textTransform: 'uppercase',
-              cursor: 'pointer',
-              fontFamily: "'Tenor Sans', sans-serif",
-              transition: 'color 0.15s, background 0.15s',
-            }}
-          >
-            {label}
-          </button>
-        ))}
+      {/* Header */}
+      <div
+        style={{
+          fontSize: 9,
+          fontWeight: 700,
+          letterSpacing: '0.18em',
+          textTransform: 'uppercase',
+          color: '#c9a84c',
+          marginBottom: 12,
+          fontFamily: "'Tenor Sans', sans-serif",
+        }}
+      >
+        Share this Drop
       </div>
 
-      {/* Copy text area */}
-      <div style={{ padding: '14px 16px 10px' }}>
-        <pre
-          style={{
-            margin: 0,
-            fontFamily: "'Tenor Sans', sans-serif",
-            fontSize: 12,
-            color: 'rgba(245,240,232,0.80)',
-            lineHeight: 1.65,
-            whiteSpace: 'pre-wrap',
-            wordBreak: 'break-word',
-            maxHeight: 160,
-            overflowY: 'auto',
-            scrollbarWidth: 'none',
-          }}
-        >
-          {social[tab]}
-        </pre>
-      </div>
-
-      {/* Copy button */}
-      <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '0 16px 12px' }}>
+      {/* Native share (mobile) */}
+      {canNativeShare && (
         <button
           type="button"
-          onClick={copy}
+          onClick={handleNativeShare}
           style={{
-            display: 'inline-flex',
+            display: 'flex',
             alignItems: 'center',
-            gap: 5,
-            padding: '6px 14px',
-            borderRadius: 20,
-            border: '1px solid rgba(201,168,76,0.35)',
-            background: copied ? 'rgba(0,212,170,0.12)' : 'rgba(201,168,76,0.08)',
-            color: copied ? '#00D4AA' : '#c9a84c',
-            fontSize: 10,
+            gap: 8,
+            width: '100%',
+            padding: '9px 12px',
+            borderRadius: 8,
+            border: '1px solid rgba(201,168,76,0.25)',
+            background: 'rgba(201,168,76,0.07)',
+            color: '#c9a84c',
+            fontSize: 11,
             fontWeight: 600,
-            letterSpacing: '0.07em',
+            letterSpacing: '0.06em',
             textTransform: 'uppercase',
             cursor: 'pointer',
             fontFamily: "'Tenor Sans', sans-serif",
-            transition: 'all 0.18s ease',
+            marginBottom: 10,
           }}
         >
-          {copied ? '✓ Copied' : 'Copy'}
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+            <polyline points="16 6 12 2 8 6" />
+            <line x1="12" y1="2" x2="12" y2="15" />
+          </svg>
+          Share via...
         </button>
+      )}
+
+      {/* 2×2 platform grid */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+        {PLATFORMS.map(p => {
+          const isCopied = copiedKey === p.key
+          return (
+            <div key={p.key} style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+              <button
+                type="button"
+                onClick={() => handleAction(p)}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'flex-start',
+                  gap: 6,
+                  padding: '12px 12px 10px',
+                  borderRadius: 9,
+                  border: `1px solid ${isCopied ? 'rgba(0,212,170,0.50)' : p.border}`,
+                  background: isCopied ? 'rgba(0,212,170,0.08)' : p.bg,
+                  color: isCopied ? '#00D4AA' : p.color,
+                  cursor: 'pointer',
+                  textAlign: 'left',
+                  transition: 'border-color 0.18s, background 0.18s, color 0.18s',
+                  width: '100%',
+                }}
+                onMouseEnter={e => {
+                  if (!isCopied) (e.currentTarget as HTMLButtonElement).style.borderColor = p.hoverBorder
+                }}
+                onMouseLeave={e => {
+                  if (!isCopied) (e.currentTarget as HTMLButtonElement).style.borderColor = p.border
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+                  {isCopied ? (
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00D4AA" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  ) : p.icon}
+                  <span
+                    style={{
+                      fontSize: 11,
+                      fontWeight: 700,
+                      letterSpacing: '0.03em',
+                      fontFamily: "'Tenor Sans', sans-serif",
+                      lineHeight: 1,
+                    }}
+                  >
+                    {isCopied ? 'Copied!' : p.label}
+                  </span>
+                </div>
+                <span
+                  style={{
+                    fontSize: 9,
+                    color: isCopied ? 'rgba(0,212,170,0.7)' : 'rgba(245,240,232,0.35)',
+                    fontFamily: "'Tenor Sans', sans-serif",
+                    letterSpacing: '0.04em',
+                    lineHeight: 1.4,
+                  }}
+                >
+                  {isCopied && p.hint ? p.hint : p.subLabel}
+                </span>
+              </button>
+
+              {/* Preview toggle */}
+              <button
+                type="button"
+                onClick={() => setPreviewKey(previewKey === p.key ? null : p.key)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: previewKey === p.key ? '#c9a84c' : 'rgba(245,240,232,0.28)',
+                  fontSize: 9,
+                  cursor: 'pointer',
+                  padding: '0 4px',
+                  letterSpacing: '0.06em',
+                  fontFamily: "'Tenor Sans', sans-serif",
+                  textTransform: 'uppercase',
+                  textAlign: 'left',
+                  transition: 'color 0.15s',
+                }}
+              >
+                {previewKey === p.key ? '▲ hide text' : '▼ preview text'}
+              </button>
+            </div>
+          )
+        })}
       </div>
+
+      {/* Content preview */}
+      {activePreview && (
+        <div
+          style={{
+            marginTop: 12,
+            padding: '12px 14px',
+            background: 'rgba(255,255,255,0.03)',
+            border: '1px solid rgba(255,255,255,0.07)',
+            borderRadius: 8,
+            animation: 'newsSlideIn 0.15s ease',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+            <span
+              style={{
+                fontSize: 9,
+                fontWeight: 700,
+                letterSpacing: '0.12em',
+                textTransform: 'uppercase',
+                color: activePreview.color,
+                fontFamily: "'Tenor Sans', sans-serif",
+              }}
+            >
+              {activePreview.label} · Preview
+            </span>
+            <button
+              type="button"
+              onClick={() => {
+                navigator.clipboard.writeText(activePreview.copy).then(() => {
+                  setCopiedKey(activePreview.key)
+                  setTimeout(() => setCopiedKey(null), 3500)
+                })
+              }}
+              style={{
+                background: 'none',
+                border: `1px solid ${activePreview.border}`,
+                borderRadius: 12,
+                color: activePreview.color,
+                fontSize: 9,
+                fontWeight: 600,
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+                cursor: 'pointer',
+                padding: '3px 9px',
+                fontFamily: "'Tenor Sans', sans-serif",
+              }}
+            >
+              {copiedKey === activePreview.key ? '✓ Copied' : 'Copy'}
+            </button>
+          </div>
+          <pre
+            style={{
+              margin: 0,
+              fontSize: 11,
+              color: 'rgba(245,240,232,0.72)',
+              lineHeight: 1.65,
+              whiteSpace: 'pre-wrap',
+              wordBreak: 'break-word',
+              fontFamily: "'Tenor Sans', sans-serif",
+              maxHeight: 180,
+              overflowY: 'auto',
+              scrollbarWidth: 'none',
+            }}
+          >
+            {activePreview.copy}
+          </pre>
+        </div>
+      )}
     </div>
   )
 }
@@ -362,7 +580,7 @@ function DropCard({ drop }: { drop: NewsDrop }) {
       {angleOpen && <GenesisAnglePanel text={drop.genesisAngle} />}
 
       {/* Share panel */}
-      {shareOpen && <SharePanel social={drop.social} />}
+      {shareOpen && <SharePanel drop={drop} />}
     </div>
   )
 }

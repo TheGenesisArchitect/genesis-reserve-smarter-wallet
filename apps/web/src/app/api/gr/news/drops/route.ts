@@ -8,6 +8,11 @@ const RSS_SOURCES = [
   { name: 'The Block',     url: 'https://www.theblock.co/rss.xml' },
   { name: 'Decrypt',       url: 'https://decrypt.co/feed' },
   { name: 'Cointelegraph', url: 'https://cointelegraph.com/rss' },
+  { name: 'The Defiant',   url: 'https://thedefiant.io/feed' },
+  { name: 'Unchained',     url: 'https://unchainedcrypto.com/feed/' },
+  { name: 'CryptoSlate',   url: 'https://cryptoslate.com/feed/' },
+  { name: 'Finextra',      url: 'https://www.finextra.com/rss/headlines.aspx' },
+  { name: 'BeInCrypto',    url: 'https://beincrypto.com/feed/' },
 ]
 
 // ── Relevance keywords by category ───────────────────────────────────────────
@@ -76,15 +81,18 @@ function scoreItem(item: RssItem): { score: number; category: string } {
 // ── Social copy generator ─────────────────────────────────────────────────────
 
 function makeSocial(headline: string, summary: string, source: string, url: string, category: string): NewsDrop['social'] {
-  const tag = '#GenesisReserve'
-  const short = headline.length > 120 ? headline.slice(0, 117) + '...' : headline
-  const lead = summary.split('.')[0] || summary.slice(0, 80)
+  const short = headline.length > 130 ? headline.slice(0, 127) + '...' : headline
+  const lead = (summary.split('.')[0] || summary.slice(0, 90)).trim()
+  const hookWord = headline.split(' ').slice(0, 6).join(' ')
 
   return {
-    twitter: `${short}\n\n${summary.slice(0, 100)}...\n\n${url}\n\n${tag} #DeFi #${category} #Fintech`,
-    instagram: `◈ ${headline}\n\n${summary}\n\nThis is the future of finance — and Genesis Reserve members are already positioned inside it.\n\n${tag} #DigitalFinance #DeFi #YieldOptimization #FintechNews #${category} #Web3`,
-    linkedin: `The Pipeline into the Future of Fintech and Digital Currency\n\n${headline}\n\n${summary}\n\nAt Genesis Reserve, we track these developments in real time because they directly shape how member capital is allocated across institutional-grade DeFi strategies.\n\nSource: ${source} | ${url}\n\n${tag}`,
-    tiktok: `This just dropped — ${headline.split(' ').slice(0, 8).join(' ')}...\n\n3 things you need to know:\n1. ${lead}\n2. This affects ${category} markets across the board\n3. Genesis Reserve members are already positioned for this shift\n\nComment "INTEL" for the full breakdown\n\n${tag} #FinanceTok #DeFi #YieldFarming #CryptoNews`,
+    twitter: `${short}\n\n${lead}.\n\nThis is the pipeline into the future of fintech and digital currency.\n\n${url}\n\n#GenesisReserve #DeFi #${category} #Fintech #DigitalFinance`,
+
+    instagram: `The future of money is being written right now.\n\n◈ ${headline}\n\n${summary}\n\nThis is exactly why we built Genesis Reserve — for people who refuse to stay on the wrong side of financial history.\n\nSave this. Share it with someone building wealth in silence.\n\n#GenesisReserve #DigitalFinance #DeFi #YieldOptimization #FintechNews #${category} #Web3 #FutureOfMoney #CryptoNews #WealthBuilding`,
+
+    linkedin: `Worth flagging for anyone tracking the future of finance:\n\n${headline}\n\n${summary}\n\nAt Genesis Reserve, we monitor shifts like this in real time — because they directly shape how member capital is deployed across institutional DeFi strategies. The pipeline into the future of fintech and digital currency runs through moments exactly like this one.\n\nFull story: ${url}\nVia ${source}\n\n#GenesisReserve #DeFi #Fintech #DigitalFinance #${category} #InstitutionalDeFi`,
+
+    tiktok: `POV: The financial news the banks hope you scroll past...\n\n${hookWord}...\n\nHere's what this actually means:\n→ ${lead}\n→ This shifts the entire ${category} landscape\n→ Genesis Reserve members are already positioned for this\n\nFollow for daily fintech intelligence drops.\n\n#FinanceTok #DeFi #CryptoNews #Fintech #MoneyTok #Web3 #${category} #GenesisReserve`,
   }
 }
 
@@ -158,12 +166,27 @@ async function buildDrops(): Promise<NewsDrop[]> {
     .filter(({ score }) => score > 0)
     .sort((a, b) => b.score - a.score)
 
-  const seen = new Set<string>()
-  const top3 = scored
+  // One article per source — pick the highest-scoring article from each outlet,
+  // then rank those winners by score to get source-diverse top 3.
+  type Candidate = { item: RssItem; score: number; category: string }
+  const bySource = new Map<string, Candidate>()
+  for (const s of scored) {
+    if (!bySource.has(s.item.source)) bySource.set(s.item.source, s)
+  }
+  const diverseTop = [...bySource.values()].sort((a, b) => b.score - a.score)
+
+  // Fill to 3: if we don't have 3 sources with scored articles, backfill from
+  // lower-scored articles (may repeat a source) rather than returning mocks.
+  const usedSources = new Set(diverseTop.slice(0, 3).map(s => s.item.source))
+  const backfill = scored.filter(s => !usedSources.has(s.item.source) && !diverseTop.slice(0, 3).includes(s))
+  const candidates = [...diverseTop, ...backfill]
+
+  const seenTitles = new Set<string>()
+  const top3 = candidates
     .filter(({ item }) => {
       const key = item.title.slice(0, 40).toLowerCase()
-      if (seen.has(key)) return false
-      seen.add(key)
+      if (seenTitles.has(key)) return false
+      seenTitles.add(key)
       return true
     })
     .slice(0, 3)
