@@ -33,6 +33,7 @@ const ConsultiveForecastPanel = dynamic(() => import('../../components/Consultiv
 const AgentUniversePanel = dynamic(() => import('../../components/AgentUniversePanel').then((mod) => mod.AgentUniversePanel), { ssr: false })
 const CodexAcademyHub = dynamic(() => import('../../components/codex/CodexAcademyHub').then((mod) => mod.CodexAcademyHub), { ssr: false })
 const InsurancePage = dynamic(() => import('../../components/InsurancePage').then((mod) => mod.InsurancePage), { ssr: false })
+const NewsDropFeed = dynamic(() => import('../../components/NewsDropFeed').then((mod) => mod.NewsDropFeed), { ssr: false })
 const BridgePanel = dynamic(() => import('../../components/BridgePanel').then((mod) => mod.BridgePanel), { ssr: false })
 const SwapPanel = dynamic(() => import('../../components/SwapPanel').then((mod) => mod.SwapPanel), { ssr: false })
 const ReceiveFlow = dynamic(() => import('../../components/ReceiveFlow').then((mod) => mod.ReceiveFlow), { ssr: false })
@@ -58,6 +59,22 @@ function GenesisPrivyPage() {
   const [activeView, setActiveView] = useState<ViewKey>('home')
   const [selectedAccountId, setSelectedAccountId] = useState<string | undefined>()
   const [timedOut, setTimedOut] = useState(false)
+  const [newsUnread, setNewsUnread] = useState(0)
+
+  useEffect(() => {
+    const today = new Date().toISOString().slice(0, 10)
+    const lastViewed = localStorage.getItem('gr_news_viewed_date')
+    if (lastViewed !== today) setNewsUnread(3)
+  }, [])
+
+  function handleNavigate(view: ViewKey) {
+    setActiveView(view)
+    if (view === 'news') {
+      const today = new Date().toISOString().slice(0, 10)
+      localStorage.setItem('gr_news_viewed_date', today)
+      setNewsUnread(0)
+    }
+  }
 
   // Guard: only resolve smart account when actually authenticated
   const smartAddress = useConditionalSmartAccount(authenticated)
@@ -95,15 +112,16 @@ function GenesisPrivyPage() {
   return (
     <AppShell
       activeView={activeView}
-      onNavigate={setActiveView}
+      onNavigate={handleNavigate}
       authenticated={authenticated}
       address={address}
       onLogin={login}
       onLogout={logout}
+      badgeCounts={{ news: newsUnread }}
     >
       <PanelRouter
         view={activeView}
-        onNavigate={setActiveView}
+        onNavigate={handleNavigate}
         accountId={selectedAccountId}
         address={address}
       />
@@ -124,13 +142,28 @@ function useConditionalSmartAccount(authenticated: boolean) {
 /* ── Preview page (no Privy) ────────────────────────────────────────── */
 function GenesisPreviewPage() {
   const [activeView, setActiveView] = useState<ViewKey>('home')
+  const [newsUnread, setNewsUnread] = useState(0)
   const selectedAccountId = 'pta-demo'
+
+  useEffect(() => {
+    const today = new Date().toISOString().slice(0, 10)
+    if (localStorage.getItem('gr_news_viewed_date') !== today) setNewsUnread(3)
+  }, [])
+
+  function handleNavigate(view: ViewKey) {
+    setActiveView(view)
+    if (view === 'news') {
+      localStorage.setItem('gr_news_viewed_date', new Date().toISOString().slice(0, 10))
+      setNewsUnread(0)
+    }
+  }
 
   return (
     <AppShell
       activeView={activeView}
-      onNavigate={setActiveView}
+      onNavigate={handleNavigate}
       authenticated={false}
+      badgeCounts={{ news: newsUnread }}
     >
       {/* Preview mode banner */}
       <div style={{
@@ -148,7 +181,7 @@ function GenesisPreviewPage() {
       </div>
       <PanelRouter
         view={activeView}
-        onNavigate={setActiveView}
+        onNavigate={handleNavigate}
         accountId={selectedAccountId}
         address={undefined}
       />
@@ -223,6 +256,7 @@ function PanelRouter({
     case 'admin': return <div style={panelStyle}><AdminConsolePanel /></div>
     case 'academy': return <div style={panelStyle}><CodexAcademyHub /></div>
     case 'insurance': return <div style={panelStyle}><InsurancePage accountId={accountId} /></div>
+    case 'news': return <div style={panelStyle}><NewsDropFeed /></div>
 
     default:
       return <WalletHome accountId={accountId} onNavigate={onNavigate} />
