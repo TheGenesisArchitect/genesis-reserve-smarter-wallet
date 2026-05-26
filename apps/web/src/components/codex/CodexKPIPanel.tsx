@@ -32,12 +32,15 @@ function getLiquidityCategory(note: string): string {
 export function ApyRangeBar({
   range,
   tierColor,
+  liveApyPct,
 }: {
   range: NonNullable<CodexProtocolEntry['apyRange']>
   tierColor: string
+  liveApyPct?: number
 }) {
+  const current = liveApyPct ?? range.current
   const span = range.high - range.low || 1
-  const pct = Math.min(100, Math.max(0, ((range.current - range.low) / span) * 100))
+  const pct = Math.min(100, Math.max(0, ((current - range.low) / span) * 100))
 
   return (
     <div style={{ marginBottom: 14 }}>
@@ -46,7 +49,7 @@ export function ApyRangeBar({
           Historical Range
         </span>
         <span style={{ fontSize: 11, color: tierColor, fontFamily: F.tenor, fontWeight: 700 }}>
-          {fmt(range.current)}% current
+          {fmt(current)}% {liveApyPct != null ? 'live' : 'current'}
         </span>
       </div>
       <div style={{ position: 'relative', height: 5, background: 'rgba(255,255,255,0.07)', borderRadius: 3 }}>
@@ -590,7 +593,7 @@ function StatCard({ label, value, sub }: { label: string; value: string; sub?: s
 }
 
 // ── ProtocolKPIPanel (L3 visual dashboard) ────────────────────────────────────
-export function ProtocolKPIPanel({ entry }: { entry: CodexProtocolEntry }) {
+export function ProtocolKPIPanel({ entry, liveApyPct }: { entry: CodexProtocolEntry; liveApyPct?: number }) {
   const tierColor = TIER_COLOR[entry.tier] ?? '#00D4AA'
   const hasKPI = !!(entry.apyRange && entry.apyHistory && entry.riskScores)
 
@@ -599,6 +602,7 @@ export function ProtocolKPIPanel({ entry }: { entry: CodexProtocolEntry }) {
   const apyRange = entry.apyRange!
   const apyHistory = entry.apyHistory!
   const riskScores = entry.riskScores!
+  const currentApy = liveApyPct ?? apyRange.current
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
@@ -624,8 +628,8 @@ export function ProtocolKPIPanel({ entry }: { entry: CodexProtocolEntry }) {
         />
         <StatCard
           label="Current APY"
-          value={`${fmt(apyRange.current)}%`}
-          sub={`Range: ${fmt(apyRange.low)}–${fmt(apyRange.high)}%`}
+          value={`${fmt(currentApy)}%`}
+          sub={liveApyPct != null ? `Live · Range: ${fmt(apyRange.low)}–${fmt(apyRange.high)}%` : `Range: ${fmt(apyRange.low)}–${fmt(apyRange.high)}%`}
         />
       </div>
 

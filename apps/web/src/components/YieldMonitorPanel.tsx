@@ -343,7 +343,7 @@ function ChainDrawer({
                                     {/* ◈ Codex chip + Research toggle */}
                                     {codexEntry && (
                                         <div style={{ padding: '0 14px 12px', display: 'flex', flexDirection: 'column', gap: 6 }}>
-                                            <CodexChip entry={codexEntry} compact fullWidth />
+                                            <CodexChip entry={codexEntry} compact fullWidth liveApyPct={parseFloat(alert.netApyPct) || undefined} />
                                             <button
                                                 type="button"
                                                 onClick={() => setResearchId((prev) => prev === alert.strategyId ? null : alert.strategyId)}
@@ -353,7 +353,7 @@ function ChainDrawer({
                                                 <span style={{ fontSize: 10, color: 'rgba(245,240,232,0.40)' }}>{researchId === alert.strategyId ? '▲' : '▼'}</span>
                                             </button>
                                             {researchId === alert.strategyId && (
-                                                <GoDeeper entry={codexEntry} accentColor={color} />
+                                                <GoDeeper entry={codexEntry} accentColor={color} liveApyPct={parseFloat(alert.netApyPct) || undefined} />
                                             )}
                                         </div>
                                     )}
@@ -580,7 +580,7 @@ function ChainCard({ row, isSelected, onClick }: { row: ChainRangeRow; isSelecte
 }
 
 // ── Go Deeper — visual research panel (risk pills, worked example, DefiLlama) ─
-function GoDeeper({ entry, accentColor }: { entry: import('@/lib/codex/types').CodexProtocolEntry; accentColor: string }) {
+function GoDeeper({ entry, accentColor, liveApyPct }: { entry: import('@/lib/codex/types').CodexProtocolEntry; accentColor: string; liveApyPct?: number }) {
     const scenarioBgs = ['rgba(232,64,64,0.12)', 'rgba(245,158,11,0.10)', 'rgba(155,109,255,0.10)']
     const scenarioBorders = ['rgba(232,64,64,0.28)', 'rgba(245,158,11,0.25)', 'rgba(155,109,255,0.25)']
     const scenarioLabels = ['High Impact', 'Moderate', 'Edge Case']
@@ -592,6 +592,11 @@ function GoDeeper({ entry, accentColor }: { entry: import('@/lib/codex/types').C
                 <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: accentColor, fontFamily: "'Tenor Sans', sans-serif" }}>
                     Research · {entry.displayName}
                 </span>
+                {liveApyPct != null && (
+                    <span style={{ marginLeft: 'auto', fontSize: 10, fontWeight: 700, color: '#00D4AA', fontFamily: "'Tenor Sans', sans-serif", background: 'rgba(0,212,170,0.10)', border: '1px solid rgba(0,212,170,0.25)', borderRadius: 4, padding: '1px 6px' }}>
+                        {liveApyPct.toFixed(2)}% live
+                    </span>
+                )}
             </div>
             {/* Worked example */}
             <div style={{ padding: '11px 13px', borderRadius: 8, background: 'rgba(0,212,170,0.06)', border: '1px solid rgba(0,212,170,0.20)', borderLeft: '3px solid #00D4AA', marginBottom: 10 }}>
@@ -955,7 +960,7 @@ export function YieldMonitorPanel({ onNavigate }: { onNavigate?: (view: string) 
                                             {/* ◈ Codex chip + Research toggle */}
                                             {alertCodexEntry && (
                                                 <div style={{ padding: '6px 2px 2px', display: 'flex', flexDirection: 'column', gap: 6 }}>
-                                                    <CodexChip entry={alertCodexEntry} compact fullWidth />
+                                                    <CodexChip entry={alertCodexEntry} compact fullWidth liveApyPct={parseFloat(alert.netApyPct) || undefined} />
                                                     <button
                                                         type="button"
                                                         onClick={() => setAlertResearchId((prev) => prev === alert.strategyId ? null : alert.strategyId)}
@@ -965,7 +970,7 @@ export function YieldMonitorPanel({ onNavigate }: { onNavigate?: (view: string) 
                                                         <span style={{ fontSize: 10, color: 'rgba(245,240,232,0.40)' }}>{alertResearchId === alert.strategyId ? '▲' : '▼'}</span>
                                                     </button>
                                                     {alertResearchId === alert.strategyId && (
-                                                        <GoDeeper entry={alertCodexEntry} accentColor="#C9A84C" />
+                                                        <GoDeeper entry={alertCodexEntry} accentColor="#C9A84C" liveApyPct={parseFloat(alert.netApyPct) || undefined} />
                                                     )}
                                                 </div>
                                             )}
@@ -1054,7 +1059,7 @@ export function YieldMonitorPanel({ onNavigate }: { onNavigate?: (view: string) 
                                                     if (!watchCodexEntry) return null
                                                     return (
                                                         <div style={{ marginTop: 14, display: 'flex', flexDirection: 'column', gap: 8 }}>
-                                                            <CodexChip entry={watchCodexEntry} compact fullWidth />
+                                                            <CodexChip entry={watchCodexEntry} compact fullWidth liveApyPct={item.currentApyPct} />
                                                             {watchCodexEntry.defiLlamaSlug && (
                                                                 <a href={`https://defillama.com/protocol/${watchCodexEntry.defiLlamaSlug}`} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '6px 12px', borderRadius: 8, border: '1px solid rgba(201,168,76,0.35)', background: 'rgba(201,168,76,0.08)', color: '#C9A84C', fontSize: 10, fontWeight: 700, letterSpacing: '0.10em', textTransform: 'uppercase', fontFamily: "'Tenor Sans', sans-serif", textDecoration: 'none', width: 'fit-content' }}>
                                                                     ↗ DefiLlama Due Diligence

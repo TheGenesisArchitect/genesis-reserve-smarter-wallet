@@ -78,7 +78,7 @@ function ExampleBox({ text }: { text: string }) {
 }
 
 // ── L3 CodexDeepDive ──────────────────────────────────────────────────────────
-export function CodexDeepDive({ entry }: { entry: CodexProtocolEntry }) {
+export function CodexDeepDive({ entry, liveApyPct }: { entry: CodexProtocolEntry; liveApyPct?: number }) {
   const [notesOpen, setNotesOpen] = useState(false)
   const hasKPI = !!(entry.apyRange && entry.apyHistory && entry.riskScores)
 
@@ -99,7 +99,7 @@ export function CodexDeepDive({ entry }: { entry: CodexProtocolEntry }) {
       {/* ── KPI Dashboard (when data available) ── */}
       {hasKPI && (
         <div style={{ marginBottom: 24 }}>
-          <ProtocolKPIPanel entry={entry} />
+          <ProtocolKPIPanel entry={entry} liveApyPct={liveApyPct} />
         </div>
       )}
 

@@ -11,9 +11,11 @@ interface CodexChipProps {
   /** When true, the expanded panel fills the available container width instead of capping at 420px */
   fullWidth?: boolean
   className?: string
+  /** Live APY from the yield monitor — overrides the static apyRange.current in the range bar */
+  liveApyPct?: number
 }
 
-export function CodexChip({ entry, compact = false, fullWidth = false, className = '' }: CodexChipProps) {
+export function CodexChip({ entry, compact = false, fullWidth = false, className = '', liveApyPct }: CodexChipProps) {
   const [open, setOpen] = useState(false)
 
   const toggle = useCallback((e: React.MouseEvent) => {
@@ -85,7 +87,7 @@ export function CodexChip({ entry, compact = false, fullWidth = false, className
             animation: 'codexSlideIn 0.2s ease',
           }}
         >
-          <CodexPanel entry={entry} fullWidth={fullWidth} onClose={() => setOpen(false)} />
+          <CodexPanel entry={entry} fullWidth={fullWidth} onClose={() => setOpen(false)} liveApyPct={liveApyPct} />
         </div>
       )}
 

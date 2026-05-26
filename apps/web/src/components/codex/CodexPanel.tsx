@@ -10,6 +10,7 @@ interface CodexPanelProps {
   entry: CodexProtocolEntry
   fullWidth?: boolean
   onClose?: () => void
+  liveApyPct?: number
 }
 
 // ── L2 section row ────────────────────────────────────────────────────────────
@@ -68,7 +69,7 @@ function RiskPill({ label }: { label: string }) {
 }
 
 // ── L2 CodexPanel ─────────────────────────────────────────────────────────────
-export function CodexPanel({ entry, fullWidth = false, onClose }: CodexPanelProps) {
+export function CodexPanel({ entry, fullWidth = false, onClose, liveApyPct }: CodexPanelProps) {
   const [showDeepDive, setShowDeepDive] = useState(false)
 
   return (
@@ -165,6 +166,7 @@ export function CodexPanel({ entry, fullWidth = false, onClose }: CodexPanelProp
               : entry.tier === 'grow' ? '#C9A84C'
               : '#9B6DFF'
           }
+          liveApyPct={liveApyPct}
         />
       )}
 
@@ -226,7 +228,7 @@ export function CodexPanel({ entry, fullWidth = false, onClose }: CodexPanelProp
             animation: 'codexSlideIn 0.2s ease',
           }}
         >
-          <CodexDeepDive entry={entry} />
+          <CodexDeepDive entry={entry} liveApyPct={liveApyPct} />
         </div>
       )}
 
