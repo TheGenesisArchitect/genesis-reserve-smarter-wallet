@@ -55,7 +55,7 @@ async function resolveOgImage(url: string): Promise<string | undefined> {
 
 // ── RSS XML parser ────────────────────────────────────────────────────────────
 
-interface RssItem { title: string; link: string; description: string; pubDate: string; source: string }
+interface RssItem { title: string; link: string; description: string; pubDate: string; source: string; rssImageUrl?: string }
 
 function extractTag(xml: string, tag: string): string {
   const cd = new RegExp(`<${tag}[^>]*><!\\[CDATA\\[([\\s\\S]*?)\\]\\]><\\/${tag}>`, 'i')
@@ -68,6 +68,20 @@ function stripHtml(h: string): string {
   return h.replace(/<[^>]+>/g, ' ').replace(/&[a-z]+;/gi, ' ').replace(/\s+/g, ' ').trim().slice(0, 420)
 }
 
+function extractRssImage(itemXml: string): string | undefined {
+  // media:thumbnail url="..." (The Block, BeInCrypto, etc.)
+  const mt = /media:thumbnail[^>]+url=["']([^"']+)["']/i.exec(itemXml)
+  if (mt) return mt[1]
+  // media:content url="..." (Cointelegraph, others)
+  const mc = /media:content[^>]+url=["']([^"']+)["']/i.exec(itemXml)
+  if (mc) return mc[1]
+  // <enclosure url="..." type="image/...">
+  const enc = /<enclosure[^>]+type=["']image\/[^"']*["'][^>]+url=["']([^"']+)["']/i.exec(itemXml)
+           ?? /<enclosure[^>]+url=["']([^"']+)["'][^>]+type=["']image\/[^"']*["']/i.exec(itemXml)
+  if (enc) return enc[1]
+  return undefined
+}
+
 function parseRss(xml: string, source: string, limit = 10): RssItem[] {
   const items: RssItem[] = []
   const rx = /<item[^>]*>([\s\S]*?)<\/item>/gi
@@ -78,7 +92,8 @@ function parseRss(xml: string, source: string, limit = 10): RssItem[] {
     const link = extractTag(b, 'link') || extractTag(b, 'guid')
     const description = stripHtml(extractTag(b, 'description') || extractTag(b, 'content:encoded') || '')
     const pubDate = extractTag(b, 'pubDate')
-    if (title && link) items.push({ title, link, description, pubDate, source })
+    const rssImageUrl = extractRssImage(b)
+    if (title && link) items.push({ title, link, description, pubDate, source, rssImageUrl })
   }
   return items
 }
@@ -222,8 +237,10 @@ async function buildDrops(): Promise<NewsDrop[]> {
 
   const today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
 
-  // Resolve og:images in parallel — 500ms timeout each, failures silently omitted
-  const imageUrls = await Promise.all(top3.map(({ item }) => resolveOgImage(item.link)))
+  // Use RSS-embedded image when available (no extra request); fall back to og:image scrape
+  const imageUrls = await Promise.all(
+    top3.map(({ item }) => item.rssImageUrl ? Promise.resolve(item.rssImageUrl) : resolveOgImage(item.link))
+  )
 
   const drops: NewsDrop[] = top3.map(({ item, category }, i) => {
     const def = SLOT_DEFS[i]
