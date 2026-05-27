@@ -169,8 +169,21 @@ export function InsurancePage({ accountId: _accountId }: { accountId?: string })
   const [allocationPct, setAllocationPct] = useState(25)   // % of yield to insurance
   const [walletBalanceK, setWalletBalanceK] = useState(50) // demo wallet in thousands
   const [apyPct, setApyPct] = useState(8.5)
+  const [apyIsLive, setApyIsLive] = useState(false)
   const [waitlistEmail, setWaitlistEmail] = useState('')
   const [waitlistJoined, setWaitlistJoined] = useState(false)
+
+  useEffect(() => {
+    fetch('/api/gr/rates')
+      .then(r => r.ok ? r.json() : null)
+      .then((d: { blendedApy?: number } | null) => {
+        if (d?.blendedApy && d.blendedApy > 0) {
+          setApyPct(d.blendedApy)
+          setApyIsLive(true)
+        }
+      })
+      .catch(() => { /* keep default */ })
+  }, [])
 
   useEffect(() => {
     const mq = window.matchMedia('(max-width: 640px)')
@@ -312,8 +325,15 @@ export function InsurancePage({ accountId: _accountId }: { accountId?: string })
 
           {/* APY */}
           <label style={{ display: 'block', marginBottom: 16 }}>
-            <div style={{ fontSize: 10, color: MUTED, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 6 }}>
-              Blended APY
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
+              <span style={{ fontSize: 10, color: MUTED, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+                Blended APY
+              </span>
+              {apyIsLive && (
+                <span style={{ fontSize: 7, color: '#1ABF6A', letterSpacing: '0.12em', textTransform: 'uppercase', border: '1px solid rgba(26,191,106,0.35)', borderRadius: 3, padding: '1px 5px' }}>
+                  Live
+                </span>
+              )}
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <input

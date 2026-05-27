@@ -267,14 +267,16 @@ function RiskRadar({
 function YieldCalculator({
   entry,
   tierColor,
+  liveApyPct,
 }: {
   entry: CodexProtocolEntry
   tierColor: string
+  liveApyPct?: number
 }) {
   const [deposit, setDeposit] = useState('10000')
   const [months, setMonths] = useState(12)
 
-  const apy = entry.apyRange?.current ?? 5
+  const apy = liveApyPct ?? entry.apyRange?.current ?? 5
   const principal = Math.max(0, parseFloat(deposit.replace(/,/g, '')) || 0)
   const rate = apy / 100
   const total = principal * Math.pow(1 + rate, months / 12)
@@ -295,8 +297,15 @@ function YieldCalculator({
 
   return (
     <div style={{ flex: '1 1 180px', minWidth: 170 }}>
-      <div style={{ fontSize: 9, color: 'rgba(201,168,76,0.75)', letterSpacing: '0.10em', textTransform: 'uppercase', fontFamily: F.tenor, marginBottom: 10 }}>
-        Yield Calculator
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 10 }}>
+        <span style={{ fontSize: 9, color: 'rgba(201,168,76,0.75)', letterSpacing: '0.10em', textTransform: 'uppercase', fontFamily: F.tenor }}>
+          Yield Calculator
+        </span>
+        {liveApyPct != null && (
+          <span style={{ fontSize: 7, color: '#1ABF6A', letterSpacing: '0.12em', textTransform: 'uppercase', fontFamily: F.tenor, border: '1px solid rgba(26,191,106,0.35)', borderRadius: 3, padding: '1px 5px' }}>
+            Live {apy.toFixed(2)}%
+          </span>
+        )}
       </div>
 
       {/* Deposit input */}
@@ -655,7 +664,7 @@ export function ProtocolKPIPanel({ entry, liveApyPct }: { entry: CodexProtocolEn
         <div style={{ flex: '0 0 auto' }}>
           <RiskRadar scores={riskScores} tierColor={tierColor} />
         </div>
-        <YieldCalculator entry={entry} tierColor={tierColor} />
+        <YieldCalculator entry={entry} tierColor={tierColor} liveApyPct={liveApyPct} />
       </div>
 
       {/* Yield Breakdown + Peer Comparison */}
