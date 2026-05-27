@@ -78,6 +78,42 @@ function TikTokIcon() {
   )
 }
 
+// ── Article image banner ──────────────────────────────────────────────────────
+
+function ImageBanner({ url, category }: { url: string; category: string }) {
+  const [failed, setFailed] = useState(false)
+  const catColor = CATEGORY_COLORS[category] ?? '#c9a84c'
+  if (failed) return null
+  return (
+    <div
+      style={{
+        margin: '-18px -18px 16px -18px',
+        height: 150,
+        position: 'relative',
+        background: `${catColor}12`,
+      }}
+    >
+      <img
+        src={url}
+        alt=""
+        loading="lazy"
+        decoding="async"
+        onError={() => setFailed(true)}
+        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+      />
+      <div
+        style={{
+          position: 'absolute',
+          bottom: 0, left: 0, right: 0,
+          height: 60,
+          background: 'linear-gradient(to top, rgba(4,6,8,0.92), transparent)',
+          pointerEvents: 'none',
+        }}
+      />
+    </div>
+  )
+}
+
 interface PlatformDef {
   key: string
   label: string
@@ -423,11 +459,15 @@ function DropCard({ drop }: { drop: NewsDrop }) {
         border: '1px solid rgba(255,255,255,0.08)',
         borderRadius: 12,
         padding: '18px 18px 14px',
+        overflow: 'hidden',
         transition: 'border-color 0.2s',
       }}
       onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(201,168,76,0.22)' }}
       onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(255,255,255,0.08)' }}
     >
+      {/* Article image */}
+      {drop.imageUrl && <ImageBanner url={drop.imageUrl} category={drop.category} />}
+
       {/* Meta row */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10, flexWrap: 'wrap' }}>
         {/* Category badge */}
@@ -661,17 +701,22 @@ function DropSkeleton() {
               background: 'rgba(4,6,8,0.80)',
               border: '1px solid rgba(255,255,255,0.06)',
               borderRadius: 12,
-              padding: '18px 18px 20px',
+              overflow: 'hidden',
             }}
           >
-            <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
-              <div style={{ width: 48, height: 16, borderRadius: 3, background: 'rgba(255,255,255,0.05)', animation: 'newsPulse 1.4s ease-in-out infinite' }} />
-              <div style={{ width: 60, height: 16, borderRadius: 3, background: 'rgba(255,255,255,0.04)', animation: 'newsPulse 1.4s ease-in-out infinite' }} />
+            {/* Image skeleton */}
+            <div style={{ height: 150, background: 'rgba(255,255,255,0.04)', animation: 'newsPulse 1.4s ease-in-out infinite' }} />
+            {/* Text skeleton */}
+            <div style={{ padding: '18px 18px 20px' }}>
+              <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+                <div style={{ width: 48, height: 16, borderRadius: 3, background: 'rgba(255,255,255,0.05)', animation: 'newsPulse 1.4s ease-in-out infinite' }} />
+                <div style={{ width: 60, height: 16, borderRadius: 3, background: 'rgba(255,255,255,0.04)', animation: 'newsPulse 1.4s ease-in-out infinite' }} />
+              </div>
+              <div style={{ width: '88%', height: 18, borderRadius: 3, background: 'rgba(255,255,255,0.05)', marginBottom: 8, animation: 'newsPulse 1.4s ease-in-out infinite' }} />
+              <div style={{ width: '72%', height: 18, borderRadius: 3, background: 'rgba(255,255,255,0.04)', marginBottom: 14, animation: 'newsPulse 1.4s ease-in-out infinite' }} />
+              <div style={{ width: '94%', height: 13, borderRadius: 3, background: 'rgba(255,255,255,0.03)', marginBottom: 5, animation: 'newsPulse 1.4s ease-in-out infinite' }} />
+              <div style={{ width: '80%', height: 13, borderRadius: 3, background: 'rgba(255,255,255,0.03)', animation: 'newsPulse 1.4s ease-in-out infinite' }} />
             </div>
-            <div style={{ width: '88%', height: 18, borderRadius: 3, background: 'rgba(255,255,255,0.05)', marginBottom: 8, animation: 'newsPulse 1.4s ease-in-out infinite' }} />
-            <div style={{ width: '72%', height: 18, borderRadius: 3, background: 'rgba(255,255,255,0.04)', marginBottom: 14, animation: 'newsPulse 1.4s ease-in-out infinite' }} />
-            <div style={{ width: '94%', height: 13, borderRadius: 3, background: 'rgba(255,255,255,0.03)', marginBottom: 5, animation: 'newsPulse 1.4s ease-in-out infinite' }} />
-            <div style={{ width: '80%', height: 13, borderRadius: 3, background: 'rgba(255,255,255,0.03)', animation: 'newsPulse 1.4s ease-in-out infinite' }} />
           </div>
         </div>
       ))}

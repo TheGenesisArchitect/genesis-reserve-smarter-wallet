@@ -35,6 +35,24 @@ const GENESIS_ANGLES: Record<string, string> = {
   Payments:       'Genesis Reserve\'s built-in payment rails are designed for exactly this future — borderless, programmable money that moves at the speed of the internet.',
 }
 
+// ── OG image resolver ─────────────────────────────────────────────────────────
+
+async function resolveOgImage(url: string): Promise<string | undefined> {
+  try {
+    const res = await fetch(url, {
+      signal:  AbortSignal.timeout(500),
+      headers: { 'User-Agent': 'GenesisReserve/1.0', Accept: 'text/html' },
+    })
+    if (!res.ok) return undefined
+    const html = await res.text()
+    const m = /<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i.exec(html)
+           ?? /<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i.exec(html)
+    return m?.[1] ?? undefined
+  } catch {
+    return undefined
+  }
+}
+
 // ── RSS XML parser ────────────────────────────────────────────────────────────
 
 interface RssItem { title: string; link: string; description: string; pubDate: string; source: string }
@@ -204,6 +222,9 @@ async function buildDrops(): Promise<NewsDrop[]> {
 
   const today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
 
+  // Resolve og:images in parallel — 500ms timeout each, failures silently omitted
+  const imageUrls = await Promise.all(top3.map(({ item }) => resolveOgImage(item.link)))
+
   const drops: NewsDrop[] = top3.map(({ item, category }, i) => {
     const def = SLOT_DEFS[i]
     return {
@@ -215,6 +236,7 @@ async function buildDrops(): Promise<NewsDrop[]> {
       source:      item.source,
       sourceUrl:   item.link,
       category:    category as NewsDrop['category'],
+      imageUrl:    imageUrls[i],
       genesisAngle: GENESIS_ANGLES[category] ?? GENESIS_ANGLES['Macro'],
       social:      makeSocial(item.title, item.description, item.source, item.link, category),
     }

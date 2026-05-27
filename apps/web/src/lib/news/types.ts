@@ -9,6 +9,7 @@ export interface NewsDrop {
   source: string
   sourceUrl: string
   category: 'DeFi' | 'Stablecoin' | 'Regulation' | 'Infrastructure' | 'Macro' | 'Payments'
+  imageUrl?: string
   genesisAngle: string
   social: {
     twitter: string
