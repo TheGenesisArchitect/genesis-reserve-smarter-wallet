@@ -1319,6 +1319,7 @@ function goTo(n) {
   else if (wasYield) stopYieldDemo()
   triggerCounters(cur)
   if (pbPlaying) pbResetTick()
+  document.getElementById('pbSpeedVal').textContent = pbSecs()
 }
 function next() { goTo(cur + 1) }
 function prev() { goTo(cur - 1) }
@@ -1386,6 +1387,7 @@ function pbSetPlayUI(on) {
 }
 function pbStart() {
   pbPlaying = true; pbResetTick(); pbSetPlayUI(true)
+  document.getElementById('pbSpeedVal').textContent = pbSecs()
   pbInterval = setInterval(() => {
     pbTick++; pbUpdateRing()
     if (pbTick >= pbTotal()) {
@@ -1404,7 +1406,7 @@ function pbPrev()   { if (pbPlaying) pbResetTick(); prev() }
 function pbNext()   { if (pbPlaying) pbResetTick(); next() }
 function pbCycleSpeed() {
   pbSpeedIdx = (pbSpeedIdx + 1) % PB_SPEEDS.length
-  document.getElementById('pbSpeedVal').textContent = PB_SPEEDS[pbSpeedIdx]
+  document.getElementById('pbSpeedVal').textContent = pbSecs()
   if (pbPlaying) { pbTick = Math.min(pbTick, pbTotal() - 1); pbUpdateRing() }
 }
 
