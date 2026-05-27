@@ -1,0 +1,167 @@
+================================================================================
+  GENESIS RESERVE  |  RETAIL PITCH SCRIPT
+  5-Minute Deck  ·  15 Slides  ·  20 Seconds Each
+  Practice at natural conversational pace — approx. 130 words per minute.
+  Each block = exactly one slide. Advance on the last word.
+================================================================================
+
+────────────────────────────────────────────────────────────────────────────────
+SLIDE 01  |  COVER  —  Genesis Reserve
+[On screen: Logo seal · "The Smarter Wallet That Outpaces Inflation" · iPhone login]
+────────────────────────────────────────────────────────────────────────────────
+
+"This is Genesis Reserve — the smarter wallet built to outpace inflation and
+deliver real returns, twenty-four seven. Not someday. Right now. Let me show
+you exactly how."
+
+────────────────────────────────────────────────────────────────────────────────
+SLIDE 02  |  LEADERSHIP TEAM  —  Operators. Educators. Builders.
+[On screen: Anthony Beedles · Kiarra Smith · Whitney McCray · Jr. Timberlake]
+────────────────────────────────────────────────────────────────────────────────
+
+"I'm Anthony Beedles — Marine veteran, DeFi architect, and former Director of
+Business Development at Wells Fargo and Synchrony Bank. This team has lived
+the problem we're solving. And we built the solution."
+
+────────────────────────────────────────────────────────────────────────────────
+SLIDE 03  |  THE QUIET THEFT  —  The Problem
+[On screen: +39% groceries vs +12% wages · 2019–2024]
+────────────────────────────────────────────────────────────────────────────────
+
+"Groceries up thirty-nine percent. Wages up twelve. Your paycheck is losing
+ground every single month. As I say — your bank account is a casket for every
+dollar that sits idle."
+
+────────────────────────────────────────────────────────────────────────────────
+SLIDE 04  |  THE MATH  —  Inflation is a Silent Tax
+[On screen: $1,000 saved in 2020 → $814 real value in 2024]
+────────────────────────────────────────────────────────────────────────────────
+
+"Put a thousand dollars in a savings account in 2020. By 2024 it buys eight
+hundred and fourteen dollars of goods. One hundred and eighty-six dollars —
+gone. Silently. Every four years."
+
+────────────────────────────────────────────────────────────────────────────────
+SLIDE 05  |  THE MOMENT  —  The Opportunity
+[On screen: $56 Trillion stablecoin market by 2028 · Bloomberg]
+────────────────────────────────────────────────────────────────────────────────
+
+"Bloomberg projects a fifty-six trillion dollar stablecoin market by 2028. Every
+asset is going digital. This is the biggest wealth transfer in a hundred years —
+and the window is open right now."
+
+────────────────────────────────────────────────────────────────────────────────
+SLIDE 06  |  THE GAP  —  Faster. Cheaper. Not Enough.
+[On screen: CashApp · Wise · Revolut — all missing yield & inflation protection]
+────────────────────────────────────────────────────────────────────────────────
+
+"CashApp, Wise, Revolut — great apps. But none of them beat inflation. None of
+them generate DeFi yield. They optimized the experience. They never solved the
+actual problem."
+
+────────────────────────────────────────────────────────────────────────────────
+SLIDE 07  |  THE SOLUTION  —  A Smarter Wallet
+[On screen: Genesis seal · 4–13% APY · Stablecoin Native · No Crypto Knowledge Required]
+────────────────────────────────────────────────────────────────────────────────
+
+"Genesis Reserve is a smarter wallet — four to thirteen percent APY,
+stablecoin native, beats inflation by design. And zero crypto knowledge
+required to use it."
+
+────────────────────────────────────────────────────────────────────────────────
+SLIDE 08  |  DEMO — SETUP  ·  Setup in 60 Seconds
+[On screen: iPhone login screen · Email/phone · Continue button · Privy security]
+────────────────────────────────────────────────────────────────────────────────
+
+"Here's the app. You sign in with an email or phone number — sixty seconds,
+no seed phrases, no crypto wallets to configure. Secured by Privy on Arbitrum
+One. That's it."
+
+────────────────────────────────────────────────────────────────────────────────
+SLIDE 09  |  DEMO — FUND  ·  Link Your Card. Convert Instantly.
+[On screen: iPhone fund wallet screen · Card visual · $500 → 500 USDC · Deposit Now]
+────────────────────────────────────────────────────────────────────────────────
+
+"Link your debit card. Enter an amount. Dollars convert to USDC at one-to-one
+parity through Circle — instantly, on Arbitrum. Zero value lost in the
+conversion. Then you deposit."
+
+────────────────────────────────────────────────────────────────────────────────
+SLIDE 10  |  DEMO — STRATEGY  ·  Choose How Hard Your Money Works
+[On screen: iPhone strategy screen · Preserve 4–6% · Grow 6–12% · Accelerate 13%+]
+────────────────────────────────────────────────────────────────────────────────
+
+"Three strategies — Preserve at four to six percent, Grow at six to twelve,
+Accelerate at thirteen plus. You tap the one that matches your risk tolerance.
+Capital deploys to audited DeFi protocols."
+
+────────────────────────────────────────────────────────────────────────────────
+SLIDE 11  |  DEMO — LIVE YIELD  ·  Watch It Grow. Every 15 Minutes.
+[On screen: iPhone portfolio · $10,002.31 balance · 8.45% APY · live yield ticking up]
+────────────────────────────────────────────────────────────────────────────────
+
+"This is your portfolio — live, in real time. Balance ticking up. APY display
+at eight point four five percent. Yield harvested every fifteen minutes.
+No bank. No waiting. No permission needed."
+
+────────────────────────────────────────────────────────────────────────────────
+SLIDE 12  |  THE MARKET  —  100 Million Underserved
+[On screen: 100M people · 138M paycheck to paycheck · $0 yield above inflation]
+────────────────────────────────────────────────────────────────────────────────
+
+"One hundred million people underserved by the old system. One hundred
+thirty-eight million living paycheck to paycheck — earning zero yield above
+inflation. Our addressable market is not a niche. It's everyone."
+
+────────────────────────────────────────────────────────────────────────────────
+SLIDE 13  |  BUSINESS MODEL  —  Three Winners. Every Transaction.
+[On screen: User 4–13% APY · Investor 20% tx fees · Genesis 80% + $56T scale]
+────────────────────────────────────────────────────────────────────────────────
+
+"Every transaction creates three winners. The user earns four to thirteen
+percent APY. Investors earn twenty percent of transaction fee revenue. Genesis
+captures eighty percent and scales into a fifty-six trillion dollar market."
+
+────────────────────────────────────────────────────────────────────────────────
+SLIDE 14  |  TRACTION  —  Built Since March 2025. Deployed. Live. Real.
+[On screen: 5,000+ engineering hours · $1.2M infrastructure · 6 live systems checked]
+────────────────────────────────────────────────────────────────────────────────
+
+"Since March 2025 — five thousand engineering hours, one point two million in
+infrastructure value. Wallet live. Smart contracts on Arbitrum. KYC, card
+linking, payment rails, and yield engine — all operational."
+
+────────────────────────────────────────────────────────────────────────────────
+SLIDE 15  |  THE ASK  —  $500,000 · The Ignition Raise
+[On screen: $500K raise · 40% GTM / 30% Engineering / 20% Compliance / 10% Ops]
+────────────────────────────────────────────────────────────────────────────────
+
+"We're raising five hundred thousand dollars — our ignition round. Forty
+percent go-to-market, thirty engineering, twenty compliance, ten operations.
+This gets us to ten thousand users and a clean data package for a three to five
+million Series A."
+
+================================================================================
+  TOTAL RUNTIME:  15 slides × 20 seconds = 5:00 exactly
+================================================================================
+
+PRACTICE TIPS
+─────────────────────────────────────────────────────────────────────────────
+• Use the deck's built-in countdown timer. Press ▶ to start autoplay.
+  The badge counts 20→1. Finish your line before it hits zero.
+
+• If you run long on a slide, cut the last sentence — the core message
+  is always in the first two lines.
+
+• Slides 08–11 (the phone demos) are your hero section. Slow down here.
+  The audience is watching the screen — let the visual breathe.
+
+• Slide 15 (The Ask) has the most words by design — it's the close.
+  Practice it until it feels conversational, not recited.
+
+• On Slide 02 (Team), make eye contact when you say "I'm Anthony Beedles."
+  That's the credibility moment. Own it.
+
+• The three quotes (Slides 03, 04, 06) are written to land like gut punches.
+  Pause one beat after delivering each one.
+================================================================================
