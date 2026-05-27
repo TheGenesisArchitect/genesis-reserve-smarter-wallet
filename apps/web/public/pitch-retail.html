@@ -145,16 +145,73 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .win-item{font-family:'Tenor Sans',sans-serif;font-size:12px;color:rgba(245,240,232,.85);line-height:1.75;padding-left:12px;position:relative}
 .win-item::before{content:'›';position:absolute;left:0;color:rgba(201,168,76,.5)}
 
-/* ── Phone frame ─────────────────────────────────────────────────────── */
-.phone{
-  width:clamp(192px,20vw,256px);
-  height:clamp(370px,48vh,490px);
-  background:linear-gradient(160deg,#0C1018 0%,#080C12 100%);
-  border-radius:40px;
-  border:1.5px solid rgba(255,255,255,.14);
-  box-shadow:0 0 0 .5px rgba(255,255,255,.05),0 36px 72px rgba(0,0,0,.88),0 0 70px rgba(201,168,76,.1),inset 0 1px 0 rgba(255,255,255,.07);
+/* ── iPhone 15 Pro chassis ─────────────────────────────────────────── */
+.iphone-wrap{position:relative;flex-shrink:0}
+.iphone{
+  width:290px;height:600px;
+  background:linear-gradient(165deg,#1C1C1E 0%,#111112 50%,#0D0D0F 100%);
+  border-radius:54px;
+  border:1px solid rgba(110,110,120,.52);
+  box-shadow:
+    0 0 0 3.5px #2A2A2C,
+    0 0 0 5px rgba(70,70,80,.30),
+    inset 0 0 0 1px rgba(255,255,255,.07),
+    0 60px 140px rgba(0,0,0,.97),
+    0 22px 55px rgba(0,0,0,.82),
+    0 0 130px rgba(201,168,76,.07);
   position:relative;overflow:hidden;
-  display:flex;flex-direction:column;flex-shrink:0;
+  display:flex;flex-direction:column;flex-shrink:0
+}
+/* titanium surface sheen */
+.iphone::after{
+  content:'';position:absolute;inset:0;border-radius:53px;
+  background:linear-gradient(118deg,rgba(255,255,255,.11) 0%,rgba(255,255,255,.04) 20%,transparent 40%,transparent 70%,rgba(255,255,255,.055) 100%);
+  pointer-events:none;z-index:50
+}
+/* side buttons on wrapper so overflow:hidden doesn't clip them */
+.iphone-wrap .ibtn{position:absolute;background:linear-gradient(to right,#3A3A3C,#2A2A2C);border-radius:2px 0 0 2px}
+.iphone-wrap .ibtn-action{left:-5px;top:110px;width:5px;height:26px}
+.iphone-wrap .ibtn-volu{left:-5px;top:150px;width:5px;height:44px}
+.iphone-wrap .ibtn-vold{left:-5px;top:202px;width:5px;height:44px}
+.iphone-wrap .ibtn-power{right:-5px;top:170px;width:5px;height:72px;background:linear-gradient(to left,#3A3A3C,#2A2A2C);border-radius:0 2px 2px 0}
+/* Dynamic Island */
+.dyn-island{
+  position:absolute;top:13px;left:50%;transform:translateX(-50%);
+  width:126px;height:36px;background:#000;border-radius:20px;z-index:30;
+  display:flex;align-items:center;justify-content:flex-end;padding-right:12px;gap:5px
+}
+.di-spk{width:32px;height:4px;background:rgba(255,255,255,.12);border-radius:2px;margin-right:auto;margin-left:18px}
+.di-cam{width:10px;height:10px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#1a1a2e,#050508);border:1.5px solid rgba(255,255,255,.04);box-shadow:0 0 0 1.5px rgba(255,255,255,.03)}
+/* status bar */
+.iphone-status{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:64px 26px 4px;
+  font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;
+  color:rgba(245,240,232,.88);flex-shrink:0
+}
+.istat-r{display:flex;gap:5px;align-items:center}
+/* app screen content area (overrides .phone-screen defaults) */
+.iphone .phone-screen{flex:1;overflow:hidden;padding:4px 18px 8px;display:flex;flex-direction:column}
+/* tab bar */
+.iphone .phone-tabbar{display:flex;justify-content:space-around;align-items:center;padding:7px 0;border-top:1px solid rgba(255,255,255,.07);flex-shrink:0;font-family:'Tenor Sans',sans-serif;font-size:7px;letter-spacing:.1em;text-transform:uppercase;color:rgba(245,240,232,.28)}
+.iphone .phone-tabbar .tab-active{color:var(--gold)}
+.iphone .tab-icon{display:block;font-size:14px;margin:0 auto 2px;opacity:.45}
+.iphone .phone-tabbar .tab-active .tab-icon{opacity:1}
+/* home indicator */
+.home-bar-wrap{display:flex;justify-content:center;padding:5px 0 8px;flex-shrink:0}
+.home-bar{width:130px;height:5px;background:rgba(255,255,255,.3);border-radius:3px}
+/* bottom chrome */
+.iphone-btm{height:22px;display:flex;align-items:center;justify-content:center;gap:11px;flex-shrink:0;padding-bottom:4px}
+.ispkr{display:flex;gap:2.5px;align-items:center}
+.ispkr span{width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.14);display:block}
+.iusbc{width:30px;height:7px;background:rgba(0,0,0,.85);border:1px solid rgba(255,255,255,.1);border-radius:3.5px}
+/* legacy cover phone */
+.phone{
+  width:clamp(192px,20vw,256px);height:clamp(370px,48vh,490px);
+  background:linear-gradient(160deg,#0C1018 0%,#080C12 100%);
+  border-radius:40px;border:1.5px solid rgba(255,255,255,.14);
+  box-shadow:0 0 0 .5px rgba(255,255,255,.05),0 36px 72px rgba(0,0,0,.88),0 0 70px rgba(201,168,76,.1),inset 0 1px 0 rgba(255,255,255,.07);
+  position:relative;overflow:hidden;display:flex;flex-direction:column;flex-shrink:0
 }
 .phone-island{width:84px;height:24px;background:#000;border-radius:0 0 14px 14px;position:absolute;top:0;left:50%;transform:translateX(-50%);z-index:10}
 .phone-status{display:flex;justify-content:space-between;align-items:center;padding:30px 17px 5px;font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(245,240,232,.5);flex-shrink:0}
@@ -268,51 +325,64 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 
   </div>
 
-  <!-- RIGHT: Phone — Login Screen -->
+  <!-- RIGHT: iPhone — Login Screen -->
   <div style="flex-shrink:0;display:flex;align-items:center;justify-content:center">
-  <div class="phone" style="box-shadow:0 0 0 .5px rgba(255,255,255,.05),0 36px 72px rgba(0,0,0,.88),0 0 80px rgba(201,168,76,.18),inset 0 1px 0 rgba(255,255,255,.07)">
-    <div class="phone-island"></div>
-    <div class="phone-status"><span>9:41</span><span style="letter-spacing:.05em">●●●● WiFi ▮</span></div>
-    <div class="phone-screen" style="justify-content:center;align-items:center;text-align:center;gap:0;padding:8px 16px 16px">
-
-      <!-- Concentric rings bg -->
-      <div class="p-in-1" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:0">
-        <svg width="180" height="180" viewBox="0 0 180 180">
-          <circle cx="90" cy="90" r="80" fill="none" stroke="rgba(201,168,76,.06)" stroke-width="1" style="animation:ringsPulse 4s ease-in-out infinite"/>
-          <circle cx="90" cy="90" r="58" fill="none" stroke="rgba(201,168,76,.06)" stroke-width="1" style="animation:ringsPulse 4s ease-in-out .6s infinite"/>
-          <circle cx="90" cy="90" r="36" fill="none" stroke="rgba(201,168,76,.06)" stroke-width="1" style="animation:ringsPulse 4s ease-in-out 1.2s infinite"/>
-        </svg>
+  <div class="iphone-wrap">
+    <div class="ibtn ibtn-action"></div>
+    <div class="ibtn ibtn-volu"></div>
+    <div class="ibtn ibtn-vold"></div>
+    <div class="ibtn ibtn-power"></div>
+    <div class="iphone" style="box-shadow:0 0 0 3.5px #2A2A2C,0 0 0 5px rgba(70,70,80,.30),inset 0 0 0 1px rgba(255,255,255,.07),0 60px 140px rgba(0,0,0,.97),0 22px 55px rgba(0,0,0,.82),0 0 130px rgba(201,168,76,.14)">
+      <div class="dyn-island"><div class="di-spk"></div><div class="di-cam"></div></div>
+      <div class="iphone-status">
+        <span>9:41</span>
+        <div class="istat-r">
+          <svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="4" width="3" height="7" rx=".8" fill="rgba(245,240,232,.85)"/><rect x="4.3" y="2.5" width="3" height="8.5" rx=".8" fill="rgba(245,240,232,.85)"/><rect x="8.6" y="1" width="3" height="10" rx=".8" fill="rgba(245,240,232,.85)"/><rect x="12.9" y="0" width="3" height="11" rx=".8" fill="rgba(245,240,232,.28)"/></svg>
+          <svg width="15" height="11" viewBox="0 0 15 11"><path d="M7.5 8.5a1.5 1.5 0 1 0 0 2.99A1.5 1.5 0 0 0 7.5 8.5zM2.6 4.5a6.9 6.9 0 0 1 9.8 0l1.1-1.1A8.5 8.5 0 0 0 .1.7L1.2 5.6l1.4-1.1zm2.5 2.4a3.9 3.9 0 0 1 4.8 0l1.1-1.1a5.4 5.4 0 0 0-7 0l1.1 1.1z" fill="rgba(245,240,232,.85)"/></svg>
+          <svg width="25" height="11" viewBox="0 0 25 11"><rect x=".5" y=".5" width="21" height="10" rx="2.5" stroke="rgba(245,240,232,.4)" stroke-width="1" fill="none"/><rect x="1.5" y="1.5" width="18" height="8" rx="1.5" fill="rgba(245,240,232,.85)"/><path d="M22.5 3.5v4c.9-.5 1.5-1.2 1.5-2s-.6-1.5-1.5-2z" fill="rgba(245,240,232,.4)"/></svg>
+        </div>
       </div>
+      <div class="phone-screen" style="justify-content:center;align-items:center;text-align:center;padding:0 18px 14px;position:relative">
 
-      <div style="position:relative;z-index:1;width:100%;display:flex;flex-direction:column;align-items:center;gap:0">
-        <div class="p-in-2" style="margin-bottom:12px">
-          <div class="logo-seal" style="width:44px;height:44px;margin:0 auto 8px;box-shadow:0 0 0 1px rgba(201,168,76,.2),0 0 20px rgba(201,168,76,.3)">
-            <img src="/genesis-logo.png" alt="GR"
-              onerror="this.parentElement.innerHTML='<span style=&quot;font-size:30px;line-height:1;color:#C9A84C&quot;>◈</span>'">
-          </div>
-          <div style="font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:300;letter-spacing:.3em;color:var(--text)">GENESIS</div>
-          <div style="font-family:'Tenor Sans',sans-serif;font-size:7px;letter-spacing:.45em;color:rgba(201,168,76,.6);text-transform:uppercase;margin-top:2px">RESERVE</div>
+        <!-- Concentric rings bg -->
+        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-52%);pointer-events:none;z-index:0">
+          <svg width="220" height="220" viewBox="0 0 220 220">
+            <circle cx="110" cy="110" r="100" fill="none" stroke="rgba(201,168,76,.05)" stroke-width="1" style="animation:ringsPulse 4s ease-in-out infinite"/>
+            <circle cx="110" cy="110" r="74" fill="none" stroke="rgba(201,168,76,.05)" stroke-width="1" style="animation:ringsPulse 4s ease-in-out .65s infinite"/>
+            <circle cx="110" cy="110" r="48" fill="none" stroke="rgba(201,168,76,.05)" stroke-width="1" style="animation:ringsPulse 4s ease-in-out 1.3s infinite"/>
+          </svg>
         </div>
 
-        <div class="p-in-3" style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;color:rgba(245,240,232,.45);margin-bottom:14px">Welcome back.</div>
-
-        <div class="p-in-4" style="width:100%;display:flex;flex-direction:column;gap:7px;margin-bottom:12px">
-          <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:8px 10px;font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(245,240,232,.35);text-align:left">
+        <div style="position:relative;z-index:1;width:100%;display:flex;flex-direction:column;align-items:center">
+          <div class="p-in-1" style="margin-bottom:16px">
+            <div style="width:52px;height:52px;border-radius:50%;border:1px solid rgba(201,168,76,.35);background:rgba(201,168,76,.07);display:flex;align-items:center;justify-content:center;margin:0 auto 9px;box-shadow:0 0 26px rgba(201,168,76,.22)">
+              <img src="/genesis-logo.png" alt="GR" style="width:38px;height:38px;border-radius:50%"
+                onerror="this.style.display='none';this.parentElement.insertAdjacentHTML('afterbegin','<span style=\'font-size:26px;color:#C9A84C\'>◈</span>')">
+            </div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:14px;font-weight:300;letter-spacing:.32em;color:rgba(245,240,232,.92)">GENESIS</div>
+            <div style="font-family:'Tenor Sans',sans-serif;font-size:7px;letter-spacing:.5em;color:rgba(201,168,76,.65);text-transform:uppercase;margin-top:2px">RESERVE</div>
+          </div>
+          <div class="p-in-2" style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;color:rgba(245,240,232,.48);margin-bottom:20px">Welcome back.</div>
+          <div class="p-in-3" style="width:100%;margin-bottom:8px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);border-radius:11px;padding:11px 14px;font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(245,240,232,.3);text-align:left">
             Email or phone number
           </div>
-          <div style="background:linear-gradient(135deg,rgba(201,168,76,.85),rgba(201,168,76,.65));border-radius:8px;padding:9px;font-family:'Tenor Sans',sans-serif;font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:#000;font-weight:600">
+          <div class="p-in-4" style="width:100%;margin-bottom:18px;background:linear-gradient(135deg,#C9A84C,#B08E38);border-radius:11px;padding:11px;font-family:'Tenor Sans',sans-serif;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#030201;font-weight:600;text-align:center;box-shadow:0 6px 22px rgba(201,168,76,.28)">
             Continue →
           </div>
-        </div>
-
-        <div class="p-in-5" style="font-family:'Tenor Sans',sans-serif;font-size:8px;color:rgba(245,240,232,.28);letter-spacing:.08em;line-height:1.6">
-          New here? <span style="color:rgba(201,168,76,.6)">Get Early Access</span>
+          <div class="p-in-5" style="font-family:'Tenor Sans',sans-serif;font-size:8.5px;color:rgba(245,240,232,.28);letter-spacing:.06em">
+            New here? <span style="color:rgba(201,168,76,.7)">Get Early Access</span>
+          </div>
         </div>
       </div>
-    </div>
-
-    <div style="padding:6px 14px 10px;border-top:1px solid rgba(255,255,255,.06);text-align:center;flex-shrink:0">
-      <div style="font-family:'JetBrains Mono',monospace;font-size:7px;color:rgba(245,240,232,.22);letter-spacing:.1em">Secured by Privy · Arbitrum One</div>
+      <div class="p-in-6" style="padding:7px 18px 10px;border-top:1px solid rgba(255,255,255,.06);text-align:center;flex-shrink:0">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:7px;color:rgba(245,240,232,.2);letter-spacing:.1em">Secured by Privy · Arbitrum One</div>
+      </div>
+      <div class="home-bar-wrap"><div class="home-bar"></div></div>
+      <div class="iphone-btm">
+        <div class="ispkr"><span></span><span></span><span></span><span></span><span></span></div>
+        <div class="iusbc"></div>
+        <div class="ispkr"><span></span><span></span><span></span><span></span><span></span></div>
+      </div>
     </div>
   </div>
   </div>
@@ -583,40 +653,91 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
      SLIDE 07 · DEMO — WALLET SETUP
 ═════════════════════════════════════════════════════════════════════ -->
 <section class="slide" id="s7" data-duration="20">
-<div class="slide-inner" style="display:flex;align-items:center;gap:clamp(32px,4vw,64px)">
-  <div style="flex:1;min-width:0">
+<div class="slide-inner" style="display:flex;align-items:center;gap:clamp(24px,3vw,48px)">
+
+  <!-- LEFT: compact copy -->
+  <div style="flex:0 0 auto;width:clamp(150px,19%,215px)">
     <div class="fu d1"><div class="eyebrow">The Product · 07</div></div>
     <div class="fu d2"><div class="hd">Setup in <span style="color:var(--teal)">60 seconds.</span></div></div>
-    <div class="fu d3" style="margin-top:14px;font-family:'Tenor Sans',sans-serif;font-size:clamp(13px,1.4vw,17px);color:rgba(245,240,232,.55);line-height:1.7">Email or phone.<br>No crypto knowledge required.</div>
+    <div class="fu d3" style="margin-top:14px;font-family:'Tenor Sans',sans-serif;font-size:clamp(12px,1.3vw,15px);color:rgba(245,240,232,.5);line-height:1.75">Email or phone.<br>No crypto knowledge<br>required.</div>
   </div>
-  <div style="flex-shrink:0">
-  <div class="phone">
-    <div class="phone-island"></div>
-    <div class="phone-status"><span>9:41</span><span>●●●● WiFi ▮</span></div>
-    <div class="phone-screen">
-      <div class="p-in-1" style="display:flex;align-items:center;gap:8px;padding:6px 0 14px">
-        <span style="font-size:18px;color:rgba(201,168,76,.7)">◈</span>
-        <span style="font-family:'Tenor Sans',sans-serif;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:rgba(201,168,76,.6)">Genesis Reserve</span>
+
+  <!-- RIGHT: iPhone hero -->
+  <div style="flex:1;display:flex;justify-content:center;align-items:center">
+  <div class="iphone-wrap">
+    <div class="ibtn ibtn-action"></div>
+    <div class="ibtn ibtn-volu"></div>
+    <div class="ibtn ibtn-vold"></div>
+    <div class="ibtn ibtn-power"></div>
+    <div class="iphone">
+      <div class="dyn-island"><div class="di-spk"></div><div class="di-cam"></div></div>
+      <div class="iphone-status">
+        <span>9:41</span>
+        <div class="istat-r">
+          <svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="4" width="3" height="7" rx=".8" fill="rgba(245,240,232,.85)"/><rect x="4.3" y="2.5" width="3" height="8.5" rx=".8" fill="rgba(245,240,232,.85)"/><rect x="8.6" y="1" width="3" height="10" rx=".8" fill="rgba(245,240,232,.85)"/><rect x="12.9" y="0" width="3" height="11" rx=".8" fill="rgba(245,240,232,.28)"/></svg>
+          <svg width="15" height="11" viewBox="0 0 15 11"><path d="M7.5 8.5a1.5 1.5 0 1 0 0 2.99A1.5 1.5 0 0 0 7.5 8.5zM2.6 4.5a6.9 6.9 0 0 1 9.8 0l1.1-1.1A8.5 8.5 0 0 0 .1.7L1.2 5.6l1.4-1.1zm2.5 2.4a3.9 3.9 0 0 1 4.8 0l1.1-1.1a5.4 5.4 0 0 0-7 0l1.1 1.1z" fill="rgba(245,240,232,.85)"/></svg>
+          <svg width="25" height="11" viewBox="0 0 25 11"><rect x=".5" y=".5" width="21" height="10" rx="2.5" stroke="rgba(245,240,232,.4)" stroke-width="1" fill="none"/><rect x="1.5" y="1.5" width="18" height="8" rx="1.5" fill="rgba(245,240,232,.85)"/><path d="M22.5 3.5v4c.9-.5 1.5-1.2 1.5-2s-.6-1.5-1.5-2z" fill="rgba(245,240,232,.4)"/></svg>
+        </div>
       </div>
-      <div class="p-in-2" style="text-align:center;padding:14px 0 10px">
-        <div class="check-pop" style="width:52px;height:52px;border-radius:50%;background:rgba(26,191,106,.15);border:1.5px solid rgba(26,191,106,.4);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:22px">✓</div>
-        <div style="font-family:'Cormorant Garamond',serif;font-size:clamp(16px,1.8vw,20px);color:var(--text);letter-spacing:.06em">Wallet Activated</div>
+
+      <!-- LOGIN SCREEN -->
+      <div class="phone-screen" style="justify-content:center;align-items:center;text-align:center;padding:0 18px 14px;position:relative">
+
+        <!-- Concentric rings -->
+        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-52%);pointer-events:none;z-index:0">
+          <svg width="220" height="220" viewBox="0 0 220 220">
+            <circle cx="110" cy="110" r="100" fill="none" stroke="rgba(201,168,76,.05)" stroke-width="1" style="animation:ringsPulse 4s ease-in-out infinite"/>
+            <circle cx="110" cy="110" r="74" fill="none" stroke="rgba(201,168,76,.05)" stroke-width="1" style="animation:ringsPulse 4s ease-in-out .65s infinite"/>
+            <circle cx="110" cy="110" r="48" fill="none" stroke="rgba(201,168,76,.05)" stroke-width="1" style="animation:ringsPulse 4s ease-in-out 1.3s infinite"/>
+          </svg>
+        </div>
+
+        <div style="position:relative;z-index:1;width:100%;display:flex;flex-direction:column;align-items:center">
+
+          <!-- Logo mark -->
+          <div class="p-in-1" style="margin-bottom:18px">
+            <div style="width:54px;height:54px;border-radius:50%;border:1px solid rgba(201,168,76,.38);background:rgba(201,168,76,.07);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;box-shadow:0 0 28px rgba(201,168,76,.22),0 0 56px rgba(201,168,76,.09)">
+              <img src="/genesis-logo.png" alt="GR" style="width:40px;height:40px;border-radius:50%"
+                onerror="this.style.display='none';this.parentElement.insertAdjacentHTML('afterbegin','<span style=\'font-size:28px;color:#C9A84C\'>◈</span>')">
+            </div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:300;letter-spacing:.32em;color:rgba(245,240,232,.92)">GENESIS</div>
+            <div style="font-family:'Tenor Sans',sans-serif;font-size:7px;letter-spacing:.5em;color:rgba(201,168,76,.65);text-transform:uppercase;margin-top:3px">RESERVE</div>
+          </div>
+
+          <!-- Welcome -->
+          <div class="p-in-2" style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:rgba(245,240,232,.48);margin-bottom:22px">Welcome back.</div>
+
+          <!-- Email input -->
+          <div class="p-in-3" style="width:100%;margin-bottom:9px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);border-radius:11px;padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(245,240,232,.3);text-align:left;box-shadow:inset 0 1px 0 rgba(255,255,255,.04)">
+            Email or phone number
+          </div>
+
+          <!-- Continue button -->
+          <div class="p-in-4" style="width:100%;margin-bottom:20px;background:linear-gradient(135deg,#C9A84C 0%,#B08E38 100%);border-radius:11px;padding:12px;font-family:'Tenor Sans',sans-serif;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#030201;font-weight:600;text-align:center;box-shadow:0 6px 22px rgba(201,168,76,.28)">
+            Continue →
+          </div>
+
+          <!-- New here -->
+          <div class="p-in-5" style="font-family:'Tenor Sans',sans-serif;font-size:8.5px;color:rgba(245,240,232,.28);letter-spacing:.06em">
+            New here? <span style="color:rgba(201,168,76,.7)">Get Early Access</span>
+          </div>
+        </div>
       </div>
-      <div class="p-in-3" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px 12px;margin:6px 0">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:rgba(245,240,232,.35);letter-spacing:.1em;margin-bottom:4px">WALLET ADDRESS</div>
-        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(245,240,232,.7)">0x4F2a···d8Bb3</div>
+
+      <!-- Privy footer (no tabbar on login) -->
+      <div class="p-in-6" style="padding:7px 18px 10px;border-top:1px solid rgba(255,255,255,.06);text-align:center;flex-shrink:0">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:7px;color:rgba(245,240,232,.2);letter-spacing:.1em">Secured by Privy · Arbitrum One</div>
       </div>
-      <div class="p-in-4" style="font-family:'Tenor Sans',sans-serif;font-size:11px;color:rgba(245,240,232,.5);text-align:center;line-height:1.65;padding:10px 4px">Your stablecoins are<br>ready to work.</div>
-      <div class="p-in-5" style="display:flex;justify-content:center;margin-top:6px">
-        <span style="font-family:'Tenor Sans',sans-serif;font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);background:rgba(0,212,170,.1);border:1px solid rgba(0,212,170,.25);border-radius:999px;padding:4px 12px">Arbitrum One · Live</span>
+      <div class="home-bar-wrap"><div class="home-bar"></div></div>
+      <div class="iphone-btm">
+        <div class="ispkr"><span></span><span></span><span></span><span></span><span></span></div>
+        <div class="iusbc"></div>
+        <div class="ispkr"><span></span><span></span><span></span><span></span><span></span></div>
       </div>
-      <div style="flex:1"></div>
     </div>
-    <div class="phone-tabbar p-in-6">
-      <span class="tab-active">Home</span><span>Send</span><span>Earn</span><span>Profile</span>
-    </div>
   </div>
   </div>
+
 </div>
 </section>
 
@@ -624,46 +745,105 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
      SLIDE 08 · DEMO — FUND & CONVERT
 ═════════════════════════════════════════════════════════════════════ -->
 <section class="slide" id="s8" data-duration="20">
-<div class="slide-inner" style="display:flex;align-items:center;gap:clamp(32px,4vw,64px)">
-  <div style="flex:1;min-width:0">
+<div class="slide-inner" style="display:flex;align-items:center;gap:clamp(24px,3vw,48px)">
+
+  <!-- LEFT: compact copy -->
+  <div style="flex:0 0 auto;width:clamp(150px,19%,215px)">
     <div class="fu d1"><div class="eyebrow">The Product · 08</div></div>
     <div class="fu d2"><div class="hd">Link your card.<br><span style="color:var(--blue)">Convert instantly.</span></div></div>
-    <div class="fu d3" style="margin-top:14px;font-family:'Tenor Sans',sans-serif;font-size:clamp(13px,1.4vw,17px);color:rgba(245,240,232,.55);line-height:1.7">Dollars in.<br>Stablecoins out.<br>No value lost.</div>
+    <div class="fu d3" style="margin-top:14px;font-family:'Tenor Sans',sans-serif;font-size:clamp(12px,1.3vw,15px);color:rgba(245,240,232,.5);line-height:1.75">Dollars in.<br>Stablecoins out.<br>Zero value lost.</div>
   </div>
-  <div style="flex-shrink:0">
-  <div class="phone">
-    <div class="phone-island"></div>
-    <div class="phone-status"><span>9:41</span><span>●●●● WiFi ▮</span></div>
-    <div class="phone-screen">
-      <div class="p-in-1" style="font-family:'Cormorant Garamond',serif;font-size:15px;color:var(--text);letter-spacing:.06em;padding:6px 0 12px">Fund Wallet</div>
-      <div class="card-slide" style="background:linear-gradient(135deg,#1a2235 0%,#0d1520 100%);border:1px solid rgba(201,168,76,.2);border-radius:12px;padding:14px;margin-bottom:10px;position:relative;overflow:hidden">
-        <div style="position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;background:rgba(201,168,76,.06)"></div>
-        <div style="font-family:'Tenor Sans',sans-serif;font-size:7px;letter-spacing:.2em;color:rgba(201,168,76,.5);text-transform:uppercase;margin-bottom:10px">Genesis Reserve</div>
-        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(245,240,232,.7);letter-spacing:.18em;margin-bottom:10px">•••• •••• •••• 4242</div>
-        <div style="display:flex;justify-content:space-between;align-items:flex-end">
-          <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:rgba(245,240,232,.35)">12/27</div>
-          <div style="font-family:'Tenor Sans',sans-serif;font-size:9px;color:rgba(245,240,232,.45);letter-spacing:.1em">VISA</div>
+
+  <!-- RIGHT: iPhone hero -->
+  <div style="flex:1;display:flex;justify-content:center;align-items:center">
+  <div class="iphone-wrap">
+    <div class="ibtn ibtn-action"></div>
+    <div class="ibtn ibtn-volu"></div>
+    <div class="ibtn ibtn-vold"></div>
+    <div class="ibtn ibtn-power"></div>
+    <div class="iphone">
+      <div class="dyn-island"><div class="di-spk"></div><div class="di-cam"></div></div>
+      <div class="iphone-status">
+        <span>9:41</span>
+        <div class="istat-r">
+          <svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="4" width="3" height="7" rx=".8" fill="rgba(245,240,232,.85)"/><rect x="4.3" y="2.5" width="3" height="8.5" rx=".8" fill="rgba(245,240,232,.85)"/><rect x="8.6" y="1" width="3" height="10" rx=".8" fill="rgba(245,240,232,.85)"/><rect x="12.9" y="0" width="3" height="11" rx=".8" fill="rgba(245,240,232,.28)"/></svg>
+          <svg width="15" height="11" viewBox="0 0 15 11"><path d="M7.5 8.5a1.5 1.5 0 1 0 0 2.99A1.5 1.5 0 0 0 7.5 8.5zM2.6 4.5a6.9 6.9 0 0 1 9.8 0l1.1-1.1A8.5 8.5 0 0 0 .1.7L1.2 5.6l1.4-1.1zm2.5 2.4a3.9 3.9 0 0 1 4.8 0l1.1-1.1a5.4 5.4 0 0 0-7 0l1.1 1.1z" fill="rgba(245,240,232,.85)"/></svg>
+          <svg width="25" height="11" viewBox="0 0 25 11"><rect x=".5" y=".5" width="21" height="10" rx="2.5" stroke="rgba(245,240,232,.4)" stroke-width="1" fill="none"/><rect x="1.5" y="1.5" width="18" height="8" rx="1.5" fill="rgba(245,240,232,.85)"/><path d="M22.5 3.5v4c.9-.5 1.5-1.2 1.5-2s-.6-1.5-1.5-2z" fill="rgba(245,240,232,.4)"/></svg>
         </div>
       </div>
-      <div class="p-in-3" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px 12px;margin-bottom:8px">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:rgba(245,240,232,.3);margin-bottom:4px">AMOUNT</div>
-        <div style="font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--text)">$500.00</div>
+
+      <!-- FUND WALLET SCREEN -->
+      <div class="phone-screen">
+
+        <!-- Header row -->
+        <div class="p-in-1" style="display:flex;align-items:center;gap:8px;padding:6px 0 14px">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:rgba(245,240,232,.4)">←</span>
+          <span style="font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:300;color:rgba(245,240,232,.92);letter-spacing:.06em">Fund Wallet</span>
+        </div>
+
+        <!-- Debit card visual -->
+        <div class="card-slide" style="background:linear-gradient(135deg,#141B2E 0%,#0A1020 100%);border:1px solid rgba(201,168,76,.22);border-radius:14px;padding:16px;margin-bottom:12px;position:relative;overflow:hidden;flex-shrink:0">
+          <div style="position:absolute;top:-24px;right:-18px;width:90px;height:90px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,.10),transparent 70%)"></div>
+          <div style="position:absolute;bottom:-24px;left:-18px;width:70px;height:70px;border-radius:50%;background:radial-gradient(circle,rgba(74,158,255,.08),transparent 70%)"></div>
+          <div style="font-family:'Tenor Sans',sans-serif;font-size:7px;letter-spacing:.22em;color:rgba(201,168,76,.55);text-transform:uppercase;margin-bottom:12px">Genesis Reserve</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:rgba(245,240,232,.75);letter-spacing:.2em;margin-bottom:12px">•••• •••• •••• 4242</div>
+          <div style="display:flex;justify-content:space-between;align-items:flex-end">
+            <div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:7px;color:rgba(245,240,232,.3);margin-bottom:2px">EXPIRES</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(245,240,232,.5)">12/27</div>
+            </div>
+            <div style="font-family:'Tenor Sans',sans-serif;font-size:10px;font-weight:600;color:rgba(245,240,232,.5);letter-spacing:.12em">VISA</div>
+          </div>
+        </div>
+
+        <!-- Amount field -->
+        <div class="p-in-3" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:11px;padding:11px 14px;margin-bottom:10px;flex-shrink:0">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:rgba(245,240,232,.3);letter-spacing:.1em;margin-bottom:5px">AMOUNT</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:var(--text);line-height:1">$500.00</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:rgba(245,240,232,.28);margin-top:3px">≈ 500.00 USDC</div>
+        </div>
+
+        <!-- Converting state -->
+        <div class="p-in-4" style="background:rgba(0,212,170,.06);border:1px solid rgba(0,212,170,.2);border-radius:11px;padding:9px 14px;display:flex;align-items:center;gap:9px;margin-bottom:8px;flex-shrink:0">
+          <span style="font-size:12px;color:var(--teal);display:inline-block;animation:convertPulse 1s ease-in-out infinite">⟳</span>
+          <div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(0,212,170,.85)">Converting via Circle...</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:7px;color:rgba(0,212,170,.45);margin-top:2px">USD → USDC · 1:1 peg</div>
+          </div>
+        </div>
+
+        <!-- Ready confirmation -->
+        <div class="p-in-5" style="background:rgba(26,191,106,.06);border:1px solid rgba(26,191,106,.22);border-radius:11px;padding:9px 14px;display:flex;align-items:center;gap:9px;margin-bottom:14px;flex-shrink:0">
+          <div style="width:20px;height:20px;border-radius:50%;background:rgba(26,191,106,.18);border:1px solid rgba(26,191,106,.35);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--green);flex-shrink:0">✓</div>
+          <div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(26,191,106,.9)">$500.00 USDC · Ready</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:7px;color:rgba(26,191,106,.45);margin-top:2px">Arbitrum One · instant</div>
+          </div>
+        </div>
+
+        <!-- Deposit button -->
+        <div class="p-in-6" style="background:linear-gradient(135deg,#C9A84C 0%,#B08E38 100%);border-radius:12px;padding:13px;font-family:'Tenor Sans',sans-serif;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#030201;font-weight:600;text-align:center;box-shadow:0 6px 22px rgba(201,168,76,.25);flex-shrink:0">
+          Deposit Now
+        </div>
+        <div style="flex:1"></div>
       </div>
-      <div class="p-in-4" style="background:rgba(0,212,170,.06);border:1px solid rgba(0,212,170,.2);border-radius:10px;padding:8px 12px;display:flex;align-items:center;gap:8px">
-        <span style="font-size:10px;color:var(--teal);animation:convertPulse 1.2s ease-in-out infinite">⟳</span>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(0,212,170,.8)">Converting to USDC...</span>
+
+      <div class="phone-tabbar">
+        <span><span class="tab-icon">⌂</span>Home</span>
+        <span class="tab-active"><span class="tab-icon">↑</span>Fund</span>
+        <span><span class="tab-icon">◇</span>Earn</span>
+        <span><span class="tab-icon">○</span>Profile</span>
       </div>
-      <div class="p-in-5" style="background:rgba(26,191,106,.06);border:1px solid rgba(26,191,106,.2);border-radius:10px;padding:8px 12px;display:flex;align-items:center;gap:8px;margin-top:6px">
-        <span style="font-size:11px;color:var(--green)">✓</span>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(26,191,106,.85)">$500.00 USDC · Ready</span>
+      <div class="home-bar-wrap"><div class="home-bar"></div></div>
+      <div class="iphone-btm">
+        <div class="ispkr"><span></span><span></span><span></span><span></span><span></span></div>
+        <div class="iusbc"></div>
+        <div class="ispkr"><span></span><span></span><span></span><span></span><span></span></div>
       </div>
-      <div style="flex:1"></div>
-    </div>
-    <div class="phone-tabbar p-in-6">
-      <span>Home</span><span class="tab-active">Send</span><span>Earn</span><span>Profile</span>
     </div>
   </div>
   </div>
+
 </div>
 </section>
 
@@ -671,53 +851,105 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
      SLIDE 09 · DEMO — STRATEGY
 ═════════════════════════════════════════════════════════════════════ -->
 <section class="slide" id="s9" data-duration="20">
-<div class="slide-inner" style="display:flex;align-items:center;gap:clamp(32px,4vw,64px)">
-  <div style="flex:1;min-width:0">
+<div class="slide-inner" style="display:flex;align-items:center;gap:clamp(24px,3vw,48px)">
+
+  <!-- LEFT: compact copy -->
+  <div style="flex:0 0 auto;width:clamp(150px,19%,215px)">
     <div class="fu d1"><div class="eyebrow">The Product · 09</div></div>
     <div class="fu d2"><div class="hd">Choose how hard<br><span style="color:var(--green)">your money works.</span></div></div>
-    <div class="fu d3" style="margin-top:14px;font-family:'Tenor Sans',sans-serif;font-size:clamp(13px,1.4vw,17px);color:rgba(245,240,232,.55);line-height:1.7">Three strategies.<br>One goal: outpace inflation.</div>
+    <div class="fu d3" style="margin-top:14px;font-family:'Tenor Sans',sans-serif;font-size:clamp(12px,1.3vw,15px);color:rgba(245,240,232,.5);line-height:1.75">Three strategies.<br>One goal:<br>outpace inflation.</div>
   </div>
-  <div style="flex-shrink:0">
-  <div class="phone">
-    <div class="phone-island"></div>
-    <div class="phone-status"><span>9:41</span><span>●●●● WiFi ▮</span></div>
-    <div class="phone-screen">
-      <div class="p-in-1" style="font-family:'Cormorant Garamond',serif;font-size:15px;color:var(--text);letter-spacing:.06em;padding:6px 0 12px">Choose Strategy</div>
-      <div class="p-in-2" style="background:rgba(74,158,255,.05);border:1px solid rgba(74,158,255,.18);border-radius:10px;padding:10px 12px;margin-bottom:7px;display:flex;justify-content:space-between;align-items:center">
-        <div>
-          <div style="font-family:'Tenor Sans',sans-serif;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--blue)">Preserve</div>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:rgba(74,158,255,.5);margin-top:2px">Low risk · Liquid</div>
-        </div>
-        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--blue)">4–6%</div>
-      </div>
-      <div class="p-in-3 strat-select" style="background:rgba(0,212,170,.07);border:1px solid rgba(0,212,170,.35);border-radius:10px;padding:10px 12px;margin-bottom:7px;display:flex;justify-content:space-between;align-items:center">
-        <div>
-          <div style="font-family:'Tenor Sans',sans-serif;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--teal)">Grow</div>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:rgba(0,212,170,.5);margin-top:2px">Moderate · Balanced</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:6px">
-          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--teal)">6–12%</div>
-          <div style="width:14px;height:14px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;font-size:8px;color:#000">✓</div>
+
+  <!-- RIGHT: iPhone hero -->
+  <div style="flex:1;display:flex;justify-content:center;align-items:center">
+  <div class="iphone-wrap">
+    <div class="ibtn ibtn-action"></div>
+    <div class="ibtn ibtn-volu"></div>
+    <div class="ibtn ibtn-vold"></div>
+    <div class="ibtn ibtn-power"></div>
+    <div class="iphone">
+      <div class="dyn-island"><div class="di-spk"></div><div class="di-cam"></div></div>
+      <div class="iphone-status">
+        <span>9:41</span>
+        <div class="istat-r">
+          <svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="4" width="3" height="7" rx=".8" fill="rgba(245,240,232,.85)"/><rect x="4.3" y="2.5" width="3" height="8.5" rx=".8" fill="rgba(245,240,232,.85)"/><rect x="8.6" y="1" width="3" height="10" rx=".8" fill="rgba(245,240,232,.85)"/><rect x="12.9" y="0" width="3" height="11" rx=".8" fill="rgba(245,240,232,.28)"/></svg>
+          <svg width="15" height="11" viewBox="0 0 15 11"><path d="M7.5 8.5a1.5 1.5 0 1 0 0 2.99A1.5 1.5 0 0 0 7.5 8.5zM2.6 4.5a6.9 6.9 0 0 1 9.8 0l1.1-1.1A8.5 8.5 0 0 0 .1.7L1.2 5.6l1.4-1.1zm2.5 2.4a3.9 3.9 0 0 1 4.8 0l1.1-1.1a5.4 5.4 0 0 0-7 0l1.1 1.1z" fill="rgba(245,240,232,.85)"/></svg>
+          <svg width="25" height="11" viewBox="0 0 25 11"><rect x=".5" y=".5" width="21" height="10" rx="2.5" stroke="rgba(245,240,232,.4)" stroke-width="1" fill="none"/><rect x="1.5" y="1.5" width="18" height="8" rx="1.5" fill="rgba(245,240,232,.85)"/><path d="M22.5 3.5v4c.9-.5 1.5-1.2 1.5-2s-.6-1.5-1.5-2z" fill="rgba(245,240,232,.4)"/></svg>
         </div>
       </div>
-      <div class="p-in-4" style="background:rgba(26,191,106,.05);border:1px solid rgba(26,191,106,.18);border-radius:10px;padding:10px 12px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center">
-        <div>
-          <div style="font-family:'Tenor Sans',sans-serif;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--green)">Accelerate</div>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:rgba(26,191,106,.5);margin-top:2px">Higher yield</div>
+
+      <!-- STRATEGY SCREEN -->
+      <div class="phone-screen">
+
+        <!-- Header -->
+        <div class="p-in-1" style="padding:6px 0 14px">
+          <div style="display:flex;align-items:center;gap:7px;margin-bottom:4px">
+            <span style="font-size:14px;color:rgba(201,168,76,.7)">◈</span>
+            <span style="font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:300;color:rgba(245,240,232,.92);letter-spacing:.06em">Choose Strategy</span>
+          </div>
+          <div style="font-family:'Tenor Sans',sans-serif;font-size:9px;color:rgba(245,240,232,.32);letter-spacing:.1em">Capital deployed to battle-tested DeFi protocols</div>
         </div>
-        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--green)">13%+</div>
+
+        <!-- PRESERVE -->
+        <div class="p-in-2" style="background:rgba(74,158,255,.05);border:1px solid rgba(74,158,255,.18);border-radius:12px;padding:12px 14px;margin-bottom:8px;flex-shrink:0">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+            <div>
+              <div style="font-family:'Tenor Sans',sans-serif;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);margin-bottom:3px">Preserve</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:rgba(74,158,255,.5)">Low risk · Fully liquid</div>
+            </div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:var(--blue);line-height:1">4–6%</div>
+          </div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:7px;color:rgba(245,240,232,.28)">Aave USDC · DAI Savings Rate</div>
+        </div>
+
+        <!-- GROW (selected) -->
+        <div class="p-in-3 strat-select" style="background:rgba(0,212,170,.07);border:1.5px solid rgba(0,212,170,.38);border-radius:12px;padding:12px 14px;margin-bottom:8px;flex-shrink:0;position:relative">
+          <div style="position:absolute;top:10px;right:12px;width:20px;height:20px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;font-size:10px;color:#000;font-weight:700">✓</div>
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+            <div>
+              <div style="font-family:'Tenor Sans',sans-serif;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);margin-bottom:3px">Grow</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:rgba(0,212,170,.55)">Moderate · Balanced yield</div>
+            </div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:var(--teal);line-height:1;padding-right:28px">6–12%</div>
+          </div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:7px;color:rgba(0,212,170,.4)">Aave · Compound · Pendle</div>
+        </div>
+
+        <!-- ACCELERATE -->
+        <div class="p-in-4" style="background:rgba(26,191,106,.05);border:1px solid rgba(26,191,106,.18);border-radius:12px;padding:12px 14px;margin-bottom:14px;flex-shrink:0">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+            <div>
+              <div style="font-family:'Tenor Sans',sans-serif;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--green);margin-bottom:3px">Accelerate</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:rgba(26,191,106,.5)">Higher yield · DeFi native</div>
+            </div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:var(--green);line-height:1">13%+</div>
+          </div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:7px;color:rgba(245,240,232,.28)">Pendle · Curve · Convex</div>
+        </div>
+
+        <!-- Activate button -->
+        <div class="p-in-5" style="background:linear-gradient(135deg,rgba(0,212,170,.85),rgba(0,180,140,.85));border-radius:12px;padding:13px;font-family:'Tenor Sans',sans-serif;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#030201;font-weight:600;text-align:center;box-shadow:0 6px 22px rgba(0,212,170,.22);flex-shrink:0">
+          Activate Grow Strategy
+        </div>
+        <div style="flex:1"></div>
       </div>
-      <div class="p-in-5" style="background:rgba(0,212,170,.06);border:1px solid rgba(0,212,170,.2);border-radius:10px;padding:8px 12px;display:flex;align-items:center;gap:8px">
-        <span style="font-size:11px;color:var(--teal)">✓</span>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(0,212,170,.85)">Grow Strategy Activated</span>
+
+      <div class="phone-tabbar p-in-6">
+        <span><span class="tab-icon">⌂</span>Home</span>
+        <span><span class="tab-icon">↑</span>Fund</span>
+        <span class="tab-active"><span class="tab-icon">◇</span>Earn</span>
+        <span><span class="tab-icon">○</span>Profile</span>
       </div>
-      <div style="flex:1"></div>
+      <div class="home-bar-wrap"><div class="home-bar"></div></div>
+      <div class="iphone-btm">
+        <div class="ispkr"><span></span><span></span><span></span><span></span><span></span></div>
+        <div class="iusbc"></div>
+        <div class="ispkr"><span></span><span></span><span></span><span></span><span></span></div>
+      </div>
     </div>
-    <div class="phone-tabbar p-in-6">
-      <span>Home</span><span>Send</span><span class="tab-active">Earn</span><span>Profile</span>
-    </div>
   </div>
   </div>
+
 </div>
 </section>
 
@@ -725,66 +957,122 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
      SLIDE 10 · DEMO — LIVE YIELD
 ═════════════════════════════════════════════════════════════════════ -->
 <section class="slide" id="s10" data-duration="20">
-<div class="slide-inner" style="display:flex;align-items:center;gap:clamp(32px,4vw,64px)">
-  <div style="flex:1;min-width:0">
+<div class="slide-inner" style="display:flex;align-items:center;gap:clamp(24px,3vw,48px)">
+
+  <!-- LEFT: compact copy -->
+  <div style="flex:0 0 auto;width:clamp(150px,19%,215px)">
     <div class="fu d1"><div class="eyebrow">The Product · 10</div></div>
     <div class="fu d2"><div class="hd">Watch it grow.<br><span style="color:var(--gold)">Every 15 minutes.</span></div></div>
-    <div class="fu d3" style="margin-top:14px;font-family:'Tenor Sans',sans-serif;font-size:clamp(13px,1.4vw,17px);color:rgba(245,240,232,.55);line-height:1.7">Real yield.<br>Real time.<br>No bank required.</div>
+    <div class="fu d3" style="margin-top:14px;font-family:'Tenor Sans',sans-serif;font-size:clamp(12px,1.3vw,15px);color:rgba(245,240,232,.5);line-height:1.75">Real yield.<br>Real time.<br>No bank required.</div>
   </div>
-  <div style="flex-shrink:0">
-  <div class="phone">
-    <div class="phone-island"></div>
-    <div class="phone-status"><span>9:41</span><span>●●●● WiFi ▮</span></div>
-    <div class="phone-screen">
-      <div class="p-in-1" style="display:flex;align-items:center;justify-content:space-between;padding:4px 0 8px">
-        <div style="display:flex;align-items:center;gap:6px">
-          <span style="font-size:13px;color:rgba(201,168,76,.7)">◈</span>
-          <span style="font-family:'Tenor Sans',sans-serif;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(201,168,76,.55)">Portfolio</span>
-        </div>
-        <span style="font-family:'Tenor Sans',sans-serif;font-size:7px;letter-spacing:.12em;text-transform:uppercase;color:var(--green);background:rgba(26,191,106,.1);border:1px solid rgba(26,191,106,.25);border-radius:999px;padding:3px 8px;animation:liveBlip 2s ease-in-out infinite">● LIVE</span>
-      </div>
-      <div class="p-in-2" style="padding:4px 0 10px">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:rgba(245,240,232,.32);letter-spacing:.1em;margin-bottom:4px">USDC BALANCE</div>
-        <div style="font-family:'Cormorant Garamond',serif;font-size:clamp(24px,3.2vw,32px);font-weight:300;color:var(--text);line-height:1" id="ph-balance">$10,002.31</div>
-        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--green);margin-top:4px" id="ph-yield-today">+$2.31 earned today ↑</div>
-      </div>
-      <div class="p-in-3" style="background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.18);border-radius:10px;padding:8px 12px;margin-bottom:7px;display:flex;justify-content:space-between;align-items:center">
-        <div>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:rgba(245,240,232,.32);letter-spacing:.08em">APY</div>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;color:var(--gold)">8.45%</div>
-        </div>
-        <div style="text-align:right">
-          <div style="font-family:'Tenor Sans',sans-serif;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:rgba(0,212,170,.7)">Grow · Active</div>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:rgba(245,240,232,.3);margin-top:2px">Aave + Compound</div>
+
+  <!-- RIGHT: iPhone hero -->
+  <div style="flex:1;display:flex;justify-content:center;align-items:center">
+  <div class="iphone-wrap">
+    <div class="ibtn ibtn-action"></div>
+    <div class="ibtn ibtn-volu"></div>
+    <div class="ibtn ibtn-vold"></div>
+    <div class="ibtn ibtn-power"></div>
+    <div class="iphone">
+      <div class="dyn-island"><div class="di-spk"></div><div class="di-cam"></div></div>
+      <div class="iphone-status">
+        <span>9:41</span>
+        <div class="istat-r">
+          <svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="4" width="3" height="7" rx=".8" fill="rgba(245,240,232,.85)"/><rect x="4.3" y="2.5" width="3" height="8.5" rx=".8" fill="rgba(245,240,232,.85)"/><rect x="8.6" y="1" width="3" height="10" rx=".8" fill="rgba(245,240,232,.85)"/><rect x="12.9" y="0" width="3" height="11" rx=".8" fill="rgba(245,240,232,.28)"/></svg>
+          <svg width="15" height="11" viewBox="0 0 15 11"><path d="M7.5 8.5a1.5 1.5 0 1 0 0 2.99A1.5 1.5 0 0 0 7.5 8.5zM2.6 4.5a6.9 6.9 0 0 1 9.8 0l1.1-1.1A8.5 8.5 0 0 0 .1.7L1.2 5.6l1.4-1.1zm2.5 2.4a3.9 3.9 0 0 1 4.8 0l1.1-1.1a5.4 5.4 0 0 0-7 0l1.1 1.1z" fill="rgba(245,240,232,.85)"/></svg>
+          <svg width="25" height="11" viewBox="0 0 25 11"><rect x=".5" y=".5" width="21" height="10" rx="2.5" stroke="rgba(245,240,232,.4)" stroke-width="1" fill="none"/><rect x="1.5" y="1.5" width="18" height="8" rx="1.5" fill="rgba(245,240,232,.85)"/><path d="M22.5 3.5v4c.9-.5 1.5-1.2 1.5-2s-.6-1.5-1.5-2z" fill="rgba(245,240,232,.4)"/></svg>
         </div>
       </div>
-      <div class="p-in-4" style="margin-bottom:7px">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
-          <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:rgba(245,240,232,.32);letter-spacing:.08em">NEXT UPDATE</div>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(0,212,170,.8)" id="ph-countdown">14:23</div>
+
+      <!-- LIVE YIELD DASHBOARD -->
+      <div class="phone-screen">
+
+        <!-- Header row -->
+        <div class="p-in-1" style="display:flex;align-items:center;justify-content:space-between;padding:4px 0 10px;flex-shrink:0">
+          <div style="display:flex;align-items:center;gap:6px">
+            <span style="font-size:14px;color:rgba(201,168,76,.75)">◈</span>
+            <span style="font-family:'Tenor Sans',sans-serif;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:rgba(201,168,76,.6)">Portfolio</span>
+          </div>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.1em;color:var(--green);background:rgba(26,191,106,.1);border:1px solid rgba(26,191,106,.25);border-radius:999px;padding:3px 9px;animation:liveBlip 2s ease-in-out infinite">● LIVE</span>
         </div>
-        <div style="height:3px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden">
-          <div id="ph-progress" style="height:100%;background:linear-gradient(90deg,var(--teal),var(--gold));border-radius:2px;transition:width .1s linear;width:4%"></div>
+
+        <!-- Balance hero -->
+        <div class="p-in-2" style="padding:2px 0 12px;flex-shrink:0">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:rgba(245,240,232,.32);letter-spacing:.12em;margin-bottom:5px">USDC BALANCE</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:300;color:var(--text);line-height:1;letter-spacing:-.01em" id="ph-balance">$10,002.31</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);margin-top:5px" id="ph-yield-today">+$2.31 earned today ↑</div>
         </div>
+
+        <!-- APY + strategy card -->
+        <div class="p-in-3" style="background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.2);border-radius:12px;padding:10px 14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0">
+          <div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:rgba(245,240,232,.3);letter-spacing:.1em;margin-bottom:4px">APY</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:var(--gold);line-height:1">8.45%</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-family:'Tenor Sans',sans-serif;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);margin-bottom:4px">Grow · Active</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:rgba(245,240,232,.3)">Aave + Compound</div>
+          </div>
+        </div>
+
+        <!-- Countdown + progress -->
+        <div class="p-in-4" style="margin-bottom:9px;flex-shrink:0">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:rgba(245,240,232,.32);letter-spacing:.1em">NEXT UPDATE</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:rgba(0,212,170,.85)" id="ph-countdown">14:23</div>
+          </div>
+          <div style="height:4px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden">
+            <div id="ph-progress" style="height:100%;background:linear-gradient(90deg,var(--teal),var(--gold));border-radius:2px;transition:width .1s linear;width:4%"></div>
+          </div>
+        </div>
+
+        <!-- Sparkline chart -->
+        <div class="p-in-5" style="margin-bottom:8px;flex-shrink:0">
+          <svg width="100%" height="48" viewBox="0 0 250 48" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="sg2" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="rgba(0,212,170,.3)"/>
+                <stop offset="100%" stop-color="rgba(0,212,170,0)"/>
+              </linearGradient>
+            </defs>
+            <path d="M0,42 C15,40 28,38 45,34 C60,30 72,32 90,26 C108,20 120,22 138,16 C156,10 168,12 185,7 C198,3 218,4 250,2" fill="none" stroke="rgba(0,212,170,.6)" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M0,42 C15,40 28,38 45,34 C60,30 72,32 90,26 C108,20 120,22 138,16 C156,10 168,12 185,7 C198,3 218,4 250,2 L250,48 L0,48Z" fill="url(#sg2)"/>
+          </svg>
+        </div>
+
+        <!-- Recent activity feed -->
+        <div class="p-in-6" style="flex-shrink:0">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:rgba(245,240,232,.28);letter-spacing:.1em;margin-bottom:7px">RECENT YIELD</div>
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 10px;background:rgba(26,191,106,.05);border:1px solid rgba(26,191,106,.14);border-radius:8px">
+              <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(26,191,106,.85)">+$0.0024</span>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:7.5px;color:rgba(245,240,232,.28)">just now</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 10px;background:rgba(26,191,106,.03);border:1px solid rgba(26,191,106,.09);border-radius:8px">
+              <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(26,191,106,.65)">+$0.0024</span>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:7.5px;color:rgba(245,240,232,.22)">2 sec ago</span>
+            </div>
+          </div>
+        </div>
+        <div style="flex:1"></div>
       </div>
-      <div class="p-in-5" style="flex:1;display:flex;align-items:flex-end;padding-bottom:4px">
-        <svg width="100%" height="44" viewBox="0 0 220 44" preserveAspectRatio="none">
-          <defs>
-            <linearGradient id="sg" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="rgba(0,212,170,.25)"/>
-              <stop offset="100%" stop-color="rgba(0,212,170,0)"/>
-            </linearGradient>
-          </defs>
-          <path d="M0,38 C20,36 35,34 50,30 C65,26 75,28 90,22 C105,16 115,18 130,12 C145,6 160,8 175,5 C185,3 200,4 220,2" fill="none" stroke="rgba(0,212,170,.55)" stroke-width="1.5" stroke-linecap="round"/>
-          <path d="M0,38 C20,36 35,34 50,30 C65,26 75,28 90,22 C105,16 115,18 130,12 C145,6 160,8 175,5 C185,3 200,4 220,2 L220,44 L0,44Z" fill="url(#sg)"/>
-        </svg>
+
+      <div class="phone-tabbar">
+        <span class="tab-active"><span class="tab-icon">⌂</span>Home</span>
+        <span><span class="tab-icon">↑</span>Fund</span>
+        <span><span class="tab-icon">◇</span>Earn</span>
+        <span><span class="tab-icon">○</span>Profile</span>
+      </div>
+      <div class="home-bar-wrap"><div class="home-bar"></div></div>
+      <div class="iphone-btm">
+        <div class="ispkr"><span></span><span></span><span></span><span></span><span></span></div>
+        <div class="iusbc"></div>
+        <div class="ispkr"><span></span><span></span><span></span><span></span><span></span></div>
       </div>
     </div>
-    <div class="phone-tabbar p-in-6">
-      <span class="tab-active">Home</span><span>Send</span><span>Earn</span><span>Profile</span>
-    </div>
   </div>
   </div>
+
 </div>
 </section>
 
