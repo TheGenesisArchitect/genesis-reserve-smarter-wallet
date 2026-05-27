@@ -790,8 +790,7 @@ export function NewsDropFeed({ onUnreadChange }: NewsDropFeedProps) {
             marginBottom: 10,
           }}
         >
-          Pipeline into the Future of<br />
-          Fintech and Digital Currency
+          The Future Of Finance is Frictionless
         </h1>
         <p
           style={{
