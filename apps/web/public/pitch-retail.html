@@ -3,31 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Genesis Reserve — The Smarter Wallet | Retail Market Deck</title>
+<title>Genesis Reserve · 2026 Pitch</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@400;500;700&family=Sora:wght@300;400;500;600&family=Tenor+Sans&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@400;500;700&family=Tenor+Sans&display=swap" rel="stylesheet">
 <style>
 /* ── Design Tokens ─────────────────────────────────────────────────────── */
 :root {
-  --gold:#C9A84C; --gold2:#E8CB6E; --gold-d:#8A6E2A; --gold-dd:#5A4618;
-  --teal:#00D4AA; --teal-10:rgba(0,212,170,.10); --teal-20:rgba(0,212,170,.20); --teal-30:rgba(0,212,170,.30);
-  --violet:#9B6DFF; --violet-10:rgba(155,109,255,.10); --violet-20:rgba(155,109,255,.20);
-  --green:#1ABF6A; --green-10:rgba(26,191,106,.10); --green-20:rgba(26,191,106,.20);
-  --blue:#4A9EFF; --blue-10:rgba(74,158,255,.10); --blue-20:rgba(74,158,255,.20);
-  --red:#E84040; --red-10:rgba(232,64,64,.10); --amber:#F0A020;
-  --bg:#020305; --bg0:#040608; --bg1:#070B10; --bg2:#0D1117; --bg3:#141B22; --bg4:#1C2530; --bg5:#242E3D;
-  --text:#F5F0E8; --muted:#7A7670; --border:rgba(255,255,255,.06);
+  --gold:#C9A84C;--gold2:#E8CB6E;--gold-d:#8A6E2A;
+  --teal:#00D4AA;--violet:#9B6DFF;--green:#1ABF6A;
+  --blue:#4A9EFF;--red:#E84040;
+  --bg:#020305;--bg1:#070B10;--bg2:#0D1117;--bg3:#141B22;
+  --text:#F5F0E8;--border:rgba(255,255,255,.06);
 }
-
-/* ── Reset ─────────────────────────────────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Tenor Sans',sans-serif;-webkit-font-smoothing:antialiased}
 
-/* ── Geo grid overlay ──────────────────────────────────────────────────── */
+/* ── Grid overlay ───────────────────────────────────────────────────────── */
 .geo-grid{position:fixed;inset:0;background-image:linear-gradient(rgba(255,255,255,.012) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.012) 1px,transparent 1px);background-size:56px 56px;pointer-events:none;z-index:0}
 
-/* ── Slide engine ──────────────────────────────────────────────────────── */
+/* ── Slide engine ───────────────────────────────────────────────────────── */
 .deck{position:fixed;inset:0;z-index:1}
 .slide{
   position:absolute;inset:0;
@@ -38,109 +33,108 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
   transition:opacity .65s cubic-bezier(.4,0,.2,1),transform .65s cubic-bezier(.4,0,.2,1),filter .65s cubic-bezier(.4,0,.2,1);
   filter:blur(2px);
 }
-.slide::before{content:'';position:absolute;inset:0;pointer-events:none;z-index:0;transition:opacity 1s}
 .slide.active{opacity:1;transform:perspective(1400px) rotateY(0deg) translateZ(0);filter:blur(0);pointer-events:auto}
 .slide.exit{opacity:0;transform:perspective(1400px) rotateY(8deg) translateZ(-60px);filter:blur(2px)}
 .slide-inner{position:relative;z-index:1;width:100%;max-width:960px}
+.slide.demo-slide{background:transparent;padding:0}
+.slide.demo-slide::before{display:none!important}
 
 /* Per-slide atmosphere */
-#s1::before{background:radial-gradient(ellipse 85% 55% at 50% -10%,rgba(232,64,64,.18) 0%,transparent 65%)}
-#s2::before{background:radial-gradient(ellipse 70% 50% at 20% 30%,rgba(232,64,64,.12) 0%,transparent 60%)}
-#s3::before{background:radial-gradient(ellipse 75% 50% at 80% 20%,rgba(74,158,255,.12) 0%,transparent 60%)}
-#s4::before{background:radial-gradient(ellipse 85% 60% at 50% -5%,rgba(0,212,170,.16) 0%,transparent 65%)}
-#s5::before{background:radial-gradient(ellipse 80% 55% at 50% -10%,rgba(201,168,76,.16) 0%,transparent 65%)}
-#s6::before{background:radial-gradient(ellipse 70% 50% at 10% 50%,rgba(0,212,170,.12) 0%,transparent 60%)}
-#s7::before{background:radial-gradient(ellipse 90% 60% at 50% -5%,rgba(26,191,106,.14) 0%,transparent 65%)}
-#s8::before{background:radial-gradient(ellipse 75% 50% at 90% 30%,rgba(155,109,255,.14) 0%,transparent 60%)}
-#s9::before{background:radial-gradient(ellipse 80% 55% at 15% 20%,rgba(74,158,255,.14) 0%,transparent 65%)}
-#s10::before{background:radial-gradient(ellipse 70% 50% at 85% 40%,rgba(155,109,255,.12) 0%,transparent 60%)}
-#s11::before{background:radial-gradient(ellipse 85% 55% at 50% -8%,rgba(0,212,170,.13) 0%,transparent 65%)}
-#s12::before{background:radial-gradient(ellipse 90% 60% at 50% -5%,rgba(26,191,106,.15) 0%,transparent 65%)}
-#s13::before{background:radial-gradient(ellipse 75% 50% at 80% 20%,rgba(201,168,76,.14) 0%,transparent 60%)}
-#s14::before{background:radial-gradient(ellipse 80% 55% at 50% -10%,rgba(201,168,76,.16) 0%,transparent 65%)}
-#s15::before{background:radial-gradient(ellipse 85% 60% at 50% -5%,rgba(201,168,76,.18) 0%,transparent 65%)}
+#s0::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 80% 60% at 50% 50%,rgba(201,168,76,.15) 0%,transparent 65%)}
+#s1::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 85% 55% at 50% -10%,rgba(232,64,64,.22) 0%,transparent 65%)}
+#s2::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 70% 50% at 20% 30%,rgba(232,64,64,.15) 0%,transparent 60%)}
+#s3::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 75% 50% at 80% 20%,rgba(0,212,170,.14) 0%,transparent 60%)}
+#s4::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 85% 60% at 50% -5%,rgba(74,158,255,.14) 0%,transparent 65%)}
+#s5::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 85% 60% at 50% 50%,rgba(201,168,76,.18) 0%,transparent 65%)}
+#s10::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 70% 50% at 85% 40%,rgba(155,109,255,.14) 0%,transparent 60%)}
+#s11::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 85% 55% at 50% -8%,rgba(0,212,170,.15) 0%,transparent 65%)}
+#s12::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 90% 60% at 50% -5%,rgba(26,191,106,.18) 0%,transparent 65%)}
+#s13::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 80% 55% at 50% 50%,rgba(201,168,76,.20) 0%,transparent 65%)}
 
-/* ── Typography ────────────────────────────────────────────────────────── */
+/* ── Typography ─────────────────────────────────────────────────────────── */
 .eyebrow{font-family:'Tenor Sans',sans-serif;font-size:clamp(8px,1vw,10px);letter-spacing:.22em;color:rgba(201,168,76,.55);text-transform:uppercase;margin-bottom:12px}
-.hd{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,4.5vw,66px);letter-spacing:.06em;color:var(--text);line-height:1.05}
-.hd-red{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,4.5vw,66px);letter-spacing:.06em;color:#E84040;line-height:1.05}
-.hd-teal{color:var(--teal)}
-.hd-gold{color:var(--gold)}
-.hd-green{color:var(--green)}
-.sub{font-family:'Tenor Sans',sans-serif;font-size:clamp(14px,1.55vw,18px);color:rgba(245,240,232,.88);line-height:1.75;margin-top:14px;max-width:680px}
-.sub-sm{font-family:'Tenor Sans',sans-serif;font-size:clamp(13px,1.35vw,16px);color:rgba(245,240,232,.80);line-height:1.72;margin-top:10px}
+.hd{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,4.5vw,66px);letter-spacing:.06em;line-height:1.05}
+.hd-xl{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(72px,11vw,156px);letter-spacing:-.02em;line-height:.9}
 .rule{height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.55),transparent);margin:18px 0;width:100%}
-.mono{font-family:'JetBrains Mono',monospace}
-.serif{font-family:'Cormorant Garamond',serif}
 
-/* ── Stagger animations ────────────────────────────────────────────────── */
-.stagger>*{opacity:0;transform:translateY(16px);transition:opacity .5s cubic-bezier(.4,0,.2,1),transform .5s cubic-bezier(.34,1.56,.64,1)}
-.slide.active .stagger>*:nth-child(1){opacity:1;transform:translateY(0);transition-delay:.10s}
-.slide.active .stagger>*:nth-child(2){opacity:1;transform:translateY(0);transition-delay:.22s}
-.slide.active .stagger>*:nth-child(3){opacity:1;transform:translateY(0);transition-delay:.34s}
-.slide.active .stagger>*:nth-child(4){opacity:1;transform:translateY(0);transition-delay:.46s}
-.slide.active .stagger>*:nth-child(5){opacity:1;transform:translateY(0);transition-delay:.58s}
-.slide.active .stagger>*:nth-child(6){opacity:1;transform:translateY(0);transition-delay:.70s}
-.slide.active .stagger>*:nth-child(7){opacity:1;transform:translateY(0);transition-delay:.82s}
+/* ── Keyframe animations ─────────────────────────────────────────────────── */
+@keyframes sealReveal{
+  0%{opacity:0;transform:scale(.35);filter:blur(24px)}
+  65%{opacity:1;transform:scale(1.06);filter:blur(0)}
+  82%{transform:scale(.97)}
+  100%{transform:scale(1)}
+}
+@keyframes sealGlow{
+  0%,100%{box-shadow:0 0 0 1px rgba(201,168,76,.2),0 0 50px rgba(201,168,76,.4),0 0 100px rgba(201,168,76,.15)}
+  50%{box-shadow:0 0 0 1px rgba(201,168,76,.5),0 0 90px rgba(201,168,76,.65),0 0 160px rgba(201,168,76,.28)}
+}
+@keyframes fadeUp{
+  0%{opacity:0;transform:translateY(22px)}
+  100%{opacity:1;transform:translateY(0)}
+}
+@keyframes strikeGrow{0%{width:0}100%{width:110%}}
+@keyframes splitIn{
+  0%{opacity:0;transform:scaleY(0) translateY(20px)}
+  100%{opacity:1;transform:scaleY(1) translateY(0)}
+}
+@keyframes floatA{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes floatB{0%,100%{transform:translateY(-5px)}50%{transform:translateY(5px)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
 
-/* ── Cards ─────────────────────────────────────────────────────────────── */
+/* ── Logo seal ──────────────────────────────────────────────────────────── */
+.logo-seal{border-radius:50%;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.logo-seal img{width:100%;height:100%;display:block;border-radius:50%}
+#s0 .logo-seal-hero{
+  width:clamp(100px,14vw,160px);height:clamp(100px,14vw,160px);
+  border-radius:50%;display:flex;align-items:center;justify-content:center;overflow:hidden;
+}
+#s0.active .logo-seal-hero{
+  animation:sealReveal .95s cubic-bezier(.34,1.56,.64,1) .15s both, sealGlow 3.5s ease-in-out 1.1s infinite;
+}
+#s0 .logo-seal-hero img{width:100%;height:100%;display:block;border-radius:50%}
+
+/* ── Fade-up helpers ─────────────────────────────────────────────────────── */
+.fu{opacity:0}
+.slide.active .fu{animation:fadeUp .6s ease both}
+.slide.active .fu.d1{animation-delay:.12s}
+.slide.active .fu.d2{animation-delay:.28s}
+.slide.active .fu.d3{animation-delay:.44s}
+.slide.active .fu.d4{animation-delay:.60s}
+.slide.active .fu.d5{animation-delay:.76s}
+.slide.active .fu.d6{animation-delay:.92s}
+
+/* ── Strike-through ─────────────────────────────────────────────────────── */
+.strike-wrap{position:relative;display:inline-block}
+.strike-line{position:absolute;top:50%;left:-5%;height:4px;width:0;background:linear-gradient(90deg,transparent 0%,#E84040 20%,#E84040 100%);transform:translateY(-50%) rotate(-2deg);border-radius:2px}
+.slide.active .strike-line{animation:strikeGrow .55s cubic-bezier(.4,0,.2,1) 1.3s forwards}
+
+/* ── Split columns ──────────────────────────────────────────────────────── */
+.split-col{transform-origin:bottom center;opacity:0}
+.slide.active .split-col:nth-child(1){animation:splitIn .5s cubic-bezier(.34,1.56,.64,1) .2s both}
+.slide.active .split-col:nth-child(2){animation:splitIn .5s cubic-bezier(.34,1.56,.64,1) .38s both}
+.slide.active .split-col:nth-child(3){animation:splitIn .5s cubic-bezier(.34,1.56,.64,1) .56s both}
+
+/* ── Cards ──────────────────────────────────────────────────────────────── */
 .card{background:rgba(255,255,255,.028);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:18px 20px;position:relative;overflow:hidden}
 .card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.25),transparent)}
-.card-teal{background:rgba(0,212,170,.05);border:1px solid rgba(0,212,170,.18);border-radius:14px;padding:18px 20px;position:relative;overflow:hidden}
-.card-teal::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,212,170,.3),transparent)}
-.card-green{background:rgba(26,191,106,.05);border:1px solid rgba(26,191,106,.18);border-radius:14px;padding:18px 20px;position:relative;overflow:hidden}
-.card-green::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(26,191,106,.3),transparent)}
 .card-gold{background:linear-gradient(135deg,rgba(201,168,76,.09),rgba(201,168,76,.03));border:1px solid rgba(201,168,76,.22);border-radius:14px;padding:18px 20px;position:relative;overflow:hidden}
 .card-gold::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.35),transparent)}
+.card-teal{background:rgba(0,212,170,.05);border:1px solid rgba(0,212,170,.18);border-radius:14px;padding:18px 20px}
+.card-green{background:rgba(26,191,106,.05);border:1px solid rgba(26,191,106,.18);border-radius:14px;padding:18px 20px}
 .card-red{background:rgba(232,64,64,.06);border:1px solid rgba(232,64,64,.2);border-radius:14px;padding:18px 20px}
-.card-violet{background:rgba(155,109,255,.06);border:1px solid rgba(155,109,255,.2);border-radius:14px;padding:18px 20px;position:relative;overflow:hidden}
-.card-violet::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(155,109,255,.3),transparent)}
 .card-blue{background:rgba(74,158,255,.05);border:1px solid rgba(74,158,255,.18);border-radius:14px;padding:18px 20px;position:relative;overflow:hidden}
 .card-blue::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(74,158,255,.3),transparent)}
 
-/* ── Logo seal ──────────────────────────────────────────────────────────── */
-.logo-seal{border-radius:50%;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 1px rgba(201,168,76,.15),0 0 28px rgba(201,168,76,.22),0 0 60px rgba(201,168,76,.09)}
-.logo-seal img{width:100%;height:100%;display:block;border-radius:50%}
-
-/* ── Glyph ──────────────────────────────────────────────────────────────── */
-.glyph{font-size:40px;color:rgba(201,168,76,.35);line-height:1;display:block}
-
-/* ── Pill badges ─────────────────────────────────────────────────────────── */
-.pill{display:inline-flex;align-items:center;gap:6px;font-family:'Tenor Sans',sans-serif;font-size:10px;letter-spacing:.1em;text-transform:uppercase;border-radius:999px;padding:4px 12px;white-space:nowrap}
+/* ── Pills ───────────────────────────────────────────────────────────────── */
+.pill{display:inline-flex;align-items:center;font-family:'Tenor Sans',sans-serif;font-size:10px;letter-spacing:.1em;text-transform:uppercase;border-radius:999px;padding:4px 12px;white-space:nowrap}
 .pill-gold{color:var(--gold);background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.25)}
 .pill-teal{color:var(--teal);background:rgba(0,212,170,.1);border:1px solid rgba(0,212,170,.25)}
 .pill-green{color:var(--green);background:rgba(26,191,106,.1);border:1px solid rgba(26,191,106,.25)}
-.pill-red{color:var(--red);background:rgba(232,64,64,.1);border:1px solid rgba(232,64,64,.25)}
-.pill-violet{color:var(--violet);background:rgba(155,109,255,.1);border:1px solid rgba(155,109,255,.25)}
 .pill-blue{color:var(--blue);background:rgba(74,158,255,.1);border:1px solid rgba(74,158,255,.25)}
-
-/* ── Navigation dots ─────────────────────────────────────────────────────── */
-.nav-dots{position:fixed;bottom:52px;left:50%;transform:translateX(-50%);display:flex;gap:7px;z-index:100;align-items:center}
-.nav-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.2);border:none;cursor:pointer;padding:0;transition:all .22s}
-.nav-dot.active{width:20px;border-radius:3px;background:var(--gold)}
-.nav-arrow{position:fixed;top:50%;transform:translateY(-50%);z-index:100;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;color:rgba(245,240,232,.5);font-size:18px}
-.nav-arrow:hover{background:rgba(201,168,76,.12);border-color:rgba(201,168,76,.28);color:var(--gold)}
-.nav-prev{left:16px}
-.nav-next{right:16px}
-
-/* ── Progress bar ────────────────────────────────────────────────────────── */
-.progress-bar{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--gold-d),var(--gold),var(--gold2));z-index:200;transition:width .4s cubic-bezier(.4,0,.2,1)}
-
-/* ── Slide number ────────────────────────────────────────────────────────── */
-.slide-num{position:fixed;bottom:54px;right:24px;font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(245,240,232,.2);letter-spacing:.12em;z-index:100}
-
-/* ── Footer ──────────────────────────────────────────────────────────────── */
-.deck-footer{position:fixed;bottom:0;left:0;right:0;z-index:200;padding:5px 28px 6px;display:flex;flex-direction:column;align-items:center;gap:1px;background:rgba(2,3,5,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid rgba(255,255,255,.05)}
-.footer-line{font-family:'JetBrains Mono',monospace;font-size:8px;color:rgba(210,205,198,.65);letter-spacing:.04em;text-align:center;white-space:nowrap}
-.footer-line span{color:rgba(201,168,76,.85)}
-
-/* ── Stat block ─────────────────────────────────────────────────────────── */
-.stat-val{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(28px,3.5vw,52px);line-height:1;letter-spacing:-.01em}
-.stat-lbl{font-family:'Tenor Sans',sans-serif;font-size:clamp(9px,1vw,11px);letter-spacing:.14em;text-transform:uppercase;color:rgba(245,240,232,.72);margin-top:5px}
 
 /* ── Win table ──────────────────────────────────────────────────────────── */
 .win-table{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:100%}
-.win-col{border-radius:14px;padding:20px 16px;position:relative;overflow:hidden}
+.win-col{border-radius:14px;padding:18px 16px;position:relative;overflow:hidden}
 .win-col::before{content:'';position:absolute;top:0;left:0;right:0;height:1px}
 .win-user{background:rgba(74,158,255,.06);border:1px solid rgba(74,158,255,.2)}
 .win-user::before{background:linear-gradient(90deg,transparent,rgba(74,158,255,.35),transparent)}
@@ -148,983 +142,501 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .win-investor::before{background:linear-gradient(90deg,transparent,rgba(201,168,76,.35),transparent)}
 .win-genesis{background:rgba(26,191,106,.05);border:1px solid rgba(26,191,106,.18)}
 .win-genesis::before{background:linear-gradient(90deg,transparent,rgba(26,191,106,.3),transparent)}
-.win-title{font-family:'Tenor Sans',sans-serif;font-size:10px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:12px}
-.win-item{font-family:'Tenor Sans',sans-serif;font-size:13px;color:rgba(245,240,232,.88);line-height:1.75;padding-left:12px;position:relative}
+.win-title{font-family:'Tenor Sans',sans-serif;font-size:10px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:10px}
+.win-item{font-family:'Tenor Sans',sans-serif;font-size:12px;color:rgba(245,240,232,.85);line-height:1.75;padding-left:12px;position:relative}
 .win-item::before{content:'›';position:absolute;left:0;color:rgba(201,168,76,.5)}
 
-/* ── Flow step ──────────────────────────────────────────────────────────── */
-.flow-step{display:flex;align-items:flex-start;gap:14px}
-.flow-num{width:28px;height:28px;border-radius:50%;border:1px solid rgba(201,168,76,.3);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gold);flex-shrink:0;background:rgba(201,168,76,.08)}
-.flow-content{}
-.flow-label{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:400;color:var(--text);letter-spacing:.06em}
-.flow-desc{font-family:'Tenor Sans',sans-serif;font-size:13px;color:rgba(245,240,232,.80);margin-top:3px}
-
-/* ── Strategy card ──────────────────────────────────────────────────────── */
-.strat-card{border-radius:16px;padding:20px 18px;position:relative;overflow:hidden;display:flex;flex-direction:column;gap:10px}
-.strat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px}
-.strat-preserve{background:rgba(74,158,255,.06);border:1px solid rgba(74,158,255,.2)}
-.strat-preserve::before{background:linear-gradient(90deg,transparent,rgba(74,158,255,.35),transparent)}
-.strat-grow{background:rgba(0,212,170,.06);border:1px solid rgba(0,212,170,.2)}
-.strat-grow::before{background:linear-gradient(90deg,transparent,rgba(0,212,170,.35),transparent)}
-.strat-accelerate{background:rgba(26,191,106,.06);border:1px solid rgba(26,191,106,.2)}
-.strat-accelerate::before{background:linear-gradient(90deg,transparent,rgba(26,191,106,.35),transparent)}
-.strat-name{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;letter-spacing:.12em}
-.strat-apy{font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.06em;font-weight:700}
-.strat-desc{font-family:'Tenor Sans',sans-serif;font-size:13px;color:rgba(245,240,232,.82);line-height:1.65}
-
-/* ── Phase timeline ──────────────────────────────────────────────────────── */
-.phase-row{display:flex;gap:10px}
-.phase-card{flex:1;border-radius:12px;padding:16px 14px;position:relative}
-.phase-num{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;opacity:.7;margin-bottom:6px}
-.phase-label{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;letter-spacing:.08em;margin-bottom:6px}
-.phase-desc{font-family:'Tenor Sans',sans-serif;font-size:12px;color:rgba(245,240,232,.80);line-height:1.65}
-
-/* ── Chart bar ───────────────────────────────────────────────────────────── */
-.chart-bar{border-radius:4px 4px 0 0;transition:height .8s cubic-bezier(.34,1.56,.64,1)}
-
-/* ── Keyframes ────────────────────────────────────────────────────────────── */
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
-@keyframes spin{to{transform:rotate(360deg)}}
-.pulse{animation:pulse 2.2s ease-in-out infinite}
-
-/* ── Auto-advance playbar ────────────────────────────────────────────────── */
-.playbar{
-  position:fixed;top:16px;right:16px;z-index:300;
-  display:flex;align-items:center;gap:7px;
-  background:rgba(2,3,5,.90);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-  border:1px solid rgba(201,168,76,.18);border-radius:32px;
-  padding:5px 11px 5px 7px;
-  box-shadow:0 4px 28px rgba(0,0,0,.6),0 0 0 1px rgba(201,168,76,.05);
-  transition:opacity .2s;
+/* ── Demo iframe layer ──────────────────────────────────────────────────── */
+#demoWrap{position:fixed;inset:0 0 40px 0;z-index:2;display:none;background:var(--bg)}
+#demoWrap.visible{display:block}
+#demoFrame{width:100%;height:100%;border:none;display:block}
+.demo-label{
+  position:fixed;bottom:50px;left:50%;transform:translateX(-50%);z-index:200;
+  display:none;align-items:center;gap:14px;
+  background:rgba(2,3,5,.9);backdrop-filter:blur(14px);
+  border:1px solid rgba(201,168,76,.28);border-radius:32px;
+  padding:9px 24px;
+  font-family:'Tenor Sans',sans-serif;font-size:11px;letter-spacing:.15em;text-transform:uppercase;
+  color:rgba(245,240,232,.7);white-space:nowrap;
 }
+.demo-label.visible{display:flex}
+.demo-step-badge{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--gold);letter-spacing:.1em;background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.3);border-radius:12px;padding:3px 10px}
+
+/* ── Navigation ─────────────────────────────────────────────────────────── */
+.nav-dots{position:fixed;bottom:52px;left:50%;transform:translateX(-50%);display:flex;gap:7px;z-index:300;align-items:center}
+.nav-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.2);border:none;cursor:pointer;padding:0;transition:all .22s}
+.nav-dot.active{width:20px;border-radius:3px;background:var(--gold)}
+.nav-arrow{position:fixed;top:50%;transform:translateY(-50%);z-index:300;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;color:rgba(245,240,232,.5);font-size:18px}
+.nav-arrow:hover{background:rgba(201,168,76,.12);border-color:rgba(201,168,76,.28);color:var(--gold)}
+.nav-prev{left:16px}
+.nav-next{right:16px}
+.progress-bar{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--gold-d),var(--gold),var(--gold2));z-index:400;transition:width .4s cubic-bezier(.4,0,.2,1)}
+.slide-num{position:fixed;bottom:54px;right:24px;font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(245,240,232,.2);letter-spacing:.12em;z-index:300}
+
+/* ── Playbar ─────────────────────────────────────────────────────────────── */
+.playbar{position:fixed;top:16px;right:16px;z-index:400;display:flex;align-items:center;gap:7px;background:rgba(2,3,5,.90);backdrop-filter:blur(14px);border:1px solid rgba(201,168,76,.18);border-radius:32px;padding:5px 11px 5px 7px;box-shadow:0 4px 28px rgba(0,0,0,.6)}
 .playbar:hover{border-color:rgba(201,168,76,.28)}
 .pb-ring{width:28px;height:28px;flex-shrink:0;position:relative;cursor:pointer}
 .pb-ring svg{transform:rotate(-90deg)}
 .ring-track{fill:none;stroke:rgba(255,255,255,.07);stroke-width:2.8}
 .ring-fill{fill:none;stroke:var(--gold);stroke-width:2.8;stroke-linecap:round;transition:stroke-dashoffset .12s linear}
 .pb-sep{width:1px;height:14px;background:rgba(255,255,255,.08);flex-shrink:0}
-.pb-btn{
-  width:26px;height:26px;border-radius:50%;
-  border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.04);
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;color:rgba(245,240,232,.50);font-size:10px;
-  transition:all .18s;flex-shrink:0;line-height:1;
-}
+.pb-btn{width:26px;height:26px;border-radius:50%;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center;cursor:pointer;color:rgba(245,240,232,.5);font-size:10px;transition:all .18s;flex-shrink:0;line-height:1}
 .pb-btn:hover{background:rgba(201,168,76,.12);border-color:rgba(201,168,76,.3);color:var(--gold)}
 .pb-btn.is-play{background:rgba(201,168,76,.14);border-color:rgba(201,168,76,.38);color:var(--gold)}
-.pb-speed{
-  font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(245,240,232,.38);
-  letter-spacing:.05em;cursor:pointer;padding:3px 7px;border-radius:8px;
-  border:1px solid rgba(255,255,255,.07);background:transparent;
-  transition:all .18s;white-space:nowrap;user-select:none;
-}
+.pb-speed{font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(245,240,232,.38);letter-spacing:.05em;cursor:pointer;padding:3px 7px;border-radius:8px;border:1px solid rgba(255,255,255,.07);background:transparent;transition:all .18s;white-space:nowrap;user-select:none}
 .pb-speed:hover{border-color:rgba(201,168,76,.28);color:rgba(201,168,76,.8)}
 .pb-speed.is-live{color:var(--gold);border-color:rgba(201,168,76,.32)}
+
+/* ── Footer ──────────────────────────────────────────────────────────────── */
+.deck-footer{position:fixed;bottom:0;left:0;right:0;z-index:400;padding:5px 28px 6px;display:flex;flex-direction:column;align-items:center;gap:1px;background:rgba(2,3,5,.85);backdrop-filter:blur(10px);border-top:1px solid rgba(255,255,255,.05)}
+.footer-line{font-family:'JetBrains Mono',monospace;font-size:8px;color:rgba(210,205,198,.6);letter-spacing:.04em;text-align:center;white-space:nowrap}
+.footer-line span{color:rgba(201,168,76,.85)}
+
+/* ── Unicorn icons ──────────────────────────────────────────────────────── */
+.unicorn-row{display:flex;align-items:center;gap:28px;margin-top:6px}
+.uicon{display:flex;align-items:center;gap:8px}
+.uicon span.glyph{font-size:clamp(22px,3vw,36px);opacity:.55}
+.uicon.u1{animation:floatA 4s ease-in-out infinite}
+.uicon.u2{animation:floatB 5.5s ease-in-out 1.2s infinite}
+.uicon-label{font-family:'Tenor Sans',sans-serif;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(245,240,232,.28)}
 </style>
 </head>
 <body>
 
 <div class="geo-grid"></div>
 <div class="progress-bar" id="progress"></div>
-
-<!-- ── Navigation ─────────────────────────────────────────────────────── -->
 <button class="nav-arrow nav-prev" onclick="prev()" aria-label="Previous">‹</button>
 <button class="nav-arrow nav-next" onclick="next()" aria-label="Next">›</button>
 <div class="nav-dots" id="navDots"></div>
 <div class="slide-num" id="slideNum"></div>
 
-<!-- ── Deck ───────────────────────────────────────────────────────────── -->
+<!-- ── Shared demo iframe (slides 6–9) ──────────────────────────────────── -->
+<div id="demoWrap">
+  <iframe id="demoFrame" src="about:blank" allow="clipboard-write; payment"
+    sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-top-navigation"></iframe>
+</div>
+<div class="demo-label" id="demoLabel">
+  <span class="demo-step-badge" id="demoStepBadge">STEP 01</span>
+  <span id="demoStepText">Setting Up Your Smarter Wallet</span>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     DECK
+═══════════════════════════════════════════════════════════════════════ -->
 <div class="deck">
 
-<!-- ═══════════════════════════════════════════════════════════════════════
-     SLIDE 01 — THE QUIET THEFT
-════════════════════════════════════════════════════════════════════════ -->
-<section class="slide" id="s1">
-<div class="slide-inner stagger">
+<!-- ── SLIDE 00 · FOUNDER ────────────────────────────────────────────────── -->
+<section class="slide" id="s0" data-duration="15">
+<div class="slide-inner" style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:28px">
 
-  <div>
-    <div class="eyebrow">The Problem · 01 / 15</div>
-    <div class="hd-red">The Quiet Theft</div>
-    <div class="rule"></div>
+  <div class="logo-seal-hero">
+    <img src="/genesis-logo.png" alt="Genesis Reserve"
+      onerror="this.parentElement.innerHTML='<span style=&quot;font-size:clamp(70px,10vw,120px);line-height:1;color:#C9A84C&quot;>◈</span>'">
   </div>
 
-  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:4px 0">
-    <div class="card-red">
-      <div class="stat-val" style="color:#E84040">+65%</div>
-      <div class="stat-lbl">Fuel Prices</div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(245,240,232,.70);margin-top:4px">2019 → 2024</div>
-    </div>
-    <div class="card-red">
-      <div class="stat-val" style="color:#E84040">+39%</div>
-      <div class="stat-lbl">Groceries & Essentials</div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(245,240,232,.70);margin-top:4px">2019 → 2024</div>
-    </div>
-    <div class="card-red">
-      <div class="stat-val" style="color:#E84040">+47%</div>
-      <div class="stat-lbl">Housing Costs</div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(245,240,232,.70);margin-top:4px">2019 → 2024</div>
-    </div>
-    <div class="card" style="border-color:rgba(26,191,106,.18);background:rgba(26,191,106,.04)">
-      <div class="stat-val" style="color:#1ABF6A">+12%</div>
-      <div class="stat-lbl">Median Wages</div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(26,191,106,.85);margin-top:4px">Same period</div>
-    </div>
+  <div class="fu d2">
+    <div style="font-family:'Cormorant Garamond',serif;font-size:clamp(11px,1.3vw,14px);font-weight:300;letter-spacing:.5em;color:rgba(201,168,76,.6);text-transform:uppercase;margin-bottom:10px">Presented by</div>
+    <div style="font-family:'Cormorant Garamond',serif;font-size:clamp(36px,5vw,68px);font-weight:300;letter-spacing:.12em;color:var(--text);line-height:1">Anthony Beedles</div>
+    <div style="font-family:'Tenor Sans',sans-serif;font-size:clamp(10px,1.1vw,13px);letter-spacing:.3em;color:rgba(201,168,76,.5);text-transform:uppercase;margin-top:12px">Founder &amp; Senior Engineer · Genesis Reserve</div>
   </div>
 
-  <div class="card-gold">
-    <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(16px,1.8vw,22px);color:rgba(245,240,232,.94);line-height:1.65;letter-spacing:.02em">
-      "There is no savings at the end of the month because your bank account is a casket for every dollar that just sits there doing nothing."
-    </div>
-  </div>
+  <div class="fu d4" style="height:1px;width:260px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.45),transparent)"></div>
 
-  <div style="display:flex;align-items:center;gap:10px">
-    <div class="logo-seal" style="width:32px;height:32px">
-      <img src="/genesis-logo.png" alt="GR" onerror="this.parentElement.innerHTML='<span style=&quot;font-size:22px;color:#c9a84c&quot;>◈</span>'">
-    </div>
-    <span style="font-family:'Tenor Sans',sans-serif;font-size:10px;letter-spacing:.18em;color:rgba(201,168,76,.55);text-transform:uppercase">Genesis Reserve · Retail Market Deck · 2026</span>
+  <div class="fu d5" style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(18px,2.2vw,26px);font-weight:300;color:rgba(245,240,232,.45);letter-spacing:.04em">
+    The Smarter Wallet.
   </div>
 
 </div>
 </section>
 
-<!-- ═══════════════════════════════════════════════════════════════════════
-     SLIDE 02 — THE WAITING GAME
-════════════════════════════════════════════════════════════════════════ -->
-<section class="slide" id="s2">
-<div class="slide-inner stagger">
+<!-- ── SLIDE 01 · THE QUIET THEFT ───────────────────────────────────────── -->
+<section class="slide" id="s1" data-duration="12">
+<div class="slide-inner" style="display:flex;flex-direction:column;gap:22px">
 
-  <div>
-    <div class="eyebrow">The Problem · 02 / 15</div>
-    <div class="hd">Inflation:<br><span style="color:#E84040">The Quiet Virus</span></div>
-    <div class="rule"></div>
+  <div class="fu d1">
+    <div class="eyebrow">The Problem · 01</div>
   </div>
 
-  <div class="sub">
-    We have been waiting on Regulators and Financial Institutions to provide real answers for a very obvious problem.
-  </div>
-
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px">
-    <div class="card">
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;color:rgba(245,240,232,.78);text-transform:uppercase;margin-bottom:8px">What Inflation Does</div>
-      <div style="font-family:'Cormorant Garamond',serif;font-size:clamp(16px,1.8vw,22px);color:rgba(245,240,232,.94);line-height:1.6">
-        Silently erodes tomorrow's purchasing power — every single day your dollar sits idle.
-      </div>
-    </div>
-    <div class="card-red">
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;color:rgba(245,240,232,.78);text-transform:uppercase;margin-bottom:8px">The Math</div>
-      <div style="display:flex;flex-direction:column;gap:8px">
-        <div>
-          <div class="stat-val" style="color:#E84040;font-size:clamp(22px,2.8vw,40px)">$1,000</div>
-          <div class="stat-lbl">Saved in a bank Jan 2020</div>
-        </div>
-        <div style="font-family:'Tenor Sans',sans-serif;font-size:11px;color:rgba(245,240,232,.80)">↓ After 4 years of ~5% avg inflation</div>
-        <div>
-          <div class="stat-val" style="color:rgba(232,64,64,.7);font-size:clamp(22px,2.8vw,40px)">$814</div>
-          <div class="stat-lbl">Real purchasing power remaining</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="card-gold">
-    <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(15px,1.6vw,20px);color:rgba(245,240,232,.94);line-height:1.65">
-      "Inflation is the quiet virus sitting in your wallet — robbing you of tomorrow's purchasing power while the institutions that were supposed to protect you are still figuring out their PowerPoint."
-    </div>
-  </div>
-
-</div>
-</section>
-
-<!-- ═══════════════════════════════════════════════════════════════════════
-     SLIDE 03 — GOOD APPS. OLD RAILS.
-════════════════════════════════════════════════════════════════════════ -->
-<section class="slide" id="s3">
-<div class="slide-inner stagger">
-
-  <div>
-    <div class="eyebrow">The Landscape · 03 / 15</div>
-    <div class="hd">Good Apps.<br><span style="color:var(--blue)">Same Old Money.</span></div>
-    <div class="rule"></div>
-  </div>
-
-  <div class="sub-sm">
-    Cashapp, Wise, and Revolut made cross-border payments easier and sometimes cheaper. But they run on the same legacy rails — they optimized the experience without solving the problem.
-  </div>
-
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
-    <div class="card-blue">
-      <div style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:400;letter-spacing:.08em;color:var(--blue);margin-bottom:10px">CashApp</div>
-      <div style="display:flex;flex-direction:column;gap:5px">
-        <div style="font-size:10px;color:rgba(26,191,106,.8)">✓ Peer-to-peer payments</div>
-        <div style="font-size:10px;color:rgba(26,191,106,.8)">✓ Debit card</div>
-        <div style="font-size:10px;color:rgba(26,191,106,.8)">✓ Direct deposit</div>
-        <div style="font-size:10px;color:rgba(232,64,64,.7)">✗ Beats inflation</div>
-        <div style="font-size:10px;color:rgba(232,64,64,.7)">✗ DeFi yield access</div>
-        <div style="font-size:10px;color:rgba(232,64,64,.7)">✗ Stablecoin native</div>
-      </div>
-    </div>
-    <div class="card-blue">
-      <div style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:400;letter-spacing:.08em;color:var(--blue);margin-bottom:10px">Wise</div>
-      <div style="display:flex;flex-direction:column;gap:5px">
-        <div style="font-size:10px;color:rgba(26,191,106,.8)">✓ Multi-currency</div>
-        <div style="font-size:10px;color:rgba(26,191,106,.8)">✓ Lower FX fees</div>
-        <div style="font-size:10px;color:rgba(26,191,106,.8)">✓ Business accounts</div>
-        <div style="font-size:10px;color:rgba(232,64,64,.7)">✗ Beats inflation</div>
-        <div style="font-size:10px;color:rgba(232,64,64,.7)">✗ DeFi yield access</div>
-        <div style="font-size:10px;color:rgba(232,64,64,.7)">✗ Stablecoin native</div>
-      </div>
-    </div>
-    <div class="card-blue">
-      <div style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:400;letter-spacing:.08em;color:var(--blue);margin-bottom:10px">Revolut</div>
-      <div style="display:flex;flex-direction:column;gap:5px">
-        <div style="font-size:10px;color:rgba(26,191,106,.8)">✓ Global payments</div>
-        <div style="font-size:10px;color:rgba(26,191,106,.8)">✓ Crypto exposure</div>
-        <div style="font-size:10px;color:rgba(26,191,106,.8)">✓ Premium tiers</div>
-        <div style="font-size:10px;color:rgba(232,64,64,.7)">✗ Beats inflation</div>
-        <div style="font-size:10px;color:rgba(232,64,64,.7)">✗ DeFi yield access</div>
-        <div style="font-size:10px;color:rgba(232,64,64,.7)">✗ Stablecoin native</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="card-gold">
-    <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(15px,1.6vw,19px);color:rgba(245,240,232,.75);line-height:1.65">
-      "We need bold solutions for real world problems — and your money is at the top of the list."
-    </div>
-  </div>
-
-</div>
-</section>
-
-<!-- ═══════════════════════════════════════════════════════════════════════
-     SLIDE 04 — THE REVOLUTION IS HERE
-════════════════════════════════════════════════════════════════════════ -->
-<section class="slide" id="s4">
-<div class="slide-inner stagger">
-
-  <div>
-    <div class="eyebrow">The Opportunity · 04 / 15</div>
-    <div class="hd"><span style="color:var(--teal)">$56 Trillion.</span><br>Four Years.</div>
-    <div class="rule"></div>
-  </div>
-
-  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
-    <div class="card-teal">
-      <div class="stat-val" style="color:var(--teal)">$56T</div>
-      <div class="stat-lbl">Stablecoin Market</div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(0,212,170,.45);margin-top:4px">by 2028 · Bloomberg</div>
-    </div>
-    <div class="card-teal">
-      <div class="stat-val" style="color:var(--teal)">100%</div>
-      <div class="stat-lbl">Assets Going Digital</div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(0,212,170,.45);margin-top:4px">Every stock market asset</div>
-    </div>
-    <div class="card-gold">
-      <div class="stat-val" style="color:var(--gold)">NOW</div>
-      <div class="stat-lbl">Biggest Wealth Transfer</div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(201,168,76,.45);margin-top:4px">In 100 years</div>
-    </div>
-  </div>
-
-  <div class="sub">
-    There is a stablecoin revolution happening right now. The new currency is digital — and your banking services have yet to tell you how it works.
-  </div>
-
-  <div class="card-teal" style="margin-top:4px">
-    <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;color:rgba(0,212,170,.6);text-transform:uppercase;margin-bottom:8px">The Stablecoin Advantage</div>
-    <div style="display:flex;gap:24px;flex-wrap:wrap">
-      <div style="font-family:'Tenor Sans',sans-serif;font-size:12px;color:rgba(245,240,232,.7)">◈ &nbsp;Pegged 1:1 to USD — no volatility</div>
-      <div style="font-family:'Tenor Sans',sans-serif;font-size:12px;color:rgba(245,240,232,.7)">◈ &nbsp;Earns yield while sitting idle</div>
-      <div style="font-family:'Tenor Sans',sans-serif;font-size:12px;color:rgba(245,240,232,.7)">◈ &nbsp;Settles in seconds, not days</div>
-      <div style="font-family:'Tenor Sans',sans-serif;font-size:12px;color:rgba(245,240,232,.7)">◈ &nbsp;No bank required to earn returns</div>
-    </div>
-  </div>
-
-  <div class="card-gold">
-    <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(15px,1.6vw,19px);color:rgba(245,240,232,.75);line-height:1.65">
-      "You're sitting in the biggest wealth transfer in 100 years — and your savings account is getting left behind."
-    </div>
-  </div>
-
-</div>
-</section>
-
-<!-- ═══════════════════════════════════════════════════════════════════════
-     SLIDE 05 — INTRODUCING GENESIS RESERVE
-════════════════════════════════════════════════════════════════════════ -->
-<section class="slide" id="s5">
-<div class="slide-inner stagger">
-
-  <div style="display:flex;align-items:center;gap:18px">
-    <div class="logo-seal" style="width:72px;height:72px">
-      <img src="/genesis-logo.png" alt="Genesis Reserve" onerror="this.parentElement.innerHTML='<span style=&quot;font-size:52px;color:#c9a84c;opacity:.9&quot;>◈</span>'">
-    </div>
+  <div class="fu d2" style="display:flex;align-items:flex-end;gap:clamp(20px,4vw,56px);flex-wrap:wrap">
     <div>
-      <div class="eyebrow">The Solution · 05 / 15</div>
-      <div style="font-family:'Cormorant Garamond',serif;font-size:clamp(28px,3.5vw,50px);font-weight:300;letter-spacing:.24em;color:var(--text);line-height:1">GENESIS</div>
-      <div style="font-family:'Tenor Sans',sans-serif;font-size:10px;letter-spacing:.6em;color:var(--gold);text-transform:uppercase;margin-top:3px">RESERVE</div>
+      <div class="hd-xl" style="color:#E84040"><span id="c-groceries">+39%</span></div>
+      <div style="font-family:'Tenor Sans',sans-serif;font-size:clamp(12px,1.4vw,17px);color:rgba(232,64,64,.6);letter-spacing:.15em;text-transform:uppercase;margin-top:10px">Groceries · 2019 → 2024</div>
     </div>
-  </div>
-
-  <div class="rule"></div>
-
-  <div style="font-family:'Cormorant Garamond',serif;font-size:clamp(22px,2.8vw,40px);font-weight:300;color:var(--text);line-height:1.2">
-    The <span style="color:var(--gold)">Smarter Wallet</span><br>for Everyday Users.
-  </div>
-
-  <div class="sub-sm" style="max-width:700px">
-    We got tired of waiting on Wall Street to solve Main Street problems — so we took the Human Experience and Blockchain technology and wielded a better wallet packed with intelligence.
-  </div>
-
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
-    <div class="card-gold">
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;color:rgba(201,168,76,.6);text-transform:uppercase;margin-bottom:8px">Access</div>
-      <div style="font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--text);margin-bottom:5px">The New Money</div>
-      <div style="font-size:11px;color:rgba(245,240,232,.5)">Stablecoins without the crypto complexity</div>
-    </div>
-    <div class="card-teal">
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;color:rgba(0,212,170,.6);text-transform:uppercase;margin-bottom:8px">Education</div>
-      <div style="font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--text);margin-bottom:5px">Know Your Money</div>
-      <div style="font-size:11px;color:rgba(245,240,232,.5)">Guided onboarding, no jargon</div>
-    </div>
-    <div class="card-green">
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;color:rgba(26,191,106,.6);text-transform:uppercase;margin-bottom:8px">Growth</div>
-      <div style="font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--text);margin-bottom:5px">Outpace Inflation</div>
-      <div style="font-size:11px;color:rgba(245,240,232,.5)">4–13% APY, updating every 15 min</div>
-    </div>
-  </div>
-
-</div>
-</section>
-
-<!-- ═══════════════════════════════════════════════════════════════════════
-     SLIDE 06 — HOW IT WORKS
-════════════════════════════════════════════════════════════════════════ -->
-<section class="slide" id="s6">
-<div class="slide-inner stagger">
-
-  <div>
-    <div class="eyebrow">The Experience · 06 / 15</div>
-    <div class="hd">Five Steps.<br><span style="color:var(--teal)">One Upgrade.</span></div>
-    <div class="rule"></div>
-  </div>
-
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px 40px;margin-top:4px">
-    <div class="flow-step">
-      <div class="flow-num">01</div>
-      <div class="flow-content">
-        <div class="flow-label">Download</div>
-        <div class="flow-desc">Get Genesis Reserve from your favorite app store — iOS or Android</div>
-      </div>
-    </div>
-    <div class="flow-step">
-      <div class="flow-num">02</div>
-      <div class="flow-content">
-        <div class="flow-label">Set Up a Profile</div>
-        <div class="flow-desc">Email or phone number — no crypto knowledge required</div>
-      </div>
-    </div>
-    <div class="flow-step">
-      <div class="flow-num">03</div>
-      <div class="flow-content">
-        <div class="flow-label">Link Your Debit Card</div>
-        <div class="flow-desc">Connect the card you already use in under 60 seconds</div>
-      </div>
-    </div>
-    <div class="flow-step">
-      <div class="flow-num">04</div>
-      <div class="flow-content">
-        <div class="flow-label">Fund the Wallet</div>
-        <div class="flow-desc">Transfer from your bank or card — any amount, any time</div>
-      </div>
-    </div>
-    <div class="flow-step">
-      <div class="flow-num">05</div>
-      <div class="flow-content">
-        <div class="flow-label" style="color:var(--teal)">Automatic Conversion</div>
-        <div class="flow-desc">Your dollars become stablecoins instantly. No value lost. The money simply gets an upgrade.</div>
-      </div>
-    </div>
-    <div class="card-teal" style="display:flex;align-items:center;justify-content:center">
-      <div style="text-align:center">
-        <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:rgba(245,240,232,.75);line-height:1.6">"No value is lost in the transfer.<br>The money simply gets an upgrade."</div>
-      </div>
-    </div>
-  </div>
-
-</div>
-</section>
-
-<!-- ═══════════════════════════════════════════════════════════════════════
-     SLIDE 07 — THREE STRATEGIES
-════════════════════════════════════════════════════════════════════════ -->
-<section class="slide" id="s7">
-<div class="slide-inner stagger">
-
-  <div>
-    <div class="eyebrow">The Vault · 07 / 15</div>
-    <div class="hd">Three Strategies.<br><span style="color:var(--green)">One Goal: Outpace Inflation.</span></div>
-    <div class="rule"></div>
-  </div>
-
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
-    <div class="strat-card strat-preserve">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;color:rgba(74,158,255,.65);text-transform:uppercase">Strategy 01</div>
-        <div class="pill pill-blue">Stable</div>
-      </div>
-      <div class="strat-name" style="color:var(--blue)">Preserve</div>
-      <div class="strat-apy" style="color:var(--blue)">4 – 6% APY</div>
-      <div class="strat-desc">Designed to protect your value and maintain stability. Slow the bleed from inflation. A safe harbor that still earns.</div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(74,158,255,.45);margin-top:4px">Low risk · Liquid</div>
-    </div>
-    <div class="strat-card strat-grow">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;color:rgba(0,212,170,.65);text-transform:uppercase">Strategy 02</div>
-        <div class="pill pill-teal">Growth</div>
-      </div>
-      <div class="strat-name" style="color:var(--teal)">Grow</div>
-      <div class="strat-apy" style="color:var(--teal)">6 – 12% APY</div>
-      <div class="strat-desc">Once your money is stable, it is ready to work harder. Build real momentum and beat inflation with compounding returns.</div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(0,212,170,.45);margin-top:4px">Moderate risk · Balanced</div>
-    </div>
-    <div class="strat-card strat-accelerate">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;color:rgba(26,191,106,.65);text-transform:uppercase">Strategy 03</div>
-        <div class="pill pill-green">Max Yield</div>
-      </div>
-      <div class="strat-name" style="color:var(--green)">Accelerate</div>
-      <div class="strat-apy" style="color:var(--green)">Up to 13%+ APY</div>
-      <div class="strat-desc">The best-performing long-term options with maximum flexibility. When you see your savings growing every 15 minutes, you will want more.</div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(26,191,106,.45);margin-top:4px">Higher yield · Longer horizon</div>
-    </div>
-  </div>
-
-  <div class="card-gold" style="display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap">
-    <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(15px,1.6vw,19px);color:rgba(245,240,232,.75);line-height:1.5">
-      Your savings update every 15 minutes.
-    </div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <span class="pill pill-blue">Preserve</span>
-      <span style="color:rgba(245,240,232,.3);align-self:center">→</span>
-      <span class="pill pill-teal">Grow</span>
-      <span style="color:rgba(245,240,232,.3);align-self:center">→</span>
-      <span class="pill pill-green">Accelerate</span>
-    </div>
-  </div>
-
-</div>
-</section>
-
-<!-- ═══════════════════════════════════════════════════════════════════════
-     SLIDE 08 — DEFI DEMOCRATIZED
-════════════════════════════════════════════════════════════════════════ -->
-<section class="slide" id="s8">
-<div class="slide-inner stagger">
-
-  <div>
-    <div class="eyebrow">The Technology · 08 / 15</div>
-    <div class="hd">The Old System<br><span style="color:var(--violet)">Hid This From You.</span></div>
-    <div class="rule"></div>
-  </div>
-
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+    <div style="padding-bottom:14px;font-family:'Cormorant Garamond',serif;font-size:clamp(28px,3.5vw,50px);color:rgba(245,240,232,.18)">vs.</div>
     <div>
-      <div class="card-red" style="margin-bottom:12px">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;color:rgba(245,240,232,.78);text-transform:uppercase;margin-bottom:8px">Old Banking System</div>
-        <div style="display:flex;flex-direction:column;gap:6px">
-          <div style="font-size:12px;color:rgba(245,240,232,.6)">✗ &nbsp;Savings account yields: 0.01–0.5%</div>
-          <div style="font-size:12px;color:rgba(245,240,232,.6)">✗ &nbsp;DeFi access: For institutions only</div>
-          <div style="font-size:12px;color:rgba(245,240,232,.6)">✗ &nbsp;Complex instruments hidden from retail</div>
-          <div style="font-size:12px;color:rgba(245,240,232,.6)">✗ &nbsp;Your idle money earns them billions</div>
-        </div>
-      </div>
-    </div>
-    <div>
-      <div class="card-violet" style="margin-bottom:12px">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;color:rgba(155,109,255,.6);text-transform:uppercase;margin-bottom:8px">Decentralized Finance</div>
-        <div style="display:flex;flex-direction:column;gap:6px">
-          <div style="font-size:12px;color:rgba(245,240,232,.7)">✓ &nbsp;Open protocols accessible to everyone</div>
-          <div style="font-size:12px;color:rgba(245,240,232,.7)">✓ &nbsp;Real yields: 4–13%+ APY on stablecoins</div>
-          <div style="font-size:12px;color:rgba(245,240,232,.7)">✓ &nbsp;Transparent, audited smart contracts</div>
-          <div style="font-size:12px;color:rgba(245,240,232,.7)">✓ &nbsp;Your money, your returns</div>
-        </div>
-      </div>
+      <div style="font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(52px,8vw,112px);letter-spacing:-.02em;line-height:.9;color:rgba(26,191,106,.75)">+12%</div>
+      <div style="font-family:'Tenor Sans',sans-serif;font-size:clamp(12px,1.4vw,17px);color:rgba(26,191,106,.5);letter-spacing:.15em;text-transform:uppercase;margin-top:10px">Wages · Same Period</div>
     </div>
   </div>
 
-  <div class="card-gold">
-    <div style="font-family:'Cormorant Garamond',serif;font-size:clamp(18px,2vw,26px);font-weight:300;color:var(--text);line-height:1.5;letter-spacing:.02em">
-      Decentralized Finance puts the power back in the hands of the people.<br>
-      <span style="color:var(--gold)">Genesis Reserve is the key that opens the door.</span>
-    </div>
-  </div>
+  <div class="fu d4" style="height:1px;background:linear-gradient(90deg,rgba(232,64,64,.35),transparent)"></div>
 
-  <div class="sub-sm">
-    The old banking system was designed to keep these options from Main Street. We exist to change that — permanently.
+  <div class="fu d5" style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(17px,2vw,26px);color:rgba(245,240,232,.55);line-height:1.55">
+    "Your bank account is a casket for every dollar that sits idle."
   </div>
 
 </div>
 </section>
 
-<!-- ═══════════════════════════════════════════════════════════════════════
-     SLIDE 09 — THE INSTITUTIONS
-════════════════════════════════════════════════════════════════════════ -->
-<section class="slide" id="s9">
-<div class="slide-inner stagger">
+<!-- ── SLIDE 02 · THE MATH ───────────────────────────────────────────────── -->
+<section class="slide" id="s2" data-duration="12">
+<div class="slide-inner" style="display:flex;flex-direction:column;gap:28px">
 
-  <div>
-    <div class="eyebrow">The Infrastructure · 09 / 15</div>
-    <div class="hd">Trillions in Infrastructure.<br><span style="color:var(--blue)">Ready for Your Deposit.</span></div>
-    <div class="rule"></div>
+  <div class="fu d1">
+    <div class="eyebrow">The Problem · 02</div>
+    <div class="hd">Inflation is a <span style="color:#E84040">silent tax.</span></div>
   </div>
 
-  <div class="sub-sm">
-    Qualified institutions in the market move billions of dollars every month through their systems — and they want to borrow your stablecoins. They will pay you real returns for every digital dollar you deposit with them.
-  </div>
-
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
-    <div class="card-blue">
-      <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:var(--blue);letter-spacing:.08em;margin-bottom:6px">Aave</div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(74,158,255,.55);letter-spacing:.1em;margin-bottom:8px">$12B+ TVL</div>
-      <div style="font-size:13px;color:rgba(245,240,232,.85);line-height:1.65">Leading decentralized lending protocol. Borrowers pay interest — depositors earn it.</div>
+  <div class="fu d2" style="display:flex;align-items:center;gap:clamp(24px,5vw,72px);flex-wrap:wrap">
+    <div style="text-align:center">
+      <div class="strike-wrap">
+        <div style="font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(60px,9vw,128px);letter-spacing:-.02em;line-height:.9;color:rgba(245,240,232,.88)">$1,000</div>
+        <div class="strike-line"></div>
+      </div>
+      <div style="font-family:'Tenor Sans',sans-serif;font-size:clamp(10px,1.1vw,13px);color:rgba(245,240,232,.35);letter-spacing:.18em;text-transform:uppercase;margin-top:10px">Saved · Jan 2020</div>
     </div>
-    <div class="card-blue">
-      <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:var(--blue);letter-spacing:.08em;margin-bottom:6px">Compound</div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(74,158,255,.55);letter-spacing:.1em;margin-bottom:8px">$3B+ TVL</div>
-      <div style="font-size:13px;color:rgba(245,240,232,.85);line-height:1.65">Algorithmic money market. Transparent rates, fully audited, battle-tested since 2018.</div>
-    </div>
-    <div class="card-blue">
-      <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:var(--blue);letter-spacing:.08em;margin-bottom:6px">Balancer</div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(74,158,255,.55);letter-spacing:.1em;margin-bottom:8px">$1B+ TVL</div>
-      <div style="font-size:13px;color:rgba(245,240,232,.85);line-height:1.65">Programmable liquidity protocol. Provides diversified yield through automated portfolio management.</div>
+    <div class="fu d3" style="font-family:'Cormorant Garamond',serif;font-size:clamp(32px,4.5vw,62px);color:rgba(245,240,232,.18)">→</div>
+    <div class="fu d4" style="text-align:center">
+      <div class="hd-xl" style="color:#E84040">$814</div>
+      <div style="font-family:'Tenor Sans',sans-serif;font-size:clamp(10px,1.1vw,13px);color:rgba(232,64,64,.5);letter-spacing:.18em;text-transform:uppercase;margin-top:10px">Real Value · Jan 2024</div>
     </div>
   </div>
 
-  <div class="card-gold" style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:center">
-    <div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;color:rgba(201,168,76,.6);text-transform:uppercase;margin-bottom:8px">How Genesis Routes It</div>
-      <div style="font-family:'Cormorant Garamond',serif;font-size:16px;color:rgba(245,240,232,.8);line-height:1.65">
-        Genesis simplifies the routing process so you earn real returns — without the crypto complexity.
-      </div>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:6px">
-      <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(245,240,232,.65)">
-        <span class="pill pill-blue" style="font-size:8px">You Deposit</span>
-        <span style="color:rgba(245,240,232,.3)">→</span>
-        <span>Stablecoins enter Genesis wallet</span>
-      </div>
-      <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(245,240,232,.65)">
-        <span class="pill pill-teal" style="font-size:8px">Genesis Routes</span>
-        <span style="color:rgba(245,240,232,.3)">→</span>
-        <span>Smart contracts allocate to protocols</span>
-      </div>
-      <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(245,240,232,.65)">
-        <span class="pill pill-green" style="font-size:8px">You Earn</span>
-        <span style="color:rgba(245,240,232,.3)">→</span>
-        <span>Real yield, every 15 minutes</span>
-      </div>
-    </div>
+  <div class="fu d5" style="font-family:'JetBrains Mono',monospace;font-size:clamp(10px,1.1vw,13px);color:rgba(232,64,64,.45);letter-spacing:.1em">
+    $186 GONE. SILENTLY. EVERY FOUR YEARS.
   </div>
 
 </div>
 </section>
 
-<!-- ═══════════════════════════════════════════════════════════════════════
-     SLIDE 10 — THE USER
-════════════════════════════════════════════════════════════════════════ -->
-<section class="slide" id="s10">
-<div class="slide-inner stagger">
+<!-- ── SLIDE 03 · THE MOMENT ─────────────────────────────────────────────── -->
+<section class="slide" id="s3" data-duration="15">
+<div class="slide-inner" style="display:flex;flex-direction:column;gap:22px">
 
-  <div>
-    <div class="eyebrow">The Market · 10 / 15</div>
-    <div class="hd">Built for the<br><span style="color:var(--violet)">Underserved Majority.</span></div>
-    <div class="rule"></div>
+  <div class="fu d1">
+    <div class="eyebrow">The Opportunity · 03</div>
   </div>
 
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-    <div>
-      <div class="card-violet" style="margin-bottom:10px">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;color:rgba(155,109,255,.6);text-transform:uppercase;margin-bottom:8px">Primary Audience</div>
-        <div style="display:flex;flex-direction:column;gap:6px">
-          <div style="font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--text)">Mobile Banking Users, 35–55</div>
-          <div style="font-size:13px;color:rgba(245,240,232,.85);line-height:1.65">Hard-working, financially aware, already using apps like Cashapp, Zelle, or Chime. They feel the old system failing them — and they want more control.</div>
-        </div>
-      </div>
-      <div class="card" style="margin-bottom:10px">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;color:rgba(245,240,232,.35);text-transform:uppercase;margin-bottom:8px">What They Want</div>
-        <div style="display:flex;flex-direction:column;gap:5px">
-          <div style="font-size:11px;color:rgba(245,240,232,.65)">◈ &nbsp;Control — spend without asking permission</div>
-          <div style="font-size:11px;color:rgba(245,240,232,.65)">◈ &nbsp;Speed — money that moves instantly</div>
-          <div style="font-size:11px;color:rgba(245,240,232,.65)">◈ &nbsp;Growth — savings that actually grow</div>
-          <div style="font-size:11px;color:rgba(245,240,232,.65)">◈ &nbsp;Simplicity — no jargon, no complexity</div>
-        </div>
-      </div>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:10px">
-      <div class="card-gold">
-        <div class="stat-val" style="color:var(--gold);font-size:clamp(28px,3vw,46px)">138M</div>
-        <div class="stat-lbl">Americans living paycheck to paycheck</div>
-        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(201,168,76,.45);margin-top:4px">LendingClub · 2024</div>
-      </div>
-      <div class="card-teal">
-        <div class="stat-val" style="color:var(--teal);font-size:clamp(28px,3vw,46px)">$0</div>
-        <div class="stat-lbl">Average savings account yield above inflation</div>
-        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(0,212,170,.45);margin-top:4px">Federal Reserve data</div>
-      </div>
-      <div class="card-green">
-        <div class="stat-val" style="color:var(--green);font-size:clamp(28px,3vw,46px)">4–13%</div>
-        <div class="stat-lbl">What Genesis users earn instead</div>
-        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(26,191,106,.45);margin-top:4px">via DeFi protocols</div>
-      </div>
-    </div>
+  <div class="fu d2">
+    <div class="hd-xl" style="color:var(--teal)"><span id="c-market">$56T</span></div>
+    <div style="font-family:'Tenor Sans',sans-serif;font-size:clamp(13px,1.5vw,19px);color:rgba(0,212,170,.6);letter-spacing:.15em;text-transform:uppercase;margin-top:14px">Stablecoin Market · By 2028 · Bloomberg</div>
+  </div>
+
+  <div class="fu d3" style="height:1px;background:linear-gradient(90deg,rgba(0,212,170,.35),transparent)"></div>
+
+  <div class="fu d4" style="display:flex;gap:12px;flex-wrap:wrap">
+    <span class="pill pill-teal" style="font-size:11px;padding:6px 16px">Every Asset Going Digital</span>
+    <span class="pill pill-gold" style="font-size:11px;padding:6px 16px">Biggest Wealth Transfer in 100 Years</span>
+    <span class="pill pill-green" style="font-size:11px;padding:6px 16px">The Window Is Open — Now</span>
+  </div>
+
+  <div class="fu d5" style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(17px,2vw,26px);color:rgba(245,240,232,.5);line-height:1.55">
+    "You're sitting in the biggest wealth transfer in 100 years — and your savings account is getting left behind."
   </div>
 
 </div>
 </section>
 
-<!-- ═══════════════════════════════════════════════════════════════════════
-     SLIDE 11 — GO-TO-MARKET
-════════════════════════════════════════════════════════════════════════ -->
-<section class="slide" id="s11">
-<div class="slide-inner stagger">
+<!-- ── SLIDE 04 · THE GAP ────────────────────────────────────────────────── -->
+<section class="slide" id="s4" data-duration="12">
+<div class="slide-inner" style="display:flex;flex-direction:column;gap:22px">
 
-  <div>
-    <div class="eyebrow">The Playbook · 11 / 15</div>
-    <div class="hd">Four Phases.<br><span style="color:var(--teal)">One Destination.</span></div>
-    <div class="rule"></div>
+  <div class="fu d1">
+    <div class="eyebrow">The Gap · 04</div>
+    <div class="hd">Faster. Cheaper.<br><span style="color:var(--blue)">Not Enough.</span></div>
   </div>
 
-  <div class="phase-row" style="margin-bottom:12px">
-    <div class="phase-card card-teal">
-      <div class="phase-num">PHASE 01 · MONTHS 1–6</div>
-      <div class="phase-label" style="color:var(--teal)">Attract</div>
-      <div class="phase-desc">Target mobile banking users 35–55 who know their money needs a makeover. Paid social, referral programs, and community activation.</div>
+  <div class="fu d2" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:100%">
+    <div class="card-blue" style="text-align:center;padding:22px 14px">
+      <div style="font-family:'Cormorant Garamond',serif;font-size:clamp(18px,2.2vw,28px);color:var(--blue);letter-spacing:.08em;margin-bottom:14px">CashApp</div>
+      <div style="display:flex;flex-direction:column;gap:5px;text-align:left">
+        <div style="font-size:11px;color:rgba(26,191,106,.8)">✓ &nbsp;Peer-to-peer</div>
+        <div style="font-size:11px;color:rgba(232,64,64,.7)">✗ &nbsp;Beats inflation</div>
+        <div style="font-size:11px;color:rgba(232,64,64,.7)">✗ &nbsp;DeFi yield</div>
+      </div>
     </div>
-    <div class="phase-card card-blue">
-      <div class="phase-num">PHASE 02 · MONTHS 4–12</div>
-      <div class="phase-label" style="color:var(--blue)">Activate</div>
-      <div class="phase-desc">A simple wallet experience they already understand. Card-linking, funding, and first yield earned within the first session.</div>
+    <div class="card-blue" style="text-align:center;padding:22px 14px">
+      <div style="font-family:'Cormorant Garamond',serif;font-size:clamp(18px,2.2vw,28px);color:var(--blue);letter-spacing:.08em;margin-bottom:14px">Wise</div>
+      <div style="display:flex;flex-direction:column;gap:5px;text-align:left">
+        <div style="font-size:11px;color:rgba(26,191,106,.8)">✓ &nbsp;Multi-currency</div>
+        <div style="font-size:11px;color:rgba(232,64,64,.7)">✗ &nbsp;Beats inflation</div>
+        <div style="font-size:11px;color:rgba(232,64,64,.7)">✗ &nbsp;DeFi yield</div>
+      </div>
     </div>
-    <div class="phase-card card-green">
-      <div class="phase-num">PHASE 03 · MONTHS 8–18</div>
-      <div class="phase-label" style="color:var(--green)">Retain</div>
-      <div class="phase-desc">Build recurring wallet behavior. Faster, cheaper, smarter savings activity drives monthly transaction volume and deepens engagement.</div>
-    </div>
-    <div class="phase-card card-gold">
-      <div class="phase-num">PHASE 04 · MONTHS 14–24+</div>
-      <div class="phase-label" style="color:var(--gold)">Scale</div>
-      <div class="phase-desc">Drive treasury adoption. Layer in B2B partnerships, SMB payroll, and institutional rails. Expand internationally.</div>
+    <div class="card-blue" style="text-align:center;padding:22px 14px">
+      <div style="font-family:'Cormorant Garamond',serif;font-size:clamp(18px,2.2vw,28px);color:var(--blue);letter-spacing:.08em;margin-bottom:14px">Revolut</div>
+      <div style="display:flex;flex-direction:column;gap:5px;text-align:left">
+        <div style="font-size:11px;color:rgba(26,191,106,.8)">✓ &nbsp;Global payments</div>
+        <div style="font-size:11px;color:rgba(232,64,64,.7)">✗ &nbsp;Beats inflation</div>
+        <div style="font-size:11px;color:rgba(232,64,64,.7)">✗ &nbsp;DeFi yield</div>
+      </div>
     </div>
   </div>
 
-  <div class="card" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
-    <div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;color:rgba(0,212,170,.55);text-transform:uppercase;margin-bottom:6px">B2C Layer</div>
-      <div style="font-size:11px;color:rgba(245,240,232,.6);line-height:1.6">Consumer wallet — direct to retail users. Drives transaction volume and treasury deposits.</div>
-    </div>
-    <div style="border-left:1px solid rgba(255,255,255,.07);padding-left:16px">
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;color:rgba(201,168,76,.55);text-transform:uppercase;margin-bottom:6px">B2B Layer</div>
-      <div style="font-size:11px;color:rgba(245,240,232,.6);line-height:1.6">SMB treasury management, payroll stablecoin rails, and employer-benefit integrations.</div>
-    </div>
-    <div style="border-left:1px solid rgba(255,255,255,.07);padding-left:16px">
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;color:rgba(155,109,255,.55);text-transform:uppercase;margin-bottom:6px">Institutional Layer</div>
-      <div style="font-size:11px;color:rgba(245,240,232,.6);line-height:1.6">Corporate treasury products, API licensing to fintechs, and white-label stablecoin infrastructure.</div>
-    </div>
+  <div class="fu d4" style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(16px,1.8vw,22px);color:rgba(245,240,232,.45);line-height:1.5">
+    "They optimized the experience. They didn't solve the problem."
   </div>
 
 </div>
 </section>
 
-<!-- ═══════════════════════════════════════════════════════════════════════
-     SLIDE 12 — 24-MONTH PROJECTION
-════════════════════════════════════════════════════════════════════════ -->
-<section class="slide" id="s12">
-<div class="slide-inner stagger">
+<!-- ── SLIDE 05 · THE SOLUTION ───────────────────────────────────────────── -->
+<section class="slide" id="s5" data-duration="10">
+<div class="slide-inner" style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:28px">
 
-  <div>
-    <div class="eyebrow">The Economics · 12 / 15</div>
-    <div class="hd"><span style="color:var(--green)">100K Users.</span> 400K Transactions.<br>24 Months.</div>
-    <div class="rule"></div>
+  <div class="fu d1">
+    <div class="logo-seal" style="width:clamp(56px,7vw,88px);height:clamp(56px,7vw,88px);margin:0 auto 18px;box-shadow:0 0 0 1px rgba(201,168,76,.2),0 0 40px rgba(201,168,76,.35),0 0 80px rgba(201,168,76,.12)">
+      <img src="/genesis-logo.png" alt="GR"
+        onerror="this.parentElement.innerHTML='<span style=&quot;font-size:clamp(40px,5.5vw,70px);line-height:1;color:#C9A84C&quot;>◈</span>'">
+    </div>
+    <div style="font-family:'Cormorant Garamond',serif;font-size:clamp(44px,7vw,104px);font-weight:300;letter-spacing:.04em;line-height:.92;color:var(--text)">
+      A <span style="color:var(--gold)">Smarter</span><br>Wallet.
+    </div>
   </div>
 
-  <!-- Projection table -->
-  <div style="display:grid;grid-template-columns:1.4fr repeat(4,1fr);gap:1px;background:rgba(255,255,255,.07);border-radius:12px;overflow:hidden;font-family:'JetBrains Mono',monospace;font-size:10px">
-    <div style="background:rgba(255,255,255,.02);padding:10px 12px;color:rgba(245,240,232,.38);letter-spacing:.1em;text-transform:uppercase">Metric</div>
-    <div style="background:rgba(255,255,255,.02);padding:10px 12px;color:rgba(245,240,232,.38);letter-spacing:.06em;text-align:center">Month 6</div>
-    <div style="background:rgba(255,255,255,.02);padding:10px 12px;color:rgba(245,240,232,.38);letter-spacing:.06em;text-align:center">Month 12</div>
-    <div style="background:rgba(255,255,255,.02);padding:10px 12px;color:rgba(245,240,232,.38);letter-spacing:.06em;text-align:center">Month 18</div>
-    <div style="background:rgba(26,191,106,.06);padding:10px 12px;color:rgba(26,191,106,.7);letter-spacing:.06em;text-align:center">Month 24 ★</div>
+  <div class="fu d3" style="height:1px;width:220px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.5),transparent)"></div>
 
-    <div style="background:var(--bg2);padding:10px 12px;color:rgba(245,240,232,.55)">Active Users</div>
-    <div style="background:var(--bg2);padding:10px 12px;text-align:center;color:var(--text)">5,000</div>
-    <div style="background:var(--bg2);padding:10px 12px;text-align:center;color:var(--text)">25,000</div>
-    <div style="background:var(--bg2);padding:10px 12px;text-align:center;color:var(--text)">60,000</div>
-    <div style="background:rgba(26,191,106,.04);padding:10px 12px;text-align:center;color:var(--green);font-weight:700">100,000</div>
-
-    <div style="background:var(--bg1);padding:10px 12px;color:rgba(245,240,232,.55)">Monthly Tx</div>
-    <div style="background:var(--bg1);padding:10px 12px;text-align:center;color:var(--text)">20K</div>
-    <div style="background:var(--bg1);padding:10px 12px;text-align:center;color:var(--text)">100K</div>
-    <div style="background:var(--bg1);padding:10px 12px;text-align:center;color:var(--text)">240K</div>
-    <div style="background:rgba(26,191,106,.04);padding:10px 12px;text-align:center;color:var(--green);font-weight:700">400K</div>
-
-    <div style="background:var(--bg2);padding:10px 12px;color:rgba(245,240,232,.55)">Tx Fee Revenue</div>
-    <div style="background:var(--bg2);padding:10px 12px;text-align:center;color:rgba(201,168,76,.7)">Early</div>
-    <div style="background:var(--bg2);padding:10px 12px;text-align:center;color:rgba(201,168,76,.7)">Growing</div>
-    <div style="background:var(--bg2);padding:10px 12px;text-align:center;color:rgba(201,168,76,.7)">Scaling</div>
-    <div style="background:rgba(26,191,106,.04);padding:10px 12px;text-align:center;color:var(--gold);font-weight:700">Run-Rate</div>
-
-    <div style="background:var(--bg1);padding:10px 12px;color:rgba(245,240,232,.55)">Investor Share (20%)</div>
-    <div style="background:var(--bg1);padding:10px 12px;text-align:center;color:rgba(0,212,170,.7)">20% of Rev</div>
-    <div style="background:var(--bg1);padding:10px 12px;text-align:center;color:rgba(0,212,170,.7)">20% of Rev</div>
-    <div style="background:var(--bg1);padding:10px 12px;text-align:center;color:rgba(0,212,170,.7)">20% of Rev</div>
-    <div style="background:rgba(26,191,106,.04);padding:10px 12px;text-align:center;color:var(--teal);font-weight:700">20% of Rev</div>
+  <div class="fu d4" style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+    <span class="pill pill-gold" style="font-size:11px;padding:6px 18px">4–13% APY</span>
+    <span class="pill pill-teal" style="font-size:11px;padding:6px 18px">Stablecoin Native</span>
+    <span class="pill pill-green" style="font-size:11px;padding:6px 18px">Beats Inflation</span>
+    <span class="pill pill-blue" style="font-size:11px;padding:6px 18px">No Crypto Knowledge Required</span>
   </div>
 
-  <!-- Three-Party Win -->
-  <div class="win-table">
-    <div class="win-col win-user">
-      <div class="win-title" style="color:var(--blue)">◈ &nbsp;The User Wins</div>
-      <div class="win-item">4–13% APY on savings</div>
-      <div class="win-item">Beats inflation every 15 min</div>
-      <div class="win-item">Fast, low-cost payments</div>
-      <div class="win-item">No crypto complexity</div>
+</div>
+</section>
+
+<!-- ── SLIDES 06–09 · LIVE DEMO (iframe injected by JS) ─────────────────── -->
+<section class="slide demo-slide" id="s6" data-duration="20"
+  data-demo-step="01" data-demo-text="Setting Up Your Smarter Wallet"></section>
+<section class="slide demo-slide" id="s7" data-duration="20"
+  data-demo-step="02" data-demo-text="Funding With Your Debit Card"></section>
+<section class="slide demo-slide" id="s8" data-duration="20"
+  data-demo-step="03" data-demo-text="Choosing Your Yield Strategy"></section>
+<section class="slide demo-slide" id="s9" data-duration="20"
+  data-demo-step="04" data-demo-text="Watching Your Yield Grow · Every 15 Minutes"></section>
+
+<!-- ── SLIDE 10 · THE MARKET ─────────────────────────────────────────────── -->
+<section class="slide" id="s10" data-duration="15">
+<div class="slide-inner" style="display:flex;flex-direction:column;gap:22px">
+
+  <div class="fu d1">
+    <div class="eyebrow">The Market · 10</div>
+  </div>
+
+  <div class="fu d2">
+    <div class="hd-xl" style="color:var(--violet)"><span id="c-users">100M</span></div>
+    <div style="font-family:'Tenor Sans',sans-serif;font-size:clamp(13px,1.5vw,19px);color:rgba(155,109,255,.6);letter-spacing:.15em;text-transform:uppercase;margin-top:14px">People Underserved by the Old System</div>
+  </div>
+
+  <div class="fu d3" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%">
+    <div class="card-gold" style="text-align:center;padding:22px 14px">
+      <div style="font-family:'Cormorant Garamond',serif;font-size:clamp(28px,3.5vw,50px);font-weight:300;color:var(--gold);line-height:1">138M</div>
+      <div style="font-family:'Tenor Sans',sans-serif;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(245,240,232,.5);margin-top:7px">Paycheck to Paycheck</div>
     </div>
-    <div class="win-col win-investor">
-      <div class="win-title" style="color:var(--gold)">◈ &nbsp;The Investor Wins</div>
-      <div class="win-item">20% of all Tx fee revenue</div>
-      <div class="win-item">Proportional to stake</div>
-      <div class="win-item">Participation in yield spread</div>
-      <div class="win-item">Early entry · Pre-scale</div>
+    <div class="card-red" style="text-align:center;padding:22px 14px">
+      <div style="font-family:'Cormorant Garamond',serif;font-size:clamp(28px,3.5vw,50px);font-weight:300;color:#E84040;line-height:1">$0</div>
+      <div style="font-family:'Tenor Sans',sans-serif;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(245,240,232,.5);margin-top:7px">Yield Above Inflation</div>
     </div>
-    <div class="win-col win-genesis">
-      <div class="win-title" style="color:var(--green)">◈ &nbsp;Genesis Wins</div>
-      <div class="win-item">80% of Tx fee revenue</div>
-      <div class="win-item">Treasury yield spread</div>
-      <div class="win-item">B2B &amp; institutional fees</div>
-      <div class="win-item">Scale into $56T market</div>
+    <div class="card-green" style="text-align:center;padding:22px 14px">
+      <div style="font-family:'Cormorant Garamond',serif;font-size:clamp(28px,3.5vw,50px);font-weight:300;color:var(--green);line-height:1">4–13%</div>
+      <div style="font-family:'Tenor Sans',sans-serif;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(245,240,232,.5);margin-top:7px">Genesis APY Instead</div>
+    </div>
+  </div>
+
+  <div class="fu d5" style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(16px,1.9vw,24px);color:rgba(245,240,232,.5);line-height:1.55">
+    "Mobile banking users, 35–55. They feel the system failing. They want more control."
+  </div>
+
+</div>
+</section>
+
+<!-- ── SLIDE 11 · BUSINESS MODEL ─────────────────────────────────────────── -->
+<section class="slide" id="s11" data-duration="18">
+<div class="slide-inner" style="display:flex;flex-direction:column;gap:20px">
+
+  <div class="fu d1">
+    <div class="eyebrow">The Model · 11</div>
+    <div class="hd">Three Winners.<br><span style="color:var(--teal)">Every Transaction.</span></div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;width:100%">
+    <div class="split-col win-col win-user" style="padding:28px 18px;text-align:center">
+      <div class="win-title" style="color:var(--blue);font-size:11px;margin-bottom:14px">The User</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:clamp(28px,3.8vw,56px);font-weight:300;color:var(--blue);line-height:1;margin-bottom:10px">4–13%</div>
+      <div style="font-size:10px;color:rgba(245,240,232,.45);letter-spacing:.12em;text-transform:uppercase">APY · Every 15 Min</div>
+    </div>
+    <div class="split-col win-col win-investor" style="padding:28px 18px;text-align:center">
+      <div class="win-title" style="color:var(--gold);font-size:11px;margin-bottom:14px">The Investor</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:clamp(28px,3.8vw,56px);font-weight:300;color:var(--gold);line-height:1;margin-bottom:10px">20%</div>
+      <div style="font-size:10px;color:rgba(245,240,232,.45);letter-spacing:.12em;text-transform:uppercase">of Tx Fee Revenue</div>
+    </div>
+    <div class="split-col win-col win-genesis" style="padding:28px 18px;text-align:center">
+      <div class="win-title" style="color:var(--green);font-size:11px;margin-bottom:14px">Genesis</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:clamp(28px,3.8vw,56px);font-weight:300;color:var(--green);line-height:1;margin-bottom:10px">80%</div>
+      <div style="font-size:10px;color:rgba(245,240,232,.45);letter-spacing:.12em;text-transform:uppercase">+ Scale into $56T</div>
+    </div>
+  </div>
+
+  <div class="fu d5" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;width:100%">
+    <div style="text-align:center;padding:12px 8px;border:1px solid rgba(255,255,255,.06);border-radius:10px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(245,240,232,.3);margin-bottom:5px">Month 6</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:clamp(18px,2.2vw,30px);color:var(--text)">5K</div>
+      <div style="font-size:9px;color:rgba(245,240,232,.28);letter-spacing:.1em;text-transform:uppercase">Users</div>
+    </div>
+    <div style="text-align:center;padding:12px 8px;border:1px solid rgba(255,255,255,.06);border-radius:10px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(245,240,232,.3);margin-bottom:5px">Month 12</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:clamp(18px,2.2vw,30px);color:var(--text)">25K</div>
+      <div style="font-size:9px;color:rgba(245,240,232,.28);letter-spacing:.1em;text-transform:uppercase">Users</div>
+    </div>
+    <div style="text-align:center;padding:12px 8px;border:1px solid rgba(255,255,255,.06);border-radius:10px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(245,240,232,.3);margin-bottom:5px">Month 18</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:clamp(18px,2.2vw,30px);color:var(--text)">60K</div>
+      <div style="font-size:9px;color:rgba(245,240,232,.28);letter-spacing:.1em;text-transform:uppercase">Users</div>
+    </div>
+    <div style="text-align:center;padding:12px 8px;border:1px solid rgba(26,191,106,.18);background:rgba(26,191,106,.04);border-radius:10px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(26,191,106,.5);margin-bottom:5px">Month 24 ★</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:clamp(18px,2.2vw,30px);color:var(--green)">100K</div>
+      <div style="font-size:9px;color:rgba(26,191,106,.4);letter-spacing:.1em;text-transform:uppercase">Users</div>
     </div>
   </div>
 
 </div>
 </section>
 
-<!-- ═══════════════════════════════════════════════════════════════════════
-     SLIDE 13 — WHAT WE'VE BUILT
-════════════════════════════════════════════════════════════════════════ -->
-<section class="slide" id="s13">
-<div class="slide-inner stagger">
+<!-- ── SLIDE 12 · TRACTION ───────────────────────────────────────────────── -->
+<section class="slide" id="s12" data-duration="15">
+<div class="slide-inner" style="display:flex;flex-direction:column;gap:18px">
 
-  <div>
-    <div class="eyebrow">Traction · 13 / 15</div>
+  <div class="fu d1">
+    <div class="eyebrow">Traction · 12</div>
     <div class="hd">Built Since March 2025.<br><span style="color:var(--gold)">Deployed. Live. Real.</span></div>
-    <div class="rule"></div>
   </div>
 
-  <!-- 3 headline stats -->
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
-    <div class="card-gold" style="text-align:center;padding:20px 16px">
-      <div class="stat-val" style="color:var(--gold);font-size:clamp(36px,4.5vw,60px)">5,000+</div>
-      <div class="stat-lbl" style="font-size:11px;margin-top:6px">Engineering Hours Invested</div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(201,168,76,.5);margin-top:4px;letter-spacing:.08em">March 2025 → Present</div>
+  <div class="fu d2" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%">
+    <div class="card-gold" style="text-align:center;padding:22px 14px">
+      <div style="font-family:'Cormorant Garamond',serif;font-size:clamp(40px,5.5vw,76px);font-weight:300;color:var(--gold);line-height:1"><span id="c-hours">5,000</span>+</div>
+      <div style="font-family:'Tenor Sans',sans-serif;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:rgba(245,240,232,.45);margin-top:8px">Engineering Hours</div>
     </div>
-    <div class="card-gold" style="text-align:center;padding:20px 16px">
-      <div class="stat-val" style="color:var(--gold);font-size:clamp(36px,4.5vw,60px)">$1.2M+</div>
-      <div class="stat-lbl" style="font-size:11px;margin-top:6px">Market Value of Build</div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(201,168,76,.5);margin-top:4px;letter-spacing:.08em">At market-rate engineering cost</div>
-    </div>
-    <div class="card-green" style="text-align:center;padding:20px 16px">
-      <div class="stat-val" style="color:var(--green);font-size:clamp(36px,4.5vw,60px)">LIVE</div>
-      <div class="stat-lbl" style="font-size:11px;margin-top:6px;color:rgba(26,191,106,.7)">Deployed on Arbitrum</div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(26,191,106,.5);margin-top:4px;letter-spacing:.08em">genesisreserve.app · Production</div>
+    <div class="card-gold" style="text-align:center;padding:22px 14px">
+      <div style="font-family:'Cormorant Garamond',serif;font-size:clamp(40px,5.5vw,76px);font-weight:300;color:var(--gold);line-height:1">$1.2M+</div>
+      <div style="font-family:'Tenor Sans',sans-serif;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:rgba(245,240,232,.45);margin-top:8px">Infrastructure Value</div>
     </div>
   </div>
 
-  <!-- 6 deployed capabilities -->
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
-    <div style="display:flex;align-items:flex-start;gap:10px;padding:14px 16px;border-radius:12px;background:rgba(26,191,106,.04);border:1px solid rgba(26,191,106,.18)">
-      <div style="font-size:16px;color:var(--green);flex-shrink:0;margin-top:1px">✓</div>
-      <div>
-        <div style="font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--text);letter-spacing:.04em;margin-bottom:3px">Deployed Wallet</div>
-        <div style="font-size:12px;color:rgba(245,240,232,.82);line-height:1.5">Full wallet UI, live and accessible to users today</div>
-      </div>
+  <div class="fu d3" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%">
+    <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:10px;background:rgba(26,191,106,.04);border:1px solid rgba(26,191,106,.14)">
+      <span style="color:var(--green);font-size:13px">✓</span>
+      <span style="font-size:11px;color:rgba(245,240,232,.75)">Wallet · Live</span>
     </div>
-    <div style="display:flex;align-items:flex-start;gap:10px;padding:14px 16px;border-radius:12px;background:rgba(26,191,106,.04);border:1px solid rgba(26,191,106,.18)">
-      <div style="font-size:16px;color:var(--green);flex-shrink:0;margin-top:1px">✓</div>
-      <div>
-        <div style="font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--text);letter-spacing:.04em;margin-bottom:3px">Smart Contracts</div>
-        <div style="font-size:12px;color:rgba(245,240,232,.82);line-height:1.5">Vault and treasury contracts live on Arbitrum mainnet</div>
-      </div>
+    <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:10px;background:rgba(26,191,106,.04);border:1px solid rgba(26,191,106,.14)">
+      <span style="color:var(--green);font-size:13px">✓</span>
+      <span style="font-size:11px;color:rgba(245,240,232,.75)">Smart Contracts · Arbitrum</span>
     </div>
-    <div style="display:flex;align-items:flex-start;gap:10px;padding:14px 16px;border-radius:12px;background:rgba(26,191,106,.04);border:1px solid rgba(26,191,106,.18)">
-      <div style="font-size:16px;color:var(--green);flex-shrink:0;margin-top:1px">✓</div>
-      <div>
-        <div style="font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--text);letter-spacing:.04em;margin-bottom:3px">KYC &amp; Compliance</div>
-        <div style="font-size:12px;color:rgba(245,240,232,.82);line-height:1.5">Embedded identity verification on compliant rails</div>
-      </div>
+    <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:10px;background:rgba(26,191,106,.04);border:1px solid rgba(26,191,106,.14)">
+      <span style="color:var(--green);font-size:13px">✓</span>
+      <span style="font-size:11px;color:rgba(245,240,232,.75)">KYC &amp; Compliance</span>
     </div>
-    <div style="display:flex;align-items:flex-start;gap:10px;padding:14px 16px;border-radius:12px;background:rgba(26,191,106,.04);border:1px solid rgba(26,191,106,.18)">
-      <div style="font-size:16px;color:var(--green);flex-shrink:0;margin-top:1px">✓</div>
-      <div>
-        <div style="font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--text);letter-spacing:.04em;margin-bottom:3px">Card-Linking</div>
-        <div style="font-size:12px;color:rgba(245,240,232,.82);line-height:1.5">Debit card funding via Stripe and Circle — live flows</div>
-      </div>
+    <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:10px;background:rgba(26,191,106,.04);border:1px solid rgba(26,191,106,.14)">
+      <span style="color:var(--green);font-size:13px">✓</span>
+      <span style="font-size:11px;color:rgba(245,240,232,.75)">Card-Linking · Stripe</span>
     </div>
-    <div style="display:flex;align-items:flex-start;gap:10px;padding:14px 16px;border-radius:12px;background:rgba(26,191,106,.04);border:1px solid rgba(26,191,106,.18)">
-      <div style="font-size:16px;color:var(--green);flex-shrink:0;margin-top:1px">✓</div>
-      <div>
-        <div style="font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--text);letter-spacing:.04em;margin-bottom:3px">Payment Routing</div>
-        <div style="font-size:12px;color:rgba(245,240,232,.82);line-height:1.5">Stablecoin payment rails built, tested, and deployed</div>
-      </div>
+    <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:10px;background:rgba(26,191,106,.04);border:1px solid rgba(26,191,106,.14)">
+      <span style="color:var(--green);font-size:13px">✓</span>
+      <span style="font-size:11px;color:rgba(245,240,232,.75)">Payment Rails</span>
     </div>
-    <div style="display:flex;align-items:flex-start;gap:10px;padding:14px 16px;border-radius:12px;background:rgba(26,191,106,.04);border:1px solid rgba(26,191,106,.18)">
-      <div style="font-size:16px;color:var(--green);flex-shrink:0;margin-top:1px">✓</div>
-      <div>
-        <div style="font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--text);letter-spacing:.04em;margin-bottom:3px">Yield Engine</div>
-        <div style="font-size:12px;color:rgba(245,240,232,.82);line-height:1.5">Live DeFi routing to Aave, Compound, Balancer — real APY</div>
-      </div>
+    <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:10px;background:rgba(26,191,106,.04);border:1px solid rgba(26,191,106,.14)">
+      <span style="color:var(--green);font-size:13px">✓</span>
+      <span style="font-size:11px;color:rgba(245,240,232,.75)">Yield Engine · Aave</span>
     </div>
   </div>
 
-  <!-- Key message -->
-  <div class="card-gold" style="display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap">
-    <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(15px,1.7vw,20px);color:rgba(245,240,232,.88);line-height:1.6">
-      "This is not a concept. This is not a prototype. We built the infrastructure — now we deploy it to the market."
+  <!-- Unicorn icons — floating, no explanation -->
+  <div class="fu d5 unicorn-row">
+    <div class="uicon u1">
+      <span class="glyph">🛡</span>
+      <span class="uicon-label">Coming</span>
     </div>
-    <div style="display:flex;gap:8px;flex-shrink:0">
-      <span class="pill pill-gold">Production</span>
-      <span class="pill pill-green">Deployed</span>
+    <div class="uicon u2">
+      <span class="glyph" style="color:rgba(201,168,76,.45)">◈</span>
+      <span class="uicon-label">Coming</span>
     </div>
   </div>
 
 </div>
 </section>
 
-<!-- ═══════════════════════════════════════════════════════════════════════
-     SLIDE 14 — THE FOUNDER
-════════════════════════════════════════════════════════════════════════ -->
-<section class="slide" id="s14">
-<div class="slide-inner stagger">
+<!-- ── SLIDE 13 · THE ASK ────────────────────────────────────────────────── -->
+<section class="slide" id="s13" data-duration="18">
+<div class="slide-inner" style="display:flex;flex-direction:column;gap:18px">
 
-  <div style="display:flex;align-items:center;gap:20px">
-    <div class="logo-seal" style="width:64px;height:64px">
-      <img src="/genesis-logo.png" alt="GR" onerror="this.parentElement.innerHTML='<span style=&quot;font-size:46px;color:#c9a84c;opacity:.9&quot;>◈</span>'">
-    </div>
-    <div>
-      <div class="eyebrow">Leadership · 14 / 15</div>
-      <div class="hd" style="font-size:clamp(24px,3vw,42px)">Built at the<br><span style="color:var(--gold)">Intersection.</span></div>
-    </div>
+  <div class="fu d1">
+    <div class="eyebrow">The Opportunity · 13</div>
   </div>
 
-  <div class="rule"></div>
+  <div class="fu d2">
+    <div class="hd-xl" style="color:var(--gold)">$500,000</div>
+    <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(20px,2.6vw,36px);color:rgba(245,240,232,.5);margin-top:14px;line-height:1.25">The Ignition Raise.</div>
+  </div>
 
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+  <div class="fu d3" style="height:1px;background:linear-gradient(90deg,rgba(201,168,76,.4),transparent)"></div>
+
+  <div class="fu d3" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%">
     <div class="card-gold">
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;color:rgba(201,168,76,.6);text-transform:uppercase;margin-bottom:8px">Regulated Finance</div>
-      <div style="font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--text);margin-bottom:6px;line-height:1.4">How financial systems are built, how they fail, and exactly where they leave people behind.</div>
-    </div>
-    <div class="card-gold">
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;color:rgba(201,168,76,.6);text-transform:uppercase;margin-bottom:8px">Military Discipline</div>
-      <div style="font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--text);margin-bottom:6px;line-height:1.4">Execution under pressure. Mission clarity. The ability to build when the conditions are hard.</div>
-    </div>
-    <div class="card-gold">
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;color:rgba(201,168,76,.6);text-transform:uppercase;margin-bottom:8px">Technical Execution</div>
-      <div style="font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--text);margin-bottom:6px;line-height:1.4">How product gets built — from architecture decisions to deployed infrastructure.</div>
-    </div>
-  </div>
-
-  <div class="card" style="border-color:rgba(201,168,76,.18);background:rgba(201,168,76,.04)">
-    <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(16px,1.8vw,22px);color:rgba(245,240,232,.8);line-height:1.65;margin-bottom:12px">
-      "I have seen how financial systems work, how product gets built, and how ordinary people are too often left outside the better tools. Genesis Reserve is my response to that gap — a smarter wallet built for a harder economy."
-    </div>
-    <div style="display:flex;align-items:center;gap:10px">
-      <div style="width:1px;height:32px;background:rgba(201,168,76,.3)"></div>
-      <div>
-        <div style="font-family:'Tenor Sans',sans-serif;font-size:12px;color:var(--text);letter-spacing:.06em">Anthony Beedles</div>
-        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(201,168,76,.55);letter-spacing:.1em;text-transform:uppercase;margin-top:2px">Founder &amp; CEO · Genesis Reserve</div>
-      </div>
-    </div>
-  </div>
-
-</div>
-</section>
-
-<!-- ═══════════════════════════════════════════════════════════════════════
-     SLIDE 15 — THE ASK
-════════════════════════════════════════════════════════════════════════ -->
-<section class="slide" id="s15">
-<div class="slide-inner stagger">
-
-  <div style="display:flex;align-items:center;gap:16px">
-    <div class="logo-seal" style="width:56px;height:56px">
-      <img src="/genesis-logo.png" alt="GR" onerror="this.parentElement.innerHTML='<span style=&quot;font-size:40px;color:#c9a84c;opacity:.9&quot;>◈</span>'">
-    </div>
-    <div>
-      <div class="eyebrow">The Opportunity · 15 / 15</div>
-      <div class="hd" style="font-size:clamp(26px,3.2vw,48px)">$500,000.<br><span style="color:var(--gold)">Three Winners.</span></div>
-    </div>
-  </div>
-
-  <div class="rule"></div>
-
-  <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:16px">
-    <div style="display:flex;flex-direction:column;gap:10px">
-      <div class="card-gold">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;color:rgba(201,168,76,.6);text-transform:uppercase;margin-bottom:10px">Use of Funds · $500K</div>
-        <div style="display:flex;flex-direction:column;gap:7px">
-          <div style="display:flex;justify-content:space-between;font-size:11px">
-            <span style="color:rgba(245,240,232,.65)">Go-to-Market &amp; User Acquisition</span>
-            <span style="color:var(--gold);font-family:'JetBrains Mono',monospace">40%</span>
-          </div>
-          <div style="display:flex;justify-content:space-between;font-size:11px">
-            <span style="color:rgba(245,240,232,.65)">Engineering &amp; Infrastructure</span>
-            <span style="color:var(--gold);font-family:'JetBrains Mono',monospace">30%</span>
-          </div>
-          <div style="display:flex;justify-content:space-between;font-size:11px">
-            <span style="color:rgba(245,240,232,.65)">Compliance &amp; Licensing</span>
-            <span style="color:var(--gold);font-family:'JetBrains Mono',monospace">20%</span>
-          </div>
-          <div style="display:flex;justify-content:space-between;font-size:11px">
-            <span style="color:rgba(245,240,232,.65)">Operations &amp; Team</span>
-            <span style="color:var(--gold);font-family:'JetBrains Mono',monospace">10%</span>
-          </div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;color:rgba(201,168,76,.6);text-transform:uppercase;margin-bottom:12px">Use of Funds</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;justify-content:space-between">
+          <span style="font-size:12px;color:rgba(245,240,232,.7)">Go-to-Market &amp; Acquisition</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold)">40%</span>
         </div>
-      </div>
-      <div class="card">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;color:rgba(245,240,232,.35);text-transform:uppercase;margin-bottom:8px">Investment Structure</div>
-        <div style="font-size:13px;color:rgba(245,240,232,.88);line-height:1.72">
-          Flexible instrument — SAFE, convertible note, or revenue share. Investors receive <strong style="color:var(--gold)">20% of transaction fee revenue</strong>, proportional to stake, plus participation in treasury yield spread as the platform scales.
+        <div style="display:flex;justify-content:space-between">
+          <span style="font-size:12px;color:rgba(245,240,232,.7)">Engineering &amp; Infrastructure</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold)">30%</span>
+        </div>
+        <div style="display:flex;justify-content:space-between">
+          <span style="font-size:12px;color:rgba(245,240,232,.7)">Compliance &amp; Legal</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold)">20%</span>
+        </div>
+        <div style="display:flex;justify-content:space-between">
+          <span style="font-size:12px;color:rgba(245,240,232,.7)">Operations &amp; Team</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold)">10%</span>
         </div>
       </div>
     </div>
+    <div class="card">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;color:rgba(245,240,232,.3);text-transform:uppercase;margin-bottom:12px">What This Raise Buys</div>
+      <div style="display:flex;flex-direction:column;gap:9px">
+        <div style="font-size:12px;color:rgba(245,240,232,.75);padding-left:12px;position:relative"><span style="position:absolute;left:0;color:rgba(201,168,76,.5)">›</span>First 10–15K users acquired</div>
+        <div style="font-size:12px;color:rgba(245,240,232,.75);padding-left:12px;position:relative"><span style="position:absolute;left:0;color:rgba(201,168,76,.5)">›</span>Unit economics proven</div>
+        <div style="font-size:12px;color:rgba(245,240,232,.75);padding-left:12px;position:relative"><span style="position:absolute;left:0;color:rgba(201,168,76,.5)">›</span>Compliant rails secured</div>
+        <div style="font-size:12px;color:rgba(0,212,170,.85);padding-left:12px;position:relative"><span style="position:absolute;left:0;color:var(--teal)">›</span>Data package for $3–5M Series A</div>
+      </div>
+    </div>
+  </div>
 
-    <div class="win-table" style="grid-template-columns:1fr;gap:8px;display:flex;flex-direction:column">
+  <div class="fu d5" style="width:100%">
+    <div class="win-table">
       <div class="win-col win-user">
         <div class="win-title" style="color:var(--blue)">◈ &nbsp;User Wins</div>
-        <div class="win-item">Savings that beat inflation</div>
-        <div class="win-item">4–13% APY — every 15 minutes</div>
+        <div class="win-item">4–13% APY, every 15 min</div>
         <div class="win-item">Simple. Fast. No jargon.</div>
       </div>
       <div class="win-col win-investor">
         <div class="win-title" style="color:var(--gold)">◈ &nbsp;Investor Wins</div>
         <div class="win-item">20% of all Tx fee revenue</div>
-        <div class="win-item">Yield spread participation</div>
-        <div class="win-item">Early stake · 100K user target</div>
+        <div class="win-item">Pre-Series A · Early entry</div>
       </div>
       <div class="win-col win-genesis">
         <div class="win-title" style="color:var(--green)">◈ &nbsp;Genesis Wins</div>
-        <div class="win-item">80% Tx fee + spread revenue</div>
-        <div class="win-item">B2B / institutional expansion</div>
+        <div class="win-item">80% Tx + spread revenue</div>
         <div class="win-item">$56T market. We are early.</div>
       </div>
     </div>
   </div>
 
-  <div class="card-gold" style="text-align:center;padding:14px 24px">
-    <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(15px,1.6vw,20px);color:rgba(245,240,232,.8);line-height:1.6;margin-bottom:8px">
-      "This is bigger than a raise. We are building the Smarter Wallet designed to outpace inflation, grow savings every fifteen minutes, and give everyday users more control, real growth, and peace of mind."
-    </div>
-    <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(201,168,76,.7);letter-spacing:.1em">
+  <div class="fu d6" style="text-align:center;width:100%">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(201,168,76,.55);letter-spacing:.12em">
       info@genesisreserve.io &nbsp;·&nbsp; genesisreserve.app
     </div>
   </div>
@@ -1134,9 +646,8 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 
 </div><!-- /deck -->
 
-<!-- ── Auto-advance playbar ────────────────────────────────────────────── -->
-<div class="playbar" id="playbar" title="Auto-advance controls">
-  <!-- Countdown ring — click to play/pause -->
+<!-- ── Playbar ────────────────────────────────────────────────────────────── -->
+<div class="playbar" id="playbar">
   <div class="pb-ring" id="pbRing" onclick="pbToggle()" title="Play / Pause (P)">
     <svg width="28" height="28" viewBox="0 0 28 28">
       <circle class="ring-track" cx="14" cy="14" r="11"/>
@@ -1145,28 +656,55 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
     </svg>
   </div>
   <div class="pb-sep"></div>
-  <button class="pb-btn" id="pbPrevBtn" onclick="pbPrev()" aria-label="Previous slide" title="Previous (←)">‹</button>
-  <button class="pb-btn" id="pbPlayBtn" onclick="pbToggle()" aria-label="Play / Pause" title="Play / Pause (P)">▶</button>
-  <button class="pb-btn" id="pbNextBtn" onclick="pbNext()" aria-label="Next slide" title="Next (→)">›</button>
+  <button class="pb-btn" onclick="pbPrev()" title="Previous (←)">‹</button>
+  <button class="pb-btn" id="pbPlayBtn" onclick="pbToggle()" title="Play / Pause (P)">▶</button>
+  <button class="pb-btn" onclick="pbNext()" title="Next (→)">›</button>
   <div class="pb-sep"></div>
-  <!-- Speed — click to cycle through presets -->
-  <div class="pb-speed" id="pbSpeedBtn" onclick="pbCycleSpeed()" title="Seconds per slide — click to change">
+  <div class="pb-speed" id="pbSpeedBtn" onclick="pbCycleSpeed()" title="Global fallback speed">
     <span id="pbSpeedVal">15</span>s
   </div>
 </div>
 
-<!-- ── Footer ─────────────────────────────────────────────────────────── -->
+<!-- ── Footer ─────────────────────────────────────────────────────────────── -->
 <footer class="deck-footer">
   <div class="footer-line">Copyright © 2026 Genesis App, Inc. (d/b/a Genesis Reserve). All rights reserved. &nbsp;·&nbsp; Confidential — Do not distribute without permission.</div>
-  <div class="footer-line">For inquiries: <span>info@genesisreserve.io</span> &nbsp;|&nbsp; <span>genesisreserve.app</span></div>
+  <div class="footer-line">Inquiries: <span>info@genesisreserve.io</span> &nbsp;|&nbsp; <span>genesisreserve.app</span></div>
 </footer>
 
 <script>
-// ── Slide navigation ──────────────────────────────────────────────────────
+// ── State ─────────────────────────────────────────────────────────────────
 let cur = 0
+const DEMO_SLIDES = [6, 7, 8, 9]
+const DEMO_URL    = 'https://genesis-privy.vercel.app'
+let   demoLoaded  = false
 
-function goTo(n, fromUser = false) {
-  const slides = document.querySelectorAll('.slide')
+function allSlides() { return document.querySelectorAll('.slide') }
+
+// ── Demo iframe ───────────────────────────────────────────────────────────
+function updateDemo(idx) {
+  const wrap  = document.getElementById('demoWrap')
+  const label = document.getElementById('demoLabel')
+  const isDemo = DEMO_SLIDES.includes(idx)
+  wrap.classList.toggle('visible', isDemo)
+  label.classList.toggle('visible', isDemo)
+  if (isDemo) {
+    if (!demoLoaded) {
+      const frame = document.getElementById('demoFrame')
+      frame.src = DEMO_URL
+      frame.onload = function() {
+        demoLoaded = true
+        try { frame.contentWindow.sessionStorage.setItem('gr_force_preview', '1') } catch(e) {}
+      }
+    }
+    const s = document.getElementById('s' + idx)
+    document.getElementById('demoStepBadge').textContent = 'STEP ' + s.dataset.demoStep
+    document.getElementById('demoStepText').textContent  = s.dataset.demoText
+  }
+}
+
+// ── Navigation ────────────────────────────────────────────────────────────
+function goTo(n) {
+  const slides = allSlides()
   const dots   = document.querySelectorAll('.nav-dot')
   if (slides[cur]) { slides[cur].classList.remove('active'); slides[cur].classList.add('exit') }
   setTimeout(() => { if (slides[cur]) slides[cur].classList.remove('exit') }, 700)
@@ -1174,129 +712,120 @@ function goTo(n, fromUser = false) {
   if (slides[cur]) slides[cur].classList.add('active')
   dots.forEach((d, i) => d.classList.toggle('active', i === cur))
   document.getElementById('progress').style.width = ((cur + 1) / slides.length * 100) + '%'
-  document.getElementById('slideNum').textContent = String(cur + 1).padStart(2,'0') + ' / ' + String(slides.length).padStart(2,'0')
-  // Reset countdown whenever we land on a new slide
+  document.getElementById('slideNum').textContent  = String(cur + 1).padStart(2,'0') + ' / ' + String(slides.length).padStart(2,'0')
+  updateDemo(cur)
+  triggerCounters(cur)
   if (pbPlaying) pbResetTick()
 }
 
 function next() { goTo(cur + 1) }
 function prev() { goTo(cur - 1) }
 
-// ── Keyboard ──────────────────────────────────────────────────────────────
+// ── Counter animations ────────────────────────────────────────────────────
+const COUNTERS = {
+  'c-groceries': { end: 39,   prefix: '+', suffix: '%', ms: 1100 },
+  'c-market':    { end: 56,   prefix: '$', suffix: 'T', ms: 1500 },
+  'c-users':     { end: 100,  prefix: '',  suffix: 'M', ms: 1300 },
+  'c-hours':     { end: 5000, prefix: '',  suffix: '',  ms: 1200 },
+}
+const SLIDE_COUNTERS = { 1: ['c-groceries'], 3: ['c-market'], 10: ['c-users'], 12: ['c-hours'] }
+
+function easeOut(t) { return 1 - Math.pow(1 - t, 3) }
+function runCounter(id) {
+  const el  = document.getElementById(id)
+  if (!el) return
+  const def = COUNTERS[id]
+  const t0  = performance.now()
+  function tick(now) {
+    const p = Math.min((now - t0) / def.ms, 1)
+    el.textContent = def.prefix + Math.round(def.end * easeOut(p)).toLocaleString() + def.suffix
+    if (p < 1) requestAnimationFrame(tick)
+  }
+  requestAnimationFrame(tick)
+}
+function triggerCounters(idx) {
+  const ids = SLIDE_COUNTERS[idx]
+  if (ids) setTimeout(() => ids.forEach(runCounter), 320)
+}
+
+// ── Keyboard + touch ──────────────────────────────────────────────────────
 document.addEventListener('keydown', e => {
-  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); next() }
-  if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   { e.preventDefault(); prev() }
-  if (e.key === ' ') { e.preventDefault(); next() }
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); next() }
+  if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')                    { e.preventDefault(); prev() }
   if (e.key === 'p' || e.key === 'P') { e.preventDefault(); pbToggle() }
 })
-
-// ── Touch swipe ────────────────────────────────────────────────────────────
 let touchX = 0
 document.addEventListener('touchstart', e => { touchX = e.touches[0].clientX }, {passive:true})
-document.addEventListener('touchend', e => {
+document.addEventListener('touchend',   e => {
   const dx = touchX - e.changedTouches[0].clientX
   if (Math.abs(dx) > 50) { dx > 0 ? next() : prev() }
 })
 
 // ── Auto-advance playbar ──────────────────────────────────────────────────
-const PB_SPEEDS  = [5, 10, 15, 20, 30]   // seconds per slide options
-const RING_C     = 69.12                  // 2π × r11 ≈ 69.12
-let   pbSpeedIdx = 2                      // default: 15 s
+const PB_SPEEDS  = [5, 10, 15, 20, 30]
+const RING_C     = 69.12
+let   pbSpeedIdx = 2
 let   pbPlaying  = false
 let   pbInterval = null
-let   pbTick     = 0                      // advances every 100 ms
+let   pbTick     = 0
 
-function pbSecs()  { return PB_SPEEDS[pbSpeedIdx] }
-function pbTotal() { return pbSecs() * 10 }         // ticks to fill one slide
+function pbSecs() {
+  const slides = allSlides()
+  const dur    = slides[cur] && slides[cur].dataset.duration
+  return dur ? parseInt(dur, 10) : PB_SPEEDS[pbSpeedIdx]
+}
+function pbTotal() { return pbSecs() * 10 }
 
 function pbUpdateRing() {
-  const frac   = pbPlaying ? Math.min(pbTick / pbTotal(), 1) : 0
-  const offset = RING_C * (1 - frac)
+  const offset = RING_C * (1 - (pbPlaying ? Math.min(pbTick / pbTotal(), 1) : 0))
   document.getElementById('pbRingFill').style.strokeDashoffset = offset
 }
+function pbResetTick() { pbTick = 0; pbUpdateRing() }
 
-function pbResetTick() {
-  pbTick = 0
-  pbUpdateRing()
-}
-
-function pbSetPlayUI(playing) {
-  const btn = document.getElementById('pbPlayBtn')
-  const spd = document.getElementById('pbSpeedBtn')
-  btn.textContent = playing ? '⏸' : '▶'
-  btn.classList.toggle('is-play', playing)
-  spd.classList.toggle('is-live', playing)
+function pbSetPlayUI(on) {
+  document.getElementById('pbPlayBtn').textContent = on ? '⏸' : '▶'
+  document.getElementById('pbPlayBtn').classList.toggle('is-play', on)
+  document.getElementById('pbSpeedBtn').classList.toggle('is-live', on)
 }
 
 function pbStart() {
-  pbPlaying = true
-  pbResetTick()
-  pbSetPlayUI(true)
+  pbPlaying = true; pbResetTick(); pbSetPlayUI(true)
   pbInterval = setInterval(() => {
-    pbTick++
-    pbUpdateRing()
+    pbTick++; pbUpdateRing()
     if (pbTick >= pbTotal()) {
-      const slides = document.querySelectorAll('.slide')
-      if (cur < slides.length - 1) {
-        next()                // goTo resets pbTick via pbResetTick
-      } else {
-        pbStop()              // reached last slide — pause and stay
-      }
+      if (cur < allSlides().length - 1) next()
+      else pbStop()
     }
   }, 100)
 }
-
 function pbStop() {
-  pbPlaying = false
-  clearInterval(pbInterval)
-  pbInterval = null
-  pbTick = 0
-  pbSetPlayUI(false)
-  // Show empty ring when stopped
+  pbPlaying = false; clearInterval(pbInterval); pbInterval = null
+  pbTick = 0; pbSetPlayUI(false)
   document.getElementById('pbRingFill').style.strokeDashoffset = RING_C
 }
-
-function pbToggle() {
-  pbPlaying ? pbStop() : pbStart()
-}
-
-function pbPrev() {
-  if (pbPlaying) pbResetTick()
-  prev()
-}
-
-function pbNext() {
-  if (pbPlaying) pbResetTick()
-  next()
-}
+function pbToggle() { pbPlaying ? pbStop() : pbStart() }
+function pbPrev()   { if (pbPlaying) pbResetTick(); prev() }
+function pbNext()   { if (pbPlaying) pbResetTick(); next() }
 
 function pbCycleSpeed() {
   pbSpeedIdx = (pbSpeedIdx + 1) % PB_SPEEDS.length
   document.getElementById('pbSpeedVal').textContent = PB_SPEEDS[pbSpeedIdx]
-  // Clamp tick so we don't overshoot new speed
-  if (pbPlaying) {
-    pbTick = Math.min(pbTick, pbTotal() - 1)
-    pbUpdateRing()
-  }
+  if (pbPlaying) { pbTick = Math.min(pbTick, pbTotal() - 1); pbUpdateRing() }
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', () => {
-  const dots   = document.getElementById('navDots')
-  const slides = document.querySelectorAll('.slide')
-  slides.forEach((_, i) => {
+  const dotsEl = document.getElementById('navDots')
+  allSlides().forEach((_, i) => {
     const d = document.createElement('button')
     d.className = 'nav-dot'
     d.onclick = () => { if (pbPlaying) pbResetTick(); goTo(i) }
     d.setAttribute('aria-label', 'Slide ' + (i + 1))
-    dots.appendChild(d)
+    dotsEl.appendChild(d)
   })
   goTo(0)
 })
 </script>
 
-<footer style="position:fixed;bottom:0;left:0;right:0;z-index:99999;background:rgba(0,0,0,0.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid rgba(201,168,76,0.22);padding:6px 24px;text-align:center;font-family:'Georgia',serif;font-size:10px;color:rgba(201,168,76,0.55);line-height:1.7;pointer-events:none;">
-  Copyright &copy; 2026 Genesis App, Inc., doing business as Genesis Reserve. All rights reserved.&nbsp;&nbsp;|&nbsp;&nbsp;This document contains confidential and proprietary information of Genesis App, Inc. Unauthorized use, disclosure, or distribution is prohibited.&nbsp;&nbsp;|&nbsp;&nbsp;Contact:&nbsp;<a href="mailto:info@genesisreserve.io" style="color:rgba(201,168,76,0.8);text-decoration:none;pointer-events:auto;">info@genesisreserve.io</a>
-</footer>
 </body>
 </html>
