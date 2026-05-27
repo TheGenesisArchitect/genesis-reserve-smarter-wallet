@@ -1378,6 +1378,10 @@ function pbTotal() { return pbSecs() * 10 }
 function pbUpdateRing() {
   const offset = RING_C * (1 - (pbPlaying ? Math.min(pbTick / pbTotal(), 1) : 0))
   document.getElementById('pbRingFill').style.strokeDashoffset = offset
+  if (pbPlaying) {
+    const rem = Math.max(1, Math.ceil((pbTotal() - pbTick) / 10))
+    document.getElementById('pbSpeedVal').textContent = rem
+  }
 }
 function pbResetTick() { pbTick = 0; pbUpdateRing() }
 function pbSetPlayUI(on) {
@@ -1400,6 +1404,7 @@ function pbStop() {
   pbPlaying = false; clearInterval(pbInterval); pbInterval = null
   pbTick = 0; pbSetPlayUI(false)
   document.getElementById('pbRingFill').style.strokeDashoffset = RING_C
+  document.getElementById('pbSpeedVal').textContent = pbSecs()
 }
 function pbToggle() { pbPlaying ? pbStop() : pbStart() }
 function pbPrev()   { if (pbPlaying) pbResetTick(); prev() }
