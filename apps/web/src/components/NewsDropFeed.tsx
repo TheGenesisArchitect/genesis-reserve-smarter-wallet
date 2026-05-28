@@ -480,120 +480,126 @@ function FeaturedReportCard() {
 
   return (
     <div>
-      {/* Report slot header */}
+      {/* Slot header */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
         <span style={{ fontSize: 14, color: '#c9a84c', lineHeight: 1 }}>◈</span>
         <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#c9a84c', fontFamily: "'Tenor Sans', sans-serif" }}>
           Genesis Report
         </span>
-        <span style={{ fontSize: 10, color: 'rgba(245,240,232,0.28)', fontFamily: "'Tenor Sans', sans-serif" }}>
+        <span style={{ fontSize: 10, color: 'rgba(245,240,232,0.45)', fontFamily: "'Tenor Sans', sans-serif" }}>
           · May 27, 2026
         </span>
-        <span style={{
-          display: 'inline-flex', alignItems: 'center',
-          padding: '1px 7px', borderRadius: 3,
-          fontSize: 8, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase',
-          color: '#c9a84c', background: 'rgba(201,168,76,0.12)', border: '1px solid rgba(201,168,76,0.25)',
-          fontFamily: "'Tenor Sans', sans-serif",
-        }}>
+        <span style={{ display: 'inline-flex', alignItems: 'center', padding: '1px 7px', borderRadius: 3, fontSize: 8, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#c9a84c', background: 'rgba(201,168,76,0.12)', border: '1px solid rgba(201,168,76,0.25)', fontFamily: "'Tenor Sans', sans-serif" }}>
           Original
         </span>
       </div>
 
       {/* Card */}
       <div
-        style={{
-          background: 'rgba(4,6,8,0.92)',
-          border: '1px solid rgba(201,168,76,0.28)',
-          borderRadius: 12,
-          overflow: 'hidden',
-          transition: 'border-color 0.2s',
-        }}
-        onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(201,168,76,0.52)' }}
-        onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(201,168,76,0.28)' }}
+        style={{ background: 'rgba(4,6,8,0.95)', border: '1px solid rgba(201,168,76,0.32)', borderRadius: 12, overflow: 'hidden', transition: 'border-color 0.2s', boxShadow: '0 0 48px rgba(201,168,76,0.07)' }}
+        onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(201,168,76,0.56)' }}
+        onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(201,168,76,0.32)' }}
       >
-        {/* Banner */}
+        {/* ── Hero header image ── */}
         <div style={{
-          height: 88,
-          background: 'linear-gradient(135deg, rgba(201,168,76,0.13) 0%, rgba(0,212,170,0.05) 60%, rgba(4,6,8,0.80) 100%)',
-          borderBottom: '1px solid rgba(201,168,76,0.10)',
-          display: 'flex', alignItems: 'center',
-          padding: '0 20px', gap: 14, position: 'relative', overflow: 'hidden',
+          height: 192,
+          position: 'relative',
+          overflow: 'hidden',
+          background: '#06080d',
+          backgroundImage: [
+            'radial-gradient(ellipse at 22% 55%, rgba(201,168,76,0.22) 0%, transparent 52%)',
+            'radial-gradient(ellipse at 78% 20%, rgba(0,212,170,0.09) 0%, transparent 45%)',
+            'linear-gradient(rgba(201,168,76,0.038) 1px, transparent 1px)',
+            'linear-gradient(90deg, rgba(201,168,76,0.038) 1px, transparent 1px)',
+          ].join(', '),
+          backgroundSize: 'auto, auto, 38px 38px, 38px 38px',
+          display: 'flex',
+          alignItems: 'center',
+          padding: '0 28px',
+          gap: 22,
         }}>
-          <div style={{ position: 'absolute', top: -50, right: -50, width: 180, height: 180, background: 'radial-gradient(circle, rgba(201,168,76,0.07) 0%, transparent 70%)', pointerEvents: 'none' }} />
-          <div style={{
-            width: 42, height: 42,
-            background: 'linear-gradient(135deg, #c9a84c, #f0c842)',
-            borderRadius: 10, flexShrink: 0,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 20, fontWeight: 900, color: '#0a0a0f',
-          }}>G</div>
-          <div>
-            <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#c9a84c', fontFamily: "'Tenor Sans', sans-serif", marginBottom: 3 }}>
+          {/* Real logo */}
+          <img
+            src="/genesis-logo.svg"
+            alt="Genesis Reserve"
+            style={{ width: 80, height: 80, borderRadius: '50%', flexShrink: 0, filter: 'drop-shadow(0 0 20px rgba(201,168,76,0.50))', position: 'relative', zIndex: 1 }}
+          />
+          {/* Title block */}
+          <div style={{ position: 'relative', zIndex: 1 }}>
+            <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.28em', textTransform: 'uppercase', color: '#c9a84c', fontFamily: "'Tenor Sans', sans-serif", marginBottom: 7 }}>
               Genesis Reserve Intelligence
             </div>
-            <div style={{ fontSize: 11, color: 'rgba(245,240,232,0.40)', fontFamily: "'Tenor Sans', sans-serif", letterSpacing: '0.03em' }}>
-              Independent analysis · CryptoSlate 2026 Top Wallets
+            <div style={{ fontSize: 20, fontWeight: 300, color: '#f5f0e8', fontFamily: "'Cormorant Garamond', serif", letterSpacing: '0.05em', lineHeight: 1.2, marginBottom: 10 }}>
+              2026 Wallet Intelligence Report
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
+              <div style={{ height: 1, width: 22, background: 'rgba(201,168,76,0.55)' }} />
+              <span style={{ fontSize: 11, color: 'rgba(245,240,232,0.60)', fontFamily: "'Tenor Sans', sans-serif", letterSpacing: '0.06em' }}>
+                vs. CryptoSlate Top 10 · May 2026
+              </span>
             </div>
           </div>
+          {/* Bottom fade */}
+          <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 70, background: 'linear-gradient(to top, rgba(4,6,8,0.95), transparent)', pointerEvents: 'none' }} />
         </div>
 
-        {/* Body */}
-        <div style={{ padding: '18px 18px 14px' }}>
+        {/* ── Body ── */}
+        <div style={{ padding: '20px 20px 16px' }}>
           {/* Meta */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10, flexWrap: 'wrap' }}>
-            <span style={{ display: 'inline-flex', alignItems: 'center', padding: '2px 8px', borderRadius: 4, fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#00D4AA', background: 'rgba(0,212,170,0.09)', border: '1px solid rgba(0,212,170,0.25)', fontFamily: "'Tenor Sans', sans-serif" }}>DeFi</span>
-            <span style={{ fontSize: 10, color: 'rgba(245,240,232,0.40)', fontFamily: "'Tenor Sans', sans-serif" }}>Genesis Reserve</span>
-            <span style={{ fontSize: 10, color: 'rgba(245,240,232,0.25)', fontFamily: "'Tenor Sans', sans-serif" }}>·</span>
-            <span style={{ fontSize: 10, color: 'rgba(245,240,232,0.35)', fontFamily: "'Tenor Sans', sans-serif" }}>May 27, 2026</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 13, flexWrap: 'wrap' }}>
+            <span style={{ display: 'inline-flex', alignItems: 'center', padding: '3px 9px', borderRadius: 4, fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#00D4AA', background: 'rgba(0,212,170,0.10)', border: '1px solid rgba(0,212,170,0.28)', fontFamily: "'Tenor Sans', sans-serif" }}>DeFi</span>
+            <span style={{ fontSize: 11, color: 'rgba(245,240,232,0.60)', fontFamily: "'Tenor Sans', sans-serif" }}>Genesis Reserve</span>
+            <span style={{ fontSize: 11, color: 'rgba(245,240,232,0.30)', fontFamily: "'Tenor Sans', sans-serif" }}>·</span>
+            <span style={{ fontSize: 11, color: 'rgba(245,240,232,0.55)', fontFamily: "'Tenor Sans', sans-serif" }}>May 27, 2026</span>
           </div>
 
           {/* Headline */}
-          <div style={{ fontSize: 15, fontWeight: 600, color: '#f5f0e8', lineHeight: 1.45, marginBottom: 10, fontFamily: "'Cormorant Garamond', serif", letterSpacing: '0.01em' }}>
+          <div style={{ fontSize: 17, fontWeight: 600, color: '#ffffff', lineHeight: 1.42, marginBottom: 12, fontFamily: "'Cormorant Garamond', serif", letterSpacing: '0.01em' }}>
             {GENESIS_REPORT.headline}
           </div>
 
-          {/* Summary */}
-          <div style={{ fontSize: 13, color: 'rgba(245,240,232,0.62)', lineHeight: 1.65, marginBottom: 14, fontFamily: "'Cormorant Garamond', serif" }}>
+          {/* Summary — high contrast for accessibility */}
+          <div style={{ fontSize: 14, color: 'rgba(245,240,232,0.88)', lineHeight: 1.78, marginBottom: 18, fontFamily: "'Cormorant Garamond', serif" }}>
             {GENESIS_REPORT.summary}
           </div>
 
-          {/* Comparison table */}
-          <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 8, overflow: 'hidden', marginBottom: 14 }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr 1fr', padding: '8px 14px', borderBottom: '1px solid rgba(255,255,255,0.06)', background: 'rgba(255,255,255,0.02)' }}>
-              {['Feature', 'Genesis Reserve', 'Top 10 Avg'].map(h => (
-                <div key={h} style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(245,240,232,0.30)', fontFamily: "'Tenor Sans', sans-serif" }}>{h}</div>
-              ))}
-            </div>
-            {REPORT_COMPARISON.map((row, i) => (
-              <div key={row.feature} style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr 1fr', padding: '9px 14px', borderBottom: i < REPORT_COMPARISON.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none', alignItems: 'center' }}>
-                <div style={{ fontSize: 11, color: 'rgba(245,240,232,0.50)', fontFamily: "'Tenor Sans', sans-serif" }}>{row.feature}</div>
-                <div style={{ fontSize: 11, color: '#00D4AA', fontFamily: "'Tenor Sans', sans-serif", fontWeight: 600 }}>{row.genesis}</div>
-                <div style={{ fontSize: 11, color: 'rgba(245,240,232,0.32)', fontFamily: "'Tenor Sans', sans-serif" }}>{row.others}</div>
-              </div>
-            ))}
-          </div>
-
-          {/* Expanded full report */}
+          {/* Expandable: comparison table + full report */}
           {expanded && (
-            <div style={{ animation: 'newsSlideIn 0.18s ease', marginBottom: 14 }}>
+            <div style={{ animation: 'newsSlideIn 0.18s ease' }}>
+              {/* Comparison table */}
+              <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.10)', borderRadius: 10, overflow: 'hidden', marginBottom: 20 }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr 1fr', padding: '10px 16px', borderBottom: '1px solid rgba(255,255,255,0.08)', background: 'rgba(201,168,76,0.06)' }}>
+                  {['Feature', 'Genesis Reserve', 'Top 10 Avg'].map(h => (
+                    <div key={h} style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(245,240,232,0.60)', fontFamily: "'Tenor Sans', sans-serif" }}>{h}</div>
+                  ))}
+                </div>
+                {REPORT_COMPARISON.map((row, i) => (
+                  <div key={row.feature} style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr 1fr', padding: '12px 16px', borderBottom: i < REPORT_COMPARISON.length - 1 ? '1px solid rgba(255,255,255,0.06)' : 'none', alignItems: 'center' }}>
+                    <div style={{ fontSize: 12, color: 'rgba(245,240,232,0.82)', fontFamily: "'Tenor Sans', sans-serif", lineHeight: 1.4 }}>{row.feature}</div>
+                    <div style={{ fontSize: 12, color: '#00D4AA', fontFamily: "'Tenor Sans', sans-serif", fontWeight: 700 }}>{row.genesis}</div>
+                    <div style={{ fontSize: 12, color: 'rgba(245,240,232,0.55)', fontFamily: "'Tenor Sans', sans-serif" }}>{row.others}</div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Body paragraphs */}
               {[
                 "CryptoSlate evaluated 30+ factors including security, supported blockchains, fee structures, and ease of use. The results reflect the best passive wallets in the market — Phantom leads with an 8.5 rating, followed by Trust Wallet (8.5) and MetaMask (8.3). They are genuinely excellent at what they do.",
                 "But every wallet in the top 10 shares the same architectural assumption: you are responsible for putting your capital to work. Genesis Reserve inverts that assumption. The protocol automatically routes idle USDC through institutional-grade DeFi strategies on a 15-minute cycle — Aave V3 for liquid yield, Balancer V3 for structured returns.",
                 "The closest comp on the list is Kraken's new Bitcoin Vault, which routes BTC deposits through Aave and Morpho — the right idea for one asset. Genesis Reserve executes the same model across a full stablecoin yield stack, with compliance architecture and yield-funded insurance built in from day one.",
                 "The Smarter Wallet category isn't about replacing MetaMask or Phantom. It's about what happens after you've moved your assets on-chain. That's the gap Genesis Reserve was built for — and the CryptoSlate list confirms that gap remains wide open.",
               ].map((para, i) => (
-                <div key={i} style={{ fontSize: 13, color: 'rgba(245,240,232,0.68)', lineHeight: 1.75, marginBottom: 10, fontFamily: "'Cormorant Garamond', serif" }}>{para}</div>
+                <div key={i} style={{ fontSize: 14, color: 'rgba(245,240,232,0.86)', lineHeight: 1.88, marginBottom: 14, fontFamily: "'Cormorant Garamond', serif" }}>{para}</div>
               ))}
             </div>
           )}
 
-          {/* Actions */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+          {/* Action row */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap', marginTop: expanded ? 6 : 0 }}>
             <button
               type="button"
-              onClick={() => setExpanded(o => !o)}
-              style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '4px 10px', borderRadius: 20, border: '1px solid rgba(0,212,170,0.28)', background: expanded ? 'rgba(0,212,170,0.10)' : 'rgba(0,212,170,0.05)', color: '#00D4AA', fontSize: 10, fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', cursor: 'pointer', fontFamily: "'Tenor Sans', sans-serif", transition: 'background 0.15s' }}
+              onClick={() => { setExpanded(o => !o); if (shareOpen) setShareOpen(false) }}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '5px 12px', borderRadius: 20, border: '1px solid rgba(0,212,170,0.32)', background: expanded ? 'rgba(0,212,170,0.12)' : 'rgba(0,212,170,0.06)', color: '#00D4AA', fontSize: 10, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', cursor: 'pointer', fontFamily: "'Tenor Sans', sans-serif", transition: 'background 0.15s' }}
             >
               ◈ {expanded ? 'Collapse' : 'Full Report'}
               <span style={{ display: 'inline-block', transform: expanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s', fontSize: 7 }}>▼</span>
@@ -601,7 +607,7 @@ function FeaturedReportCard() {
             <button
               type="button"
               onClick={() => setShareOpen(o => !o)}
-              style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '4px 10px', borderRadius: 20, border: '1px solid rgba(201,168,76,0.28)', background: shareOpen ? 'rgba(201,168,76,0.10)' : 'rgba(201,168,76,0.05)', color: '#c9a84c', fontSize: 10, fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', cursor: 'pointer', fontFamily: "'Tenor Sans', sans-serif", transition: 'background 0.15s' }}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '5px 12px', borderRadius: 20, border: '1px solid rgba(201,168,76,0.32)', background: shareOpen ? 'rgba(201,168,76,0.12)' : 'rgba(201,168,76,0.06)', color: '#c9a84c', fontSize: 10, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', cursor: 'pointer', fontFamily: "'Tenor Sans', sans-serif", transition: 'background 0.15s' }}
             >
               Share <span style={{ fontSize: 9, opacity: 0.7 }}>↗</span>
             </button>
@@ -609,9 +615,9 @@ function FeaturedReportCard() {
               href="https://cryptoslate.com/crypto-wallets/"
               target="_blank"
               rel="noopener noreferrer"
-              style={{ marginLeft: 'auto', fontSize: 10, color: 'rgba(245,240,232,0.28)', textDecoration: 'none', fontFamily: "'Tenor Sans', sans-serif", letterSpacing: '0.04em', transition: 'color 0.15s' }}
-              onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.color = 'rgba(245,240,232,0.60)' }}
-              onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.color = 'rgba(245,240,232,0.28)' }}
+              style={{ marginLeft: 'auto', fontSize: 11, color: 'rgba(245,240,232,0.42)', textDecoration: 'none', fontFamily: "'Tenor Sans', sans-serif", letterSpacing: '0.04em', transition: 'color 0.15s' }}
+              onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.color = 'rgba(245,240,232,0.75)' }}
+              onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.color = 'rgba(245,240,232,0.42)' }}
             >
               Source report →
             </a>
@@ -696,10 +702,10 @@ function DropCard({ drop }: { drop: NewsDrop }) {
       {/* Headline */}
       <div
         style={{
-          fontSize: 15,
+          fontSize: 16,
           fontWeight: 600,
-          color: '#f5f0e8',
-          lineHeight: 1.45,
+          color: '#ffffff',
+          lineHeight: 1.42,
           marginBottom: 10,
           fontFamily: "'Cormorant Garamond', serif",
           letterSpacing: '0.01em',
@@ -711,9 +717,9 @@ function DropCard({ drop }: { drop: NewsDrop }) {
       {/* Summary */}
       <div
         style={{
-          fontSize: 13,
-          color: 'rgba(245,240,232,0.62)',
-          lineHeight: 1.65,
+          fontSize: 14,
+          color: 'rgba(245,240,232,0.86)',
+          lineHeight: 1.75,
           marginBottom: 14,
           fontFamily: "'Cormorant Garamond', serif",
         }}
