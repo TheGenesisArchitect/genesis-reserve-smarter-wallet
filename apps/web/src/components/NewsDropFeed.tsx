@@ -444,6 +444,186 @@ function GenesisAnglePanel({ text }: { text: string }) {
   )
 }
 
+// ── Genesis Report (pinned editorial) ────────────────────────────────────────
+
+const GENESIS_REPORT: NewsDrop = {
+  id: 'genesis-report-cryptoslate-2026',
+  slot: 'morning',
+  slotLabel: 'Genesis Report',
+  slotTime: 'May 27, 2026',
+  publishedAt: new Date('2026-05-27').toISOString(),
+  headline: "CryptoSlate Ranks the Top 10 Crypto Wallets of 2026 — Here's Where Genesis Reserve Stands",
+  summary: "We reviewed every entry on CryptoSlate's 2026 list. Phantom, Trust Wallet, and MetaMask lead a strong field of passive wallets. Here's the category they all missed.",
+  source: 'Genesis Reserve Intelligence',
+  sourceUrl: 'https://cryptoslate.com/crypto-wallets/',
+  category: 'DeFi',
+  genesisAngle: "Every wallet in the CryptoSlate top 10 stores assets and facilitates transactions. None of them deploy idle capital automatically. Genesis Reserve was built for that gap — the space between holding and earning.",
+  social: {
+    twitter: `CryptoSlate just published their 2026 Top 10 Crypto Wallets.\n\nPhantom. Trust Wallet. MetaMask. All excellent.\n\nNone of them generate yield automatically every 15 minutes.\n\nGenesis Reserve is a different category entirely — the Smarter Wallet.\n\nhttps://cryptoslate.com/crypto-wallets/\n\n#GenesisReserve #DeFi #CryptoWallets #Fintech #DigitalFinance`,
+    linkedin: `Worth flagging for anyone tracking the future of finance:\n\nCryptoSlate just ranked the Top 10 Crypto Wallets of 2026 — Phantom (8.5), Trust Wallet (8.5), and MetaMask (8.3) lead the field.\n\nWe reviewed every entry. Here's what the list gets right, and the category it missed entirely:\n\nEvery top-10 wallet is passive. They store assets. They let you swap. They connect you to dApps. None of them automatically deploy your idle capital to institutional-grade yield strategies every 15 minutes.\n\nAt Genesis Reserve, we built the Smarter Wallet for exactly that gap — the space between holding and earning. Automated yield every 15 minutes. Compliance-first architecture. Yield-funded insurance. Non-custodial.\n\nThe pipeline into the future of fintech and digital currency runs through moments exactly like this one.\n\nFull report: https://cryptoslate.com/crypto-wallets/\n\n#GenesisReserve #DeFi #Fintech #DigitalFinance #CryptoWallets #InstitutionalDeFi`,
+    instagram: `The 2026 crypto wallet rankings are in.\n\nPhantom. Trust Wallet. MetaMask.\n\nGreat wallets. Passive wallets.\n\nNot one of them makes your money work automatically.\n\nGenesis Reserve is the Smarter Wallet — delivering real returns every 15 minutes while you live your life.\n\nThis is the future of finance. And it's frictionless.\n\nSave this. Share it with someone building wealth in silence.\n\n#GenesisReserve #DeFi #CryptoWallet #YieldOptimization #Fintech #Web3 #FutureOfMoney #DigitalFinance #WealthBuilding`,
+    tiktok: `POV: You just checked the 2026 top crypto wallets list...\n\nPhantom ✓\nTrust Wallet ✓\nMetaMask ✓\n\nAll great. All passive.\n\nNone of them pay you every 15 minutes.\n\nGenesis Reserve is different — it's the Smarter Wallet that outpaces inflation automatically.\n\nFollow for daily fintech intelligence.\n\n#GenesisReserve #CryptoWallet #DeFi #FinanceTok #MoneyTok #Web3 #Fintech`,
+  },
+}
+
+const REPORT_COMPARISON = [
+  { feature: 'Automated Yield',          genesis: '✓  Every 15 min',              others: '✗  Manual only'        },
+  { feature: 'Compliance Architecture',  genesis: '✓  Built-in on-chain',          others: '✗  User\'s burden'     },
+  { feature: 'Yield-Funded Insurance',   genesis: '✓  Term / IUL / Whole Life',    others: '✗  Not offered'        },
+  { feature: 'Non-Custodial',            genesis: '✓  Circle MPC wallet',          others: '✓  Most wallets'       },
+  { feature: 'Stablecoin-First Yield',   genesis: '✓  USDC · Aave + Balancer',     others: '△  Varies by wallet'   },
+]
+
+function FeaturedReportCard() {
+  const [expanded, setExpanded] = useState(false)
+  const [shareOpen, setShareOpen] = useState(false)
+
+  return (
+    <div>
+      {/* Report slot header */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+        <span style={{ fontSize: 14, color: '#c9a84c', lineHeight: 1 }}>◈</span>
+        <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#c9a84c', fontFamily: "'Tenor Sans', sans-serif" }}>
+          Genesis Report
+        </span>
+        <span style={{ fontSize: 10, color: 'rgba(245,240,232,0.28)', fontFamily: "'Tenor Sans', sans-serif" }}>
+          · May 27, 2026
+        </span>
+        <span style={{
+          display: 'inline-flex', alignItems: 'center',
+          padding: '1px 7px', borderRadius: 3,
+          fontSize: 8, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase',
+          color: '#c9a84c', background: 'rgba(201,168,76,0.12)', border: '1px solid rgba(201,168,76,0.25)',
+          fontFamily: "'Tenor Sans', sans-serif",
+        }}>
+          Original
+        </span>
+      </div>
+
+      {/* Card */}
+      <div
+        style={{
+          background: 'rgba(4,6,8,0.92)',
+          border: '1px solid rgba(201,168,76,0.28)',
+          borderRadius: 12,
+          overflow: 'hidden',
+          transition: 'border-color 0.2s',
+        }}
+        onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(201,168,76,0.52)' }}
+        onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(201,168,76,0.28)' }}
+      >
+        {/* Banner */}
+        <div style={{
+          height: 88,
+          background: 'linear-gradient(135deg, rgba(201,168,76,0.13) 0%, rgba(0,212,170,0.05) 60%, rgba(4,6,8,0.80) 100%)',
+          borderBottom: '1px solid rgba(201,168,76,0.10)',
+          display: 'flex', alignItems: 'center',
+          padding: '0 20px', gap: 14, position: 'relative', overflow: 'hidden',
+        }}>
+          <div style={{ position: 'absolute', top: -50, right: -50, width: 180, height: 180, background: 'radial-gradient(circle, rgba(201,168,76,0.07) 0%, transparent 70%)', pointerEvents: 'none' }} />
+          <div style={{
+            width: 42, height: 42,
+            background: 'linear-gradient(135deg, #c9a84c, #f0c842)',
+            borderRadius: 10, flexShrink: 0,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: 20, fontWeight: 900, color: '#0a0a0f',
+          }}>G</div>
+          <div>
+            <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#c9a84c', fontFamily: "'Tenor Sans', sans-serif", marginBottom: 3 }}>
+              Genesis Reserve Intelligence
+            </div>
+            <div style={{ fontSize: 11, color: 'rgba(245,240,232,0.40)', fontFamily: "'Tenor Sans', sans-serif", letterSpacing: '0.03em' }}>
+              Independent analysis · CryptoSlate 2026 Top Wallets
+            </div>
+          </div>
+        </div>
+
+        {/* Body */}
+        <div style={{ padding: '18px 18px 14px' }}>
+          {/* Meta */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10, flexWrap: 'wrap' }}>
+            <span style={{ display: 'inline-flex', alignItems: 'center', padding: '2px 8px', borderRadius: 4, fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#00D4AA', background: 'rgba(0,212,170,0.09)', border: '1px solid rgba(0,212,170,0.25)', fontFamily: "'Tenor Sans', sans-serif" }}>DeFi</span>
+            <span style={{ fontSize: 10, color: 'rgba(245,240,232,0.40)', fontFamily: "'Tenor Sans', sans-serif" }}>Genesis Reserve</span>
+            <span style={{ fontSize: 10, color: 'rgba(245,240,232,0.25)', fontFamily: "'Tenor Sans', sans-serif" }}>·</span>
+            <span style={{ fontSize: 10, color: 'rgba(245,240,232,0.35)', fontFamily: "'Tenor Sans', sans-serif" }}>May 27, 2026</span>
+          </div>
+
+          {/* Headline */}
+          <div style={{ fontSize: 15, fontWeight: 600, color: '#f5f0e8', lineHeight: 1.45, marginBottom: 10, fontFamily: "'Cormorant Garamond', serif", letterSpacing: '0.01em' }}>
+            {GENESIS_REPORT.headline}
+          </div>
+
+          {/* Summary */}
+          <div style={{ fontSize: 13, color: 'rgba(245,240,232,0.62)', lineHeight: 1.65, marginBottom: 14, fontFamily: "'Cormorant Garamond', serif" }}>
+            {GENESIS_REPORT.summary}
+          </div>
+
+          {/* Comparison table */}
+          <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 8, overflow: 'hidden', marginBottom: 14 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr 1fr', padding: '8px 14px', borderBottom: '1px solid rgba(255,255,255,0.06)', background: 'rgba(255,255,255,0.02)' }}>
+              {['Feature', 'Genesis Reserve', 'Top 10 Avg'].map(h => (
+                <div key={h} style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(245,240,232,0.30)', fontFamily: "'Tenor Sans', sans-serif" }}>{h}</div>
+              ))}
+            </div>
+            {REPORT_COMPARISON.map((row, i) => (
+              <div key={row.feature} style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr 1fr', padding: '9px 14px', borderBottom: i < REPORT_COMPARISON.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none', alignItems: 'center' }}>
+                <div style={{ fontSize: 11, color: 'rgba(245,240,232,0.50)', fontFamily: "'Tenor Sans', sans-serif" }}>{row.feature}</div>
+                <div style={{ fontSize: 11, color: '#00D4AA', fontFamily: "'Tenor Sans', sans-serif", fontWeight: 600 }}>{row.genesis}</div>
+                <div style={{ fontSize: 11, color: 'rgba(245,240,232,0.32)', fontFamily: "'Tenor Sans', sans-serif" }}>{row.others}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Expanded full report */}
+          {expanded && (
+            <div style={{ animation: 'newsSlideIn 0.18s ease', marginBottom: 14 }}>
+              {[
+                "CryptoSlate evaluated 30+ factors including security, supported blockchains, fee structures, and ease of use. The results reflect the best passive wallets in the market — Phantom leads with an 8.5 rating, followed by Trust Wallet (8.5) and MetaMask (8.3). They are genuinely excellent at what they do.",
+                "But every wallet in the top 10 shares the same architectural assumption: you are responsible for putting your capital to work. Genesis Reserve inverts that assumption. The protocol automatically routes idle USDC through institutional-grade DeFi strategies on a 15-minute cycle — Aave V3 for liquid yield, Balancer V3 for structured returns.",
+                "The closest comp on the list is Kraken's new Bitcoin Vault, which routes BTC deposits through Aave and Morpho — the right idea for one asset. Genesis Reserve executes the same model across a full stablecoin yield stack, with compliance architecture and yield-funded insurance built in from day one.",
+                "The Smarter Wallet category isn't about replacing MetaMask or Phantom. It's about what happens after you've moved your assets on-chain. That's the gap Genesis Reserve was built for — and the CryptoSlate list confirms that gap remains wide open.",
+              ].map((para, i) => (
+                <div key={i} style={{ fontSize: 13, color: 'rgba(245,240,232,0.68)', lineHeight: 1.75, marginBottom: 10, fontFamily: "'Cormorant Garamond', serif" }}>{para}</div>
+              ))}
+            </div>
+          )}
+
+          {/* Actions */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+            <button
+              type="button"
+              onClick={() => setExpanded(o => !o)}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '4px 10px', borderRadius: 20, border: '1px solid rgba(0,212,170,0.28)', background: expanded ? 'rgba(0,212,170,0.10)' : 'rgba(0,212,170,0.05)', color: '#00D4AA', fontSize: 10, fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', cursor: 'pointer', fontFamily: "'Tenor Sans', sans-serif", transition: 'background 0.15s' }}
+            >
+              ◈ {expanded ? 'Collapse' : 'Full Report'}
+              <span style={{ display: 'inline-block', transform: expanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s', fontSize: 7 }}>▼</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setShareOpen(o => !o)}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '4px 10px', borderRadius: 20, border: '1px solid rgba(201,168,76,0.28)', background: shareOpen ? 'rgba(201,168,76,0.10)' : 'rgba(201,168,76,0.05)', color: '#c9a84c', fontSize: 10, fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', cursor: 'pointer', fontFamily: "'Tenor Sans', sans-serif", transition: 'background 0.15s' }}
+            >
+              Share <span style={{ fontSize: 9, opacity: 0.7 }}>↗</span>
+            </button>
+            <a
+              href="https://cryptoslate.com/crypto-wallets/"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ marginLeft: 'auto', fontSize: 10, color: 'rgba(245,240,232,0.28)', textDecoration: 'none', fontFamily: "'Tenor Sans', sans-serif", letterSpacing: '0.04em', transition: 'color 0.15s' }}
+              onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.color = 'rgba(245,240,232,0.60)' }}
+              onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.color = 'rgba(245,240,232,0.28)' }}
+            >
+              Source report →
+            </a>
+          </div>
+
+          {shareOpen && <SharePanel drop={GENESIS_REPORT} />}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 // ── Drop card ─────────────────────────────────────────────────────────────────
 
 function DropCard({ drop }: { drop: NewsDrop }) {
@@ -831,6 +1011,7 @@ export function NewsDropFeed({ onUnreadChange }: NewsDropFeedProps) {
 
       {drops && !loading && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+          <FeaturedReportCard />
           {drops.map(drop => (
             <div key={drop.id}>
               <SlotHeader drop={drop} />
