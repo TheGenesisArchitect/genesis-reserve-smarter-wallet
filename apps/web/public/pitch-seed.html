@@ -1,0 +1,1283 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Genesis Reserve â€” Seed Round Pitch Â· 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Tenor+Sans&family=JetBrains+Mono:wght@400;500;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   RESET & TOKENS
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --gold:#C9A84C;
+  --gold-dim:rgba(201,168,76,.18);
+  --gold-border:rgba(201,168,76,.35);
+  --teal:#00D4AA;
+  --teal-dim:rgba(0,212,170,.12);
+  --teal-border:rgba(0,212,170,.30);
+  --bg:#06080d;
+  --text:#ffffff;
+  --text-soft:rgba(255,255,255,.82);
+  --text-muted:rgba(255,255,255,.58);
+  --text-faint:rgba(255,255,255,.38);
+  --border:rgba(255,255,255,.09);
+  --card-bg:rgba(255,255,255,.04);
+}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);}
+body{font-family:'Inter',sans-serif;color:var(--text);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   SLIDE ENGINE
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+.deck{width:100vw;height:100vh;position:relative;overflow:hidden;}
+.slide{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  opacity:0;pointer-events:none;
+  transition:opacity .4s ease,transform .4s ease;
+  transform:translateX(36px);
+}
+.slide.active{opacity:1;pointer-events:all;transform:translateX(0);}
+.slide.exit{opacity:0;transform:translateX(-36px);}
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   CHROME â€” nav + dots
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+.chrome{
+  position:fixed;bottom:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 36px 20px;
+  background:linear-gradient(to top,rgba(6,8,13,.98) 60%,transparent);
+}
+.nav-btn{
+  width:44px;height:44px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  border:1px solid var(--border);background:rgba(255,255,255,.05);
+  color:rgba(255,255,255,.55);cursor:pointer;transition:all .18s;font-size:18px;
+}
+.nav-btn:hover{border-color:var(--gold-border);color:var(--gold);background:var(--gold-dim);}
+.nav-btn:disabled{opacity:.2;cursor:default;pointer-events:none;}
+.slide-dots{display:flex;gap:7px;align-items:center;}
+.dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.22);cursor:pointer;transition:all .2s;}
+.dot.active{width:22px;border-radius:3px;background:var(--gold);}
+.slide-counter{font-size:12px;letter-spacing:.1em;color:var(--text-faint);font-weight:500;}
+.progress{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--teal));transition:width .4s ease;z-index:101;}
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   SLIDE SHELL
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+.slide-inner{
+  flex:1;padding:44px 72px 68px;
+  display:flex;flex-direction:column;gap:20px;
+  position:relative;overflow:hidden;
+}
+/* slides that need vertical scroll (long content) */
+.slide-inner.scrollable{overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(201,168,76,.3) transparent;}
+.slide-inner.scrollable::-webkit-scrollbar{width:4px;}
+.slide-inner.scrollable::-webkit-scrollbar-thumb{background:rgba(201,168,76,.3);border-radius:2px;}
+
+.eyebrow{
+  font-size:11px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;
+  color:var(--gold);opacity:.9;flex-shrink:0;
+}
+.slide-title{
+  font-size:38px;font-weight:300;color:#fff;
+  line-height:1.15;letter-spacing:-.01em;flex-shrink:0;
+}
+.slide-sub{font-size:17px;color:var(--text-soft);line-height:1.7;}
+.rule{height:1px;background:rgba(201,168,76,.2);flex-shrink:0;}
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   SHARED COMPONENTS
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+.pill{
+  display:inline-flex;align-items:center;
+  padding:5px 14px;border-radius:20px;
+  font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+}
+.pill-g{color:var(--gold);background:var(--gold-dim);border:1px solid var(--gold-border);}
+.pill-t{color:var(--teal);background:var(--teal-dim);border:1px solid var(--teal-border);}
+.pill-w{color:var(--text-muted);background:rgba(255,255,255,.05);border:1px solid var(--border);}
+
+.callout{
+  padding:18px 22px;border-radius:12px;
+  background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.25);
+  border-left:3px solid var(--gold);
+  font-size:16px;color:var(--text-soft);line-height:1.7;
+}
+.callout strong{color:#fff;}
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   SLIDE 01 â€” COVER
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+#s1{
+  background:
+    radial-gradient(ellipse at 78% 22%,rgba(201,168,76,.14) 0%,transparent 52%),
+    radial-gradient(ellipse at 18% 78%,rgba(0,212,170,.08) 0%,transparent 50%),
+    var(--bg);
+}
+#s1 .slide-inner{justify-content:center;gap:18px;}
+.cover-logo{width:60px;height:60px;border-radius:50%;object-fit:cover;
+  filter:drop-shadow(0 0 18px rgba(201,168,76,.5));margin-bottom:6px;}
+.cover-title{font-size:56px;font-weight:300;color:#fff;line-height:1.08;letter-spacing:-.02em;}
+.cover-tagline{font-size:20px;font-weight:300;color:var(--text-muted);letter-spacing:.02em;margin-top:2px;}
+.cover-pills{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;}
+.cover-note{font-size:13px;letter-spacing:.16em;color:var(--text-faint);text-transform:uppercase;margin-top:14px;font-weight:500;}
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   SLIDE 02 â€” PROBLEM
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+.prob-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.prob-card{
+  padding:22px;border-radius:12px;
+  background:rgba(232,64,64,.06);border:1px solid rgba(232,64,64,.22);
+}
+.prob-stat{font-size:40px;font-weight:300;color:#FF6B6B;margin-bottom:8px;line-height:1;}
+.prob-label{font-size:15px;color:var(--text-soft);line-height:1.55;}
+.quote-block{
+  padding:20px 24px;border-radius:12px;
+  border-left:3px solid var(--gold);background:rgba(201,168,76,.06);
+  font-size:17px;font-style:italic;color:var(--text-soft);line-height:1.65;font-weight:400;
+}
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   SLIDE 03 â€” MARKET
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+.market-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.market-card{
+  padding:24px 20px;border-radius:12px;
+  background:var(--card-bg);border:1px solid var(--border);
+}
+.market-num{font-size:38px;font-weight:300;color:var(--gold);line-height:1;margin-bottom:10px;}
+.market-label{font-size:15px;color:var(--text-soft);line-height:1.55;}
+.trend-list{display:flex;flex-direction:column;gap:10px;}
+.trend-item{
+  display:flex;align-items:flex-start;gap:14px;
+  padding:14px 18px;border-radius:10px;
+  background:var(--card-bg);border:1px solid var(--border);
+  font-size:15px;color:var(--text-soft);line-height:1.6;
+}
+.trend-dot{width:7px;height:7px;border-radius:50%;background:var(--teal);flex-shrink:0;margin-top:7px;}
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   SLIDE 04 â€” SOLUTION
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+.sol-2col{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start;}
+.feat-list{display:flex;flex-direction:column;gap:11px;}
+.feat{
+  display:flex;align-items:flex-start;gap:14px;
+  padding:16px;border-radius:10px;
+  background:var(--card-bg);border:1px solid var(--border);
+}
+.feat-icon{font-size:20px;flex-shrink:0;line-height:1.3;}
+.feat-title{font-size:14px;font-weight:600;color:#fff;margin-bottom:4px;}
+.feat-desc{font-size:14px;color:var(--text-muted);line-height:1.55;}
+.yield-vis{
+  padding:24px;border-radius:14px;
+  background:rgba(0,212,170,.06);border:1px solid rgba(0,212,170,.22);
+  display:flex;flex-direction:column;gap:18px;
+}
+.yield-header{font-size:12px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--teal);}
+.yield-row{display:flex;align-items:center;gap:12px;}
+.yield-source{font-size:14px;color:var(--text-muted);width:100px;flex-shrink:0;font-weight:500;}
+.yield-bar-wrap{flex:1;height:9px;background:rgba(255,255,255,.07);border-radius:5px;overflow:hidden;}
+.yield-bar{height:100%;border-radius:5px;}
+.yield-pct{font-size:15px;font-weight:700;width:56px;text-align:right;flex-shrink:0;}
+.yield-divider{height:1px;background:rgba(0,212,170,.15);}
+.yield-note{font-size:13px;color:var(--text-faint);margin-top:-4px;}
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   SLIDE 05 â€” PRODUCT STATUS
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+.built-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.built-card{padding:16px 18px;border-radius:10px;display:flex;flex-direction:column;gap:7px;}
+.built-card.done{background:rgba(26,191,106,.06);border:1px solid rgba(26,191,106,.25);}
+.built-card.partial{background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.22);}
+.built-card.todo{background:var(--card-bg);border:1px solid var(--border);}
+.built-status{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;}
+.done .built-status{color:#1ABF6A;}
+.partial .built-status{color:var(--gold);}
+.todo .built-status{color:var(--text-faint);}
+.built-label{font-size:14px;color:#fff;font-weight:500;line-height:1.35;}
+.built-note{font-size:13px;color:var(--text-muted);line-height:1.5;}
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   SLIDE 06 â€” BUSINESS MODEL
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+.rev-list{display:flex;flex-direction:column;gap:11px;}
+.rev-item{
+  display:grid;grid-template-columns:190px 1fr 180px;
+  gap:16px;align-items:center;
+  padding:15px 18px;border-radius:10px;
+  background:var(--card-bg);border:1px solid var(--border);
+}
+.rev-name{font-size:15px;font-weight:600;color:#fff;}
+.rev-desc{font-size:14px;color:var(--text-muted);line-height:1.5;}
+.rev-scale{font-size:13px;font-weight:600;text-align:right;letter-spacing:.04em;}
+.rev-scale.primary{color:var(--teal);}
+.rev-scale.secondary{color:var(--gold);}
+.rev-scale.future{color:var(--text-faint);}
+.ue-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:4px;}
+.ue-card{
+  padding:18px;border-radius:10px;
+  background:var(--gold-dim);border:1px solid var(--gold-border);
+  text-align:center;
+}
+.ue-num{font-size:26px;font-weight:300;color:#fff;margin-bottom:5px;}
+.ue-label{font-size:13px;color:var(--text-muted);}
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   SLIDE 07 â€” CAPITAL ASK
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+.ask-2col{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.ask-card{border-radius:14px;overflow:hidden;border:1px solid var(--gold-border);background:rgba(4,6,8,.9);}
+.ask-card.featured{border-color:rgba(201,168,76,.55);box-shadow:0 0 40px rgba(201,168,76,.08);}
+.ask-hdr{padding:18px 22px;border-bottom:1px solid rgba(201,168,76,.14);background:rgba(201,168,76,.08);}
+.ask-hdr.featured{background:rgba(201,168,76,.14);}
+.ask-tier{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:4px;}
+.ask-amount{font-size:36px;font-weight:300;color:#fff;}
+.ask-body{padding:18px 22px;display:flex;flex-direction:column;gap:9px;}
+.ask-line{display:flex;justify-content:space-between;align-items:center;font-size:14px;}
+.ask-line-label{color:var(--text-muted);}
+.ask-line-val{color:#fff;font-weight:600;}
+.ask-hr{height:1px;background:rgba(255,255,255,.07);margin:2px 0;}
+.ask-ftr{padding:12px 22px;border-top:1px solid rgba(201,168,76,.1);background:rgba(201,168,76,.05);font-size:13px;color:var(--gold);font-weight:500;}
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   SLIDE 08 â€” EQUITY
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+.eq-3col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+.eq-card{
+  padding:26px 22px;border-radius:14px;
+  background:var(--card-bg);border:1px solid var(--border);
+  display:flex;flex-direction:column;gap:11px;
+}
+.eq-card.featured{background:rgba(201,168,76,.08);border-color:rgba(201,168,76,.42);}
+.eq-eye{font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--text-faint);}
+.eq-card.featured .eq-eye{color:var(--gold);}
+.eq-amount{font-size:32px;font-weight:300;color:#fff;}
+.eq-stake{font-size:26px;font-weight:600;color:var(--gold);}
+.eq-val{font-size:13px;color:var(--text-faint);font-weight:500;}
+.eq-rule{height:1px;background:rgba(255,255,255,.08);}
+.eq-note{font-size:14px;color:var(--text-soft);line-height:1.6;}
+.safe-box{
+  padding:18px 22px;border-radius:10px;
+  background:rgba(0,212,170,.07);border:1px solid rgba(0,212,170,.22);
+  font-size:15px;color:var(--text-soft);line-height:1.65;
+}
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   SLIDE 09 â€” 10-WEEK TIMELINE
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+.tl-row{
+  display:flex;gap:0;align-items:stretch;
+  overflow:hidden;border-radius:12px;border:1px solid var(--border);
+}
+.tl-phase{
+  flex:1;padding:20px 16px;
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;gap:9px;
+}
+.tl-phase:last-child{border-right:none;}
+.tl-phase.hi{background:rgba(201,168,76,.05);}
+.tl-phase.launch{background:rgba(0,212,170,.05);}
+.tl-wk{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);}
+.tl-phase.launch .tl-wk{color:var(--teal);}
+.tl-head{font-size:14px;font-weight:600;color:#fff;line-height:1.3;}
+.tl-items{display:flex;flex-direction:column;gap:6px;margin-top:2px;}
+.tl-row-item{font-size:13px;color:var(--text-muted);display:flex;gap:7px;align-items:flex-start;line-height:1.45;}
+.tl-bullet{color:var(--gold);flex-shrink:0;font-size:9px;margin-top:4px;}
+.tl-phase.launch .tl-bullet{color:var(--teal);}
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.kpi-card{
+  padding:16px;border-radius:10px;
+  background:rgba(0,212,170,.06);border:1px solid rgba(0,212,170,.18);
+  text-align:center;display:flex;flex-direction:column;gap:6px;
+}
+.kpi-num{font-size:28px;font-weight:300;color:var(--teal);}
+.kpi-label{font-size:13px;color:var(--text-muted);}
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   SLIDE 10 â€” SERIES SEED ROADMAP (scrollable)
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+.rm-track{display:flex;flex-direction:column;gap:0;}
+.rm-row{display:grid;grid-template-columns:136px 28px 1fr;gap:0 18px;align-items:stretch;}
+.rm-time{
+  text-align:right;padding:14px 0;
+  display:flex;flex-direction:column;justify-content:flex-start;gap:4px;
+}
+.rm-time-tag{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);}
+.rm-time-range{font-size:14px;color:var(--text-muted);font-weight:500;}
+.rm-spine{display:flex;flex-direction:column;align-items:center;}
+.rm-dot{
+  width:14px;height:14px;border-radius:50%;
+  border:2px solid var(--gold);background:var(--bg);
+  flex-shrink:0;z-index:1;margin-top:16px;
+}
+.rm-dot.filled{background:var(--gold);}
+.rm-dot.seed{
+  border-color:var(--teal);background:var(--teal);
+  width:18px;height:18px;box-shadow:0 0 20px rgba(0,212,170,.5);
+}
+.rm-line{flex:1;width:2px;background:rgba(201,168,76,.2);}
+.rm-row:last-child .rm-line{display:none;}
+.rm-content{padding:12px 0 20px;}
+.rm-head{font-size:16px;font-weight:600;color:#fff;margin-bottom:8px;}
+.rm-row.seed-phase .rm-head{color:var(--teal);}
+.rm-tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
+.rm-tag{display:inline-flex;align-items:center;padding:4px 11px;border-radius:20px;font-size:12px;font-weight:600;letter-spacing:.05em;}
+.rm-tag-g{color:var(--gold);background:var(--gold-dim);border:1px solid var(--gold-border);}
+.rm-tag-t{color:var(--teal);background:var(--teal-dim);border:1px solid var(--teal-border);}
+.rm-tag-w{color:var(--text-muted);background:rgba(255,255,255,.05);border:1px solid var(--border);}
+.rm-body{font-size:14px;color:var(--text-muted);line-height:1.65;}
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   SLIDE 11 â€” SERIES SEED DETAIL
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+.seed-2col{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+.seed-use-list{display:flex;flex-direction:column;gap:10px;}
+.seed-use{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:13px 17px;border-radius:10px;
+  background:var(--card-bg);border:1px solid var(--border);
+  font-size:14px;
+}
+.seed-use-label{color:var(--text-soft);}
+.seed-use-pct{font-size:16px;font-weight:700;color:var(--teal);}
+.seed-target-box{
+  padding:22px;border-radius:12px;
+  background:rgba(0,212,170,.07);border:1px solid rgba(0,212,170,.25);
+  display:flex;flex-direction:column;gap:12px;
+}
+.stb-label{font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--teal);}
+.stb-amount{font-size:46px;font-weight:300;color:#fff;}
+.stb-desc{font-size:15px;color:var(--text-soft);line-height:1.65;}
+.inv-list{display:flex;flex-direction:column;gap:9px;}
+.inv-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:11px 15px;border-radius:8px;
+  background:var(--card-bg);border:1px solid var(--border);
+}
+.inv-type{font-size:14px;color:var(--text-soft);font-weight:500;}
+.inv-badge{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 10px;border-radius:10px;}
+.inv-badge.warm{color:var(--gold);background:var(--gold-dim);border:1px solid var(--gold-border);}
+.inv-badge.target{color:var(--teal);background:var(--teal-dim);border:1px solid var(--teal-border);}
+.return-box{
+  padding:18px;border-radius:10px;
+  background:var(--card-bg);border:1px solid var(--border);
+  display:flex;flex-direction:column;gap:10px;margin-top:14px;
+}
+.ret-row{display:flex;justify-content:space-between;align-items:center;font-size:14px;}
+.ret-label{color:var(--text-muted);}
+.ret-val{font-weight:700;}
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   SLIDE 12 â€” WHY NOW
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+.whynow-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.wn-card{
+  padding:22px;border-radius:12px;
+  background:var(--card-bg);border:1px solid var(--border);
+  display:flex;flex-direction:column;gap:10px;
+}
+.wn-icon{font-size:26px;line-height:1;}
+.wn-head{font-size:16px;font-weight:600;color:#fff;}
+.wn-body{font-size:15px;color:var(--text-soft);line-height:1.65;}
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   SLIDE 13 â€” CLOSING
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+#s13{
+  background:
+    radial-gradient(ellipse at 28% 30%,rgba(201,168,76,.14) 0%,transparent 55%),
+    radial-gradient(ellipse at 74% 72%,rgba(0,212,170,.09) 0%,transparent 50%),
+    var(--bg);
+}
+#s13 .slide-inner{justify-content:center;gap:26px;}
+.vision-eye{font-size:12px;font-weight:700;letter-spacing:.36em;text-transform:uppercase;color:var(--gold);opacity:.8;}
+.vision-title{font-size:46px;font-weight:300;color:#fff;line-height:1.18;letter-spacing:-.01em;max-width:700px;}
+.vision-body{font-size:18px;color:var(--text-soft);line-height:1.7;max-width:600px;}
+.ask-trio{display:flex;gap:14px;flex-wrap:wrap;margin-top:6px;}
+.ask-box{
+  padding:16px 24px;border-radius:12px;
+  background:var(--gold-dim);border:1px solid rgba(201,168,76,.45);
+  display:flex;flex-direction:column;gap:5px;
+}
+.ask-box-label{font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);}
+.ask-box-val{font-size:24px;font-weight:300;color:#fff;}
+.contact-line{font-size:13px;color:var(--text-faint);letter-spacing:.1em;font-weight:500;margin-top:16px;}
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   iPHONE 15 PRO CHASSIS
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+.iphone-wrap{position:relative;flex-shrink:0;}
+.iphone{
+  width:270px;height:560px;
+  background:linear-gradient(165deg,#1C1C1E 0%,#111112 50%,#0D0D0F 100%);
+  border-radius:52px;
+  border:1px solid rgba(110,110,120,.52);
+  box-shadow:
+    0 0 0 3.5px #2A2A2C,
+    0 0 0 5px rgba(70,70,80,.30),
+    inset 0 0 0 1px rgba(255,255,255,.07),
+    0 60px 140px rgba(0,0,0,.97),
+    0 22px 55px rgba(0,0,0,.82),
+    0 0 130px rgba(201,168,76,.12);
+  position:relative;overflow:hidden;
+  display:flex;flex-direction:column;flex-shrink:0;
+}
+.iphone::after{
+  content:'';position:absolute;inset:0;border-radius:51px;
+  background:linear-gradient(118deg,rgba(255,255,255,.11) 0%,rgba(255,255,255,.04) 20%,transparent 40%,transparent 70%,rgba(255,255,255,.055) 100%);
+  pointer-events:none;z-index:50;
+}
+.iphone-wrap .ibtn{position:absolute;background:linear-gradient(to right,#3A3A3C,#2A2A2C);border-radius:2px 0 0 2px;}
+.iphone-wrap .ibtn-action{left:-5px;top:110px;width:5px;height:26px;}
+.iphone-wrap .ibtn-volu{left:-5px;top:150px;width:5px;height:44px;}
+.iphone-wrap .ibtn-vold{left:-5px;top:202px;width:5px;height:44px;}
+.iphone-wrap .ibtn-power{right:-5px;top:170px;width:5px;height:72px;background:linear-gradient(to left,#3A3A3C,#2A2A2C);border-radius:0 2px 2px 0;}
+.dyn-island{
+  position:absolute;top:13px;left:50%;transform:translateX(-50%);
+  width:120px;height:34px;background:#000;border-radius:20px;z-index:30;
+  display:flex;align-items:center;justify-content:flex-end;padding-right:12px;gap:5px;
+}
+.di-spk{width:30px;height:4px;background:rgba(255,255,255,.12);border-radius:2px;margin-right:auto;margin-left:16px;}
+.di-cam{width:9px;height:9px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#1a1a2e,#050508);border:1.5px solid rgba(255,255,255,.04);}
+.iphone-status{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:58px 24px 4px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;
+  color:rgba(245,240,232,.88);flex-shrink:0;
+}
+.istat-r{display:flex;gap:5px;align-items:center;}
+.iphone .iphone-screen{flex:1;overflow:hidden;display:flex;flex-direction:column;}
+.home-bar-wrap{display:flex;justify-content:center;padding:5px 0 8px;flex-shrink:0;}
+.home-bar{width:120px;height:5px;background:rgba(255,255,255,.3);border-radius:3px;}
+.iphone-btm{height:22px;display:flex;align-items:center;justify-content:center;gap:11px;flex-shrink:0;padding-bottom:4px;}
+.ispkr{display:flex;gap:2.5px;align-items:center;}
+.ispkr span{width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.14);display:block;}
+.iusbc{width:28px;height:7px;background:rgba(0,0,0,.85);border:1px solid rgba(255,255,255,.1);border-radius:3.5px;}
+
+/* Phone screen entry animations */
+.p-in-1,.p-in-2,.p-in-3,.p-in-4,.p-in-5,.p-in-6{opacity:0;}
+.slide.active .p-in-1{animation:fadeUp .4s ease .35s both;}
+.slide.active .p-in-2{animation:fadeUp .4s ease .55s both;}
+.slide.active .p-in-3{animation:fadeUp .4s ease .75s both;}
+.slide.active .p-in-4{animation:fadeUp .4s ease .95s both;}
+.slide.active .p-in-5{animation:fadeUp .4s ease 1.15s both;}
+.slide.active .p-in-6{animation:fadeUp .4s ease 1.35s both;}
+
+@keyframes fadeUp{0%{opacity:0;transform:translateY(18px);}100%{opacity:1;transform:translateY(0);}}
+@keyframes ringsPulse{0%,100%{opacity:.06;transform:scale(1);}50%{opacity:.14;transform:scale(1.04);}}
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+
+<div class="deck">
+
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  01 Â· COVER
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<div class="slide active" id="s1">
+  <div class="slide-inner" style="flex-direction:row;align-items:center;justify-content:center;gap:clamp(40px,5vw,72px);padding:44px 72px 68px;">
+
+    <!-- LEFT: Brand content -->
+    <div style="flex:0 0 auto;width:clamp(300px,42%,480px);display:flex;flex-direction:column;gap:16px;justify-content:center;">
+
+      <!-- Logo + word mark -->
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:4px;">
+        <img src="/genesis-logo.png" class="cover-logo" alt="Genesis Reserve" style="margin-bottom:0;">
+        <div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:clamp(30px,3.6vw,50px);font-weight:300;letter-spacing:.28em;color:#fff;line-height:1;">GENESIS</div>
+          <div style="font-family:'Tenor Sans',sans-serif;font-size:clamp(9px,1.1vw,13px);letter-spacing:.55em;color:var(--gold);text-transform:uppercase;margin-top:5px;">RESERVE</div>
+        </div>
+      </div>
+
+      <div class="eyebrow">Seed Round Discussion Â· May 2026 Â· Confidential</div>
+      <div class="cover-title" style="font-size:clamp(22px,2.8vw,38px);">The Smarter Wallet That<br><span style="color:var(--gold);">Outpaces Inflation</span><br>&amp; Delivers Real Returns 24/7</div>
+      <div class="cover-tagline">Self-custody DeFi yield, fiat on-ramps, and a debit card â€” in one sleek app.</div>
+      <div class="cover-pills">
+        <span class="pill pill-g">Live on Arbitrum One</span>
+        <span class="pill pill-t">14.09% Blended APY Â· Live</span>
+        <span class="pill pill-g">Fiat On/Off Ramp</span>
+        <span class="pill pill-w">Pre-Revenue Â· MVP Complete</span>
+      </div>
+      <div class="cover-note">Targeting $50K â€“ $100K Â· Bridge to $2M â€“ $5M Series Seed</div>
+    </div>
+
+    <!-- RIGHT: iPhone 15 Pro chassis â€” Login Screen -->
+    <div style="flex-shrink:0;display:flex;align-items:center;justify-content:center;">
+      <div class="iphone-wrap">
+        <div class="ibtn ibtn-action"></div>
+        <div class="ibtn ibtn-volu"></div>
+        <div class="ibtn ibtn-vold"></div>
+        <div class="ibtn ibtn-power"></div>
+        <div class="iphone">
+          <div class="dyn-island"><div class="di-spk"></div><div class="di-cam"></div></div>
+          <div class="iphone-status">
+            <span>9:41</span>
+            <div class="istat-r">
+              <svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="4" width="3" height="7" rx=".8" fill="rgba(245,240,232,.85)"/><rect x="4.3" y="2.5" width="3" height="8.5" rx=".8" fill="rgba(245,240,232,.85)"/><rect x="8.6" y="1" width="3" height="10" rx=".8" fill="rgba(245,240,232,.85)"/><rect x="12.9" y="0" width="3" height="11" rx=".8" fill="rgba(245,240,232,.28)"/></svg>
+              <svg width="15" height="11" viewBox="0 0 15 11"><path d="M7.5 8.5a1.5 1.5 0 1 0 0 2.99A1.5 1.5 0 0 0 7.5 8.5zM2.6 4.5a6.9 6.9 0 0 1 9.8 0l1.1-1.1A8.5 8.5 0 0 0 .1.7L1.2 5.6l1.4-1.1zm2.5 2.4a3.9 3.9 0 0 1 4.8 0l1.1-1.1a5.4 5.4 0 0 0-7 0l1.1 1.1z" fill="rgba(245,240,232,.85)"/></svg>
+              <svg width="25" height="11" viewBox="0 0 25 11"><rect x=".5" y=".5" width="21" height="10" rx="2.5" stroke="rgba(245,240,232,.4)" stroke-width="1" fill="none"/><rect x="1.5" y="1.5" width="18" height="8" rx="1.5" fill="rgba(245,240,232,.85)"/><path d="M22.5 3.5v4c.9-.5 1.5-1.2 1.5-2s-.6-1.5-1.5-2z" fill="rgba(245,240,232,.4)"/></svg>
+            </div>
+          </div>
+
+          <!-- App screen -->
+          <div style="flex:1;overflow:hidden;padding:4px 16px 8px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;position:relative;">
+
+            <!-- Concentric rings background -->
+            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-54%);pointer-events:none;z-index:0;">
+              <svg width="200" height="200" viewBox="0 0 200 200">
+                <circle cx="100" cy="100" r="90" fill="none" stroke="rgba(201,168,76,.05)" stroke-width="1" style="animation:ringsPulse 4s ease-in-out infinite"/>
+                <circle cx="100" cy="100" r="66" fill="none" stroke="rgba(201,168,76,.05)" stroke-width="1" style="animation:ringsPulse 4s ease-in-out .65s infinite"/>
+                <circle cx="100" cy="100" r="42" fill="none" stroke="rgba(201,168,76,.05)" stroke-width="1" style="animation:ringsPulse 4s ease-in-out 1.3s infinite"/>
+              </svg>
+            </div>
+
+            <!-- Login form -->
+            <div style="position:relative;z-index:1;width:100%;display:flex;flex-direction:column;align-items:center;">
+
+              <div class="p-in-1" style="margin-bottom:14px;">
+                <div style="width:48px;height:48px;border-radius:50%;border:1px solid rgba(201,168,76,.35);background:rgba(201,168,76,.07);display:flex;align-items:center;justify-content:center;margin:0 auto 8px;box-shadow:0 0 24px rgba(201,168,76,.22);">
+                  <img src="/genesis-logo.png" alt="GR" style="width:36px;height:36px;border-radius:50%;"
+                    onerror="this.style.display='none';this.parentElement.insertAdjacentHTML('afterbegin','<span style=\'font-size:24px;color:#C9A84C\'>â—ˆ</span>')">
+                </div>
+                <div style="font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:300;letter-spacing:.32em;color:rgba(245,240,232,.92);">GENESIS</div>
+                <div style="font-family:'Tenor Sans',sans-serif;font-size:7px;letter-spacing:.5em;color:rgba(201,168,76,.65);text-transform:uppercase;margin-top:2px;">RESERVE</div>
+              </div>
+
+              <div class="p-in-2" style="font-family:'Inter',sans-serif;font-style:italic;font-size:14px;color:rgba(245,240,232,.45);margin-bottom:18px;">Welcome back.</div>
+
+              <div class="p-in-3" style="width:100%;margin-bottom:8px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);border-radius:10px;padding:10px 13px;font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(245,240,232,.28);text-align:left;">
+                Email or phone number
+              </div>
+
+              <div class="p-in-4" style="width:100%;margin-bottom:16px;background:linear-gradient(135deg,#C9A84C,#B08E38);border-radius:10px;padding:10px;font-family:'Inter',sans-serif;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:#030201;font-weight:700;text-align:center;box-shadow:0 6px 20px rgba(201,168,76,.28);">
+                Continue â†’
+              </div>
+
+              <div class="p-in-5" style="font-family:'Inter',sans-serif;font-size:8px;color:rgba(245,240,232,.28);letter-spacing:.06em;">
+                New here? <span style="color:rgba(201,168,76,.7);">Get Early Access</span>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="p-in-6" style="padding:6px 16px 8px;border-top:1px solid rgba(255,255,255,.06);text-align:center;flex-shrink:0;">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:6.5px;color:rgba(245,240,232,.2);letter-spacing:.08em;">Secured by Privy Â· Arbitrum One</div>
+          </div>
+          <div class="home-bar-wrap"><div class="home-bar"></div></div>
+          <div class="iphone-btm">
+            <div class="ispkr"><span></span><span></span><span></span><span></span><span></span></div>
+            <div class="iusbc"></div>
+            <div class="ispkr"><span></span><span></span><span></span><span></span><span></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  02 Â· THE PROBLEM
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<div class="slide" id="s2">
+  <div class="slide-inner">
+    <div class="eyebrow">02 Â· The Problem</div>
+    <div class="slide-title">Your Bank Is Getting Rich<br>Off Your Money</div>
+    <div class="prob-grid">
+      <div class="prob-card">
+        <div class="prob-stat">0.45%</div>
+        <div class="prob-label">Average US savings account APY â€” while banks deploy your deposits at 5â€“8%</div>
+      </div>
+      <div class="prob-card">
+        <div class="prob-stat">$17T</div>
+        <div class="prob-label">US consumer savings sitting idle in low-yield accounts, actively losing real value</div>
+      </div>
+      <div class="prob-card">
+        <div class="prob-stat">73M</div>
+        <div class="prob-label">Americans who own crypto â€” yet most still hold idle cash in TradFi earning near-zero</div>
+      </div>
+      <div class="prob-card">
+        <div class="prob-stat">31Ã—</div>
+        <div class="prob-label">Genesis Reserve's current 14.09% blended APY vs. 0.45% average savings â€” the gap is undeniable</div>
+      </div>
+    </div>
+    <div class="quote-block">"DeFi yields are real. The infrastructure is battle-tested. The only thing missing was a product that felt like a bank app â€” until now."</div>
+  </div>
+</div>
+
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  03 Â· MARKET OPPORTUNITY
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<div class="slide" id="s3">
+  <div class="slide-inner">
+    <div class="eyebrow">03 Â· Market Opportunity</div>
+    <div class="slide-title">A Generational Window<br>Is Opening Right Now</div>
+    <div class="market-row">
+      <div class="market-card">
+        <div class="market-num">$120B+</div>
+        <div class="market-label">Total Value Locked in DeFi â€” growing 40%+ year-over-year as institutional capital re-enters the market</div>
+      </div>
+      <div class="market-card">
+        <div class="market-num">$2.5T</div>
+        <div class="market-label">Total crypto market cap â€” the financial rails exist. Consumer interfaces that actually work are what's missing</div>
+      </div>
+      <div class="market-card">
+        <div class="market-num">$54B</div>
+        <div class="market-label">USDC in active circulation â€” the stablecoin standard Genesis Reserve is built entirely around</div>
+      </div>
+    </div>
+    <div class="trend-list">
+      <div class="trend-item"><div class="trend-dot"></div><strong style="color:#fff;font-weight:600;">U.S. CLARITY Act</strong> advancing through Congress in 2026 â€” the first federal digital asset framework. Compliance-first products like Genesis Reserve arrive ahead of this curve.</div>
+      <div class="trend-item"><div class="trend-dot"></div><strong style="color:#fff;font-weight:600;">MiCA is live in Europe.</strong> Global regulatory clarity is arriving faster than most predicted. Early-mover wallet infrastructure becomes a defensible competitive advantage.</div>
+      <div class="trend-item"><div class="trend-dot"></div><strong style="color:#fff;font-weight:600;">Arbitrum One</strong> processes $2B+ in monthly volume at sub-cent transaction fees. Real-time yield compounding every 15 minutes is now operationally near-zero cost.</div>
+    </div>
+  </div>
+</div>
+
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  04 Â· THE SOLUTION
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<div class="slide" id="s4">
+  <div class="slide-inner">
+    <div class="eyebrow">04 Â· The Solution</div>
+    <div class="slide-title">Banking UX.<br>DeFi Returns.</div>
+    <div class="sol-2col">
+      <div class="feat-list">
+        <div class="feat">
+          <div class="feat-icon">ðŸ¦</div>
+          <div>
+            <div class="feat-title">Fiat In, Yield Out</div>
+            <div class="feat-desc">Fund with a debit card or bank transfer from 0.49%. USDC arrives on Arbitrum and deploys to yield strategies automatically.</div>
+          </div>
+        </div>
+        <div class="feat">
+          <div class="feat-icon">âš¡</div>
+          <div>
+            <div class="feat-title">Returns Every 15 Minutes</div>
+            <div class="feat-desc">Smart contracts auto-compound across Aave V3, Balancer V3, and T-Bill adapters. No user action required â€” ever.</div>
+          </div>
+        </div>
+        <div class="feat">
+          <div class="feat-icon">ðŸ”</div>
+          <div>
+            <div class="feat-title">Self-Custody by Default</div>
+            <div class="feat-desc">Privy embedded wallets give every user a real Arbitrum address. Genesis Reserve never holds user funds.</div>
+          </div>
+        </div>
+        <div class="feat">
+          <div class="feat-icon">ðŸ’³</div>
+          <div>
+            <div class="feat-title">Cash Out Anytime</div>
+            <div class="feat-desc">Withdraw USDC from vaults and push directly to any linked debit card via Stripe. Full loop: fiat in â†’ yield â†’ fiat out.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="yield-vis">
+        <div class="yield-header">Live Vault Performance Â· Arbitrum One</div>
+        <div style="font-size:13px;color:var(--text-faint);margin-bottom:4px;">Current APY by strategy</div>
+
+        <div class="yield-row">
+          <div class="yield-source">Aave V3</div>
+          <div class="yield-bar-wrap"><div class="yield-bar" style="width:72%;background:linear-gradient(90deg,#00D4AA,rgba(0,212,170,.45));"></div></div>
+          <div class="yield-pct" style="color:#00D4AA;">12.2%</div>
+        </div>
+        <div class="yield-row">
+          <div class="yield-source">Balancer V3</div>
+          <div class="yield-bar-wrap"><div class="yield-bar" style="width:100%;background:linear-gradient(90deg,#C9A84C,rgba(201,168,76,.5));"></div></div>
+          <div class="yield-pct" style="color:#C9A84C;">17.1%</div>
+        </div>
+        <div class="yield-row">
+          <div class="yield-source">T-Bill Vault</div>
+          <div class="yield-bar-wrap"><div class="yield-bar" style="width:30%;background:linear-gradient(90deg,rgba(255,255,255,.6),rgba(255,255,255,.2));"></div></div>
+          <div class="yield-pct" style="color:rgba(255,255,255,.7);">5.1%</div>
+        </div>
+
+        <div class="yield-divider"></div>
+
+        <div class="yield-row">
+          <div class="yield-source" style="color:#fff;font-weight:700;">Blended APY</div>
+          <div class="yield-bar-wrap"><div class="yield-bar" style="width:83%;background:linear-gradient(90deg,#C9A84C,#00D4AA);"></div></div>
+          <div class="yield-pct" style="color:#00D4AA;font-size:18px;">14.09%</div>
+        </div>
+
+        <div class="yield-note">vs. 0.45% avg. savings account Â· <span style="color:var(--teal);font-weight:600;">31Ã— more yield</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  05 Â· PRODUCT STATUS
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<div class="slide" id="s5">
+  <div class="slide-inner">
+    <div class="eyebrow">05 Â· Product Status</div>
+    <div class="slide-title">The Product Is Built.<br>Capital Closes the Final Gaps.</div>
+    <div class="built-grid">
+      <div class="built-card done">
+        <div class="built-status">âœ“ Live on Mainnet</div>
+        <div class="built-label">Smart Contracts Â· Arbitrum One</div>
+        <div class="built-note">Genesis Vault, Strategy Router, Compliance Registry â€” real deployed mainnet addresses</div>
+      </div>
+      <div class="built-card done">
+        <div class="built-status">âœ“ Production-Ready</div>
+        <div class="built-label">Privy Embedded Wallets</div>
+        <div class="built-note">Self-custody wallets for every user with zero friction â€” all production chains configured</div>
+      </div>
+      <div class="built-card done">
+        <div class="built-status">âœ“ Deployed</div>
+        <div class="built-label">Web Wallet Application</div>
+        <div class="built-note">genesis-privy.vercel.app â€” vaults, yield dashboard, news feed, mobile-responsive</div>
+      </div>
+      <div class="built-card done">
+        <div class="built-status">âœ“ Integrated</div>
+        <div class="built-label">Fiat On-Ramp Â· Transak + Ramp</div>
+        <div class="built-note">Debit card (Transak) and bank transfer from 0.49% (Ramp Network) â€” widget overlays complete</div>
+      </div>
+      <div class="built-card done">
+        <div class="built-status">âœ“ Built</div>
+        <div class="built-label">Fiat Off-Ramp Â· Stripe</div>
+        <div class="built-note">Push-to-card payouts via Stripe â€” full cash-out loop operational end-to-end</div>
+      </div>
+      <div class="built-card done">
+        <div class="built-status">âœ“ Live</div>
+        <div class="built-label">News Intelligence Feed</div>
+        <div class="built-note">9 RSS sources, AI-categorized with Genesis editorial angle â€” "The Future of Finance Is Frictionless"</div>
+      </div>
+      <div class="built-card partial">
+        <div class="built-status">â¬¡ Needs API Keys</div>
+        <div class="built-label">Production On-Ramp Keys</div>
+        <div class="built-note">Transak + Ramp KYB approvals required â€” engineering is complete, keys flip staging to production</div>
+      </div>
+      <div class="built-card partial">
+        <div class="built-status">â¬¡ 1â€“2 Week Closure</div>
+        <div class="built-label">Database + Webhook Persistence</div>
+        <div class="built-note">DB persistence and order reconciliation â€” infrastructure is architected, needs wiring and config</div>
+      </div>
+      <div class="built-card todo">
+        <div class="built-status">â—‹ Primary Use of Capital</div>
+        <div class="built-label">Smart Contract Security Audit</div>
+        <div class="built-note">Third-party audit by a reputable firm â€” non-negotiable before real capital enters at scale</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  06 Â· BUSINESS MODEL
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<div class="slide" id="s6">
+  <div class="slide-inner">
+    <div class="eyebrow">06 Â· Business Model</div>
+    <div class="slide-title">Five Revenue Streams.<br>All Tied to User Activity.</div>
+    <div class="rev-list">
+      <div class="rev-item">
+        <div class="rev-name">Yield Spread</div>
+        <div class="rev-desc">Protocol retains a percentage of the yield generated across all vault positions. Scales directly with Total Value Locked.</div>
+        <div class="rev-scale primary">Primary Â· Scales with TVL</div>
+      </div>
+      <div class="rev-item">
+        <div class="rev-name">On-Ramp Revenue Share</div>
+        <div class="rev-desc">Transak and Ramp Network pay Genesis Reserve a fee share on every fiat transaction originated from the app.</div>
+        <div class="rev-scale primary">~$1K/mo at 100 users</div>
+      </div>
+      <div class="rev-item">
+        <div class="rev-name">Off-Ramp Transaction Fee</div>
+        <div class="rev-desc">1% + $0.25 flat fee on every USDC-to-card withdrawal. Revenue on every cash-out event â€” immediate and predictable.</div>
+        <div class="rev-scale secondary">Immediate Â· Every withdrawal</div>
+      </div>
+      <div class="rev-item">
+        <div class="rev-name">Genesis Reserve Pro</div>
+        <div class="rev-desc">Premium subscription tier â€” advanced vault strategies, higher limits, priority support, early access to new instruments.</div>
+        <div class="rev-scale secondary">$9.99 â€“ $29.99 / month</div>
+      </div>
+      <div class="rev-item">
+        <div class="rev-name">B2B Licensing</div>
+        <div class="rev-desc">White-label the audited vault infrastructure for banks, neo-banks, and fintech companies building yield products.</div>
+        <div class="rev-scale future">Enterprise Â· Post-Series Seed</div>
+      </div>
+    </div>
+    <div class="ue-row">
+      <div class="ue-card"><div class="ue-num">$250 â€“ $500</div><div class="ue-label">Avg. deposit per beta user</div></div>
+      <div class="ue-card"><div class="ue-num">14.09%</div><div class="ue-label">Current blended APY Â· Live</div></div>
+      <div class="ue-card"><div class="ue-num">$50K+</div><div class="ue-label">TVL target at 100-user beta</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  07 Â· CAPITAL ASK
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<div class="slide" id="s7">
+  <div class="slide-inner">
+    <div class="eyebrow">07 Â· The Ask</div>
+    <div class="slide-title">$50K â€“ $100K Bridge Capital<br>to Close Every Gap Before Beta</div>
+    <div class="ask-2col">
+      <div class="ask-card">
+        <div class="ask-hdr">
+          <div class="ask-tier">Option A Â· Lean Sprint Â· 3-Month Runway</div>
+          <div class="ask-amount">$50,000</div>
+        </div>
+        <div class="ask-body">
+          <div class="ask-line"><span class="ask-line-label">Smart Contract Audit</span><span class="ask-line-val">$15,000</span></div>
+          <div class="ask-line"><span class="ask-line-label">Part-Time Engineering Â· 2 months</span><span class="ask-line-val">$12,000</span></div>
+          <div class="ask-hr"></div>
+          <div class="ask-line"><span class="ask-line-label">Legal Â· ToS, Privacy, Counsel</span><span class="ask-line-val">$8,000</span></div>
+          <div class="ask-line"><span class="ask-line-label">Part-Time Ops / Community Â· 2 mo.</span><span class="ask-line-val">$5,000</span></div>
+          <div class="ask-line"><span class="ask-line-label">Marketing Â· Beta Acquisition</span><span class="ask-line-val">$4,500</span></div>
+          <div class="ask-hr"></div>
+          <div class="ask-line"><span class="ask-line-label">Infrastructure Â· 6 months</span><span class="ask-line-val">$3,500</span></div>
+          <div class="ask-line"><span class="ask-line-label">Buffer &amp; Contingency</span><span class="ask-line-val">$2,000</span></div>
+        </div>
+        <div class="ask-ftr">100-user beta Â· 10-week execution window</div>
+      </div>
+      <div class="ask-card featured">
+        <div class="ask-hdr featured">
+          <div class="ask-tier">â­ Recommended Â· Full Go-to-Market Â· 6-Month Runway</div>
+          <div class="ask-amount">$100,000</div>
+        </div>
+        <div class="ask-body">
+          <div class="ask-line"><span class="ask-line-label">Smart Contract Audit + Pen Test</span><span class="ask-line-val">$22,000</span></div>
+          <div class="ask-line"><span class="ask-line-label">Part-Time Engineering Â· 3 months</span><span class="ask-line-val">$21,000</span></div>
+          <div class="ask-hr"></div>
+          <div class="ask-line"><span class="ask-line-label">Legal Â· Comprehensive Package</span><span class="ask-line-val">$12,000</span></div>
+          <div class="ask-line"><span class="ask-line-label">Part-Time Ops / Community Â· 4 mo.</span><span class="ask-line-val">$12,000</span></div>
+          <div class="ask-line"><span class="ask-line-label">Marketing Â· Content + Acquisition</span><span class="ask-line-val">$10,000</span></div>
+          <div class="ask-hr"></div>
+          <div class="ask-line"><span class="ask-line-label">Infrastructure Â· 12 months</span><span class="ask-line-val">$7,000</span></div>
+          <div class="ask-line"><span class="ask-line-label">Accounting Â· 6 months</span><span class="ask-line-val">$3,000</span></div>
+          <div class="ask-line"><span class="ask-line-label">Buffer &amp; Contingency</span><span class="ask-line-val">$13,000</span></div>
+        </div>
+        <div class="ask-ftr" style="color:var(--gold);">Full audit Â· 6-month clean runway Â· Maximum strategic flexibility</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  08 Â· EQUITY STRUCTURE
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<div class="slide" id="s8">
+  <div class="slide-inner">
+    <div class="eyebrow">08 Â· Equity</div>
+    <div class="slide-title">Three Entry Points.<br>One Destination.</div>
+    <div class="eq-3col">
+      <div class="eq-card">
+        <div class="eq-eye">Option A</div>
+        <div class="eq-amount">$50,000</div>
+        <div class="eq-stake">5 â€“ 8%</div>
+        <div class="eq-val">Pre-money: $625K â€“ $1M</div>
+        <div class="eq-rule"></div>
+        <div class="eq-note">Lean sprint. Engineering closure, audit, and 100-user launch. Runway to the proof-of-traction milestone needed for the next raise.</div>
+      </div>
+      <div class="eq-card featured">
+        <div class="eq-eye">â­ Recommended</div>
+        <div class="eq-amount">$75,000</div>
+        <div class="eq-stake">7 â€“ 10%</div>
+        <div class="eq-val">Pre-money: $750K â€“ $1.07M</div>
+        <div class="eq-rule"></div>
+        <div class="eq-note">Full audit, 4-month ops coverage, comprehensive legal, and a funded marketing budget. Closes every gap with contingency remaining.</div>
+      </div>
+      <div class="eq-card">
+        <div class="eq-eye">Option C</div>
+        <div class="eq-amount">$100,000</div>
+        <div class="eq-stake">8 â€“ 12%</div>
+        <div class="eq-val">Pre-money: $833K â€“ $1.25M</div>
+        <div class="eq-rule"></div>
+        <div class="eq-note">12-month runway, full audit + pen test, 6-month ops team, and a completely funded path to Series Seed preparation.</div>
+      </div>
+    </div>
+    <div class="safe-box">
+      <strong style="color:var(--teal);">Alternative: SAFE Note</strong> â€” $1M cap Â· 20% discount on Series Seed. Defers valuation negotiation until the next round, reducing friction today while giving the investor a preferred entry point when we raise at scale.
+    </div>
+    <div style="font-size:15px;color:var(--text-muted);line-height:1.65;">
+      All options include: pro-rata rights on future rounds Â· monthly beta KPI reports Â· preferred allocation in Series Seed Â· board observer seat (optional)
+    </div>
+  </div>
+</div>
+
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  09 Â· 10-WEEK BETA TIMELINE
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<div class="slide" id="s9">
+  <div class="slide-inner">
+    <div class="eyebrow">09 Â· Execution Timeline</div>
+    <div class="slide-title">10 Weeks. 100 Users.<br>Proof of Traction.</div>
+    <div class="tl-row">
+      <div class="tl-phase">
+        <div class="tl-wk">Wk 1â€“2</div>
+        <div class="tl-head">Engineering Closure</div>
+        <div class="tl-items">
+          <div class="tl-row-item"><span class="tl-bullet">â—†</span>Database persistence</div>
+          <div class="tl-row-item"><span class="tl-bullet">â—†</span>Webhook reconciliation</div>
+          <div class="tl-row-item"><span class="tl-bullet">â—†</span>Error monitoring</div>
+          <div class="tl-row-item"><span class="tl-bullet">â—†</span>User onboarding flow</div>
+          <div class="tl-row-item"><span class="tl-bullet">â—†</span>Legal pages live</div>
+        </div>
+      </div>
+      <div class="tl-phase hi">
+        <div class="tl-wk">Wk 3â€“4</div>
+        <div class="tl-head">Partners + Legal</div>
+        <div class="tl-items">
+          <div class="tl-row-item"><span class="tl-bullet">â—†</span>Transak KYB approved</div>
+          <div class="tl-row-item"><span class="tl-bullet">â—†</span>Ramp Network partner key</div>
+          <div class="tl-row-item"><span class="tl-bullet">â—†</span>Stripe production config</div>
+          <div class="tl-row-item"><span class="tl-bullet">â—†</span>Legal counsel engaged</div>
+          <div class="tl-row-item"><span class="tl-bullet">â—†</span>Audit firm scoping</div>
+        </div>
+      </div>
+      <div class="tl-phase hi">
+        <div class="tl-wk">Wk 5â€“7</div>
+        <div class="tl-head">Audit + Waitlist</div>
+        <div class="tl-items">
+          <div class="tl-row-item"><span class="tl-bullet">â—†</span>Audit in progress</div>
+          <div class="tl-row-item"><span class="tl-bullet">â—†</span>Waitlist builds on social</div>
+          <div class="tl-row-item"><span class="tl-bullet">â—†</span>Legal docs finalized</div>
+          <div class="tl-row-item"><span class="tl-bullet">â—†</span>Findings remediated</div>
+        </div>
+      </div>
+      <div class="tl-phase hi">
+        <div class="tl-wk">Wk 8â€“9</div>
+        <div class="tl-head">Soft Launch Â· 25</div>
+        <div class="tl-items">
+          <div class="tl-row-item"><span class="tl-bullet">â—†</span>25-user controlled launch</div>
+          <div class="tl-row-item"><span class="tl-bullet">â—†</span>Live capital, real yield</div>
+          <div class="tl-row-item"><span class="tl-bullet">â—†</span>UX friction resolved</div>
+          <div class="tl-row-item"><span class="tl-bullet">â—†</span>Qualitative feedback</div>
+        </div>
+      </div>
+      <div class="tl-phase launch">
+        <div class="tl-wk">Wk 10â€“12</div>
+        <div class="tl-head">100-User Beta Live</div>
+        <div class="tl-items">
+          <div class="tl-row-item"><span class="tl-bullet">â—†</span>100 wallets onboarded</div>
+          <div class="tl-row-item"><span class="tl-bullet">â—†</span>TVL + retention tracked</div>
+          <div class="tl-row-item"><span class="tl-bullet">â—†</span>Revenue data begins</div>
+          <div class="tl-row-item"><span class="tl-bullet">â—†</span>Series Seed deck starts</div>
+        </div>
+      </div>
+    </div>
+    <div class="kpi-row">
+      <div class="kpi-card"><div class="kpi-num">100</div><div class="kpi-label">Active beta wallets</div></div>
+      <div class="kpi-card"><div class="kpi-num">$50K+</div><div class="kpi-label">Capital in vaults</div></div>
+      <div class="kpi-card"><div class="kpi-num">60%+</div><div class="kpi-label">30-day retention target</div></div>
+      <div class="kpi-card"><div class="kpi-num">$1K+</div><div class="kpi-label">Monthly rev at beta scale</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  10 Â· SERIES SEED ROADMAP (scrollable)
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<div class="slide" id="s10">
+  <div class="slide-inner scrollable">
+    <div class="eyebrow">10 Â· Series Seed Roadmap</div>
+    <div class="slide-title">From Beta Proof<br>to $2M â€“ $5M Raise</div>
+
+    <div class="rm-track">
+
+      <div class="rm-row">
+        <div class="rm-time">
+          <div class="rm-time-tag">Now â†’ Mo 3</div>
+          <div class="rm-time-range">Beta Launch</div>
+        </div>
+        <div class="rm-spine"><div class="rm-dot filled"></div><div class="rm-line"></div></div>
+        <div class="rm-content">
+          <div class="rm-head">Phase 1 Â· Close the Gaps, Launch the Beta</div>
+          <div class="rm-tags">
+            <span class="rm-tag rm-tag-g">100 beta users</span>
+            <span class="rm-tag rm-tag-g">Contracts audited</span>
+            <span class="rm-tag rm-tag-g">Production on-ramps live</span>
+            <span class="rm-tag rm-tag-w">Legal foundation set</span>
+          </div>
+          <div class="rm-body">Seed capital deployed across engineering, audit, and legal. First real users depositing real money into live vaults generating 14.09% blended APY. Data collection begins immediately.</div>
+        </div>
+      </div>
+
+      <div class="rm-row">
+        <div class="rm-time">
+          <div class="rm-time-tag">Mo 3 â€“ 5</div>
+          <div class="rm-time-range">Traction Proof</div>
+        </div>
+        <div class="rm-spine"><div class="rm-dot"></div><div class="rm-line"></div></div>
+        <div class="rm-content">
+          <div class="rm-head">Phase 2 Â· Prove Retention and Revenue</div>
+          <div class="rm-tags">
+            <span class="rm-tag rm-tag-g">60%+ 30-day retention</span>
+            <span class="rm-tag rm-tag-g">$2K+ monthly revenue</span>
+            <span class="rm-tag rm-tag-w">NPS â‰¥ 40</span>
+            <span class="rm-tag rm-tag-w">$100K+ TVL</span>
+          </div>
+          <div class="rm-body">Iterate on user feedback. Optimize the on-ramp funnel. Grow the waitlist to 500+. Build the data package that answers every question a Series Seed investor will ask: retention, deposit size, revenue per user, yield delivered.</div>
+        </div>
+      </div>
+
+      <div class="rm-row">
+        <div class="rm-time">
+          <div class="rm-time-tag">Mo 5 â€“ 6</div>
+          <div class="rm-time-range">Seed Prep</div>
+        </div>
+        <div class="rm-spine"><div class="rm-dot"></div><div class="rm-line"></div></div>
+        <div class="rm-content">
+          <div class="rm-head">Phase 3 Â· Build the Series Seed Package</div>
+          <div class="rm-tags">
+            <span class="rm-tag rm-tag-g">Formal pitch deck</span>
+            <span class="rm-tag rm-tag-g">Pro forma financials</span>
+            <span class="rm-tag rm-tag-w">Cap table formalized</span>
+            <span class="rm-tag rm-tag-w">Data room assembled</span>
+          </div>
+          <div class="rm-body">Data room built: audit report, beta KPI package, cap table, financial projections through 10,000 users, regulatory analysis. Warm intros to DeFi-focused seed funds activated through advisor and investor network.</div>
+        </div>
+      </div>
+
+      <div class="rm-row">
+        <div class="rm-time">
+          <div class="rm-time-tag">Mo 6 â€“ 8</div>
+          <div class="rm-time-range">Roadshow</div>
+        </div>
+        <div class="rm-spine"><div class="rm-dot"></div><div class="rm-line"></div></div>
+        <div class="rm-content">
+          <div class="rm-head">Phase 4 Â· Active Investor Roadshow</div>
+          <div class="rm-tags">
+            <span class="rm-tag rm-tag-g">5â€“10 qualified meetings</span>
+            <span class="rm-tag rm-tag-w">a16z crypto Â· Variant Fund</span>
+            <span class="rm-tag rm-tag-w">Multicoin Â· Pantera Â· Electric</span>
+          </div>
+          <div class="rm-body">Active pitching to institutional DeFi investors with live traction data. Series Seed funds require what we will have: working product, audited contracts, retention proof, and a revenue model that scales predictably with user growth.</div>
+        </div>
+      </div>
+
+      <div class="rm-row seed-phase">
+        <div class="rm-time">
+          <div class="rm-time-tag" style="color:var(--teal);">Mo 8 â€“ 9</div>
+          <div class="rm-time-range" style="color:var(--teal);font-weight:600;">Series Seed</div>
+        </div>
+        <div class="rm-spine"><div class="rm-dot seed"></div><div class="rm-line"></div></div>
+        <div class="rm-content">
+          <div class="rm-head">Phase 5 Â· $2M â€“ $5M Series Seed Closes</div>
+          <div class="rm-tags">
+            <span class="rm-tag rm-tag-t">$2M â€“ $5M raised</span>
+            <span class="rm-tag rm-tag-t">$5M â€“ $15M pre-money</span>
+            <span class="rm-tag rm-tag-t">Institutional lead investor</span>
+          </div>
+          <div class="rm-body">Series Seed funds the scale team: 3â€“5 engineers, full marketing budget for user acquisition, and regulatory infrastructure for 10,000+ users and $10M+ TVL. The current seed investor's stake appreciates 10â€“15Ã— at this valuation step-up.</div>
+        </div>
+      </div>
+
+      <div class="rm-row">
+        <div class="rm-time">
+          <div class="rm-time-tag">Mo 10+</div>
+          <div class="rm-time-range">Scale</div>
+        </div>
+        <div class="rm-spine"><div class="rm-dot" style="border-color:var(--teal);"></div><div class="rm-line"></div></div>
+        <div class="rm-content">
+          <div class="rm-head">Phase 6 Â· Aggressive Scale to 10,000 Users</div>
+          <div class="rm-tags">
+            <span class="rm-tag rm-tag-t">10,000 active users</span>
+            <span class="rm-tag rm-tag-t">$10M+ TVL</span>
+            <span class="rm-tag rm-tag-t">$500K+ ARR</span>
+            <span class="rm-tag rm-tag-w">Mobile app launch</span>
+            <span class="rm-tag rm-tag-w">Series A prep</span>
+          </div>
+          <div class="rm-body">Full-time engineering team shipping mobile app, additional chains, Genesis Reserve Pro subscription, and B2B partnership pipeline. Series A conversation begins with $500K+ ARR and $10M+ TVL as the anchor metrics.</div>
+        </div>
+      </div>
+
+    </div>
+    <div style="height:24px;flex-shrink:0;"></div><!-- scroll buffer -->
+  </div>
+</div>
+
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  11 Â· SERIES SEED DETAIL
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<div class="slide" id="s11">
+  <div class="slide-inner">
+    <div class="eyebrow">11 Â· Series Seed Â· What We Are Building Toward</div>
+    <div class="slide-title">$2M â€“ $5M at<br>$5M â€“ $15M Pre-Money</div>
+    <div class="seed-2col">
+      <div>
+        <div style="font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--text-faint);margin-bottom:12px;">Series Seed Use of Funds</div>
+        <div class="seed-use-list">
+          <div class="seed-use"><span class="seed-use-label">Engineering Team Â· 3â€“5 Full-Time</span><span class="seed-use-pct">35%</span></div>
+          <div class="seed-use"><span class="seed-use-label">User Acquisition Â· Paid + Organic</span><span class="seed-use-pct">25%</span></div>
+          <div class="seed-use"><span class="seed-use-label">Regulatory + Compliance at Scale</span><span class="seed-use-pct">15%</span></div>
+          <div class="seed-use"><span class="seed-use-label">Product Expansion Â· Mobile App</span><span class="seed-use-pct">12%</span></div>
+          <div class="seed-use"><span class="seed-use-label">Operations + Business Development</span><span class="seed-use-pct">8%</span></div>
+          <div class="seed-use"><span class="seed-use-label">Buffer + Infrastructure</span><span class="seed-use-pct">5%</span></div>
+        </div>
+        <div style="margin-top:18px;">
+          <div style="font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--text-faint);margin-bottom:12px;">Target Investor Profile</div>
+          <div class="inv-list">
+            <div class="inv-row"><span class="inv-type">a16z crypto Â· Variant Fund</span><span class="inv-badge target">Target Lead</span></div>
+            <div class="inv-row"><span class="inv-type">Multicoin Capital Â· Pantera Capital</span><span class="inv-badge target">Target Lead</span></div>
+            <div class="inv-row"><span class="inv-type">Electric Capital Â· Framework Ventures</span><span class="inv-badge target">Target Co-Lead</span></div>
+            <div class="inv-row"><span class="inv-type">DeFi Angels Â· Current Seed Investor</span><span class="inv-badge warm">Pro-Rata Rights</span></div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div class="seed-target-box">
+          <div class="stb-label">Series Seed Target</div>
+          <div class="stb-amount">$2M â€“ $5M</div>
+          <div class="stb-desc">Raised at $5Mâ€“$15M pre-money, anchored by 100-user beta data: retention, TVL, revenue, and an audited smart contract stack.</div>
+        </div>
+        <div class="return-box">
+          <div style="font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--text-faint);margin-bottom:4px;">Seed Investor Return Profile</div>
+          <div class="ret-row"><span class="ret-label">Today Â· $75K for 8% equity</span><span class="ret-val" style="color:var(--text-soft);">$1M implied valuation</span></div>
+          <div class="ret-row"><span class="ret-label">Series Seed at $10M pre-money</span><span class="ret-val" style="color:var(--teal);">10Ã— on seed stake</span></div>
+          <div class="ret-row"><span class="ret-label">Series Seed at $15M pre-money</span><span class="ret-val" style="color:var(--gold);">15Ã— on seed stake</span></div>
+          <div style="font-size:14px;color:var(--text-muted);line-height:1.6;margin-top:6px;">Pro-rata rights allow the investor to maintain their percentage into Series Seed if they choose to re-invest.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  12 Â· WHY NOW
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<div class="slide" id="s12">
+  <div class="slide-inner">
+    <div class="eyebrow">12 Â· Why Now</div>
+    <div class="slide-title">The Window Is Open.<br>It Will Not Stay Open.</div>
+    <div class="whynow-grid">
+      <div class="wn-card">
+        <div class="wn-icon">âš–ï¸</div>
+        <div class="wn-head">Regulatory Clarity Is Arriving</div>
+        <div class="wn-body">The U.S. CLARITY Act is advancing in 2026 â€” the first federal taxonomy for digital assets. Genesis Reserve is built compliance-first. We arrive ahead of the curve, not scrambling after it.</div>
+      </div>
+      <div class="wn-card">
+        <div class="wn-icon">ðŸ›ï¸</div>
+        <div class="wn-head">Institutional DeFi Renaissance</div>
+        <div class="wn-body">BlackRock, Fidelity, and JPMorgan are building on-chain yield products for institutional clients. The infrastructure is being validated from the top down. Consumer products are the last gap.</div>
+      </div>
+      <div class="wn-card">
+        <div class="wn-icon">ðŸ“±</div>
+        <div class="wn-head">Consumer Trust Has Recovered</div>
+        <div class="wn-body">The FTX era is over. Self-custody is now seen as the safer choice. Users who swore off crypto are returning â€” and they want a product that feels like a fintech app, not a DEX.</div>
+      </div>
+      <div class="wn-card">
+        <div class="wn-icon">â›“ï¸</div>
+        <div class="wn-head">L2 Infrastructure Is Mature</div>
+        <div class="wn-body">Arbitrum One processes billions monthly at sub-cent fees. The cost of real-time yield compounding every 15 minutes is near-zero. This product was impossible at Ethereum gas prices three years ago.</div>
+      </div>
+    </div>
+    <div class="callout">
+      "The consumer who was burned by centralized exchanges is actively looking for a self-custody alternative that still feels like a banking app. <strong>Genesis Reserve is built exactly for this moment â€” and this moment has a window.</strong>"
+    </div>
+  </div>
+</div>
+
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  13 Â· CLOSING
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<div class="slide" id="s13">
+  <div class="slide-inner">
+    <div class="vision-eye">Genesis Reserve Â· 2026</div>
+    <div class="vision-title">The Future of Finance<br>Is Frictionless.</div>
+    <div class="vision-body">Genesis Reserve is the wallet that proves it â€” self-custody DeFi yield at 14.09%, delivered with the simplicity of a savings account. The infrastructure is built. The contracts are live. The window is open.</div>
+    <div class="rule"></div>
+    <div style="font-size:17px;color:var(--text-soft);line-height:1.7;max-width:660px;">This round is not about building the product. It is about proving that real users will use it, stay with it, and grow their wealth with it â€” and then taking that proof to a $2Mâ€“$5M raise that puts 10,000 users into the Genesis Reserve ecosystem.</div>
+    <div class="ask-trio">
+      <div class="ask-box">
+        <div class="ask-box-label">The Ask</div>
+        <div class="ask-box-val">$50K â€“ $100K</div>
+      </div>
+      <div class="ask-box" style="border-color:rgba(0,212,170,.38);background:rgba(0,212,170,.09);">
+        <div class="ask-box-label" style="color:var(--teal);">Beta Target</div>
+        <div class="ask-box-val">100 Users Â· 10 Weeks</div>
+      </div>
+      <div class="ask-box">
+        <div class="ask-box-label">Series Seed</div>
+        <div class="ask-box-val">$2M â€“ $5M Â· Month 8</div>
+      </div>
+    </div>
+    <div class="contact-line">genesis-privy.vercel.app Â· Confidential Â· May 2026 Â· Not for Distribution</div>
+  </div>
+</div>
+
+</div><!-- /deck -->
+
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  CHROME
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<div class="chrome">
+  <button class="nav-btn" id="prevBtn" onclick="navigate(-1)" disabled>â†</button>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+    <div class="slide-dots" id="dots"></div>
+    <div class="slide-counter" id="counter">1 / 13</div>
+  </div>
+  <button class="nav-btn" id="nextBtn" onclick="navigate(1)">â†’</button>
+</div>
+
+<script>
+const TOTAL = 13;
+let cur = 0;
+const slides = document.querySelectorAll('.slide');
+const dotsEl = document.getElementById('dots');
+const counter = document.getElementById('counter');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const progressBar = document.getElementById('progress');
+
+for (let i = 0; i < TOTAL; i++) {
+  const d = document.createElement('div');
+  d.className = 'dot' + (i === 0 ? ' active' : '');
+  d.onclick = () => goTo(i);
+  dotsEl.appendChild(d);
+}
+
+function goTo(n) {
+  if (n < 0 || n >= TOTAL) return;
+  slides[cur].classList.remove('active');
+  slides[cur].classList.add('exit');
+  // reset scroll position on any scrollable slide we're leaving
+  const leaving = slides[cur].querySelector('.scrollable');
+  if (leaving) leaving.scrollTop = 0;
+  setTimeout(() => slides[cur].classList.remove('exit'), 420);
+  cur = n;
+  slides[cur].classList.add('active');
+  dotsEl.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === cur));
+  counter.textContent = (cur + 1) + ' / ' + TOTAL;
+  prevBtn.disabled = cur === 0;
+  nextBtn.disabled = cur === TOTAL - 1;
+  progressBar.style.width = ((cur + 1) / TOTAL * 100) + '%';
+}
+
+function navigate(dir) { goTo(cur + dir); }
+
+document.addEventListener('keydown', e => {
+  // allow arrow keys to scroll inside scrollable slides without navigating
+  const inner = slides[cur].querySelector('.scrollable');
+  if (inner) {
+    const atTop = inner.scrollTop === 0;
+    const atBottom = inner.scrollTop + inner.clientHeight >= inner.scrollHeight - 2;
+    if ((e.key === 'ArrowDown' || e.key === ' ') && !atBottom) return;
+    if (e.key === 'ArrowUp' && !atTop) return;
+  }
+  if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'ArrowDown') navigate(1);
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') navigate(-1);
+});
+
+let tx = 0;
+document.addEventListener('touchstart', e => tx = e.touches[0].clientX, { passive: true });
+document.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - tx;
+  if (Math.abs(dx) > 50) navigate(dx < 0 ? 1 : -1);
+}, { passive: true });
+
+progressBar.style.width = (1 / TOTAL * 100) + '%';
+</script>
+</body>
+</html>
+
