@@ -6,6 +6,8 @@ import { DepositFlow } from './DepositFlow'
 import type { ViewKey } from './AppShell'
 import { openTransakWidget } from '../lib/transak'
 import type { TransakOrderData } from '../lib/transak'
+import { openRampWidget } from '../lib/ramp'
+import type { RampPurchase } from '../lib/ramp'
 
 const MIN_USD = 5
 const PRESETS = [25, 50, 100, 250]
@@ -68,19 +70,25 @@ export function FundPage({ onNavigate }: { onNavigate: (v: ViewKey) => void }) {
   const walletAddress = useActiveWalletAddress()
   const accountId = walletAddress ?? ''
 
-  const [mode, setMode] = useState<'card' | 'bridge'>('card')
+  const [mode, setMode] = useState<'card' | 'bank' | 'bridge'>('card')
   const [cardStep, setCardStep] = useState<CardStep>('pick')
   const [amount, setAmount] = useState('')
   const [transakOpen, setTransakOpen] = useState(false)
   const [transakOrder, setTransakOrder] = useState<TransakOrderData | null>(null)
   const transakCleanupRef = useRef<(() => void) | null>(null)
 
+  const [bankStep, setBankStep] = useState<'pick' | 'initiated' | 'success' | 'error'>('pick')
+  const [rampOpen, setRampOpen] = useState(false)
+  const [rampPurchase, setRampPurchase] = useState<RampPurchase | null>(null)
+  const rampCleanupRef = useRef<(() => void) | null>(null)
+
   const [linkedCards, setLinkedCards] = useState<LinkedCard[]>([])
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null)
   const [cardsLoading, setCardsLoading] = useState(true)
 
   const amountNum = parseFloat(amount.replace(/[^0-9.]/g, '')) || 0
-  const canBuy = amountNum >= MIN_USD && !!walletAddress && !transakOpen
+  const canBuy  = amountNum >= MIN_USD && !!walletAddress && !transakOpen
+  const canRamp = amountNum >= MIN_USD && !!walletAddress && !rampOpen
 
   // Fetch linked debit cards
   useEffect(() => {
@@ -109,6 +117,32 @@ export function FundPage({ onNavigate }: { onNavigate: (v: ViewKey) => void }) {
   useEffect(() => {
     return () => { transakCleanupRef.current?.() }
   }, [])
+
+  useEffect(() => {
+    return () => { rampCleanupRef.current?.() }
+  }, [])
+
+  function handleOpenRamp() {
+    if (!canRamp || !walletAddress) return
+    setRampOpen(true)
+    const cleanup = openRampWidget({
+      walletAddress,
+      fiatAmount: amountNum,
+      onPurchaseCreated: (purchase) => {
+        setRampPurchase(purchase)
+        setBankStep('initiated')
+      },
+      onSuccess: (purchase) => {
+        setRampPurchase(purchase)
+        setRampOpen(false)
+        setBankStep('success')
+      },
+      onClose: () => {
+        setRampOpen(false)
+      },
+    })
+    rampCleanupRef.current = cleanup
+  }
 
   function handleOpenTransak() {
     if (!canBuy || !walletAddress) return
@@ -146,7 +180,7 @@ export function FundPage({ onNavigate }: { onNavigate: (v: ViewKey) => void }) {
 
       {/* Mode tabs */}
       <div style={{ display: 'flex', gap: 4, padding: 4, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 12, marginBottom: 32, width: 'fit-content' }}>
-        {([['card', '💳  Debit Card'], ['bridge', '⛓  Bridge USDC']] as const).map(([key, label]) => (
+        {([['card', '💳  Debit Card'], ['bank', '🏦  Bank Transfer'], ['bridge', '⛓  Bridge USDC']] as const).map(([key, label]) => (
           <button key={key} type="button"
             onClick={() => setMode(key)}
             style={{ padding: '8px 20px', borderRadius: 9, background: mode === key ? 'rgba(201,168,76,0.14)' : 'transparent', border: mode === key ? '1px solid rgba(201,168,76,0.35)' : '1px solid transparent', color: mode === key ? '#c9a84c' : 'rgba(245,240,232,0.45)', fontSize: 12, letterSpacing: '0.06em', cursor: 'pointer', fontFamily: "'Tenor Sans', sans-serif", transition: 'all 0.15s' }}>
@@ -157,6 +191,141 @@ export function FundPage({ onNavigate }: { onNavigate: (v: ViewKey) => void }) {
 
       {/* ── Bridge mode ── */}
       {mode === 'bridge' && <DepositFlow onNavigateSwap={() => onNavigate('swap')} />}
+
+      {/* ── Bank Transfer mode ── */}
+      {mode === 'bank' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 22, maxWidth: 500 }}>
+
+          {bankStep === 'pick' && (
+            <>
+              {/* Fee callout */}
+              <div style={{ padding: '14px 16px', borderRadius: 12, background: 'rgba(201,168,76,0.06)', border: '1px solid rgba(201,168,76,0.18)', display: 'flex', flexDirection: 'column', gap: 6 }}>
+                <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', color: '#c9a84c', textTransform: 'uppercase' }}>Lowest fees available</div>
+                <div style={{ fontSize: 12, color: 'rgba(245,240,232,0.75)', lineHeight: 1.65 }}>
+                  Bank transfers via Ramp Network start at <strong style={{ color: '#f5f0e8' }}>0.49%</strong> — far cheaper than card. Your bank account links securely and your USDC lands directly on Arbitrum.
+                </div>
+              </div>
+
+              {/* Timing info */}
+              <div style={{ padding: '11px 16px', borderRadius: 12, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', fontSize: 11, color: 'rgba(245,240,232,0.5)', lineHeight: 1.7 }}>
+                ⏱ ACH (US): <span style={{ color: 'rgba(245,240,232,0.75)' }}>1–3 business days</span> · Faster Payments (UK): <span style={{ color: 'rgba(245,240,232,0.75)' }}>same day</span> · Open Banking (EU): <span style={{ color: 'rgba(245,240,232,0.75)' }}>1–2 business days</span>
+              </div>
+
+              {/* Amount */}
+              <div>
+                <div style={s.label}>Amount (USD)</div>
+                <div style={{ position: 'relative' }}>
+                  <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: amountNum > 0 ? '#f5f0e8' : 'rgba(245,240,232,0.3)', fontSize: 18 }}>$</span>
+                  <input type="number" value={amount} onChange={e => setAmount(e.target.value)} min={MIN_USD} step="1" placeholder="0.00"
+                    style={{ ...s.input, padding: '14px 14px 14px 28px' }} />
+                </div>
+                <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
+                  {PRESETS.map(p => <button key={p} type="button" onClick={() => setAmount(String(p))} style={s.presetBtn(amountNum === p)}>${p}</button>)}
+                </div>
+              </div>
+
+              {amountNum > 0 && amountNum < MIN_USD && (
+                <div style={{ fontSize: 11, color: '#E84040' }}>Minimum is ${MIN_USD}.00</div>
+              )}
+
+              {amountNum >= MIN_USD && (
+                <div style={{ padding: '11px 16px', borderRadius: 12, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', fontSize: 11, color: 'rgba(245,240,232,0.45)', lineHeight: 1.6 }}>
+                  ~0.49–1.4% Ramp Network fee · full breakdown shown at checkout
+                </div>
+              )}
+
+              {walletAddress && (
+                <div style={{ fontSize: 10, color: 'rgba(245,240,232,0.3)', letterSpacing: '0.04em' }}>
+                  Destination · {walletAddress.slice(0, 8)}…{walletAddress.slice(-6)} on Arbitrum
+                </div>
+              )}
+
+              <button type="button" onClick={handleOpenRamp} disabled={!canRamp}
+                style={{ padding: '14px 20px', borderRadius: 12, background: canRamp ? 'rgba(201,168,76,0.18)' : 'rgba(255,255,255,0.04)', border: canRamp ? '1px solid rgba(201,168,76,0.4)' : '1px solid rgba(255,255,255,0.1)', color: canRamp ? '#c9a84c' : 'rgba(245,240,232,0.28)', fontSize: 12, letterSpacing: '0.14em', textTransform: 'uppercase', fontFamily: "'Tenor Sans', sans-serif", cursor: canRamp ? 'pointer' : 'not-allowed', transition: 'all 0.15s' }}>
+                {rampOpen ? 'Checkout Open…' : 'Connect Bank & Buy USDC →'}
+              </button>
+            </>
+          )}
+
+          {/* Transfer initiated — bank transfer confirmed, awaiting settlement */}
+          {bankStep === 'initiated' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              <div style={{ padding: '28px 20px', borderRadius: 16, background: 'rgba(201,168,76,0.07)', border: '1px solid rgba(201,168,76,0.28)', textAlign: 'center' }}>
+                <div style={{ fontSize: 28, marginBottom: 10 }}>⏳</div>
+                <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 24, color: '#c9a84c', marginBottom: 6 }}>Transfer Initiated</div>
+                <div style={{ fontSize: 12, color: 'rgba(245,240,232,0.65)', lineHeight: 1.65 }}>
+                  Your bank transfer is confirmed. USDC will arrive in your Arbitrum wallet once the transfer settles.
+                </div>
+                {rampPurchase?.fiatValue && (
+                  <div style={{ fontSize: 13, color: '#f5f0e8', marginTop: 8, fontFamily: "'Cormorant Garamond', serif" }}>
+                    ${rampPurchase.fiatValue} {rampPurchase.fiatCurrency ?? 'USD'} → USDC · Arbitrum
+                  </div>
+                )}
+                <div style={{ fontSize: 11, color: 'rgba(245,240,232,0.35)', marginTop: 6 }}>ACH: 1–3 business days · Faster Payments: same day</div>
+              </div>
+              <div style={{ padding: '16px', borderRadius: 12, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.09)' }}>
+                <div style={{ fontSize: 10, letterSpacing: '0.12em', color: 'rgba(245,240,232,0.4)', textTransform: 'uppercase', marginBottom: 12 }}>While you wait</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  {[
+                    { label: '→ Explore Vaults — earn yield when USDC arrives', color: '#c9a84c', bg: 'rgba(201,168,76,0.10)', border: 'rgba(201,168,76,0.28)', action: () => onNavigate('vaults') },
+                    { label: '→ Go to Home', color: 'rgba(245,240,232,0.55)', bg: 'rgba(255,255,255,0.03)', border: 'rgba(255,255,255,0.1)', action: () => onNavigate('home') },
+                    { label: '→ Transfer another amount', color: 'rgba(245,240,232,0.35)', bg: 'rgba(255,255,255,0.02)', border: 'rgba(255,255,255,0.07)', action: () => { setBankStep('pick'); setAmount(''); setRampPurchase(null) } },
+                  ].map(({ label, color, bg, border, action }) => (
+                    <button key={label} type="button" onClick={action}
+                      style={{ padding: '11px 14px', borderRadius: 10, background: bg, border: `1px solid ${border}`, color, fontSize: 11, fontFamily: "'Sora', sans-serif", fontWeight: 600, cursor: 'pointer', textAlign: 'left' }}>
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Success — instant settlement (Open Banking / Faster Payments) */}
+          {bankStep === 'success' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              <div style={{ padding: '28px 20px', borderRadius: 16, background: 'rgba(26,191,106,0.08)', border: '1px solid rgba(26,191,106,0.25)', textAlign: 'center' }}>
+                <div style={{ fontSize: 32, marginBottom: 10 }}>✓</div>
+                <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 24, color: '#1ABF6A', marginBottom: 6 }}>USDC Received</div>
+                <div style={{ fontSize: 12, color: 'rgba(245,240,232,0.55)', lineHeight: 1.6 }}>
+                  {rampPurchase?.cryptoAmount
+                    ? `${rampPurchase.cryptoAmount} USDC has landed in your Arbitrum wallet.`
+                    : 'USDC has landed in your Arbitrum wallet.'}
+                </div>
+                <div style={{ fontSize: 11, color: 'rgba(245,240,232,0.35)', marginTop: 6 }}>Ready to deploy.</div>
+              </div>
+              <div style={{ padding: '16px', borderRadius: 12, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.09)' }}>
+                <div style={{ fontSize: 10, letterSpacing: '0.12em', color: 'rgba(245,240,232,0.4)', textTransform: 'uppercase', marginBottom: 12 }}>What&apos;s next?</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  {[
+                    { label: '→ Deploy to Vault — earn yield', color: '#c9a84c', bg: 'rgba(201,168,76,0.10)', border: 'rgba(201,168,76,0.28)', action: () => onNavigate('vaults') },
+                    { label: '→ Go to Home', color: 'rgba(245,240,232,0.55)', bg: 'rgba(255,255,255,0.03)', border: 'rgba(255,255,255,0.1)', action: () => onNavigate('home') },
+                    { label: '→ Transfer another amount', color: 'rgba(245,240,232,0.35)', bg: 'rgba(255,255,255,0.02)', border: 'rgba(255,255,255,0.07)', action: () => { setBankStep('pick'); setAmount(''); setRampPurchase(null) } },
+                  ].map(({ label, color, bg, border, action }) => (
+                    <button key={label} type="button" onClick={action}
+                      style={{ padding: '11px 14px', borderRadius: 10, background: bg, border: `1px solid ${border}`, color, fontSize: 11, fontFamily: "'Sora', sans-serif", fontWeight: 600, cursor: 'pointer', textAlign: 'left' }}>
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {bankStep === 'error' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <div style={{ padding: '14px 16px', borderRadius: 12, background: 'rgba(232,64,64,0.07)', border: '1px solid rgba(232,64,64,0.25)', color: '#E84040', fontSize: 12, lineHeight: 1.6 }}>
+                Something went wrong. No transfer was made.
+              </div>
+              <button type="button" onClick={() => setBankStep('pick')}
+                style={{ padding: '11px 14px', borderRadius: 10, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.12)', color: 'rgba(245,240,232,0.7)', fontSize: 11, fontFamily: "'Sora', sans-serif", cursor: 'pointer' }}>
+                ← Try Again
+              </button>
+            </div>
+          )}
+
+        </div>
+      )}
 
       {/* ── Card mode ── */}
       {mode === 'card' && (
