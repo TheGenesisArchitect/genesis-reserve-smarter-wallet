@@ -471,6 +471,34 @@ body{font-family:'Inter',sans-serif;color:var(--text);font-size:15px;line-height
 
 @keyframes fadeUp{0%{opacity:0;transform:translateY(18px);}100%{opacity:1;transform:translateY(0);}}
 @keyframes ringsPulse{0%,100%{opacity:.06;transform:scale(1);}50%{opacity:.14;transform:scale(1.04);}}
+
+/* ═══════════════════════════════════════════════════
+   SLIDE comp — COMPETITIVE LANDSCAPE
+═══════════════════════════════════════════════════ */
+#s-comp{
+  background:
+    radial-gradient(ellipse at 75% 20%,rgba(0,212,170,.10) 0%,transparent 52%),
+    radial-gradient(ellipse at 22% 78%,rgba(201,168,76,.08) 0%,transparent 48%),
+    var(--bg);
+}
+.comp-wrap{display:flex;flex-direction:column;gap:0;border-radius:12px;overflow:hidden;border:1px solid var(--border);}
+.comp-hdr-row{display:grid;grid-template-columns:140px 1fr 88px 118px 46px;padding:9px 16px;background:rgba(255,255,255,.04);gap:0;}
+.comp-hdr-cell{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--text-faint);}
+.comp-data-row{display:grid;grid-template-columns:140px 1fr 88px 118px 46px;padding:11px 16px;border-top:1px solid var(--border);gap:0;align-items:center;}
+.comp-data-row.gr-row{background:rgba(201,168,76,.07);border-color:rgba(201,168,76,.25);}
+.cc-name{font-size:13px;font-weight:600;color:#fff;line-height:1.3;}
+.gr-row .cc-name{color:var(--gold);}
+.cc-built{font-size:12px;color:var(--text-muted);line-height:1.4;}
+.gr-row .cc-built{color:var(--text-soft);}
+.cc-raised{font-size:13px;font-weight:700;color:var(--teal);}
+.gr-row .cc-raised{color:var(--gold);}
+.cc-pre{font-size:12px;color:var(--text-muted);}
+.gr-row .cc-pre{font-size:13px;font-weight:700;color:var(--gold);}
+.cc-yr{font-size:12px;color:var(--text-faint);}
+.comp-gap-row{padding:12px 16px;background:rgba(201,168,76,.04);border-top:1px solid rgba(201,168,76,.18);display:flex;align-items:center;gap:12px;}
+.gap-label{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);}
+.gap-stat{font-size:22px;font-weight:300;color:#fff;}
+.gap-note{font-size:13px;color:var(--text-muted);line-height:1.5;flex:1;}
 </style>
 </head>
 <body>
@@ -643,11 +671,84 @@ body{font-family:'Inter',sans-serif;color:var(--text);font-size:15px;line-height
 </div>
 
 <!-- ══════════════════════════════════════
-  04 · THE SOLUTION
+  04 · COMPETITIVE LANDSCAPE
+══════════════════════════════════════ -->
+<div class="slide" id="s-comp">
+  <div class="slide-inner" style="gap:14px;">
+    <div class="eyebrow">04 · Competitive Landscape</div>
+    <div class="slide-title" style="font-size:clamp(26px,3vw,40px);">Built More Than Our Peers.<br>Priced Like We're Just Starting.</div>
+
+    <div class="comp-wrap">
+      <div class="comp-hdr-row">
+        <div class="comp-hdr-cell">Company</div>
+        <div class="comp-hdr-cell">What They Had at Seed Stage</div>
+        <div class="comp-hdr-cell">Raised</div>
+        <div class="comp-hdr-cell">Pre-Money (est.)</div>
+        <div class="comp-hdr-cell">Year</div>
+      </div>
+      <div class="comp-data-row">
+        <div class="cc-name">Instadapp</div>
+        <div class="cc-built">Basic on-chain DeFi aggregator — no fiat, no yield, no wallet</div>
+        <div class="cc-raised">$2.5M</div>
+        <div class="cc-pre">~$12M</div>
+        <div class="cc-yr">2020</div>
+      </div>
+      <div class="comp-data-row">
+        <div class="cc-name">Zerion</div>
+        <div class="cc-built">DeFi portfolio tracker only — no transactions, no yield</div>
+        <div class="cc-raised">$2M</div>
+        <div class="cc-pre">~$10M</div>
+        <div class="cc-yr">2019</div>
+      </div>
+      <div class="comp-data-row">
+        <div class="cc-name">Argent</div>
+        <div class="cc-built">Early smart wallet prototype — Ethereum only, no fiat on-ramp</div>
+        <div class="cc-raised">$4M</div>
+        <div class="cc-pre">~$20M</div>
+        <div class="cc-yr">2020</div>
+      </div>
+      <div class="comp-data-row">
+        <div class="cc-name">Mountain Protocol</div>
+        <div class="cc-built">Yield-bearing stablecoin concept — pre-revenue, pre-product</div>
+        <div class="cc-raised">$8M</div>
+        <div class="cc-pre">~$40M</div>
+        <div class="cc-yr">2023</div>
+      </div>
+      <div class="comp-data-row">
+        <div class="cc-name">EtherFi</div>
+        <div class="cc-built">Liquid staking concept — pre-launch, no deployed contracts</div>
+        <div class="cc-raised">$5.3M</div>
+        <div class="cc-pre">~$30M</div>
+        <div class="cc-yr">2024</div>
+      </div>
+      <div class="comp-data-row gr-row">
+        <div class="cc-name">Genesis Reserve ★</div>
+        <div class="cc-built" style="color:var(--text-soft);font-weight:500;">Live contracts · 14.09% APY · Fiat in &amp; out · Self-custody wallets · Deployed app · Compliance registry</div>
+        <div class="cc-raised">$50K–$100K</div>
+        <div class="cc-pre">$625K–$1.25M implied</div>
+        <div class="cc-yr" style="color:var(--gold);font-weight:600;">2026</div>
+      </div>
+      <div class="comp-gap-row">
+        <div>
+          <div class="gap-label">Valuation Discount vs. Peers</div>
+          <div class="gap-stat">8× – 32× below comparable seed-stage pre-money</div>
+        </div>
+        <div class="gap-note">Pantera backed Ethena (yield stablecoin) at $100M. a16z backed Mountain Protocol (yield concept) at $40M pre. Genesis Reserve has a <strong style="color:#fff;">fully deployed yield wallet</strong> — and is priced at a fraction of what those concepts raised on.</div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <strong>The market has validated this infrastructure category at $10M–$40M seed-stage pre-money valuations.</strong> The current round implies $625K–$1.25M — the most compressed, highest-upside entry point in the Genesis Reserve story. First investors at this table get the best seat in the house.
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+  05 · THE SOLUTION
 ══════════════════════════════════════ -->
 <div class="slide" id="s4">
   <div class="slide-inner">
-    <div class="eyebrow">04 · The Solution</div>
+    <div class="eyebrow">05 · The Solution</div>
     <div class="slide-title">Banking UX.<br>DeFi Returns.</div>
     <div class="sol-2col">
       <div class="feat-list">
@@ -720,7 +821,7 @@ body{font-family:'Inter',sans-serif;color:var(--text);font-size:15px;line-height
 ══════════════════════════════════════ -->
 <div class="slide" id="s5">
   <div class="slide-inner">
-    <div class="eyebrow">05 · Product Status</div>
+    <div class="eyebrow">06 · Product Status</div>
     <div class="slide-title">The Product Is Built.<br>Capital Closes the Final Gaps.</div>
     <div class="built-grid">
       <div class="built-card done">
@@ -777,7 +878,7 @@ body{font-family:'Inter',sans-serif;color:var(--text);font-size:15px;line-height
 ══════════════════════════════════════ -->
 <div class="slide" id="s6">
   <div class="slide-inner">
-    <div class="eyebrow">06 · Business Model</div>
+    <div class="eyebrow">07 · Business Model</div>
     <div class="slide-title">Five Revenue Streams.<br>All Tied to User Activity.</div>
     <div class="rev-list">
       <div class="rev-item">
@@ -819,7 +920,7 @@ body{font-family:'Inter',sans-serif;color:var(--text);font-size:15px;line-height
 ══════════════════════════════════════ -->
 <div class="slide" id="s7">
   <div class="slide-inner">
-    <div class="eyebrow">07 · The Ask</div>
+    <div class="eyebrow">08 · The Ask</div>
     <div class="slide-title">$50K – $100K Bridge Capital<br>to Close Every Gap Before Beta</div>
     <div class="ask-2col">
       <div class="ask-card">
@@ -868,7 +969,7 @@ body{font-family:'Inter',sans-serif;color:var(--text);font-size:15px;line-height
 ══════════════════════════════════════ -->
 <div class="slide" id="s8">
   <div class="slide-inner">
-    <div class="eyebrow">08 · Equity</div>
+    <div class="eyebrow">09 · Equity</div>
     <div class="slide-title">Three Entry Points.<br>One Destination.</div>
     <div class="eq-3col">
       <div class="eq-card">
@@ -910,7 +1011,7 @@ body{font-family:'Inter',sans-serif;color:var(--text);font-size:15px;line-height
 ══════════════════════════════════════ -->
 <div class="slide" id="s9">
   <div class="slide-inner">
-    <div class="eyebrow">09 · Execution Timeline</div>
+    <div class="eyebrow">10 · Execution Timeline</div>
     <div class="slide-title">10 Weeks. 100 Users.<br>Proof of Traction.</div>
     <div class="tl-row">
       <div class="tl-phase">
@@ -980,7 +1081,7 @@ body{font-family:'Inter',sans-serif;color:var(--text);font-size:15px;line-height
 ══════════════════════════════════════ -->
 <div class="slide" id="s10">
   <div class="slide-inner scrollable">
-    <div class="eyebrow">10 · Series Seed Roadmap</div>
+    <div class="eyebrow">11 · Series Seed Roadmap</div>
     <div class="slide-title">From Beta Proof<br>to $2M – $5M Raise</div>
 
     <div class="rm-track">
@@ -1102,7 +1203,7 @@ body{font-family:'Inter',sans-serif;color:var(--text);font-size:15px;line-height
 ══════════════════════════════════════ -->
 <div class="slide" id="s11">
   <div class="slide-inner">
-    <div class="eyebrow">11 · Series Seed · What We Are Building Toward</div>
+    <div class="eyebrow">12 · Series Seed · What We Are Building Toward</div>
     <div class="slide-title">$2M – $5M at<br>$5M – $15M Pre-Money</div>
     <div class="seed-2col">
       <div>
@@ -1148,7 +1249,7 @@ body{font-family:'Inter',sans-serif;color:var(--text);font-size:15px;line-height
 ══════════════════════════════════════ -->
 <div class="slide" id="s12">
   <div class="slide-inner">
-    <div class="eyebrow">12 · Why Now</div>
+    <div class="eyebrow">13 · Why Now</div>
     <div class="slide-title">The Window Is Open.<br>It Will Not Stay Open.</div>
     <div class="whynow-grid">
       <div class="wn-card">
@@ -1221,7 +1322,7 @@ body{font-family:'Inter',sans-serif;color:var(--text);font-size:15px;line-height
 </div>
 
 <script>
-const TOTAL = 13;
+const TOTAL = 14;
 let cur = 0;
 const slides = document.querySelectorAll('.slide');
 const dotsEl = document.getElementById('dots');
