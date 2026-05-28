@@ -520,9 +520,9 @@ function FeaturedReportCard() {
         }}>
           {/* Real logo */}
           <img
-            src="/genesis-logo.svg"
+            src="/genesis-logo.png"
             alt="Genesis Reserve"
-            style={{ width: 80, height: 80, borderRadius: '50%', flexShrink: 0, filter: 'drop-shadow(0 0 20px rgba(201,168,76,0.50))', position: 'relative', zIndex: 1 }}
+            style={{ width: 80, height: 80, borderRadius: '50%', flexShrink: 0, objectFit: 'cover', filter: 'drop-shadow(0 0 0 2px rgba(201,168,76,0.45)) drop-shadow(0 0 18px rgba(201,168,76,0.40)) drop-shadow(0 0 40px rgba(201,168,76,0.16))', position: 'relative', zIndex: 1 }}
           />
           {/* Title block */}
           <div style={{ position: 'relative', zIndex: 1 }}>
