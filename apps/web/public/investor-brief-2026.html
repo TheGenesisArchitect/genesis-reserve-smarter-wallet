@@ -1,8 +1,8 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Genesis Reserve â€” Investor Brief Â· May 2026</title>
+<title>Genesis Reserve — Investor Brief · May 2026</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Tenor+Sans&display=swap" rel="stylesheet">
 <style>
@@ -16,14 +16,14 @@
     -webkit-print-color-adjust: exact;
   }
 
-  /* â”€â”€ Print â”€â”€ */
+  /* ── Print ── */
   @media print {
     body { background:#fff; color:#111; }
     .cover { background:#06080d !important; }
     .section { page-break-inside:avoid; }
   }
 
-  /* â”€â”€ Cover â”€â”€ */
+  /* ── Cover ── */
   .cover {
     background: linear-gradient(160deg,#06080d 60%,#0d1018);
     border-bottom:1px solid rgba(201,168,76,0.18);
@@ -46,16 +46,16 @@
     display:block;
   }
   .cover-eyebrow {
-    font-size:9px; font-weight:700; letter-spacing:.28em; text-transform:uppercase;
+    font-size:11px; font-weight:700; letter-spacing:.28em; text-transform:uppercase;
     color:#c9a84c; margin-bottom:12px;
   }
   .cover-title {
     font-family:'Cormorant Garamond',serif;
-    font-size:42px; font-weight:300; color:#fff;
+    font-size:48px; font-weight:300; color:#fff;
     line-height:1.15; letter-spacing:.02em; margin-bottom:10px;
   }
   .cover-sub {
-    font-size:13px; color:rgba(245,240,232,.5);
+    font-size:16px; color:rgba(245,240,232,.5);
     letter-spacing:.06em; margin-bottom:36px;
   }
   .cover-pills { display:flex; gap:10px; flex-wrap:wrap; }
@@ -67,57 +67,57 @@
   .pill-teal { color:#00D4AA; background:rgba(0,212,170,.09); border:1px solid rgba(0,212,170,.22); }
   .pill-gray { color:rgba(245,240,232,.55); background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); }
 
-  /* â”€â”€ Layout â”€â”€ */
+  /* ── Layout ── */
   .body { max-width:860px; margin:0 auto; padding:52px 72px 80px; display:flex; flex-direction:column; gap:52px; }
 
-  /* â”€â”€ Section â”€â”€ */
+  /* ── Section ── */
   .section { display:flex; flex-direction:column; gap:20px; }
   .section-header {
     display:flex; align-items:center; gap:14px; padding-bottom:14px;
     border-bottom:1px solid rgba(201,168,76,.12);
   }
   .section-number {
-    font-size:9px; font-weight:700; letter-spacing:.22em; text-transform:uppercase;
+    font-size:11px; font-weight:700; letter-spacing:.22em; text-transform:uppercase;
     color:#c9a84c; opacity:.7; flex-shrink:0;
   }
   .section-title {
     font-family:'Cormorant Garamond',serif;
-    font-size:22px; font-weight:300; color:#f5f0e8; letter-spacing:.04em;
+    font-size:28px; font-weight:300; color:#f5f0e8; letter-spacing:.04em;
   }
 
-  /* â”€â”€ Prose â”€â”€ */
-  p { font-family:'Cormorant Garamond',serif; font-size:15px; color:rgba(245,240,232,.82); line-height:1.82; }
+  /* ── Prose ── */
+  p { font-family:'Cormorant Garamond',serif; font-size:18px; color:rgba(245,240,232,.82); line-height:1.8; }
   strong { color:#f5f0e8; font-weight:600; }
 
-  /* â”€â”€ Status grid â”€â”€ */
+  /* ── Status grid ── */
   .status-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
   .status-card {
     padding:14px 16px; border-radius:10px;
     background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.08);
     display:flex; flex-direction:column; gap:5px;
   }
-  .status-label { font-size:11px; color:rgba(245,240,232,.75); letter-spacing:.03em; }
-  .status-val { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; }
+  .status-label { font-size:13px; color:rgba(245,240,232,.75); letter-spacing:.03em; }
+  .status-val { font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; }
   .s-done  { color:#1ABF6A; }
   .s-part  { color:#c9a84c; }
   .s-todo  { color:rgba(232,64,64,.9); }
 
-  /* â”€â”€ Tables â”€â”€ */
+  /* ── Tables ── */
   table { width:100%; border-collapse:collapse; }
   thead th {
-    font-size:9px; font-weight:700; letter-spacing:.18em; text-transform:uppercase;
-    color:rgba(245,240,232,.38); padding:8px 14px; text-align:left;
+    font-size:11px; font-weight:700; letter-spacing:.18em; text-transform:uppercase;
+    color:rgba(245,240,232,.38); padding:10px 14px; text-align:left;
     border-bottom:1px solid rgba(255,255,255,.07);
   }
   tbody tr { border-bottom:1px solid rgba(255,255,255,.05); }
   tbody tr:last-child { border-bottom:none; }
-  tbody td { padding:11px 14px; font-size:13px; font-family:'Cormorant Garamond',serif; color:rgba(245,240,232,.8); vertical-align:top; }
-  td.label { color:rgba(245,240,232,.55); font-size:12px; white-space:nowrap; }
+  tbody td { padding:13px 14px; font-size:15px; font-family:'Cormorant Garamond',serif; color:rgba(245,240,232,.8); vertical-align:top; }
+  td.label { color:rgba(245,240,232,.55); font-size:14px; white-space:nowrap; }
   td.amount { color:#f5f0e8; font-weight:600; white-space:nowrap; }
   td.teal { color:#00D4AA; font-weight:700; }
   td.gold { color:#c9a84c; font-weight:700; }
 
-  /* â”€â”€ Budget card â”€â”€ */
+  /* ── Budget card ── */
   .budget-row {
     display:grid; grid-template-columns:1fr 1fr; gap:16px;
   }
@@ -130,15 +130,15 @@
     padding:14px 18px; border-bottom:1px solid rgba(201,168,76,.14);
     background:rgba(201,168,76,.06);
   }
-  .budget-title { font-size:11px; font-weight:700; letter-spacing:.15em; text-transform:uppercase; color:#c9a84c; }
-  .budget-total { font-family:'Cormorant Garamond',serif; font-size:26px; font-weight:300; color:#fff; margin-top:4px; }
+  .budget-title { font-size:12px; font-weight:700; letter-spacing:.15em; text-transform:uppercase; color:#c9a84c; }
+  .budget-total { font-family:'Cormorant Garamond',serif; font-size:30px; font-weight:300; color:#fff; margin-top:4px; }
   .budget-body { padding:14px 18px; display:flex; flex-direction:column; gap:8px; }
-  .budget-line { display:flex; justify-content:space-between; align-items:center; font-size:12px; font-family:'Cormorant Garamond',serif; }
+  .budget-line { display:flex; justify-content:space-between; align-items:center; font-size:14px; font-family:'Cormorant Garamond',serif; }
   .budget-line-label { color:rgba(245,240,232,.65); }
   .budget-line-val { color:#f5f0e8; font-weight:600; }
   .budget-divider { height:1px; background:rgba(255,255,255,.06); margin:4px 0; }
 
-  /* â”€â”€ Timeline â”€â”€ */
+  /* ── Timeline ── */
   .timeline { display:flex; flex-direction:column; gap:0; }
   .tl-item { display:flex; gap:20px; }
   .tl-spine { display:flex; flex-direction:column; align-items:center; gap:0; }
@@ -146,11 +146,11 @@
   .tl-line { flex:1; width:1px; background:rgba(201,168,76,.2); min-height:32px; }
   .tl-item:last-child .tl-line { display:none; }
   .tl-content { padding-bottom:24px; flex:1; }
-  .tl-week { font-size:9px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:#c9a84c; margin-bottom:4px; }
-  .tl-head { font-size:14px; color:#f5f0e8; margin-bottom:4px; }
-  .tl-body { font-family:'Cormorant Garamond',serif; font-size:13px; color:rgba(245,240,232,.6); line-height:1.65; }
+  .tl-week { font-size:11px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:#c9a84c; margin-bottom:4px; }
+  .tl-head { font-size:16px; color:#f5f0e8; margin-bottom:4px; }
+  .tl-body { font-family:'Cormorant Garamond',serif; font-size:15px; color:rgba(245,240,232,.6); line-height:1.65; }
 
-  /* â”€â”€ Equity cards â”€â”€ */
+  /* ── Equity cards ── */
   .equity-row { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; }
   .equity-card {
     border-radius:12px; padding:20px 18px;
@@ -158,37 +158,37 @@
     display:flex; flex-direction:column; gap:10px;
   }
   .equity-card.featured { background:rgba(201,168,76,.07); border-color:rgba(201,168,76,.32); }
-  .equity-card .ec-label { font-size:9px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:rgba(245,240,232,.4); }
+  .equity-card .ec-label { font-size:11px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:rgba(245,240,232,.4); }
   .equity-card.featured .ec-label { color:#c9a84c; }
-  .equity-card .ec-amount { font-family:'Cormorant Garamond',serif; font-size:28px; font-weight:300; color:#fff; }
-  .equity-card .ec-stake { font-size:22px; font-family:'Cormorant Garamond',serif; font-weight:600; color:#c9a84c; }
-  .equity-card .ec-val { font-size:11px; color:rgba(245,240,232,.45); letter-spacing:.04em; }
-  .equity-card .ec-note { font-family:'Cormorant Garamond',serif; font-size:13px; color:rgba(245,240,232,.6); line-height:1.6; }
+  .equity-card .ec-amount { font-family:'Cormorant Garamond',serif; font-size:30px; font-weight:300; color:#fff; }
+  .equity-card .ec-stake { font-size:24px; font-family:'Cormorant Garamond',serif; font-weight:600; color:#c9a84c; }
+  .equity-card .ec-val { font-size:13px; color:rgba(245,240,232,.45); letter-spacing:.04em; }
+  .equity-card .ec-note { font-family:'Cormorant Garamond',serif; font-size:15px; color:rgba(245,240,232,.6); line-height:1.6; }
   .ec-divider { height:1px; background:rgba(255,255,255,.07); }
 
-  /* â”€â”€ Outcomes â”€â”€ */
+  /* ── Outcomes ── */
   .outcome-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; }
   .outcome-card {
     padding:16px; border-radius:10px;
     background:rgba(0,212,170,.05); border:1px solid rgba(0,212,170,.15);
     display:flex; flex-direction:column; gap:6px;
   }
-  .oc-metric { font-family:'Cormorant Garamond',serif; font-size:24px; font-weight:300; color:#00D4AA; }
-  .oc-label { font-size:10px; color:rgba(245,240,232,.55); letter-spacing:.06em; line-height:1.55; }
+  .oc-metric { font-family:'Cormorant Garamond',serif; font-size:28px; font-weight:300; color:#00D4AA; }
+  .oc-label { font-size:12px; color:rgba(245,240,232,.55); letter-spacing:.06em; line-height:1.55; }
 
-  /* â”€â”€ Callout â”€â”€ */
+  /* ── Callout ── */
   .callout {
-    padding:18px 20px; border-radius:12px;
+    padding:20px 24px; border-radius:12px;
     background:rgba(201,168,76,.06); border:1px solid rgba(201,168,76,.2);
-    font-family:'Cormorant Garamond',serif; font-size:15px;
+    font-family:'Cormorant Garamond',serif; font-size:17px;
     color:rgba(245,240,232,.82); line-height:1.75;
   }
   .callout strong { color:#c9a84c; }
 
-  /* â”€â”€ Divider â”€â”€ */
+  /* ── Divider ── */
   hr { border:none; border-top:1px solid rgba(255,255,255,.06); }
 
-  /* â”€â”€ Footer â”€â”€ */
+  /* ── Footer ── */
   .footer {
     padding:28px 72px; border-top:1px solid rgba(201,168,76,.1);
     display:flex; justify-content:space-between; align-items:center;
@@ -198,38 +198,38 @@
 </head>
 <body>
 
-<!-- â•â•â•â•â•â• COVER â•â•â•â•â•â• -->
+<!-- ══════ COVER ══════ -->
 <div class="cover">
   <img src="/genesis-logo.png" class="cover-logo" alt="Genesis Reserve">
-  <div class="cover-eyebrow">Confidential Â· Investor Brief Â· May 2026</div>
+  <div class="cover-eyebrow">Confidential · Investor Brief · May 2026</div>
   <div class="cover-title">Genesis Reserve<br>Smarter Wallet</div>
-  <div class="cover-sub">Seed Capital Discussion Â· Beta Launch &amp; Go-to-Market</div>
+  <div class="cover-sub">Seed Capital Discussion · Beta Launch &amp; Go-to-Market</div>
   <div class="cover-pills">
-    <span class="pill pill-gold">Arbitrum One Â· Live Contracts</span>
-    <span class="pill pill-teal">USDC Yield Â· DeFi Vaults</span>
-    <span class="pill pill-gray">Pre-Revenue Â· MVP Complete</span>
+    <span class="pill pill-gold">Arbitrum One · Live Contracts</span>
+    <span class="pill pill-teal">USDC Yield · DeFi Vaults</span>
+    <span class="pill pill-gray">Pre-Revenue · MVP Complete</span>
     <span class="pill pill-gray">100-User Beta Target</span>
   </div>
 </div>
 
-<!-- â•â•â•â•â•â• BODY â•â•â•â•â•â• -->
+<!-- ══════ BODY ══════ -->
 <div class="body">
 
-  <!-- â”€â”€ 01 Â· EXECUTIVE SUMMARY â”€â”€ -->
+  <!-- ── 01 · EXECUTIVE SUMMARY ── -->
   <div class="section">
     <div class="section-header">
       <span class="section-number">01</span>
       <span class="section-title">Executive Summary</span>
     </div>
-    <p>Genesis Reserve is a <strong>self-custody DeFi wallet</strong> built on Arbitrum One that automatically routes user deposits into institutional-grade yield strategies â€” Aave V3, Balancer V3, and T-Bill equivalents â€” delivering real returns every 15 minutes. The product is positioned as the Smarter Wallet: an alternative to savings accounts and money market funds for people who refuse to stay on the wrong side of financial history.</p>
+    <p>Genesis Reserve is a <strong>self-custody DeFi wallet</strong> built on Arbitrum One that automatically routes user deposits into institutional-grade yield strategies — Aave V3, Balancer V3, and T-Bill equivalents — delivering real returns every 15 minutes. The product is positioned as the Smarter Wallet: an alternative to savings accounts and money market funds for people who refuse to stay on the wrong side of financial history.</p>
     <p>The <strong>core infrastructure is built and deployed</strong>. Smart contracts are live on Arbitrum One mainnet. The web application handles authentication (Privy embedded wallets), vault deposits and withdrawals, fiat on/off ramp (Transak + Ramp Network), a compliant card payout system (Stripe), and a live crypto news intelligence feed. The product is functionally complete at an MVP level.</p>
-    <p>This raise is a <strong>targeted $50Kâ€“$100K seed</strong> to close the final engineering gaps, complete a smart contract security audit, establish legal infrastructure, and execute a 100-user paid beta â€” the proof-of-traction milestone required to raise a formal seed round at scale.</p>
+    <p>This raise is a <strong>targeted $50K–$100K seed</strong> to close the final engineering gaps, complete a smart contract security audit, establish legal infrastructure, and execute a 100-user paid beta — the proof-of-traction milestone required to raise a formal seed round at scale.</p>
     <div class="callout">
       <strong>The ask is not to build the product.</strong> The product is built. This capital closes the gap between a working MVP and a production-grade system with real users, real money, and real data to bring to the next table.
     </div>
   </div>
 
-  <!-- â”€â”€ 02 Â· CURRENT STATE â”€â”€ -->
+  <!-- ── 02 · CURRENT STATE ── -->
   <div class="section">
     <div class="section-header">
       <span class="section-number">02</span>
@@ -237,80 +237,80 @@
     </div>
     <div class="status-grid">
       <div class="status-card">
-        <span class="status-label">Smart Contracts Â· Arbitrum One</span>
-        <span class="status-val s-done">âœ“ Live on Mainnet</span>
+        <span class="status-label">Smart Contracts · Arbitrum One</span>
+        <span class="status-val s-done">✓ Live on Mainnet</span>
       </div>
       <div class="status-card">
         <span class="status-label">Web Wallet Application</span>
-        <span class="status-val s-done">âœ“ Deployed Â· Vercel</span>
+        <span class="status-val s-done">✓ Deployed · Vercel</span>
       </div>
       <div class="status-card">
-        <span class="status-label">Privy Embedded Wallets Â· Auth</span>
-        <span class="status-val s-done">âœ“ Production-Configured</span>
+        <span class="status-label">Privy Embedded Wallets · Auth</span>
+        <span class="status-val s-done">✓ Production-Configured</span>
       </div>
       <div class="status-card">
         <span class="status-label">Aave V3 / Balancer / tBill Adapters</span>
-        <span class="status-val s-done">âœ“ Deployed &amp; Integrated</span>
+        <span class="status-val s-done">✓ Deployed &amp; Integrated</span>
       </div>
       <div class="status-card">
-        <span class="status-label">Fiat On-Ramp Â· Transak + Ramp Network</span>
-        <span class="status-val s-part">â¬¡ Staging â€” Needs API Keys</span>
+        <span class="status-label">Fiat On-Ramp · Transak + Ramp Network</span>
+        <span class="status-val s-part">⬡ Staging — Needs API Keys</span>
       </div>
       <div class="status-card">
-        <span class="status-label">Fiat Off-Ramp Â· Stripe Push-to-Card</span>
-        <span class="status-val s-part">â¬¡ Built â€” Needs Stripe Config</span>
+        <span class="status-label">Fiat Off-Ramp · Stripe Push-to-Card</span>
+        <span class="status-val s-part">⬡ Built — Needs Stripe Config</span>
       </div>
       <div class="status-card">
-        <span class="status-label">Compliance Registry Â· On-Chain KYC</span>
-        <span class="status-val s-part">â¬¡ Contract Live â€” KYC Needs Wiring</span>
+        <span class="status-label">Compliance Registry · On-Chain KYC</span>
+        <span class="status-val s-part">⬡ Contract Live — KYC Needs Wiring</span>
       </div>
       <div class="status-card">
         <span class="status-label">Mobile-Responsive UI</span>
-        <span class="status-val s-done">âœ“ Responsive Â· All Screen Sizes</span>
+        <span class="status-val s-done">✓ Responsive · All Screen Sizes</span>
       </div>
       <div class="status-card">
         <span class="status-label">News Intelligence Feed</span>
-        <span class="status-val s-done">âœ“ Live Â· 9 Crypto RSS Sources</span>
+        <span class="status-val s-done">✓ Live · 9 Crypto RSS Sources</span>
       </div>
       <div class="status-card">
         <span class="status-label">Smart Contract Security Audit</span>
-        <span class="status-val s-todo">âœ— Not Yet Completed</span>
+        <span class="status-val s-todo">✗ Not Yet Completed</span>
       </div>
       <div class="status-card">
         <span class="status-label">Terms of Service / Privacy Policy</span>
-        <span class="status-val s-todo">âœ— Pages Not Yet Published</span>
+        <span class="status-val s-todo">✗ Pages Not Yet Published</span>
       </div>
       <div class="status-card">
         <span class="status-label">User Onboarding Flow</span>
-        <span class="status-val s-todo">âœ— Not Built</span>
+        <span class="status-val s-todo">✗ Not Built</span>
       </div>
     </div>
   </div>
 
-  <!-- â”€â”€ 03 Â· CAPITAL DEPLOYMENT â”€â”€ -->
+  <!-- ── 03 · CAPITAL DEPLOYMENT ── -->
   <div class="section">
     <div class="section-header">
       <span class="section-number">03</span>
-      <span class="section-title">Capital Deployment Â· OpEx Breakdown</span>
+      <span class="section-title">Capital Deployment · OpEx Breakdown</span>
     </div>
-    <p>Capital is deployed across four buckets: <strong>infrastructure</strong> to support beta users, <strong>security</strong> to audit the smart contracts before real money enters, <strong>legal</strong> to establish the compliance foundation, and <strong>people</strong> â€” part-time engineering and operations to execute the launch. Both budget scenarios take the product through a 100-user beta and position it for a formal seed raise.</p>
+    <p>Capital is deployed across four buckets: <strong>infrastructure</strong> to support beta users, <strong>security</strong> to audit the smart contracts before real money enters, <strong>legal</strong> to establish the compliance foundation, and <strong>people</strong> — part-time engineering and operations to execute the launch. Both budget scenarios take the product through a 100-user beta and position it for a formal seed raise.</p>
 
     <div class="budget-row">
       <!-- $50K -->
       <div class="budget-card">
         <div class="budget-header">
-          <div class="budget-title">Lean Launch Â· 3-Month Runway</div>
+          <div class="budget-title">Lean Launch · 3-Month Runway</div>
           <div class="budget-total">$50,000</div>
         </div>
         <div class="budget-body">
           <div class="budget-line"><span class="budget-line-label">Smart Contract Audit</span><span class="budget-line-val">$15,000</span></div>
           <div class="budget-line"><span class="budget-line-label">Part-Time Engineering (2 mo.)</span><span class="budget-line-val">$12,000</span></div>
           <div class="budget-divider"></div>
-          <div class="budget-line"><span class="budget-line-label">Legal Â· ToS, Privacy, Counsel</span><span class="budget-line-val">$8,000</span></div>
-          <div class="budget-line"><span class="budget-line-label">Marketing Â· Beta Acquisition</span><span class="budget-line-val">$4,500</span></div>
+          <div class="budget-line"><span class="budget-line-label">Legal · ToS, Privacy, Counsel</span><span class="budget-line-val">$8,000</span></div>
+          <div class="budget-line"><span class="budget-line-label">Marketing · Beta Acquisition</span><span class="budget-line-val">$4,500</span></div>
           <div class="budget-line"><span class="budget-line-label">Part-Time Ops / Community (2 mo.)</span><span class="budget-line-val">$5,000</span></div>
           <div class="budget-divider"></div>
-          <div class="budget-line"><span class="budget-line-label">Infrastructure Â· 6-Month Stack</span><span class="budget-line-val">$3,500</span></div>
+          <div class="budget-line"><span class="budget-line-label">Infrastructure · 6-Month Stack</span><span class="budget-line-val">$3,500</span></div>
           <div class="budget-line"><span class="budget-line-label">Buffer &amp; Contingency</span><span class="budget-line-val">$2,000</span></div>
         </div>
       </div>
@@ -318,18 +318,18 @@
       <!-- $100K -->
       <div class="budget-card" style="border-color:rgba(201,168,76,.38);">
         <div class="budget-header" style="background:rgba(201,168,76,.1);">
-          <div class="budget-title" style="opacity:.9;">Full Go-to-Market Â· 6-Month Runway</div>
+          <div class="budget-title" style="opacity:.9;">Full Go-to-Market · 6-Month Runway</div>
           <div class="budget-total">$100,000</div>
         </div>
         <div class="budget-body">
           <div class="budget-line"><span class="budget-line-label">Smart Contract Audit + Pen Test</span><span class="budget-line-val">$22,000</span></div>
           <div class="budget-line"><span class="budget-line-label">Part-Time Engineering (3 mo.)</span><span class="budget-line-val">$21,000</span></div>
           <div class="budget-divider"></div>
-          <div class="budget-line"><span class="budget-line-label">Legal Â· Comprehensive Package</span><span class="budget-line-val">$12,000</span></div>
-          <div class="budget-line"><span class="budget-line-label">Marketing Â· Content + Paid Acquisition</span><span class="budget-line-val">$10,000</span></div>
+          <div class="budget-line"><span class="budget-line-label">Legal · Comprehensive Package</span><span class="budget-line-val">$12,000</span></div>
+          <div class="budget-line"><span class="budget-line-label">Marketing · Content + Paid Acquisition</span><span class="budget-line-val">$10,000</span></div>
           <div class="budget-line"><span class="budget-line-label">Part-Time Ops / Community (4 mo.)</span><span class="budget-line-val">$12,000</span></div>
           <div class="budget-divider"></div>
-          <div class="budget-line"><span class="budget-line-label">Infrastructure Â· 12-Month Stack</span><span class="budget-line-val">$7,000</span></div>
+          <div class="budget-line"><span class="budget-line-label">Infrastructure · 12-Month Stack</span><span class="budget-line-val">$7,000</span></div>
           <div class="budget-line"><span class="budget-line-label">Accounting &amp; Bookkeeping (6 mo.)</span><span class="budget-line-val">$3,000</span></div>
           <div class="budget-line"><span class="budget-line-label">Buffer &amp; Contingency</span><span class="budget-line-val">$13,000</span></div>
         </div>
@@ -356,18 +356,18 @@
     </table>
   </div>
 
-  <!-- â”€â”€ 04 Â· TIMELINE â”€â”€ -->
+  <!-- ── 04 · TIMELINE ── -->
   <div class="section">
     <div class="section-header">
       <span class="section-number">04</span>
-      <span class="section-title">Time to Beta Â· 10-Week Rollout</span>
+      <span class="section-title">Time to Beta · 10-Week Rollout</span>
     </div>
 
     <div class="timeline">
       <div class="tl-item">
         <div class="tl-spine"><div class="tl-dot"></div><div class="tl-line"></div></div>
         <div class="tl-content">
-          <div class="tl-week">Weeks 1 â€“ 2 Â· Engineering Closure</div>
+          <div class="tl-week">Weeks 1 – 2 · Engineering Closure</div>
           <div class="tl-head">Close Production Gaps</div>
           <div class="tl-body">Wire DATABASE_URL for persistent card/account data. Complete Transak and Ramp webhook reconciliation. Add Sentry error monitoring. Harden rate limiting. Build user onboarding flow. Publish Terms of Service and Privacy Policy pages.</div>
         </div>
@@ -375,7 +375,7 @@
       <div class="tl-item">
         <div class="tl-spine"><div class="tl-dot"></div><div class="tl-line"></div></div>
         <div class="tl-content">
-          <div class="tl-week">Weeks 3 â€“ 4 Â· Partner + Legal</div>
+          <div class="tl-week">Weeks 3 – 4 · Partner + Legal</div>
           <div class="tl-head">Production API Keys &amp; Legal Foundation</div>
           <div class="tl-body">Complete KYB with Transak and Ramp Network to unlock production on-ramp keys. Configure Stripe production credentials. Engage legal counsel for ToS, Privacy Policy, and FinCEN MSB registration review. Smart contract audit firm engaged and scoping begins.</div>
         </div>
@@ -383,7 +383,7 @@
       <div class="tl-item">
         <div class="tl-spine"><div class="tl-dot"></div><div class="tl-line"></div></div>
         <div class="tl-content">
-          <div class="tl-week">Weeks 5 â€“ 7 Â· Audit + Waitlist</div>
+          <div class="tl-week">Weeks 5 – 7 · Audit + Waitlist</div>
           <div class="tl-head">Security Audit &amp; Beta Waitlist</div>
           <div class="tl-body">Smart contract audit in progress. Begin active beta waitlist building across social channels and direct outreach. Legal documents finalized and live. Audit findings reviewed and remediated. Penetration test (full budget scenario).</div>
         </div>
@@ -391,34 +391,34 @@
       <div class="tl-item">
         <div class="tl-spine"><div class="tl-dot"></div><div class="tl-line"></div></div>
         <div class="tl-content">
-          <div class="tl-week">Weeks 8 â€“ 9 Â· Soft Launch</div>
+          <div class="tl-week">Weeks 8 – 9 · Soft Launch</div>
           <div class="tl-head">First 25 Beta Users</div>
-          <div class="tl-body">Controlled onboarding of first 25 users â€” founders, early supporters, referrals. Full end-to-end testing with live capital. Iterate on onboarding friction, vault UX, and support flow based on real user behavior. Gather qualitative feedback.</div>
+          <div class="tl-body">Controlled onboarding of first 25 users — founders, early supporters, referrals. Full end-to-end testing with live capital. Iterate on onboarding friction, vault UX, and support flow based on real user behavior. Gather qualitative feedback.</div>
         </div>
       </div>
       <div class="tl-item">
         <div class="tl-spine"><div class="tl-dot" style="background:#00D4AA;"></div><div class="tl-line"></div></div>
         <div class="tl-content">
-          <div class="tl-week">Weeks 10 â€“ 12 Â· 100-User Beta</div>
-          <div class="tl-head">Full Beta Â· Data Collection Begins</div>
+          <div class="tl-week">Weeks 10 – 12 · 100-User Beta</div>
+          <div class="tl-head">Full Beta · Data Collection Begins</div>
           <div class="tl-body">Expand to 100 users. Measure deposit size, vault utilization rate, on-ramp conversion, and 30-day retention. This data package becomes the proof-of-traction for the next institutional raise. Begin Series Seed preparation.</div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- â”€â”€ 05 Â· EXPECTED OUTCOMES â”€â”€ -->
+  <!-- ── 05 · EXPECTED OUTCOMES ── -->
   <div class="section">
     <div class="section-header">
       <span class="section-number">05</span>
-      <span class="section-title">Expected Outcomes Â· 100-User Beta</span>
+      <span class="section-title">Expected Outcomes · 100-User Beta</span>
     </div>
-    <p>These projections are conservative estimates based on DeFi wallet industry benchmarks and comparable early-stage fintech beta programs. The primary goal of the beta is <strong>data collection and proof of retention</strong> â€” not revenue maximization.</p>
+    <p>These projections are conservative estimates based on DeFi wallet industry benchmarks and comparable early-stage fintech beta programs. The primary goal of the beta is <strong>data collection and proof of retention</strong> — not revenue maximization.</p>
 
     <div class="outcome-grid">
       <div class="outcome-card">
-        <div class="oc-metric">$25Kâ€“$50K</div>
-        <div class="oc-label">Estimated capital deployed to vaults<br><em>$250â€“$500 avg. deposit Ã— 100 users</em></div>
+        <div class="oc-metric">$25K–$50K</div>
+        <div class="oc-label">Estimated capital deployed to vaults<br><em>$250–$500 avg. deposit × 100 users</em></div>
       </div>
       <div class="outcome-card">
         <div class="oc-metric">60%+</div>
@@ -437,7 +437,7 @@
         <div class="oc-label">Active yield strategies per vault<br><em>Aave V3, Balancer V3, T-Bill</em></div>
       </div>
       <div class="outcome-card">
-        <div class="oc-metric">$2Mâ€“$5M</div>
+        <div class="oc-metric">$2M–$5M</div>
         <div class="oc-label">Target post-beta seed raise<br><em>With traction data from 100-user proof</em></div>
       </div>
     </div>
@@ -447,19 +447,19 @@
         <tr><th>KPI</th><th>Definition</th><th>Beta Target</th></tr>
       </thead>
       <tbody>
-        <tr><td class="label">Deposit-to-Vault Rate</td><td>% of funded wallets that deploy to a vault</td><td class="teal">â‰¥ 70%</td></tr>
-        <tr><td class="label">30-Day Retention</td><td>% of users still active at Day 30</td><td class="teal">â‰¥ 60%</td></tr>
-        <tr><td class="label">Avg. Deposit Size</td><td>Initial USDC deposit per user</td><td class="gold">$250 â€“ $500</td></tr>
-        <tr><td class="label">On-Ramp Conversion</td><td>% of users who complete fiat â†’ USDC</td><td class="teal">â‰¥ 50%</td></tr>
+        <tr><td class="label">Deposit-to-Vault Rate</td><td>% of funded wallets that deploy to a vault</td><td class="teal">≥ 70%</td></tr>
+        <tr><td class="label">30-Day Retention</td><td>% of users still active at Day 30</td><td class="teal">≥ 60%</td></tr>
+        <tr><td class="label">Avg. Deposit Size</td><td>Initial USDC deposit per user</td><td class="gold">$250 – $500</td></tr>
+        <tr><td class="label">On-Ramp Conversion</td><td>% of users who complete fiat → USDC</td><td class="teal">≥ 50%</td></tr>
         <tr><td class="label">Support Ticket Rate</td><td>Support contacts per 100 users per month</td><td class="gold">&lt; 15</td></tr>
-        <tr><td class="label">NPS Score</td><td>Net Promoter Score from beta survey</td><td class="gold">â‰¥ 40</td></tr>
+        <tr><td class="label">NPS Score</td><td>Net Promoter Score from beta survey</td><td class="gold">≥ 40</td></tr>
       </tbody>
     </table>
 
-    <p>A successful beta â€” 100 users, 60% retention, and $25K+ deployed to vaults â€” creates the data package required to raise a <strong>$2Mâ€“$5M Series Seed</strong> at institutional valuations and begin aggressive user acquisition.</p>
+    <p>A successful beta — 100 users, 60% retention, and $25K+ deployed to vaults — creates the data package required to raise a <strong>$2M–$5M Series Seed</strong> at institutional valuations and begin aggressive user acquisition.</p>
   </div>
 
-  <!-- â”€â”€ 06 Â· REVENUE MODEL â”€â”€ -->
+  <!-- ── 06 · REVENUE MODEL ── -->
   <div class="section">
     <div class="section-header">
       <span class="section-number">06</span>
@@ -473,12 +473,12 @@
         <tr>
           <td class="label">Yield Spread</td>
           <td>Protocol retains a percentage of vault yield generated for members</td>
-          <td class="gold">Primary Â· Scales with TVL</td>
+          <td class="gold">Primary · Scales with TVL</td>
         </tr>
         <tr>
           <td class="label">On-Ramp Revenue Share</td>
           <td>Transak and Ramp Network pay a fee share on every transaction originated from Genesis Reserve</td>
-          <td class="teal">~$1K/mo at 100 users â†’ $50K+/mo at scale</td>
+          <td class="teal">~$1K/mo at 100 users → $50K+/mo at scale</td>
         </tr>
         <tr>
           <td class="label">Off-Ramp Fees</td>
@@ -488,7 +488,7 @@
         <tr>
           <td class="label">Genesis Reserve Pro (Planned)</td>
           <td>Premium subscription tier: advanced yield strategies, higher limits, priority support</td>
-          <td class="gold">$9.99â€“$29.99/mo recurring</td>
+          <td class="gold">$9.99–$29.99/mo recurring</td>
         </tr>
         <tr>
           <td class="label">B2B Licensing (Future)</td>
@@ -499,41 +499,41 @@
     </table>
   </div>
 
-  <!-- â”€â”€ 07 Â· EQUITY STRUCTURE â”€â”€ -->
+  <!-- ── 07 · EQUITY STRUCTURE ── -->
   <div class="section">
     <div class="section-header">
       <span class="section-number">07</span>
-      <span class="section-title">Equity Structure Â· Three Scenarios</span>
+      <span class="section-title">Equity Structure · Three Scenarios</span>
     </div>
-    <p>Pre-money valuation anchors on the following: live Arbitrum mainnet contracts, a functional full-stack product deployed at <em>genesis-privy.vercel.app</em>, dual on/off ramp integrations, and a clear 10-week path to a 100-user revenue-generating beta. Comparable DeFi/fintech startups at this stage â€” MVP deployed, contracts live, no revenue yet â€” have raised at <strong>$750Kâ€“$2M pre-money</strong>.</p>
+    <p>Pre-money valuation anchors on the following: live Arbitrum mainnet contracts, a functional full-stack product deployed at <em>genesis-privy.vercel.app</em>, dual on/off ramp integrations, and a clear 10-week path to a 100-user revenue-generating beta. Comparable DeFi/fintech startups at this stage — MVP deployed, contracts live, no revenue yet — have raised at <strong>$750K–$2M pre-money</strong>.</p>
 
     <div class="equity-row">
       <!-- Option A -->
       <div class="equity-card">
-        <div class="ec-label">Option A Â· Lean</div>
+        <div class="ec-label">Option A · Lean</div>
         <div class="ec-amount">$50,000</div>
-        <div class="ec-stake">5â€“8% Equity</div>
-        <div class="ec-val">Pre-money: $625K â€“ $1M</div>
+        <div class="ec-stake">5–8% Equity</div>
+        <div class="ec-val">Pre-money: $625K – $1M</div>
         <div class="ec-divider"></div>
         <div class="ec-note">Covers 3-month lean beta sprint. Engineering closure, audit, and 100-user launch. Runway to proof-of-traction for next raise.</div>
       </div>
 
-      <!-- Option B â€” Featured -->
+      <!-- Option B — Featured -->
       <div class="equity-card featured">
-        <div class="ec-label">Option B Â· Recommended</div>
+        <div class="ec-label">Option B · Recommended</div>
         <div class="ec-amount">$75,000</div>
-        <div class="ec-stake">7â€“10% Equity</div>
-        <div class="ec-val">Pre-money: $750K â€“ $1.07M</div>
+        <div class="ec-stake">7–10% Equity</div>
+        <div class="ec-val">Pre-money: $750K – $1.07M</div>
         <div class="ec-divider"></div>
         <div class="ec-note">Full audit, 4-month ops support, comprehensive legal package, and a real marketing budget. Closes every gap cleanly with contingency remaining.</div>
       </div>
 
       <!-- Option C -->
       <div class="equity-card">
-        <div class="ec-label">Option C Â· Full Runway</div>
+        <div class="ec-label">Option C · Full Runway</div>
         <div class="ec-amount">$100,000</div>
-        <div class="ec-stake">8â€“12% Equity</div>
-        <div class="ec-val">Pre-money: $833K â€“ $1.25M</div>
+        <div class="ec-stake">8–12% Equity</div>
+        <div class="ec-val">Pre-money: $833K – $1.25M</div>
         <div class="ec-divider"></div>
         <div class="ec-note">12-month infrastructure runway, pen test + full audit, 6-month ops team, and a funded path to Series Seed preparation. Maximum strategic flexibility.</div>
       </div>
@@ -557,33 +557,32 @@
     </table>
   </div>
 
-  <!-- â”€â”€ 08 Â· WHY NOW â”€â”€ -->
+  <!-- ── 08 · WHY NOW ── -->
   <div class="section">
     <div class="section-header">
       <span class="section-number">08</span>
       <span class="section-title">Why This Moment</span>
     </div>
-    <p>The <strong>U.S. CLARITY Act</strong> â€” the first comprehensive federal digital asset framework â€” is advancing through Congress in 2026. Regulatory clarity is arriving. MiCA is live in Europe. Institutional capital is re-entering DeFi yield products at scale.</p>
-    <p>On-chain stablecoin yields are <strong>outpacing traditional savings accounts and money market funds</strong> by 3â€“8Ã— in the current rate environment. The consumer fintech user who was burned by centralized exchanges in 2022 is actively looking for a self-custody alternative that still feels like a banking app.</p>
+    <p>The <strong>U.S. CLARITY Act</strong> — the first comprehensive federal digital asset framework — is advancing through Congress in 2026. Regulatory clarity is arriving. MiCA is live in Europe. Institutional capital is re-entering DeFi yield products at scale.</p>
+    <p>On-chain stablecoin yields are <strong>outpacing traditional savings accounts and money market funds</strong> by 3–8× in the current rate environment. The consumer fintech user who was burned by centralized exchanges in 2022 is actively looking for a self-custody alternative that still feels like a banking app.</p>
     <p>Genesis Reserve is built exactly for this moment. The infrastructure investment is already made. The window to establish brand authority before this market becomes crowded is <strong>open now and will not remain open indefinitely.</strong></p>
   </div>
 
   <hr>
 
-  <!-- â”€â”€ CONTACT â”€â”€ -->
+  <!-- ── CONTACT ── -->
   <div style="text-align:center; padding:8px 0 0;">
-    <div style="font-size:9px; letter-spacing:.22em; text-transform:uppercase; color:rgba(245,240,232,.3); margin-bottom:8px;">Genesis Reserve Â· Confidential</div>
+    <div style="font-size:9px; letter-spacing:.22em; text-transform:uppercase; color:rgba(245,240,232,.3); margin-bottom:8px;">Genesis Reserve · Confidential</div>
     <div style="font-family:'Cormorant Garamond',serif; font-size:16px; color:rgba(245,240,232,.5);">genesis-privy.vercel.app</div>
   </div>
 
 </div>
 
-<!-- â”€â”€ FOOTER â”€â”€ -->
+<!-- ── FOOTER ── -->
 <div class="footer">
-  <span>Genesis Reserve Â· Investor Brief Â· May 2026</span>
-  <span>Confidential â€” Not for Distribution</span>
+  <span>Genesis Reserve · Investor Brief · May 2026</span>
+  <span>Confidential — Not for Distribution</span>
 </div>
 
 </body>
 </html>
-
