@@ -210,7 +210,9 @@ body{
 }
 
 .wp-sidebar::-webkit-scrollbar{width:3px}
-.wp-sidebar::-webkit-scrollbar-thumb{background:var(--gold);border-radius:2px}
+.wp-sidebar::-webkit-scrollbar-track{background:transparent}
+.wp-sidebar::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#8A6E2A 0%,#C9A84C 55%,#E8CB6E 100%);border-radius:999px}
+.wp-sidebar::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,#C9A84C 0%,#E8CB6E 100%);box-shadow:0 0 6px rgba(201,168,76,.45)}
 
 .toc-header{
   padding:0 28px 20px;

@@ -55,9 +55,11 @@ body{font-family:'Sora',sans-serif;background:var(--body-bg);color:var(--text-pr
 
 /* LAYOUT */
 .wp-layout{display:grid;grid-template-columns:260px 1fr;min-height:100vh;max-width:1440px;margin:0 auto}
-.wp-sidebar{position:sticky;top:0;height:100vh;overflow-y:auto;background:#F9F9F9;border-right:1px solid var(--border-light);padding:40px 0;scrollbar-width:thin;scrollbar-color:var(--gold) transparent}
+.wp-sidebar{position:sticky;top:0;height:100vh;overflow-y:auto;background:#F9F9F9;border-right:1px solid var(--border-light);padding:40px 0;scrollbar-width:thin;scrollbar-color:#C9A84C transparent}
 .wp-sidebar::-webkit-scrollbar{width:3px}
-.wp-sidebar::-webkit-scrollbar-thumb{background:var(--gold);border-radius:2px}
+.wp-sidebar::-webkit-scrollbar-track{background:transparent}
+.wp-sidebar::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#8A6E2A 0%,#C9A84C 55%,#E8CB6E 100%);border-radius:999px}
+.wp-sidebar::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,#C9A84C 0%,#E8CB6E 100%);box-shadow:0 0 6px rgba(201,168,76,.45)}
 .toc-header{padding:0 28px 20px;border-bottom:1px solid var(--border-light);margin-bottom:12px}
 .toc-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
 .toc-title{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:600;color:var(--text-primary);line-height:1.3}
