@@ -15,15 +15,17 @@ interface PoolMeta {
   name: string
   label: string
   color: string
-  apyFloor: number   // Conservative APY floor used for earnings projection
+  apyFloor: number
   apyCeil: number
   description: string
+  memberCap: number    // Locked committed yield ceiling
+  mgmtFeePct: number  // Annual management fee
 }
 
 const POOL_META: Record<VaultMode, PoolMeta> = {
-  0: { name: 'Preserve',   label: 'Flexible Reserve',  color: '#00D4AA', apyFloor: 4,  apyCeil: 6,   description: 'Capital-protected · T-Bills · Stable' },
-  1: { name: 'Grow',       label: 'Income Vault',      color: '#c9a84c', apyFloor: 6,  apyCeil: 12,  description: 'Multi-protocol · Morpho + Aave · Weekly distributions' },
-  2: { name: 'Accelerate', label: 'Growth Mode',       color: '#9B6DFF', apyFloor: 13, apyCeil: 22,  description: 'Max yield · Balancer · Priority execution' },
+  0: { name: 'Preserve',   label: 'Flexible Reserve',  color: '#00D4AA', apyFloor: 4,  apyCeil: 6,   description: 'Capital-protected · T-Bills · Stable',                    memberCap: 5.0,  mgmtFeePct: 0.60 },
+  1: { name: 'Grow',       label: 'Income Vault',      color: '#c9a84c', apyFloor: 6,  apyCeil: 12,  description: 'Multi-protocol · Morpho + Aave · Weekly distributions',   memberCap: 8.0,  mgmtFeePct: 0.85 },
+  2: { name: 'Accelerate', label: 'Growth Mode',       color: '#9B6DFF', apyFloor: 13, apyCeil: 22,  description: 'Max yield · Balancer · Priority execution',                memberCap: 12.0, mgmtFeePct: 1.10 },
 }
 
 // ── Sub-components ────────────────────────────────────────────────────────────
@@ -119,18 +121,20 @@ export function UserVaultPanel({
 
   const pool = vaultMode !== null ? POOL_META[vaultMode] : null
 
-  // Earnings projections using the live ticker APY (falls back to pool floor)
-  const displayApy = ticker.apy > 0 ? ticker.apy : (pool?.apyFloor ?? 6)
+  // Earnings projected at the committed member cap — not the raw ticker APY.
+  // This ensures what the user sees matches what the blended basket guarantees.
+  const memberCap   = pool?.memberCap ?? 8.0
+  const liveApy     = ticker.apy > 0 ? ticker.apy : (pool?.apyFloor ?? 6)
+  const displayApy  = Math.min(liveApy, memberCap)   // cap-bounded display APY
   const earnDaily   = balanceNum * (displayApy / 100) / 365.25
   const earnMonthly = earnDaily * 30.44
   const earnAnnual  = balanceNum * (displayApy / 100)
 
-  // APY position within pool band for progress bar
-  const apyBandPct = useMemo(() => {
-    if (!pool || displayApy <= 0) return 0
-    const range = pool.apyCeil - pool.apyFloor
-    return range > 0 ? Math.min(100, ((displayApy - pool.apyFloor) / range) * 100) : 50
-  }, [pool, displayApy])
+  // How far through the cap the current live APY sits (0–100%)
+  const capProgressPct = useMemo(() => {
+    if (memberCap <= 0) return 0
+    return Math.min(100, (liveApy / memberCap) * 100)
+  }, [liveApy, memberCap])
 
   // ── Loading skeleton ──────────────────────────────────────────────────────
   if (isLoading) {
@@ -204,9 +208,9 @@ export function UserVaultPanel({
         marginBottom: 18,
       }}>
         <StatBox
-          label="Live APY"
-          value={`${displayApy.toFixed(2)}%`}
-          sub={ticker.apy > 0 ? 'from chain' : 'estimated'}
+          label="Your Cap"
+          value={`${memberCap.toFixed(1)}%`}
+          sub="committed yield"
           color={color}
         />
         <StatBox
@@ -217,21 +221,21 @@ export function UserVaultPanel({
         <StatBox
           label="Monthly"
           value={`$${earnMonthly.toFixed(2)}`}
-          sub="est. earnings"
+          sub="est. at cap"
         />
         <StatBox
           label="Annual"
           value={`$${earnAnnual.toFixed(2)}`}
-          sub="at current APY"
+          sub="est. at cap"
         />
       </div>
 
-      {/* ── APY position within band ─────────────────────────────────────── */}
+      {/* ── Cap utilisation bar ──────────────────────────────────────────── */}
       {pool && (
         <div style={{ marginBottom: 14 }}>
           <ProgressBar
-            label={`APY within ${pool.name} band (${pool.apyFloor}–${pool.apyCeil}%)`}
-            valuePct={apyBandPct}
+            label={`Engine yield vs your ${memberCap.toFixed(1)}% cap — ${liveApy.toFixed(2)}% current`}
+            valuePct={capProgressPct}
             color={color}
           />
         </div>

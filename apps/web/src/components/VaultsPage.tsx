@@ -22,6 +22,8 @@ interface DrillDownState {
 
 const STRATEGY_CHAIN_SCOPE = ['arbitrum', 'ethereum', 'base', 'polygon', 'gnosis', 'optimism']
 
+interface BasketSlice { protocol: string; pct: number }
+
 const CATEGORY_CONFIG: Record<CategoryKey, {
   name: string
   subtitle: string
@@ -31,6 +33,13 @@ const CATEGORY_CONFIG: Record<CategoryKey, {
   color: string
   tone: string
   defaultStrategy: string
+  // ── Locked revenue model ─────────────────────────────────────
+  memberCap: number          // Committed member yield ceiling
+  mgmtFeePct: number         // Annual management fee on AUM
+  basketTargetLow: number    // Basket target yield floor
+  basketTargetHigh: number   // Basket target yield ceiling
+  basket: BasketSlice[]      // Protocol weight composition
+  commitment: string         // One-line member promise
 }> = {
   preserve: {
     name: 'Preserve',
@@ -39,8 +48,17 @@ const CATEGORY_CONFIG: Record<CategoryKey, {
     apyMin: 4,
     apyMax: 6,
     color: '#00D4AA',
-    tone: 'Capital-protected allocation with stable returns.',
+    tone: 'Capital-protected allocation across T-Bills and stable lending protocols.',
     defaultStrategy: 'tbills',
+    memberCap: 5.0,
+    mgmtFeePct: 0.60,
+    basketTargetLow: 5.5,
+    basketTargetHigh: 6.5,
+    basket: [
+      { protocol: 'T-Bills / Aave', pct: 80 },
+      { protocol: 'Balancer Stable', pct: 20 },
+    ],
+    commitment: 'Capital preserved. Inflation beaten.',
   },
   grow: {
     name: 'Grow',
@@ -49,8 +67,18 @@ const CATEGORY_CONFIG: Record<CategoryKey, {
     apyMin: 6,
     apyMax: 12,
     color: '#c9a84c',
-    tone: 'The sweet spot. Multi-pair strategy with weekly distributions.',
+    tone: 'Multi-protocol blended basket across Aave, Balancer, and Morpho.',
     defaultStrategy: 'morpho',
+    memberCap: 8.0,
+    mgmtFeePct: 0.85,
+    basketTargetLow: 8.5,
+    basketTargetHigh: 11.0,
+    basket: [
+      { protocol: 'Aave V3', pct: 50 },
+      { protocol: 'Balancer V3', pct: 35 },
+      { protocol: 'Morpho', pct: 15 },
+    ],
+    commitment: 'Above-market yield. Risk-managed basket.',
   },
   accelerate: {
     name: 'Accelerate',
@@ -59,8 +87,18 @@ const CATEGORY_CONFIG: Record<CategoryKey, {
     apyMin: 13,
     apyMax: 100,
     color: '#9B6DFF',
-    tone: 'Full throttle. Maximum yield with priority execution.',
+    tone: 'Full-stack yield basket targeting maximum risk-adjusted returns.',
     defaultStrategy: 'balancer',
+    memberCap: 12.0,
+    mgmtFeePct: 1.10,
+    basketTargetLow: 14.0,
+    basketTargetHigh: 20.0,
+    basket: [
+      { protocol: 'Aave V3', pct: 20 },
+      { protocol: 'Balancer V3', pct: 40 },
+      { protocol: 'Morpho', pct: 40 },
+    ],
+    commitment: 'Institutional-grade yield. Automated protection.',
   },
 }
 
@@ -123,6 +161,93 @@ function matchAllocation(
   )
 }
 
+// ── BasketCompositionBar ─────────────────────────────────────────────────────
+
+function BasketCompositionBar({ basket, color, compact = false }: {
+  basket: BasketSlice[]
+  color: string
+  compact?: boolean
+}) {
+  const shades = [1.0, 0.72, 0.50]
+  return (
+    <div>
+      <div style={{ display: 'flex', height: compact ? 6 : 8, borderRadius: 4, overflow: 'hidden', gap: 1, marginBottom: compact ? 6 : 8 }}>
+        {basket.map((s, i) => (
+          <div key={s.protocol} style={{ width: `${s.pct}%`, background: color, opacity: shades[i] ?? 0.40, borderRadius: i === 0 ? '4px 0 0 4px' : i === basket.length - 1 ? '0 4px 4px 0' : 0 }} />
+        ))}
+      </div>
+      {!compact && (
+        <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
+          {basket.map((s, i) => (
+            <div key={s.protocol} style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+              <div style={{ width: 7, height: 7, borderRadius: '50%', background: color, opacity: shades[i] ?? 0.40, flexShrink: 0 }} />
+              <span style={{ fontSize: 10, color: 'rgba(245,240,232,0.55)', letterSpacing: '0.03em' }}>
+                {s.protocol} <span style={{ color: 'rgba(245,240,232,0.35)' }}>{s.pct}%</span>
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ── GenesisTransparencyStrip ─────────────────────────────────────────────────
+
+function GenesisTransparencyStrip({ memberCap, blendedApy, mgmtFeePct, color }: {
+  memberCap: number
+  blendedApy: number | null
+  mgmtFeePct: number
+  color: string
+}) {
+  const spread   = blendedApy !== null ? Math.max(0, blendedApy - memberCap) : null
+  const youGet   = blendedApy !== null ? Math.min(blendedApy, memberCap) : memberCap
+  const noSpread = spread === null || spread === 0
+
+  return (
+    <div style={{
+      display: 'grid',
+      gridTemplateColumns: 'repeat(3, 1fr)',
+      gap: 0,
+      background: 'rgba(255,255,255,0.025)',
+      border: '1px solid rgba(255,255,255,0.07)',
+      borderRadius: 10,
+      overflow: 'hidden',
+    }}>
+      {/* Your yield */}
+      <div style={{ padding: '12px 14px', textAlign: 'center' }}>
+        <div style={{ fontSize: 9, color: 'rgba(245,240,232,0.38)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 5, fontFamily: "'Tenor Sans', sans-serif" }}>You Earn</div>
+        <div style={{ fontSize: 22, color, fontFamily: "'Cormorant Garamond', serif", fontWeight: 600, lineHeight: 1 }}>
+          {youGet.toFixed(1)}%
+        </div>
+        <div style={{ fontSize: 9, color: 'rgba(245,240,232,0.28)', marginTop: 4 }}>cap: {memberCap.toFixed(1)}%</div>
+      </div>
+
+      {/* Blended gross */}
+      <div style={{ padding: '12px 14px', textAlign: 'center', borderLeft: '1px solid rgba(255,255,255,0.07)', borderRight: '1px solid rgba(255,255,255,0.07)' }}>
+        <div style={{ fontSize: 9, color: 'rgba(245,240,232,0.38)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 5, fontFamily: "'Tenor Sans', sans-serif" }}>Engine Gross</div>
+        <div style={{ fontSize: 22, color: blendedApy !== null ? '#f5f0e8' : 'rgba(245,240,232,0.25)', fontFamily: "'Cormorant Garamond', serif", lineHeight: 1 }}>
+          {blendedApy !== null ? `${blendedApy.toFixed(1)}%` : '—'}
+        </div>
+        <div style={{ fontSize: 9, color: 'rgba(245,240,232,0.28)', marginTop: 4 }}>blended basket</div>
+      </div>
+
+      {/* Genesis spread */}
+      <div style={{ padding: '12px 14px', textAlign: 'center' }}>
+        <div style={{ fontSize: 9, color: 'rgba(245,240,232,0.38)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 5, fontFamily: "'Tenor Sans', sans-serif" }}>Genesis Earns</div>
+        <div style={{ fontSize: 22, fontFamily: "'Cormorant Garamond', serif", lineHeight: 1, color: noSpread ? 'rgba(245,240,232,0.25)' : '#C9A84C' }}>
+          {spread !== null ? `${spread.toFixed(1)}%` : '—'}
+        </div>
+        <div style={{ fontSize: 9, marginTop: 4, color: noSpread ? 'rgba(245,240,232,0.28)' : '#C9A84C' }}>
+          {noSpread ? `you keep all yield · ${mgmtFeePct}% fee` : 'spread above your cap'}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ── StrategyDrillDownCard ────────────────────────────────────────────────────
+
 function StrategyDrillDownCard({
   state,
   analyticsHistory,
@@ -171,12 +296,16 @@ function StrategyDrillDownCard({
   const strategyBarW = Math.min(100, (liveApy / inflationBarMax) * 100)
   const inflationBarW = Math.min(100, (inflationRate / inflationBarMax) * 100)
 
-  // ── Earnings projection ────────────────────────────────────────────
+  // ── Earnings projection — capped at member's committed tier ceiling ──
+  // Projects against memberCap so the calculator reflects guaranteed basket
+  // yield rather than the raw single-strategy APY, which would overstate
+  // what the blended basket actually delivers to the member.
+  const projApy     = Math.min(liveApy, cfg.memberCap)
   const [localDeposit, setLocalDeposit] = useState(depositAmount)
   const [localDepositStr, setLocalDepositStr] = useState(String(depositAmount))
-  const earnMonthly  = localDeposit * (liveApy / 100) / 12
-  const earnAnnual   = localDeposit * (liveApy / 100)
-  const earn5yr      = localDeposit * (Math.pow(1 + liveApy / 100, 5) - 1)
+  const earnMonthly  = localDeposit * (projApy / 100) / 12
+  const earnAnnual   = localDeposit * (projApy / 100)
+  const earn5yr      = localDeposit * (Math.pow(1 + projApy / 100, 5) - 1)
   const inflationErosion = localDeposit * (inflationRate / 100)
 
   // ── APY stability ─────────────────────────────────────────────────
@@ -347,7 +476,7 @@ function StrategyDrillDownCard({
               minWidth: 0,
             }}
           />
-          <span style={{ fontSize: 11, color: cfg.color, flexShrink: 0 }}>at {liveApy.toFixed(2)}% APY</span>
+          <span style={{ fontSize: 11, color: cfg.color, flexShrink: 0 }}>at {projApy.toFixed(2)}% (your cap)</span>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
           {[
@@ -961,67 +1090,68 @@ export function VaultsPage({ onNavigate, accountId }: { onNavigate?: (v: ViewKey
                 onClick={() => setOpenCategory(isOpen ? null : category)}
                 style={{
                   width: '100%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  padding: '18px 24px',
+                  display: 'block',
+                  padding: '20px 24px 16px',
                   background: 'transparent',
                   border: 'none',
                   cursor: 'pointer',
-                  transition: 'all 0.2s',
+                  textAlign: 'left',
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: 16, flex: 1, textAlign: 'left' }}>
-                  <div style={{ width: 4, height: 4, background: config.color, borderRadius: '50%' }} />
-                  <div>
-                    <div style={{ fontSize: 12, letterSpacing: '0.06em', color: config.color, textTransform: 'uppercase', marginBottom: 2 }}>
-                      {config.subtitle}
-                    </div>
-                    <div style={{ fontSize: 20, fontFamily: "'Cormorant Garamond', serif", color: '#f5f0e8', fontWeight: 300 }}>
-                      {config.name}
-                    </div>
-                  </div>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 20, textAlign: 'right' }}>
-                  <div>
-                    <div style={{ fontSize: 11, color: 'rgba(245,240,232,0.4)', marginBottom: 2 }}>Target</div>
-                    <div style={{ fontSize: 16, fontFamily: "'Cormorant Garamond', serif", color: config.color }}>
-                      {config.targetLabel}
-                    </div>
-                  </div>
-                  <div>
-                    <div style={{ fontSize: 11, color: 'rgba(245,240,232,0.4)', marginBottom: 2 }}>Opportunities</div>
-                    <div style={{ fontSize: 14, color: '#f5f0e8' }}>
-                      {opportunities.length}
-                    </div>
-                  </div>
-                  {totalDeployedUsd > 0 && (
-                    <div style={{
-                      padding: '4px 10px',
-                      borderRadius: 20,
-                      background: `${config.color}18`,
-                      border: `1px solid ${config.color}50`,
-                    }}>
-                      <div style={{ fontSize: 9, color: config.color, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 1 }}>Deployed</div>
-                      <div style={{ fontSize: 13, color: config.color, fontFamily: "'Cormorant Garamond', serif", fontWeight: 600 }}>
-                        ${totalDeployedUsd >= 1000
-                          ? `${(totalDeployedUsd / 1000).toFixed(1)}k`
-                          : totalDeployedUsd.toFixed(0)}
+                {/* Row 1 — tier identity + cap + chevron */}
+                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 14 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                    <div style={{ width: 5, height: 5, background: config.color, borderRadius: '50%', flexShrink: 0, marginTop: 2 }} />
+                    <div>
+                      <div style={{ fontSize: 11, letterSpacing: '0.08em', color: config.color, textTransform: 'uppercase', marginBottom: 3, fontFamily: "'Tenor Sans', sans-serif" }}>
+                        {config.subtitle}
+                      </div>
+                      <div style={{ fontSize: 22, fontFamily: "'Cormorant Garamond', serif", color: '#f5f0e8', fontWeight: 300, lineHeight: 1.1 }}>
+                        {config.name}
+                      </div>
+                      <div style={{ fontSize: 11, color: 'rgba(245,240,232,0.45)', marginTop: 4, lineHeight: 1.4 }}>
+                        {config.commitment}
                       </div>
                     </div>
-                  )}
-                  <div style={{
-                    width: 24,
-                    height: 24,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-                    transition: 'transform 0.2s',
-                    color: config.color,
-                    fontSize: 14,
-                  }}>
-                    ▼
+                  </div>
+
+                  {/* Cap number — the hero figure */}
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: 16, flexShrink: 0 }}>
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{ fontSize: 10, color: 'rgba(245,240,232,0.38)', letterSpacing: '0.10em', textTransform: 'uppercase', marginBottom: 3, fontFamily: "'Tenor Sans', sans-serif" }}>
+                        You Earn Up To
+                      </div>
+                      <div style={{ fontSize: 34, color: config.color, fontFamily: "'Cormorant Garamond', serif", fontWeight: 600, lineHeight: 1 }}>
+                        {config.memberCap.toFixed(0)}%
+                      </div>
+                      <div style={{ fontSize: 9, color: 'rgba(245,240,232,0.30)', marginTop: 2 }}>committed cap</div>
+                    </div>
+                    <div style={{
+                      width: 26, height: 26, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      transform: isOpen ? 'rotate(180deg)' : 'none',
+                      transition: 'transform 0.2s',
+                      color: config.color, fontSize: 13, marginTop: 6,
+                    }}>▼</div>
+                  </div>
+                </div>
+
+                {/* Row 2 — basket composition bar (always visible) */}
+                <div style={{ paddingLeft: 19 }}>
+                  <div style={{ fontSize: 9, color: 'rgba(245,240,232,0.35)', letterSpacing: '0.10em', textTransform: 'uppercase', marginBottom: 6, fontFamily: "'Tenor Sans', sans-serif" }}>
+                    Basket Composition
+                  </div>
+                  <BasketCompositionBar basket={config.basket} color={config.color} compact />
+                  <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginTop: 6 }}>
+                    {config.basket.map((s) => (
+                      <span key={s.protocol} style={{ fontSize: 10, color: 'rgba(245,240,232,0.45)' }}>
+                        {s.protocol} <span style={{ color: config.color }}>{s.pct}%</span>
+                      </span>
+                    ))}
+                    {totalDeployedUsd > 0 && (
+                      <span style={{ fontSize: 10, color: config.color, marginLeft: 'auto' }}>
+                        ${totalDeployedUsd >= 1000 ? `${(totalDeployedUsd / 1000).toFixed(1)}k` : totalDeployedUsd.toFixed(0)} deployed
+                      </span>
+                    )}
                   </div>
                 </div>
               </button>
@@ -1029,6 +1159,33 @@ export function VaultsPage({ onNavigate, accountId }: { onNavigate?: (v: ViewKey
               {/* Expanded content */}
               {isOpen && (
                 <div style={{ padding: '0 24px 24px', borderTop: `1px solid ${config.color}30` }}>
+
+                  {/* ── Genesis Transparency Strip ─────────────────────── */}
+                  {(() => {
+                    const tierAllocs = deployedPositions
+                    const tierBlended = tierAllocs.length > 0
+                      ? tierAllocs.reduce((sum, a) => sum + a.apy * (a.pct / 100), 0)
+                      : null
+                    const displayBlended = tierBlended ?? (engine.apySource !== 'fallback' ? engine.displayApy : null)
+                    return (
+                      <div style={{ marginTop: 16, marginBottom: 20 }}>
+                        <div style={{ fontSize: 9, color: 'rgba(245,240,232,0.35)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 8, fontFamily: "'Tenor Sans', sans-serif" }}>
+                          Revenue Model — Full Transparency
+                        </div>
+                        <GenesisTransparencyStrip
+                          memberCap={config.memberCap}
+                          blendedApy={displayBlended}
+                          mgmtFeePct={config.mgmtFeePct}
+                          color={config.color}
+                        />
+                        <div style={{ fontSize: 10, color: 'rgba(245,240,232,0.30)', marginTop: 8, lineHeight: 1.5 }}>
+                          Genesis earns {config.mgmtFeePct}% management fee on AUM annually, plus the spread above your {config.memberCap}% cap.
+                          When the engine yields below your cap, Genesis earns only the management fee — your return is always paid first.
+                        </div>
+                      </div>
+                    )
+                  })()}
+
                   {drillDown?.category === category && (
                     <StrategyDrillDownCard
                       state={drillDown}
