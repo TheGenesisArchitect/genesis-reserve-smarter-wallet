@@ -1054,7 +1054,7 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
   <ul>
     <li>Not a bank or deposit-taking institution — balances are not FDIC-insured</li>
     <li>Not a fund — Genesis Reserve is infrastructure; certain specific products offered through the platform may constitute securities and are offered only under applicable exemptions</li>
-    <li>Not a guaranteed return product — investor yield caps (Preserve 6% / Growth 10% / Accelerate 15%) represent maximum ceilings payable from net realized yield, subject to market conditions, protocol performance, and the terms of applicable offering documents</li>
+    <li>Not a guaranteed return product — investor yield caps (Preserve 5% / Grow 8% / Accelerate 12%) represent maximum ceilings payable from net realized yield, subject to market conditions, protocol performance, and the terms of applicable offering documents</li>
     <li>Not a custodian — capital is held in non-custodial smart contract vaults; Genesis does not hold user funds in the traditional sense</li>
   </ul>
 
@@ -1416,27 +1416,27 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
     <tbody>
       <tr>
         <td><span class="teal-cell">1 — Preserve</span></td>
-        <td class="gold-cell" style="font-weight:700;">6.0% p.a.</td>
+        <td class="gold-cell" style="font-weight:700;">5.0% p.a.</td>
         <td>OUSG, BUIDL, Aave v3, Compound v3</td>
-        <td class="mono">4.5–7.5%</td>
-        <td class="mono">0–1.5% (100% above 6%)</td>
+        <td class="mono">5.5–6.5%</td>
+        <td class="mono">0.5–1.5% (100% above 5%)</td>
         <td class="mono">40% max</td>
       </tr>
       <tr>
-        <td><span style="color:var(--gold-dk)">2 — Growth</span></td>
-        <td class="gold-cell" style="font-weight:700;">10.0% p.a.</td>
-        <td>Pendle Finance (PT/YT), Morpho, Compound v3</td>
-        <td class="mono">8.0–14.0%</td>
-        <td class="mono">0–4.0% (100% above 10%)</td>
-        <td class="mono">35% max</td>
+        <td><span style="color:var(--gold-dk)">2 — Grow</span></td>
+        <td class="gold-cell" style="font-weight:700;">8.0% p.a.</td>
+        <td>Aave V3, Balancer V3, Morpho</td>
+        <td class="mono">8.5–11.0%</td>
+        <td class="mono">0.5–3.0% (100% above 8%)</td>
+        <td class="mono">50% max</td>
       </tr>
       <tr>
         <td><span style="color:#E89440">3 — Accelerate</span></td>
-        <td class="gold-cell" style="font-weight:700;">15.0% p.a.</td>
-        <td>Gearbox, Aerodrome, Curve, Perpetual carry</td>
-        <td class="mono">12.0–22.0%</td>
-        <td class="mono">0–7.0% (100% above 15%)</td>
-        <td class="mono">25% max</td>
+        <td class="gold-cell" style="font-weight:700;">12.0% p.a.</td>
+        <td>Aave V3 (structured), Balancer V3, Morpho (full stack)</td>
+        <td class="mono">14.0–20.0%</td>
+        <td class="mono">2.0–8.0% (100% above 12%)</td>
+        <td class="mono">20% max</td>
       </tr>
     </tbody>
   </table>
@@ -1449,7 +1449,7 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
 
   <h3>Blended Yield and Allocation Policy</h3>
   <p>
-    At any given time, the StrategyRouter maintains a policy-compliant blended allocation across all three investor tiers and their underlying strategy corridors. The blended cap — computed as the weighted average of tier caps by allocation — is approximately 9.65% (40%×6% + 35%×10% + 25%×15%). Yield generated below the blended cap flows to investors; yield above flows to Genesis. The StrategyRouter optimizes for maximum above-cap generation within circuit breaker constraints, not merely for covering a preferred return threshold.
+    At any given time, the StrategyRouter maintains a policy-compliant blended allocation across all three investor tiers and their underlying strategy corridors. The blended cap — computed as the weighted average of tier caps by allocation — is approximately 7.9% (30%×5% + 50%×8% + 20%×12%). Yield generated below the blended cap flows to investors; yield above flows to Genesis. The StrategyRouter optimizes for maximum above-cap generation within circuit breaker constraints, not merely for covering a preferred return threshold.
   </p>
 
   <h3>Rebalancing Mechanics</h3>
@@ -1477,7 +1477,7 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
       <div class="wf-step-body">
         <div class="wf-step-title">Investor Yield Cap by Tier — Priority Payment</div>
         <div class="wf-step-desc">Investors receive 100% of yield earned up to their elected tier ceiling. This is not a preferred return subject to reserve mechanics — it is a defined cap. Below the cap, all yield belongs to the investor. No Genesis revenue is recognized until the cap is breached.</div>
-        <div class="wf-step-rate">Caps: Preserve 6.0% · Growth 10.0% · Accelerate 15.0% p.a. (payable from net realized yield per epoch)</div>
+        <div class="wf-step-rate">Caps: Preserve 6.0% · Grow 8.0% · Accelerate 12.0% p.a. (payable from net realized yield per epoch)</div>
       </div>
     </div>
     <div class="wf-step">
@@ -1485,7 +1485,7 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
       <div class="wf-step-body">
         <div class="wf-step-title">Protocol Management Fee — AUM-Based, Epoch-Settled</div>
         <div class="wf-step-desc">A management fee charged against earned yield — not against principal. Settled pro-rata at each epoch, deducted before distribution so investors receive the net figure without a separate fee event.</div>
-        <div class="wf-step-rate">Rate: 0.75–1.25% p.a. of AUM (charged against yield, never principal)</div>
+        <div class="wf-step-rate">Rate: 0.60–1.10% p.a. of AUM, tiered — Preserve 0.60% · Grow 0.85% · Accelerate 1.10% (charged against yield, never principal)</div>
       </div>
     </div>
     <div class="wf-step">
@@ -1533,14 +1533,14 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
       <tr>
         <td><strong>Investor Yield Cap (by Tier)</strong></td>
         <td>Ceiling on investor yield — yield above cap flows entirely to Genesis</td>
-        <td class="gold-cell">Preserve 6% · Growth 10% · Accelerate 15%</td>
+        <td class="gold-cell">Preserve 6% · Grow 8% · Accelerate 12%</td>
         <td>Gross yield earned by tier allocation</td>
         <td>Any epoch with positive yield</td>
       </tr>
       <tr>
         <td><strong>Protocol Management Fee</strong></td>
         <td>AUM-based, epoch-settled pro-rata</td>
-        <td class="gold-cell">0.75–1.25% p.a.</td>
+        <td class="gold-cell">0.60–1.10% p.a. (tiered)</td>
         <td>Earned yield only — never principal</td>
         <td>Continuous — deducted before distribution</td>
       </tr>
@@ -1648,7 +1648,7 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
           <td class="mono gold-cell" id="t0-gen">5.0%</td>
         </tr>
         <tr id="tier-1">
-          <td><span style="color:var(--gold-dk)">2 — Growth</span></td>
+          <td><span style="color:var(--gold-dk)">2 — Grow</span></td>
           <td class="mono">35%</td>
           <td class="mono" id="t1-gross">11.0%</td>
           <td class="mono">10.0%</td>
@@ -1693,13 +1693,13 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
     <tbody>
       <tr>
         <td>Management Fee</td>
-        <td class="teal-cell">0.75–1.25% p.a.</td>
+        <td class="teal-cell">0.60–1.10% p.a. (tiered)</td>
         <td>1.5–2.0% p.a.</td>
         <td>0–2.0% p.a.</td>
       </tr>
       <tr>
         <td>Performance Fee</td>
-        <td class="teal-cell">100% above tier cap (Preserve 6% / Growth 10% / Accelerate 15%) — 0% below cap</td>
+        <td class="teal-cell">100% above tier cap (Preserve 5% / Grow 8% / Accelerate 12%) — 0% below cap</td>
         <td>20% of gross above hurdle</td>
         <td>10–30% of yield</td>
       </tr>
@@ -2573,7 +2573,7 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
       </tbody>
     </table>
     </div>
-    <p style="font-size:11.5px;color:var(--text-muted);text-align:center;margin:10px 0 0;">Illustrative. Vault compounds at 6% (Preserve cap). IUL cash value assumes 7% average annual indexed credit. Premium funded entirely from vault yield — zero additional out-of-pocket cost. Not a projection of actual returns.</p>
+    <p style="font-size:11.5px;color:var(--text-muted);text-align:center;margin:10px 0 0;">Illustrative. Vault compounds at 5% (Preserve cap). IUL cash value assumes 7% average annual indexed credit. Premium funded entirely from vault yield — zero additional out-of-pocket cost. Not a projection of actual returns.</p>
   </div>
 
   <div class="callout">
@@ -2716,7 +2716,7 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
 
   <h3>Family Offices and Private Wealth</h3>
   <p>
-    Family offices represent the fastest near-term institutional penetration opportunity. The typical single-family office with $50–500M in assets under management maintains meaningful cash and near-cash positions — historically in T-bills, money market funds, or prime brokerage cash accounts earning 4–5%. The Genesis treasury service offers a direct upgrade: the same capital routed through the StrategyRouter with defined yield ceilings (Preserve 6% / Growth 10% / Accelerate 15%), institutional-grade attribution reporting, multi-sig governance, and a defined exit liquidity path.
+    Family offices represent the fastest near-term institutional penetration opportunity. The typical single-family office with $50–500M in assets under management maintains meaningful cash and near-cash positions — historically in T-bills, money market funds, or prime brokerage cash accounts earning 4–5%. The Genesis treasury service offers a direct upgrade: the same capital routed through the StrategyRouter with defined yield ceilings (Preserve 5% / Grow 8% / Accelerate 12%), institutional-grade attribution reporting, multi-sig governance, and a defined exit liquidity path.
   </p>
   <p>
     The institutional onboarding for family offices includes: customized vault configuration, dedicated relationship management, monthly attribution reporting in institutional PDF format, and multi-sig wallet setup for governance-level operations. The Genesis treasury service does not compete with the family office's existing advisors — it provides the yield infrastructure those advisors deploy.
@@ -2808,7 +2808,7 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
       <div class="engine-name">Yield Infrastructure</div>
       <div class="engine-tag">Retention play — scales with balance size</div>
       <ul class="engine-items">
-        <li>Yield spread on idle wallet balances: 0.75–1.25% p.a.</li>
+        <li>Yield spread on idle wallet balances: 0.60–1.10% p.a.</li>
         <li>Activated jurisdiction by jurisdiction</li>
         <li>Creates stickiness — users won't leave active yield</li>
         <li>Grows with average user balance over time</li>
@@ -2973,7 +2973,7 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
     The Genesis net spread scales with the risk tier of the capital deployed. Tier 1 (Tokenized Treasuries) generates the most predictable, lowest-margin spread (0.20–0.80%). Tier 5 (Execution Arbitrage) generates the highest potential spread (up to 2.0%) but is capped at 2% of AUM precisely because the execution risk, gas exposure, and MEV sensitivity of arbitrage strategies make larger allocations imprudent.
   </p>
   <p>
-    This coupling serves an important institutional communication function: Genesis is not incentivized to chase high-risk strategies to boost its own spread revenue, because high-risk tiers have strict allocation caps that limit total spread exposure. The management fee (0.75–1.25% on AUM) provides a predictable revenue baseline regardless of risk tier deployment — removing the dangerous incentive to over-allocate to high-yield/high-risk corridors.
+    This coupling serves an important institutional communication function: Genesis is not incentivized to chase high-risk strategies to boost its own spread revenue, because high-risk tiers have strict allocation caps that limit total spread exposure. The management fee (0.60–1.10% on AUM, tiered by risk tier) provides a predictable revenue baseline regardless of risk tier deployment — removing the dangerous incentive to over-allocate to high-yield/high-risk corridors.
   </p>
 
   <h3>Circuit Breaker Conditions</h3>
@@ -3213,7 +3213,7 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
       <tr>
         <td><strong>Management Fee</strong></td>
         <td>Protocol TVL</td>
-        <td class="mono">0.75–1.25% p.a.</td>
+        <td class="mono">0.60–1.10% p.a. (tiered)</td>
         <td class="teal-cell">No — AUM-based</td>
         <td class="mono">~$2.5M/yr</td>
         <td class="mono">~$13M/yr</td>
@@ -3223,8 +3223,8 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
         <td>Yield above preferred</td>
         <td class="mono">Variable</td>
         <td class="gold-cell">Yes — yield-driven</td>
-        <td class="mono">~$3.5M/yr</td>
-        <td class="mono">~$20M/yr</td>
+        <td class="mono">~$5.5M/yr</td>
+        <td class="mono">~$26M/yr</td>
       </tr>
       <tr>
         <td><strong>Card Interchange</strong></td>
@@ -3255,8 +3255,8 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
         <td></td>
         <td></td>
         <td></td>
-        <td class="gold-cell"><strong>~$9.1M/yr</strong></td>
-        <td class="gold-cell"><strong>~$52M/yr</strong></td>
+        <td class="gold-cell"><strong>~$11.3M/yr</strong></td>
+        <td class="gold-cell"><strong>~$58M/yr</strong></td>
       </tr>
     </tbody>
   </table>
@@ -3265,8 +3265,8 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
   <h3>Base Assumptions</h3>
   <ul>
     <li>Blended gross yield: 10–13% annualized across active strategy allocations (subject to DeFi market conditions)</li>
-    <li>Management fee rate: 1.0% (midpoint of 0.75–1.25% range)</li>
-    <li>Investor yield caps: Preserve 6% / Growth 10% / Accelerate 15% — funded from gross yield; Genesis captures 100% above caps</li>
+    <li>Management fee rate: 0.825% blended across tiers (Preserve 0.60% / Grow 0.85% / Accelerate 1.10%)</li>
+    <li>Investor yield caps: Preserve 5% / Grow 8% / Accelerate 12% — funded from gross yield; Genesis captures 100% above caps</li>
     <li>B2C wallet user growth: conservative adoption curve, 18–24 month ramp to meaningful yield activation penetration</li>
     <li>B2B TVL growth: 3–5 institutional clients onboarded per quarter at average $30–50M AUM per client in early periods</li>
     <li>Card spend per active user: $400–600/month (consistent with neobank benchmarks)</li>
@@ -3275,10 +3275,10 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
 
   <h3>Revenue Stress Test — Compressed Yield Scenario</h3>
   <p>
-    A critical institutional stress test: what does Genesis revenue look like if DeFi yields compress to 5% annualized — below the Preserve tier cap of 6%?
+    A critical institutional stress test: what does Genesis revenue look like if DeFi yields compress to 4% annualized — below the Preserve tier cap of 5%?
   </p>
   <p>
-    In this scenario: blended gross yield falls below the Preserve cap threshold; Genesis captured excess drops to zero (Genesis earns management fee only on all tiers); investors receive 5% yield (all available net yield, below their cap ceiling); card interchange and FX spread continue generating $2.3M+ annualized at M33 scale; B2B service fees continue at contracted rates. Total revenue in compressed-yield scenario at M33 scale: ~$5.6M/yr (vs. ~$9.1M base). The business does not break — it contracts. This revenue floor demonstrates that Genesis is not a pure-DeFi yield bet; Engine 1 provides structural revenue stability.
+    In this scenario: blended gross yield falls below the Preserve cap threshold; Genesis captured excess drops to zero (Genesis earns management fee only on all tiers); investors receive 5% yield (all available net yield, below their cap ceiling); card interchange and FX spread continue generating $2.3M+ annualized at M33 scale; B2B service fees continue at contracted rates. Total revenue in compressed-yield scenario at M33 scale: ~$5.8M/yr (vs. ~$11.3M base). The business does not break — it contracts. This revenue floor demonstrates that Genesis is not a pure-DeFi yield bet; Engine 1 provides structural revenue stability.
   </p>
 
   <h3>Treasury Compounding Effect</h3>
@@ -3461,7 +3461,7 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
     <p>$GRX tokens are securities offered only to accredited investors, as defined under Rule 501 of Regulation D under the Securities Act of 1933, as amended. The offering is made pursuant to an exemption from registration under Rule 506(c) of Regulation D. $GRX tokens have not been registered under the Securities Act or any state securities law. They may not be resold or transferred unless registered or an exemption from registration is available. Purchasers of $GRX tokens will be required to represent and warrant that they are accredited investors and agree to the transfer restrictions described in the applicable offering documents.</p>
 
     <h4>No Guarantee of Return — Investor Yield Caps</h4>
-    <p>The investor yield caps described in this document (Preserve 6.0%, Growth 10.0%, Accelerate 15.0%) represent <strong>maximum ceilings on investor yield</strong> — not guaranteed returns, fixed interest rates, or contractual obligations independent of protocol performance. Investors receive yield up to their elected cap only to the extent that net realized yield covers that amount in a given epoch. In periods where net realized yield is insufficient to reach the investor cap, investors receive all available yield and Genesis captures no excess. In periods where yield exceeds the cap, Genesis captures 100% of the excess above the ceiling. This structure is analogous to a structured note with a defined maximum payout, not a preferred return vault with a reserve buffer. The caps may be raised by Genesis at future milestones. Principal is at risk.</p>
+    <p>The investor yield caps described in this document (Preserve 6.0%, Grow 8.0%, Accelerate 12.0%) represent <strong>maximum ceilings on investor yield</strong> — not guaranteed returns, fixed interest rates, or contractual obligations independent of protocol performance. Investors receive yield up to their elected cap only to the extent that net realized yield covers that amount in a given epoch. In periods where net realized yield is insufficient to reach the investor cap, investors receive all available yield and Genesis captures no excess. In periods where yield exceeds the cap, Genesis captures 100% of the excess above the ceiling. This structure is analogous to a structured note with a defined maximum payout, not a preferred return vault with a reserve buffer. The caps may be raised by Genesis at future milestones. Principal is at risk.</p>
 
     <h4>Not FDIC Insured / Not a Bank</h4>
     <p>Genesis Reserve is not a bank, savings institution, or deposit-taking entity. Balances held in Genesis Reserve vaults are not insured by the FDIC, SIPC, or any government agency. Users bear the risk of loss of their deposited capital, including from smart contract vulnerabilities, strategy underperformance, protocol failures, and other risks described in this document and in applicable offering documents.</p>
@@ -3598,7 +3598,7 @@ li{font-size:15px;line-height:1.8;margin-bottom:6px}
       </tr>
       <tr>
         <td>Management Fee Rate</td>
-        <td class="partial">Range (0.75–1.25%)</td>
+        <td class="partial">Range (0.60–1.10%)</td>
         <td class="check">Definitive</td>
         <td>Exact rate per vault class specified in offering doc</td>
       </tr>
@@ -4418,8 +4418,8 @@ if(tvlSlider) { tvlSlider.addEventListener('input', updateWaterfall); yieldSlide
   var timer = null;
   var tvl = 10000000;           // $10M starting TVL
   var grossApy = 0.11;          // 11% blended gross
-  var capRate = 0.0965;         // Blended tier cap (40%×6% + 35%×10% + 25%×15%)
-  var mgmtRate = 0.01;          // 1% management fee
+  var capRate = 0.079;          // Blended tier cap (30%×5% + 50%×8% + 20%×12%)
+  var mgmtRate = 0.00825;       // Blended management fee (0.60/0.85/1.10% tiered)
   var totals = {inv:0, grx:0, tres:0, ops:0};
   // Corridor allocations (sum ≈ 100)
   var allocs = [30, 25, 15, 12, 10, 6, 2];
