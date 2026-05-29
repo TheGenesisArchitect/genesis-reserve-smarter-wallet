@@ -316,7 +316,7 @@ select.form-input option{background:#0d1018;color:var(--text)}
 
     <!-- Status Bar -->
     <div class="status-bar">
-      <div class="s-chip s-chip-gold">Epoch <span id="pgEpoch">0</span><span class="dim">/96</span></div>
+      <div class="s-chip s-chip-gold">Day <span id="pgDay">1</span><span class="dim"> · Epoch </span><span id="pgEpoch">0</span><span class="dim">/96</span></div>
       <div class="s-chip s-chip-gold">TVL <span id="pgTVL">$10.000M</span></div>
       <div class="s-chip s-chip-green">Engine <span id="pgAPY">14.1%</span></div>
       <div class="s-chip s-chip-purple">Cap <span id="pgCapBadge">7.9%</span></div>
@@ -633,7 +633,7 @@ select.form-input option{background:#0d1018;color:var(--text)}
 
   // ── State ─────────────────────────────────────────────
   var mix      = {preserve:30, grow:50, accel:20};
-  var epoch    = 0, running = false, timer = null;
+  var epoch    = 0, day = 1, running = false, timer = null;
   var baseTVL  = 10000000, tvl = 10000000;
   var grossApy = 0.1409;
   var totals   = {member:0, spread:0, fee:0, reinvest:0};
@@ -751,7 +751,7 @@ select.form-input option{background:#0d1018;color:var(--text)}
   }
   function _activateRound(idx){
     curRound=idx; baseTVL=ROUNDS[idx].tvl; tvl=baseTVL;
-    epoch=0; totals={member:0,spread:0,fee:0,reinvest:0};
+    epoch=0; day=1; totals={member:0,spread:0,fee:0,reinvest:0};
     sparkPts=new Array(96).fill(0);
     document.querySelectorAll('.round-card').forEach(function(c,i){
       c.classList.toggle('active',i===idx);
@@ -762,6 +762,7 @@ select.form-input option{background:#0d1018;color:var(--text)}
   }
 
   function resetSimUI(){
+    if(g('pgDay'))      g('pgDay').textContent='1';
     if(g('pgEpoch'))    g('pgEpoch').textContent='0';
     if(g('pgEpochBig')) g('pgEpochBig').textContent='0';
     if(g('pgArc'))      g('pgArc').setAttribute('stroke-dashoffset','163.4');
@@ -780,8 +781,9 @@ select.form-input option{background:#0d1018;color:var(--text)}
   function tick(){
     epoch++;
     if(epoch>96){
-      epoch=1; totals={member:0,spread:0,fee:0,reinvest:0};
-      sparkPts=new Array(96).fill(0); tvl=baseTVL;
+      day++; epoch=1;
+      sparkPts=new Array(96).fill(0);
+      if(g('pgDay')) g('pgDay').textContent=day;
     }
     var EPY=35040;
     var capD=blendedCap()/100, feeR=blendedFeeRate();
@@ -842,11 +844,11 @@ select.form-input option{background:#0d1018;color:var(--text)}
     running=!running;
     var btn=g('pgRunBtn'), diag=g('engineDiag');
     if(running){
-      if(btn)  btn.textContent='&#9646;&#9646; Pause';
+      if(btn)  btn.innerHTML='&#9646;&#9646; Pause';
       if(diag) diag.classList.add('running');
       timer=setInterval(tick,130);
     } else {
-      if(btn)  btn.textContent='&#9654; Run Engine';
+      if(btn)  btn.innerHTML='&#9654; Run Engine';
       if(diag) diag.classList.remove('running');
       clearInterval(timer);
     }
