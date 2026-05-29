@@ -40,13 +40,15 @@ const GENESIS_ANGLES: Record<string, string> = {
 async function resolveOgImage(url: string): Promise<string | undefined> {
   try {
     const res = await fetch(url, {
-      signal:  AbortSignal.timeout(500),
+      signal:  AbortSignal.timeout(3500),
       headers: { 'User-Agent': 'GenesisReserve/1.0', Accept: 'text/html' },
     })
     if (!res.ok) return undefined
     const html = await res.text()
     const m = /<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i.exec(html)
            ?? /<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i.exec(html)
+           ?? /<meta[^>]+name=["']twitter:image["'][^>]+content=["']([^"']+)["']/i.exec(html)
+           ?? /<meta[^>]+content=["']([^"']+)["'][^>]+name=["']twitter:image["']/i.exec(html)
     return m?.[1] ?? undefined
   } catch {
     return undefined

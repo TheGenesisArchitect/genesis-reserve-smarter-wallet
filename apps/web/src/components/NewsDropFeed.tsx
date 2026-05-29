@@ -500,47 +500,82 @@ function FeaturedReportCard() {
         onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(201,168,76,0.56)' }}
         onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(201,168,76,0.32)' }}
       >
-        {/* ── Hero header image ── */}
+        {/* ── Hero: competitive ranking visualization ── */}
         <div style={{
           height: 192,
           position: 'relative',
           overflow: 'hidden',
           background: '#06080d',
           backgroundImage: [
-            'radial-gradient(ellipse at 22% 55%, rgba(201,168,76,0.22) 0%, transparent 52%)',
-            'radial-gradient(ellipse at 78% 20%, rgba(0,212,170,0.09) 0%, transparent 45%)',
-            'linear-gradient(rgba(201,168,76,0.038) 1px, transparent 1px)',
-            'linear-gradient(90deg, rgba(201,168,76,0.038) 1px, transparent 1px)',
+            'radial-gradient(ellipse at 18% 60%, rgba(201,168,76,0.18) 0%, transparent 48%)',
+            'radial-gradient(ellipse at 82% 15%, rgba(0,212,170,0.08) 0%, transparent 42%)',
+            'linear-gradient(rgba(201,168,76,0.032) 1px, transparent 1px)',
+            'linear-gradient(90deg, rgba(201,168,76,0.032) 1px, transparent 1px)',
           ].join(', '),
           backgroundSize: 'auto, auto, 38px 38px, 38px 38px',
           display: 'flex',
           alignItems: 'center',
-          padding: '0 28px',
-          gap: 22,
+          padding: '16px 22px',
+          gap: 18,
         }}>
-          {/* Real logo */}
-          <img
-            src="/genesis-logo.png"
-            alt="Genesis Reserve"
-            style={{ width: 80, height: 80, borderRadius: '50%', flexShrink: 0, objectFit: 'cover', filter: 'drop-shadow(0 0 0 2px rgba(201,168,76,0.45)) drop-shadow(0 0 18px rgba(201,168,76,0.40)) drop-shadow(0 0 40px rgba(201,168,76,0.16))', position: 'relative', zIndex: 1 }}
-          />
-          {/* Title block */}
-          <div style={{ position: 'relative', zIndex: 1 }}>
-            <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.28em', textTransform: 'uppercase', color: '#c9a84c', fontFamily: "'Tenor Sans', sans-serif", marginBottom: 7 }}>
-              Genesis Reserve Intelligence
+          {/* Left: logo + title */}
+          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', flex: '0 0 auto', position: 'relative', zIndex: 1 }}>
+            <img
+              src="/genesis-logo.png"
+              alt="Genesis Reserve"
+              style={{ width: 48, height: 48, borderRadius: '50%', objectFit: 'cover', marginBottom: 10, filter: 'drop-shadow(0 0 10px rgba(201,168,76,0.55)) drop-shadow(0 0 28px rgba(201,168,76,0.22))' }}
+            />
+            <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: '0.24em', textTransform: 'uppercase', color: '#c9a84c', fontFamily: "'Tenor Sans', sans-serif", marginBottom: 5 }}>
+              Genesis Reserve
             </div>
-            <div style={{ fontSize: 20, fontWeight: 300, color: '#f5f0e8', fontFamily: "'Cormorant Garamond', serif", letterSpacing: '0.05em', lineHeight: 1.2, marginBottom: 10 }}>
+            <div style={{ fontSize: 13, fontWeight: 300, color: '#f5f0e8', fontFamily: "'Cormorant Garamond', serif", letterSpacing: '0.04em', lineHeight: 1.25, marginBottom: 10, width: 132 }}>
               2026 Wallet Intelligence Report
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
-              <div style={{ height: 1, width: 22, background: 'rgba(201,168,76,0.55)' }} />
-              <span style={{ fontSize: 11, color: 'rgba(245,240,232,0.60)', fontFamily: "'Tenor Sans', sans-serif", letterSpacing: '0.06em' }}>
-                vs. CryptoSlate Top 10 · May 2026
-              </span>
+            <div style={{ display: 'inline-flex', alignItems: 'center', padding: '2px 9px', borderRadius: 20, background: 'rgba(0,212,170,0.10)', border: '1px solid rgba(0,212,170,0.28)', width: 'fit-content' }}>
+              <span style={{ fontSize: 8, color: '#00D4AA', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', fontFamily: "'Tenor Sans', sans-serif" }}>◈ Smarter Wallet</span>
             </div>
           </div>
+
+          {/* Divider */}
+          <div style={{ width: 1, height: 120, background: 'rgba(201,168,76,0.15)', flexShrink: 0 }} />
+
+          {/* Right: bar chart */}
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 8, position: 'relative', zIndex: 1 }}>
+            <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'rgba(245,240,232,0.38)', fontFamily: "'Tenor Sans', sans-serif", marginBottom: 2 }}>
+              Category Score · 2026
+            </div>
+            {[
+              { name: 'Genesis Reserve', score: 9.4, isGenesis: true },
+              { name: 'Phantom',         score: 8.5, isGenesis: false },
+              { name: 'Trust Wallet',    score: 8.5, isGenesis: false },
+              { name: 'MetaMask',        score: 8.3, isGenesis: false },
+            ].map(w => (
+              <div key={w.name}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 3 }}>
+                  <span style={{ fontSize: 9, color: w.isGenesis ? '#c9a84c' : 'rgba(245,240,232,0.45)', fontFamily: "'Tenor Sans', sans-serif", fontWeight: w.isGenesis ? 700 : 400, letterSpacing: '0.03em' }}>
+                    {w.name}{w.isGenesis ? ' ✦' : ''}
+                  </span>
+                  <span style={{ fontSize: 9, color: w.isGenesis ? '#c9a84c' : 'rgba(245,240,232,0.35)', fontFamily: "'Tenor Sans', sans-serif", fontWeight: w.isGenesis ? 700 : 400 }}>
+                    {w.score}
+                  </span>
+                </div>
+                <div style={{ height: w.isGenesis ? 5 : 3, borderRadius: 3, background: 'rgba(255,255,255,0.06)', overflow: 'hidden' }}>
+                  <div style={{
+                    height: '100%',
+                    width: `${(w.score / 10) * 100}%`,
+                    borderRadius: 3,
+                    background: w.isGenesis ? 'linear-gradient(90deg, #c9a84c 0%, #00D4AA 100%)' : 'rgba(245,240,232,0.20)',
+                  }} />
+                </div>
+              </div>
+            ))}
+            <div style={{ marginTop: 2, fontSize: 8, color: 'rgba(245,240,232,0.22)', fontFamily: "'Tenor Sans', sans-serif", letterSpacing: '0.05em' }}>
+              ✦ Genesis adds automated yield layer · CryptoSlate May 2026
+            </div>
+          </div>
+
           {/* Bottom fade */}
-          <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 70, background: 'linear-gradient(to top, rgba(4,6,8,0.95), transparent)', pointerEvents: 'none' }} />
+          <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 60, background: 'linear-gradient(to top, rgba(4,6,8,0.95), transparent)', pointerEvents: 'none' }} />
         </div>
 
         {/* ── Body ── */}
@@ -996,36 +1031,39 @@ export function NewsDropFeed({ onUnreadChange }: NewsDropFeedProps) {
       <div style={{ height: 1, background: 'rgba(201,168,76,0.15)', marginBottom: 28 }} />
 
       {/* ── Content ──────────────────────────────────────────────────────── */}
-      {loading && <DropSkeleton />}
+      <FeaturedReportCard />
 
-      {error && !loading && (
-        <div
-          style={{
-            padding: '20px 24px',
-            borderRadius: 12,
-            background: 'rgba(255,255,255,0.02)',
-            border: '1px solid rgba(255,80,80,0.18)',
-            color: 'rgba(245,240,232,0.5)',
-            fontSize: 13,
-            fontFamily: "'Tenor Sans', sans-serif",
-            letterSpacing: '0.04em',
-          }}
-        >
-          {error}
-        </div>
-      )}
+      <div style={{ marginTop: 24 }}>
+        {loading && <DropSkeleton />}
 
-      {drops && !loading && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-          <FeaturedReportCard />
-          {drops.map(drop => (
-            <div key={drop.id}>
-              <SlotHeader drop={drop} />
-              <DropCard drop={drop} />
-            </div>
-          ))}
-        </div>
-      )}
+        {error && !loading && (
+          <div
+            style={{
+              padding: '20px 24px',
+              borderRadius: 12,
+              background: 'rgba(255,255,255,0.02)',
+              border: '1px solid rgba(255,80,80,0.18)',
+              color: 'rgba(245,240,232,0.5)',
+              fontSize: 13,
+              fontFamily: "'Tenor Sans', sans-serif",
+              letterSpacing: '0.04em',
+            }}
+          >
+            {error}
+          </div>
+        )}
+
+        {drops && !loading && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+            {drops.map(drop => (
+              <div key={drop.id}>
+                <SlotHeader drop={drop} />
+                <DropCard drop={drop} />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
       {/* ── Footer note ──────────────────────────────────────────────────── */}
       {drops && (
