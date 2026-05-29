@@ -30,6 +30,7 @@
     padding:64px 72px 52px;
     position:relative;
     overflow:hidden;
+    text-align:center;
   }
   .cover::before {
     content:'';
@@ -42,7 +43,7 @@
   .cover-logo {
     width:52px; height:52px; border-radius:50%; object-fit:cover;
     filter:drop-shadow(0 0 14px rgba(201,168,76,.45));
-    margin-bottom:28px;
+    margin:0 auto 28px;
     display:block;
   }
   .cover-eyebrow {
@@ -58,7 +59,7 @@
     font-size:16px; color:rgba(245,240,232,.5);
     letter-spacing:.06em; margin-bottom:36px;
   }
-  .cover-pills { display:flex; gap:10px; flex-wrap:wrap; }
+  .cover-pills { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
   .pill {
     display:inline-flex; align-items:center; padding:5px 12px;
     border-radius:20px; font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
