@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Genesis App, Inc. — Private Placement Memorandum — June 2026</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Tenor+Sans&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:#06080D; --surface:rgba(4,6,8,.95); --gold:#c9a84c; --gold-soft:rgba(201,168,76,.75);
+      --teal:#00D4AA; --text:#f5f0e8; --text-soft:rgba(245,240,232,.90);
+      --text-muted:rgba(245,240,232,.74); --text-faint:rgba(245,240,232,.55);
+      --border:rgba(201,168,76,.18); --border-soft:rgba(255,255,255,.08);
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',Georgia,serif;font-size:16px;line-height:1.7;}
+
+    /* ── Toolbar ── */
+    .toolbar{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(6,8,13,.96);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);padding:10px 32px;display:flex;align-items:center;justify-content:space-between;gap:16px;}
+    .toolbar-id{font-family:'Tenor Sans',sans-serif;font-size:9px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);}
+    .toolbar-sub{font-family:'Tenor Sans',sans-serif;font-size:10px;color:var(--text-faint);letter-spacing:.05em;}
+    .toolbar-right{display:flex;align-items:center;gap:10px;}
+    .btn-pdf{display:inline-flex;align-items:center;gap:7px;padding:7px 16px;border-radius:4px;border:1px solid var(--gold);background:rgba(201,168,76,.10);color:var(--gold);font-family:'Tenor Sans',sans-serif;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:background .2s;}
+    .btn-pdf:hover{background:rgba(201,168,76,.22);}
+    .confidential-pill{display:inline-flex;align-items:center;padding:4px 10px;border-radius:3px;border:1px solid rgba(255,80,80,.28);background:rgba(255,80,80,.07);font-family:'Tenor Sans',sans-serif;font-size:8px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,140,140,.80);}
+
+    /* ── Outer ── */
+    .outer{padding-top:56px;}
+    .page{max-width:880px;margin:0 auto;padding:0 44px;}
+
+    /* ── Cover ── */
+    .cover{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:80px 0 64px;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+    .cover::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 14% 52%,rgba(201,168,76,.09) 0%,transparent 54%),radial-gradient(ellipse at 84% 20%,rgba(0,212,170,.04) 0%,transparent 44%);pointer-events:none;}
+    .cov-stamp{font-family:'Tenor Sans',sans-serif;font-size:9px;font-weight:700;letter-spacing:.30em;text-transform:uppercase;color:var(--gold);margin-bottom:44px;border:1px solid rgba(201,168,76,.30);display:inline-block;padding:6px 16px;border-radius:2px;background:rgba(201,168,76,.07);}
+    .cov-logo-row{display:flex;align-items:center;gap:16px;margin-bottom:30px;}
+    .cov-logo{width:54px;height:54px;border-radius:50%;object-fit:cover;filter:drop-shadow(0 0 16px rgba(201,168,76,.45));}
+    .cov-co{font-family:'Tenor Sans',sans-serif;font-size:11px;font-weight:700;letter-spacing:.20em;text-transform:uppercase;color:var(--gold);}
+    .cov-co-sub{font-family:'Tenor Sans',sans-serif;font-size:10px;color:var(--text-faint);letter-spacing:.07em;margin-top:3px;}
+    h1.cov-title{font-family:'Cormorant Garamond',serif;font-size:46px;font-weight:300;color:var(--text);letter-spacing:.04em;line-height:1.12;margin-bottom:12px;}
+    .cov-subtitle{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:var(--text-muted);letter-spacing:.06em;margin-bottom:44px;}
+    .cov-rule{height:1px;background:linear-gradient(to right,var(--gold),rgba(201,168,76,.08));margin-bottom:36px;}
+    .cov-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-bottom:44px;}
+    .cov-cell{border-left:2px solid rgba(201,168,76,.28);padding-left:14px;}
+    .cov-cell-label{font-family:'Tenor Sans',sans-serif;font-size:8px;font-weight:700;letter-spacing:.20em;text-transform:uppercase;color:var(--text-faint);margin-bottom:5px;}
+    .cov-cell-val{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:600;color:var(--text);letter-spacing:.02em;}
+    .cov-cell-note{font-family:'Tenor Sans',sans-serif;font-size:9px;color:var(--text-faint);letter-spacing:.04em;margin-top:3px;}
+    .cov-disc{background:rgba(201,168,76,.04);border:1px solid rgba(201,168,76,.18);border-radius:6px;padding:22px 26px;font-family:'Tenor Sans',sans-serif;font-size:11px;line-height:1.80;color:var(--text-faint);letter-spacing:.02em;}
+    .cov-disc strong{color:var(--gold);font-weight:700;}
+
+    /* ── Section ── */
+    .sec{padding:64px 0 48px;border-bottom:1px solid var(--border-soft);}
+    .sec:last-child{border-bottom:none;}
+    .sec-num{font-family:'Tenor Sans',sans-serif;font-size:9px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;}
+    .sec-title{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:300;color:var(--text);letter-spacing:.04em;line-height:1.18;margin-bottom:26px;}
+    .sec-rule{height:1px;background:linear-gradient(to right,rgba(201,168,76,.40),transparent);margin-bottom:32px;}
+    .sub{margin-bottom:34px;}
+    .sub-title{font-family:'Tenor Sans',sans-serif;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-soft);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid rgba(201,168,76,.14);}
+
+    /* ── Body text ── */
+    p{font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--text-soft);line-height:1.88;margin-bottom:16px;}
+    p:last-child{margin-bottom:0;}
+    ul,ol{margin:0 0 18px 0;padding-left:26px;}
+    li{font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--text-soft);line-height:1.82;margin-bottom:8px;}
+    li strong{color:var(--text);font-weight:600;}
+    strong{color:var(--text);font-weight:600;}
+    em{color:var(--text-muted);font-style:italic;}
+
+    /* ── Callouts ── */
+    .callout{background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.22);border-left:3px solid var(--gold);border-radius:0 6px 6px 0;padding:20px 24px;margin:22px 0;}
+    .callout-teal{background:rgba(0,212,170,.04);border-color:rgba(0,212,170,.20);border-left-color:var(--teal);}
+    .callout-warn{background:rgba(255,200,80,.04);border-color:rgba(255,200,80,.18);border-left-color:#c9a84c;}
+    .callout-risk{background:rgba(255,80,80,.04);border-color:rgba(255,80,80,.16);border-left:3px solid rgba(255,80,80,.55);}
+    .callout p{margin-bottom:8px;}
+    .callout p:last-child{margin-bottom:0;}
+
+    /* ── Tables ── */
+    .dt{width:100%;border-collapse:collapse;margin:18px 0;font-family:'Tenor Sans',sans-serif;font-size:13px;}
+    .dt th{padding:10px 16px;text-align:left;font-size:9px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--text-faint);border-bottom:1px solid rgba(255,255,255,.10);background:rgba(201,168,76,.06);}
+    .dt td{padding:12px 16px;color:var(--text-soft);border-bottom:1px solid rgba(255,255,255,.05);vertical-align:top;line-height:1.55;}
+    .dt tr:last-child td{border-bottom:none;}
+    .td-lbl{color:var(--text-faint);font-size:12px;letter-spacing:.04em;}
+    .td-val{color:var(--text);font-weight:600;font-size:14px;}
+    .td-gold{color:var(--gold);font-weight:700;}
+    .td-teal{color:var(--teal);font-weight:700;}
+    .td-mono{font-family:monospace;font-size:11px;color:var(--gold);}
+
+    /* ── Stats ── */
+    .stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:22px 0;}
+    .stat-card{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:18px 20px;}
+    .stat-lbl{font-family:'Tenor Sans',sans-serif;font-size:9px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--text-faint);margin-bottom:8px;}
+    .stat-val{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:600;color:var(--gold);line-height:1;margin-bottom:5px;letter-spacing:.02em;}
+    .stat-sub{font-family:'Tenor Sans',sans-serif;font-size:10px;color:var(--text-faint);letter-spacing:.04em;}
+
+    /* ── Offering cards ── */
+    .offer-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:22px 0;}
+    .offer-card{border:1px solid rgba(255,255,255,.10);border-radius:10px;padding:24px 20px 20px;background:rgba(4,6,8,.80);position:relative;}
+    .offer-card.featured{border-color:rgba(201,168,76,.44);background:rgba(201,168,76,.04);}
+    .offer-card.featured::before{content:'LEAD SEAT';position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:var(--gold);color:#06080D;font-family:'Tenor Sans',sans-serif;font-size:8px;font-weight:700;letter-spacing:.14em;padding:3px 11px;border-radius:0 0 4px 4px;}
+    .offer-amt{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:600;color:var(--text);letter-spacing:.02em;margin-bottom:4px;}
+    .offer-eq{font-family:'Tenor Sans',sans-serif;font-size:11px;color:var(--gold);font-weight:700;letter-spacing:.08em;margin-bottom:14px;}
+    .offer-detail{font-family:'Tenor Sans',sans-serif;font-size:11px;color:var(--text-faint);line-height:1.80;letter-spacing:.03em;}
+
+    /* ── Proceeds bars ── */
+    .proc-row{display:flex;align-items:center;gap:14px;margin-bottom:13px;}
+    .proc-lbl{font-family:'Tenor Sans',sans-serif;font-size:11px;color:var(--text-soft);width:210px;flex-shrink:0;letter-spacing:.04em;}
+    .proc-track{flex:1;height:6px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden;}
+    .proc-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#c9a84c,rgba(201,168,76,.55));}
+    .proc-pct{font-family:'Tenor Sans',sans-serif;font-size:11px;font-weight:700;color:var(--gold);width:34px;text-align:right;flex-shrink:0;}
+    .proc-amt{font-family:'Tenor Sans',sans-serif;font-size:11px;color:var(--text-faint);width:58px;text-align:right;flex-shrink:0;}
+
+    /* ── Risk items ── */
+    .risk-item{margin-bottom:24px;padding:18px 22px;background:rgba(255,255,255,.018);border:1px solid rgba(255,80,80,.09);border-left:2px solid rgba(255,80,80,.42);border-radius:0 6px 6px 0;}
+    .risk-ttl{font-family:'Tenor Sans',sans-serif;font-size:11px;font-weight:700;letter-spacing:.10em;text-transform:uppercase;color:rgba(245,240,232,.88);margin-bottom:9px;}
+    .risk-body{font-family:'Cormorant Garamond',serif;font-size:15px;color:var(--text-muted);line-height:1.82;}
+
+    /* ── Projection tables ── */
+    .ptbl{width:100%;border-collapse:collapse;margin:18px 0;}
+    .ptbl th{font-family:'Tenor Sans',sans-serif;font-size:9px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--text-faint);padding:9px 14px;text-align:right;border-bottom:1px solid rgba(255,255,255,.10);background:rgba(201,168,76,.05);}
+    .ptbl th:first-child{text-align:left;}
+    .ptbl td{font-family:'Tenor Sans',sans-serif;font-size:12px;color:var(--text-soft);padding:10px 14px;text-align:right;border-bottom:1px solid rgba(255,255,255,.04);}
+    .ptbl td:first-child{text-align:left;color:var(--text-faint);font-size:11px;letter-spacing:.03em;}
+    .ptbl .hl td{color:var(--gold);font-weight:700;border-top:1px solid rgba(201,168,76,.18);background:rgba(201,168,76,.03);}
+    .ptbl .hl td:first-child{color:var(--text-soft);}
+
+    /* ── Series A badge ── */
+    .sa-badge{display:inline-flex;align-items:center;gap:7px;padding:4px 13px;border-radius:20px;background:rgba(0,212,170,.08);border:1px solid rgba(0,212,170,.28);font-family:'Tenor Sans',sans-serif;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);margin-bottom:18px;}
+
+    /* ── Footer ── */
+    .doc-footer{padding:44px 0;border-top:1px solid var(--border-soft);text-align:center;font-family:'Tenor Sans',sans-serif;font-size:10px;color:var(--text-faint);letter-spacing:.06em;line-height:1.90;}
+    .footer-rule{width:60px;height:1px;background:rgba(201,168,76,.30);margin:0 auto 20px;}
+
+    /* ════════════════════════════════════════
+       PRINT STYLES
+    ════════════════════════════════════════ */
+    @media print {
+      *{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+      :root{
+        --bg:#fff;--gold:#7a5c10;--gold-soft:#7a5c10;--teal:#006b55;
+        --text:#1a1a1a;--text-soft:#2c2c2c;--text-muted:#444;--text-faint:#666;
+        --border:#c8b060;--border-soft:#e0e0e0;
+      }
+      body{background:#fff;font-size:11pt;}
+      .toolbar,.btn-pdf,.confidential-pill{display:none!important;}
+      .outer{padding-top:0;}
+      .page{max-width:100%;padding:0;}
+      .cover{min-height:auto;padding:36px 0;page-break-after:always;}
+      .cover::before{display:none;}
+      .sec{padding:30px 0 22px;page-break-inside:avoid;}
+      .risk-item{page-break-inside:avoid;}
+      .callout{background:#fafaf5!important;border-color:#c8b060!important;}
+      .callout-teal{background:#f0faf8!important;border-left-color:#006b55!important;}
+      .callout-risk{background:#fff5f5!important;}
+      .callout-warn{background:#fefae8!important;}
+      .stat-card{background:#fafafa!important;border-color:#e0e0e0!important;}
+      .stat-val{color:#7a5c10!important;}
+      .dt th{background:#f5f0de!important;}
+      .dt td{border-bottom-color:#e8e8e8!important;}
+      .offer-card{background:#fafaf8!important;border-color:#ddd!important;}
+      .offer-card.featured{border-color:#c8b060!important;background:#fdf8e8!important;}
+      .offer-card.featured::before{background:#7a5c10;color:#fff;}
+      .risk-item{background:#fff8f8!important;border-left-color:#bb4444!important;}
+      .cov-disc{background:#fafaf5!important;border-color:#c8b060!important;}
+      .proc-track{background:#eee!important;}
+      .proc-fill{background:#7a5c10!important;}
+      .ptbl th{background:#f5f0de!important;}
+      p,li,.risk-body,.offer-detail,.cov-disc,.stat-sub,.sub-title,.cov-cell-label,.sec-num{color:#2c2c2c!important;}
+      h1.cov-title,.sec-title,.sub-title{color:#1a1a1a!important;}
+      @page{margin:1.1in 1in 1in 1in;size:letter;}
+      @page:first{margin:.85in 1in;}
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Toolbar ── -->
+<div class="toolbar">
+  <div style="display:flex;align-items:center;gap:14px;">
+    <span class="toolbar-id">Genesis App, Inc.</span>
+    <span class="toolbar-sub">Private Placement Memorandum · June 2026</span>
+  </div>
+  <div class="toolbar-right">
+    <span class="confidential-pill">Confidential</span>
+    <button class="btn-pdf" onclick="window.print()">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Download PDF
+    </button>
+  </div>
+</div>
+
+<div class="outer">
+<div class="page">
+
+<!-- ══════════════════════════════════════════════════════════
+     COVER PAGE
+══════════════════════════════════════════════════════════ -->
+<div class="cover">
+  <span class="cov-stamp">Confidential · Private Placement Memorandum</span>
+
+  <div class="cov-logo-row">
+    <img src="/genesis-logo.png" alt="Genesis Reserve" class="cov-logo" />
+    <div>
+      <div class="cov-co">Genesis App, Inc.</div>
+      <div class="cov-co-sub">A Delaware C Corporation &nbsp;·&nbsp; EIN 39-2527497 &nbsp;·&nbsp; File No. 10250412</div>
+    </div>
+  </div>
+
+  <h1 class="cov-title">Private Placement<br>Memorandum</h1>
+  <div class="cov-subtitle">Genesis Reserve — The Smarter Wallet</div>
+
+  <div class="cov-rule"></div>
+
+  <div class="cov-grid">
+    <div class="cov-cell">
+      <div class="cov-cell-label">Security Offered</div>
+      <div class="cov-cell-val">SAFE</div>
+      <div class="cov-cell-note">Simple Agreement for Future Equity</div>
+    </div>
+    <div class="cov-cell">
+      <div class="cov-cell-label">Maximum Offering</div>
+      <div class="cov-cell-val">$500,000</div>
+      <div class="cov-cell-note">Pre-Seed Round · 5–7 Seats</div>
+    </div>
+    <div class="cov-cell">
+      <div class="cov-cell-label">Valuation Cap</div>
+      <div class="cov-cell-val">$3,000,000</div>
+      <div class="cov-cell-note">Post-Money · Pre-Money $2.5M</div>
+    </div>
+    <div class="cov-cell">
+      <div class="cov-cell-label">Minimum Investment</div>
+      <div class="cov-cell-val">$50,000</div>
+      <div class="cov-cell-note">~2% equity equivalent</div>
+    </div>
+    <div class="cov-cell">
+      <div class="cov-cell-label">Offering Date</div>
+      <div class="cov-cell-val">June 2026</div>
+      <div class="cov-cell-note">Open until fully subscribed</div>
+    </div>
+    <div class="cov-cell">
+      <div class="cov-cell-label">Jurisdiction</div>
+      <div class="cov-cell-val">Delaware</div>
+      <div class="cov-cell-note">Incorporated July 3, 2025</div>
+    </div>
+  </div>
+
+  <div class="cov-disc">
+    <strong>IMPORTANT NOTICE.</strong> This Private Placement Memorandum ("Memorandum") is being furnished on a confidential basis to a limited number of sophisticated investors for the sole purpose of evaluating a potential investment in Genesis App, Inc. (the "Company"). The securities described herein have not been registered under the Securities Act of 1933, as amended, or the securities laws of any state. They are being offered pursuant to an exemption from registration under Regulation D, Rule 506(b) of the Securities Act, and may not be resold or transferred without registration or an applicable exemption.<br><br>
+    <strong>Accredited Investors Only.</strong> This offering is made solely to persons who qualify as "Accredited Investors" as defined in Rule 501(a) of Regulation D. By accepting this Memorandum, the recipient agrees to maintain strict confidentiality and not to reproduce or distribute this document.<br><br>
+    <strong>Attorney Review Notice.</strong> This document is prepared for informational and planning purposes. It should be reviewed and finalized by qualified securities counsel before formal use in an offering. All projections are forward-looking statements and are not guarantees of future performance. Investing in early-stage companies involves a high degree of risk, including the possible loss of the entire investment.
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SECTION I — NOTICE TO INVESTORS
+══════════════════════════════════════════════════════════ -->
+<div class="sec">
+  <div class="sec-num">Section I</div>
+  <h2 class="sec-title">Notice to Investors</h2>
+  <div class="sec-rule"></div>
+
+  <div class="sub">
+    <div class="sub-title">No Registration — Regulation D Exemption</div>
+    <p>The securities offered pursuant to this Memorandum have not been registered with the United States Securities and Exchange Commission (the "SEC") or any state securities regulatory authority. The Company is relying on the exemption from federal registration provided by Section 4(a)(2) of the Securities Act and Rule 506(b) of Regulation D. This offering is available only to persons who are "Accredited Investors" within the meaning of Rule 501(a) of Regulation D. No federal or state agency has reviewed, approved, or passed upon the accuracy or adequacy of this Memorandum. Any representation to the contrary is unlawful.</p>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">Accredited Investor Requirement</div>
+    <p>An "Accredited Investor" under Rule 501(a) includes, without limitation: (i) any natural person whose individual net worth, or joint net worth with a spouse or spousal equivalent, exceeds $1,000,000 (exclusive of the primary residence); (ii) any natural person with individual income exceeding $200,000 (or $300,000 joint) in each of the two most recent calendar years with a reasonable expectation of the same for the current year; or (iii) any entity in which all equity owners are accredited investors.</p>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">Restrictions on Transfer</div>
+    <p>The securities offered herein are subject to significant restrictions on transfer. Purchasers must be prepared to hold their investment for an indefinite period. The securities will bear a restrictive legend, and no transfers may be made without registration under applicable securities laws or an available exemption therefrom. There is currently no public market for these securities, and there can be no assurance that a public market will develop.</p>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">Forward-Looking Statements</div>
+    <p>Certain statements contained in this Memorandum constitute "forward-looking statements." These statements are based on current expectations, estimates, projections, and assumptions subject to significant risks and uncertainties. Actual results may differ materially. The Company undertakes no obligation to update or revise any forward-looking statements. Recipients should not place undue reliance on projections or estimates presented herein.</p>
+  </div>
+
+  <div class="callout callout-risk">
+    <p><strong>Speculative Investment.</strong> An investment in the Company involves a high degree of risk, including the possible loss of the entire amount invested. This offering is suitable only for investors who can afford to sustain a complete loss of their investment. Please review the Risk Factors section (Section XI) carefully before making any investment decision.</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SECTION II — EXECUTIVE SUMMARY
+══════════════════════════════════════════════════════════ -->
+<div class="sec">
+  <div class="sec-num">Section II</div>
+  <h2 class="sec-title">Executive Summary</h2>
+  <div class="sec-rule"></div>
+
+  <p>Genesis App, Inc. (the "Company") is a Delaware C Corporation developing <strong>Genesis Reserve</strong> — a non-custodial, compliance-first digital banking platform that automatically deploys user capital into institutional-grade decentralized finance yield strategies. The platform operates on the Arbitrum One Layer 2 network and is engineered for a $2.1 trillion stablecoin market that has no dominant automated yield solution.</p>
+
+  <p>Incorporated on July 3, 2025, the Company has achieved significant technical milestones: smart contract infrastructure (GenesisVault and StrategyRouter) deployed on Arbitrum One mainnet; Circle MPC wallet integration for non-custodial key management; live yield integrations with Aave V3 and Balancer V3 generating 4–6% APY on USDC; and a production web application with intelligence feeds, yield dashboard, and compliance tooling.</p>
+
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="stat-lbl">Yield Rebalance Cycle</div>
+      <div class="stat-val">15 min</div>
+      <div class="stat-sub">Automated · On-chain · Non-custodial</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-lbl">Current APY (USDC)</div>
+      <div class="stat-val">4–6%</div>
+      <div class="stat-sub">Aave V3 + Balancer V3 · Arbitrum One</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-lbl">Series A TVL Target</div>
+      <div class="stat-val">$1B+</div>
+      <div class="stat-sub">$12–18M/yr insurance trail at this scale</div>
+    </div>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">The Opportunity</div>
+    <p>Every major crypto wallet — Phantom, Trust Wallet, MetaMask — is architecturally passive. They store assets. They facilitate transactions. None automatically put idle capital to work. Genesis Reserve occupies an entirely new product category: the <em>Smarter Wallet</em> — a non-custodial vault that continuously optimizes yield across institutional DeFi protocols while maintaining full user sovereignty and compliance-first architecture.</p>
+    <p>The platform's built-in ComplianceRegistry, Circle MPC integration, and Arbitrum One infrastructure position Genesis Reserve at the intersection of retail accessibility and institutional sophistication — a gap the $97 billion DeFi market has not yet filled.</p>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">This Offering</div>
+    <p>The Company is offering up to <strong>$500,000</strong> in SAFE instruments to a limited group of accredited investors. Proceeds fund a focused 10-week sprint to Series A readiness: product completion, compliance infrastructure, IMO partnership activation for yield-funded insurance (Phase C), and first user cohort acquisition.</p>
+  </div>
+
+  <div class="callout callout-teal">
+    <p><strong>Series A Trajectory.</strong> This pre-seed round is the foundation for a Series A raise targeted at $5–10M within 12–18 months of closing. Metrics pursued during this runway — TVL growth, revenue activation, user cohorts, and Phase C insurance partnership execution — are designed to meet institutional investor thresholds for a Series A valuation of $20–40M pre-money.</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SECTION III — TERMS OF THE OFFERING
+══════════════════════════════════════════════════════════ -->
+<div class="sec">
+  <div class="sec-num">Section III</div>
+  <h2 class="sec-title">Terms of the Offering</h2>
+  <div class="sec-rule"></div>
+
+  <div class="sub">
+    <div class="sub-title">Offering Structure</div>
+    <table class="dt">
+      <tbody>
+        <tr><td class="td-lbl">Issuer</td><td class="td-val">Genesis App, Inc., a Delaware C Corporation</td></tr>
+        <tr><td class="td-lbl">EIN</td><td class="td-val">39-2527497</td></tr>
+        <tr><td class="td-lbl">Delaware File Number</td><td class="td-val">10250412</td></tr>
+        <tr><td class="td-lbl">Incorporated</td><td class="td-val">July 3, 2025 · Delaware Secretary of State</td></tr>
+        <tr><td class="td-lbl">Type of Security</td><td class="td-val">SAFE — Simple Agreement for Future Equity</td></tr>
+        <tr><td class="td-lbl">Offering Exemption</td><td class="td-val">Regulation D, Rule 506(b) — Accredited Investors Only</td></tr>
+        <tr><td class="td-lbl">Total Offering Amount</td><td class="td-gold" style="font-size:16px;">$500,000</td></tr>
+        <tr><td class="td-lbl">Pre-Money Valuation</td><td class="td-val">$2,500,000</td></tr>
+        <tr><td class="td-lbl">Post-Money Valuation Cap</td><td class="td-gold" style="font-size:16px;">$3,000,000</td></tr>
+        <tr><td class="td-lbl">Discount Rate at Conversion</td><td class="td-val">20%</td></tr>
+        <tr><td class="td-lbl">Minimum Investment</td><td class="td-val">$50,000</td></tr>
+        <tr><td class="td-lbl">Lead Seat (Recommended)</td><td class="td-gold">$100,000</td></tr>
+        <tr><td class="td-lbl">Maximum Investor Seats</td><td class="td-val">5–7 accredited investors</td></tr>
+        <tr><td class="td-lbl">Offering Date</td><td class="td-val">June 2026</td></tr>
+        <tr><td class="td-lbl">Closing</td><td class="td-val">Rolling closes; final close upon full subscription or Company election</td></tr>
+        <tr><td class="td-lbl">Pro-Rata Rights</td><td class="td-val">SAFE holders receive pro-rata participation rights in the Qualified Financing (Series A)</td></tr>
+        <tr><td class="td-lbl">Information Rights</td><td class="td-val">Quarterly financial updates; material event notifications; annual financials</td></tr>
+        <tr><td class="td-lbl">MFN Protection</td><td class="td-val">Most-Favored Nation — investors may elect terms of any more favorable SAFE issued prior to conversion</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">Investment Tiers</div>
+    <p style="font-family:'Tenor Sans',sans-serif;font-size:13px;color:var(--text-faint);letter-spacing:.04em;margin-bottom:18px;">Equity equivalents based on $2,500,000 pre-money valuation. Actual shares issued upon conversion at Series A.</p>
+    <div class="offer-grid">
+      <div class="offer-card">
+        <div class="offer-amt">$50,000</div>
+        <div class="offer-eq">~2.0% Equity Equiv.</div>
+        <div class="offer-detail">
+          Entry seat<br>
+          Pro-rata rights at Series A<br>
+          $3M cap · 20% discount<br>
+          MFN protection
+        </div>
+      </div>
+      <div class="offer-card featured">
+        <div class="offer-amt">$100,000</div>
+        <div class="offer-eq">~4.0% Equity Equiv.</div>
+        <div class="offer-detail">
+          Lead seat · Anchor investor<br>
+          Pro-rata rights at Series A<br>
+          $3M cap · 20% discount<br>
+          Board observer seat (optional)<br>
+          MFN protection
+        </div>
+      </div>
+      <div class="offer-card">
+        <div class="offer-amt">$75,000</div>
+        <div class="offer-eq">~3.0% Equity Equiv.</div>
+        <div class="offer-detail">
+          Balanced seat<br>
+          Pro-rata rights at Series A<br>
+          $3M cap · 20% discount<br>
+          MFN protection
+        </div>
+      </div>
+    </div>
+    <div class="callout">
+      <p><strong>Return Profile.</strong> At a conservative Series A pre-money valuation of $10–15M, pre-seed SAFE holders realize an implied <strong>3.3×–5×</strong> multiple at conversion. At the base-case Series A of $20–40M pre-money — consistent with comparable DeFi infrastructure raises — the implied multiple reaches <strong>6.7×–13.3×</strong> before any secondary liquidity or IPO event.</p>
+    </div>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">SAFE Conversion Mechanics</div>
+    <p>Each SAFE converts into preferred stock (or common stock, as applicable) at the next Qualified Financing — an equity financing generating at least $1,000,000 in gross proceeds — at the lower of: (i) the Cap Price = $3,000,000 ÷ fully-diluted share count at conversion; or (ii) the Discount Price = Series A price per share × 0.80.</p>
+    <p>In the event of a Change of Control prior to conversion, SAFE holders receive the greater of: (i) the purchase amount; or (ii) the liquidity conversion amount derived from the $3,000,000 cap. SAFEs have no maturity date, bear no interest, and carry no voting rights prior to conversion.</p>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">Use of Proceeds</div>
+    <div class="proc-row"><div class="proc-lbl">Product Development &amp; Engineering</div><div class="proc-track"><div class="proc-fill" style="width:35%"></div></div><div class="proc-pct">35%</div><div class="proc-amt">$175,000</div></div>
+    <div class="proc-row"><div class="proc-lbl">Marketing &amp; User Acquisition</div><div class="proc-track"><div class="proc-fill" style="width:20%"></div></div><div class="proc-pct">20%</div><div class="proc-amt">$100,000</div></div>
+    <div class="proc-row"><div class="proc-lbl">Compliance &amp; Legal Infrastructure</div><div class="proc-track"><div class="proc-fill" style="width:15%"></div></div><div class="proc-pct">15%</div><div class="proc-amt">$75,000</div></div>
+    <div class="proc-row"><div class="proc-lbl">IMO Partnership &amp; Phase C Activation</div><div class="proc-track"><div class="proc-fill" style="width:15%"></div></div><div class="proc-pct">15%</div><div class="proc-amt">$75,000</div></div>
+    <div class="proc-row"><div class="proc-lbl">Operations &amp; Team Expansion</div><div class="proc-track"><div class="proc-fill" style="width:10%"></div></div><div class="proc-pct">10%</div><div class="proc-amt">$50,000</div></div>
+    <div class="proc-row"><div class="proc-lbl">Working Capital Reserve</div><div class="proc-track"><div class="proc-fill" style="width:5%"></div></div><div class="proc-pct">5%</div><div class="proc-amt">$25,000</div></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SECTION IV — COMPANY OVERVIEW
+══════════════════════════════════════════════════════════ -->
+<div class="sec">
+  <div class="sec-num">Section IV</div>
+  <h2 class="sec-title">Company Overview</h2>
+  <div class="sec-rule"></div>
+
+  <div class="sub">
+    <div class="sub-title">Corporate Information</div>
+    <table class="dt">
+      <tbody>
+        <tr><td class="td-lbl">Legal Name</td><td class="td-val">Genesis App, Inc.</td></tr>
+        <tr><td class="td-lbl">Entity Type</td><td class="td-val">Delaware C Corporation — Stock Corporation</td></tr>
+        <tr><td class="td-lbl">Date of Incorporation</td><td class="td-val">July 3, 2025</td></tr>
+        <tr><td class="td-lbl">EIN</td><td class="td-val">39-2527497</td></tr>
+        <tr><td class="td-lbl">Delaware File Number</td><td class="td-val">10250412</td></tr>
+        <tr><td class="td-lbl">Delaware SR Number</td><td class="td-val">20253267208</td></tr>
+        <tr><td class="td-lbl">Authentication Number</td><td class="td-val">204288645 (Secretary of State · July 24, 2025)</td></tr>
+        <tr><td class="td-lbl">Authorized Shares</td><td class="td-val">25,000,000 shares at $0.0001 par value</td></tr>
+        <tr><td class="td-lbl">Registered Agent</td><td class="td-val">Northwest Registered Agent Service, Inc. · 8 The Green Suite B, Dover, DE 19901</td></tr>
+        <tr><td class="td-lbl">Principal Office</td><td class="td-val">8735 Dunwoody Place, Suite 10305, Atlanta, GA 30350</td></tr>
+        <tr><td class="td-lbl">Founder &amp; CEO</td><td class="td-val">Anthony Beedles</td></tr>
+        <tr><td class="td-lbl">Primary Product</td><td class="td-val">Genesis Reserve — The Smarter Wallet</td></tr>
+        <tr><td class="td-lbl">Blockchain Network</td><td class="td-val">Arbitrum One (Ethereum Layer 2)</td></tr>
+        <tr><td class="td-lbl">First Form 1120 Due</td><td class="td-val">September 15, 2026 (fiscal year ending December 31, 2025)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">Mission &amp; Vision</div>
+    <p>Genesis Reserve was built on a single conviction: <em>every dollar sitting in a digital wallet should be working.</em> The Company's mission is to make institutional-grade yield optimization accessible to every person with a smartphone — without custodial risk, without complexity, and without compromise on compliance.</p>
+    <p>The vision is a future in which passive wealth storage is obsolete. Members of Genesis Reserve automatically earn yield every 15 minutes on their USDC holdings, with compliance architecture, yield-funded insurance protection, and non-custodial sovereignty built into the protocol foundation — not bolted on as afterthoughts.</p>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">Development History</div>
+    <p>Genesis App, Inc. was incorporated as a Delaware C Corporation on July 3, 2025, by founder Anthony Beedles. The Delaware C-Corp structure was chosen deliberately to reflect institutional-grade governance and Series A readiness from inception. The Company operates as the technology entity within the broader Genesis ecosystem, which includes AMB Trust Fund and Genesis Banking.</p>
+    <p>Development of the Genesis Reserve platform commenced in Q3 2025. By Q2 2026, the Company had: deployed core smart contract infrastructure on Arbitrum One mainnet; completed Circle MPC wallet integration; activated live yield strategies through Aave V3 and Balancer V3; and built a full production web application including DeFi intelligence feeds, a yield optimization dashboard, compliance tooling, and an onboarding flow.</p>
+    <p>This pre-seed round represents the inflection point: transitioning from infrastructure buildout to user acquisition, revenue activation, and Series A preparation.</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SECTION V — MARKET OPPORTUNITY
+══════════════════════════════════════════════════════════ -->
+<div class="sec">
+  <div class="sec-num">Section V</div>
+  <h2 class="sec-title">Market Opportunity</h2>
+  <div class="sec-rule"></div>
+
+  <div class="sub">
+    <div class="sub-title">Total Addressable Market</div>
+    <div class="stat-row">
+      <div class="stat-card">
+        <div class="stat-lbl">Stablecoin Market Cap</div>
+        <div class="stat-val">$2.1T</div>
+        <div class="stat-sub">Total addressable float · 2026</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-lbl">DeFi Total Value Locked</div>
+        <div class="stat-val">$97B</div>
+        <div class="stat-sub">Active on-chain capital · Q2 2026</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-lbl">Global Crypto Wallets</div>
+        <div class="stat-val">600M+</div>
+        <div class="stat-sub">Passive holders · zero automated yield</div>
+      </div>
+    </div>
+    <p>Of the $2.1 trillion in stablecoins in circulation, an estimated 85–90% sits in passive wallets generating zero yield. The gap between the market's scale and the availability of automated, non-custodial yield infrastructure represents one of the largest unaddressed opportunities in digital finance.</p>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">Competitive Landscape</div>
+    <p>CryptoSlate's 2026 ranking of the top 10 crypto wallets features Phantom (8.5/10), Trust Wallet (8.5/10), and MetaMask (8.3/10) as category leaders. Each is an excellent passive wallet. None automatically deploy idle capital. None include compliance-first architecture. None offer yield-funded insurance.</p>
+    <table class="dt">
+      <thead><tr><th>Feature</th><th>Genesis Reserve</th><th>Phantom</th><th>Trust Wallet</th><th>MetaMask</th></tr></thead>
+      <tbody>
+        <tr><td class="td-lbl">Automated Yield</td><td class="td-teal">✓ Every 15 min</td><td style="color:var(--text-faint)">✗ Manual only</td><td style="color:var(--text-faint)">✗ Manual only</td><td style="color:var(--text-faint)">✗ Manual only</td></tr>
+        <tr><td class="td-lbl">Compliance Architecture</td><td class="td-teal">✓ Built-in on-chain</td><td style="color:var(--text-faint)">✗ User's burden</td><td style="color:var(--text-faint)">✗ User's burden</td><td style="color:var(--text-faint)">✗ User's burden</td></tr>
+        <tr><td class="td-lbl">Yield-Funded Insurance</td><td class="td-teal">✓ Term/IUL/Whole Life</td><td style="color:var(--text-faint)">✗ Not offered</td><td style="color:var(--text-faint)">✗ Not offered</td><td style="color:var(--text-faint)">✗ Not offered</td></tr>
+        <tr><td class="td-lbl">Non-Custodial</td><td class="td-teal">✓ Circle MPC</td><td class="td-teal">✓</td><td class="td-teal">✓</td><td class="td-teal">✓</td></tr>
+        <tr><td class="td-lbl">Stablecoin-First Yield</td><td class="td-teal">✓ USDC · Aave + Balancer</td><td style="color:var(--text-faint)">△ Varies</td><td style="color:var(--text-faint)">△ Varies</td><td style="color:var(--text-faint)">△ Limited</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">Competitive Moat</div>
+    <ul>
+      <li><strong>Compliance-first architecture</strong> — on-chain ComplianceRegistry with role-based access control is a prerequisite for institutional adoption, not a retrofit; competitors would need to rebuild the entire stack to replicate</li>
+      <li><strong>Circle MPC wallet integration</strong> — non-custodial key management at institutional standards; users own their keys while the protocol automates capital deployment</li>
+      <li><strong>Arbitrum One infrastructure</strong> — sub-cent transaction costs and sub-second finality make the 15-minute rebalancing cycle economically viable at any user scale</li>
+      <li><strong>Phase C insurance pipeline</strong> — Yield-Funded Legacy Protection creates recurring insurance renewal trail income that no competitor offers and that requires its own regulatory and partnership infrastructure to replicate</li>
+      <li><strong>First-mover advantage</strong> — the Smarter Wallet category is effectively unclaimed; Genesis Reserve holds an 18–24 month lead on any well-capitalized competitor who would need to rebuild the compliance + MPC + DeFi infrastructure stack from scratch</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SECTION VI — PRODUCT DESCRIPTION
+══════════════════════════════════════════════════════════ -->
+<div class="sec">
+  <div class="sec-num">Section VI</div>
+  <h2 class="sec-title">Product — Genesis Reserve</h2>
+  <div class="sec-rule"></div>
+
+  <div class="sub">
+    <div class="sub-title">Core Architecture</div>
+    <p>Genesis Reserve is a non-custodial digital banking platform built on three integrated layers: (1) a user-facing web application for deposit, portfolio dashboard, and withdrawal; (2) a smart contract layer (GenesisVault and StrategyRouter) on Arbitrum One that automates USDC allocation across DeFi yield protocols; and (3) Circle MPC wallet infrastructure for non-custodial key management.</p>
+    <p>The protocol operates on a 15-minute rebalancing cycle. On each cycle, the StrategyRouter evaluates yield rates across active strategies and reallocates capital to optimize risk-adjusted returns. All rebalancing is on-chain, transparent, and non-custodial — the Company never holds user funds.</p>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">Product Phases</div>
+    <table class="dt">
+      <thead><tr><th>Phase</th><th>Timeline</th><th>Key Deliverables</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="td-lbl"><strong>Phase A</strong><br>Core Platform</td>
+          <td>M0 – M3</td>
+          <td>GenesisVault + StrategyRouter · Circle MPC · Aave V3 + Balancer V3 · Web app · KYC/compliance · Transak on-ramp · CCTP bridge</td>
+          <td class="td-teal">Infrastructure Live ✓</td>
+        </tr>
+        <tr>
+          <td class="td-lbl"><strong>Phase B</strong><br>Premium Layer</td>
+          <td>M3 – M9</td>
+          <td>Premium subscriptions · Compliance API licensing · Referral program · Mobile app · AgentUniverse AI · Advanced analytics</td>
+          <td class="td-gold">In Development</td>
+        </tr>
+        <tr>
+          <td class="td-lbl"><strong>Phase C</strong><br>Legacy Protection</td>
+          <td>M0 – M12<br><em>(this runway)</em></td>
+          <td>IMO partnership · Term / IUL / Whole Life insurance funded by vault yield · Zero out-of-pocket premiums · Dual-asset IUL compounding · $12–18M/yr renewal trail at $1B TVL</td>
+          <td class="td-gold">Activating This Runway ★</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">Phase C — Yield-Funded Legacy Protection</div>
+    <div class="callout callout-teal">
+      <p><strong>Category-Defining Innovation.</strong> Phase C represents the feature set that transforms Genesis Reserve from a yield platform into a comprehensive financial protection ecosystem. The mechanism: vault yield is routed to pay life insurance premiums on behalf of the member at zero additional out-of-pocket cost. The member deposits USDC, earns yield, and accrues life insurance coverage — all simultaneously, all funded by yield that would have accrued anyway.</p>
+      <p>The Indexed Universal Life (IUL) variant creates dual compounding assets: the vault position grows while the IUL cash value accumulates in parallel. At $1B TVL with 40% member adoption, the insurance renewal trail income is projected at <strong>$12–18M per year</strong> — an annuity-like recurring revenue stream requiring near-zero marginal cost per renewal. No wallet competitor can replicate this without rebuilding the entire infrastructure stack and establishing independent insurance regulatory relationships.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SECTION VII — TECHNOLOGY ARCHITECTURE
+══════════════════════════════════════════════════════════ -->
+<div class="sec">
+  <div class="sec-num">Section VII</div>
+  <h2 class="sec-title">Technology Architecture</h2>
+  <div class="sec-rule"></div>
+
+  <div class="sub">
+    <div class="sub-title">Deployed Smart Contracts (Arbitrum One Mainnet)</div>
+    <table class="dt">
+      <thead><tr><th>Contract</th><th>Address</th><th>Function</th></tr></thead>
+      <tbody>
+        <tr><td class="td-lbl">GenesisVault</td><td class="td-mono">0xE1Eb39A9Fb34e678E3D522d479FD2ddD884102F7</td><td>User deposit vault · USDC custody · yield accounting · RBAC security</td></tr>
+        <tr><td class="td-lbl">StrategyRouter</td><td class="td-mono">0xE39F4a4e4274CC17760e371dD4ba420404BCE9C4</td><td>Capital allocation engine · 15-min rebalancing · strategy band management</td></tr>
+        <tr><td class="td-lbl">ComplianceRegistry</td><td style="font-family:monospace;font-size:11px;color:var(--text-muted)">0x6D58678562387c400964737884E78f2f12e1c495</td><td>On-chain KYC/AML registry · address-level compliance status</td></tr>
+        <tr><td class="td-lbl">Aave V3 Adapter</td><td style="font-family:monospace;font-size:11px;color:var(--text-muted)">0xa6F089338Ae75306217336054B36C02c3Bc5554D</td><td>Liquid yield strategy · USDC lending to Aave V3 · INSTANT band · max 30% allocation</td></tr>
+        <tr><td class="td-lbl">Balancer V3 Adapter</td><td style="font-family:monospace;font-size:11px;color:var(--text-muted)">0x6291Ed9FC028F872D14B1da79de60a63e7Ec6624</td><td>Structured yield strategy · USDC-USDT LP · HOURS band · max 20% allocation</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">Full Technology Stack</div>
+    <ul>
+      <li><strong>Blockchain:</strong> Arbitrum One (Ethereum L2) — sub-cent gas costs enable the 15-minute yield cycle at any TVL scale without penalizing small depositors</li>
+      <li><strong>Wallet Layer:</strong> Circle MPC (Multi-Party Computation) — non-custodial; users hold their keys, the protocol automates capital deployment</li>
+      <li><strong>Yield Protocols:</strong> Aave V3 and Balancer V3 deployed; T-Bill adapter pending to add on-chain treasury yield as a third strategy band</li>
+      <li><strong>Fiat On-Ramp:</strong> Transak — direct USD → USDC deposit without leaving the app</li>
+      <li><strong>Cross-Chain:</strong> Circle CCTP (Cross-Chain Transfer Protocol) — USDC portability across chains</li>
+      <li><strong>Frontend:</strong> Next.js App Router on Vercel; Privy for authentication; ZeroDev for account abstraction and gasless transactions</li>
+      <li><strong>Compliance:</strong> On-chain ComplianceRegistry with GUARDIAN_ROLE, OPERATOR_ROLE, and STRATEGIST_ROLE separation; no single party can unilaterally move user funds</li>
+    </ul>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">Security Architecture</div>
+    <p>The protocol employs defense-in-depth security. Smart contracts use OpenZeppelin's AccessControl framework with strict role separation. The OPERATOR_ROLE manages capital deployment; GUARDIAN_ROLE provides emergency pause capability; DEFAULT_ADMIN controls role grants. Circle MPC ensures the Company never has unilateral access to user private keys. All smart contract interactions require multi-party signatures at the key management layer before on-chain execution.</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SECTION VIII — REVENUE MODEL
+══════════════════════════════════════════════════════════ -->
+<div class="sec">
+  <div class="sec-num">Section VIII</div>
+  <h2 class="sec-title">Revenue Model</h2>
+  <div class="sec-rule"></div>
+
+  <p>Genesis Reserve is engineered with six distinct revenue streams. Five activate within Phase A and B. Phase C is the platform's highest-margin long-term revenue engine.</p>
+
+  <table class="dt">
+    <thead><tr><th>#</th><th>Revenue Stream</th><th>Mechanism</th><th>Phase</th><th>Unit Economics</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="td-gold" style="font-weight:700;font-size:14px;">1</td>
+        <td class="td-lbl"><strong>Transaction Fee Revenue</strong></td>
+        <td>Pro-rata share of 20% of all transaction fees generated on the platform</td>
+        <td class="td-teal">A · Live</td>
+        <td>Scales linearly with volume and TVL</td>
+      </tr>
+      <tr>
+        <td class="td-gold" style="font-weight:700;font-size:14px;">2</td>
+        <td class="td-lbl"><strong>Yield Spread</strong></td>
+        <td>0.5–1.0% annualized spread on TVL between protocol yield earned and member APY credited</td>
+        <td class="td-teal">A · Live</td>
+        <td>$5–10M/yr at $1B TVL</td>
+      </tr>
+      <tr>
+        <td class="td-gold" style="font-weight:700;font-size:14px;">3</td>
+        <td class="td-lbl"><strong>Premium Subscriptions</strong></td>
+        <td>Tiered monthly plans for advanced analytics, priority rebalancing, and custom strategies</td>
+        <td class="td-gold">B · Dev</td>
+        <td>$10–$50/month per subscriber</td>
+      </tr>
+      <tr>
+        <td class="td-gold" style="font-weight:700;font-size:14px;">4</td>
+        <td class="td-lbl"><strong>Compliance API Licensing</strong></td>
+        <td>ComplianceRegistry API licensed to enterprise clients and DeFi protocols needing on-chain KYC/AML</td>
+        <td class="td-gold">B · Dev</td>
+        <td>Enterprise SaaS; annual contracts</td>
+      </tr>
+      <tr>
+        <td class="td-gold" style="font-weight:700;font-size:14px;">5</td>
+        <td class="td-lbl"><strong>Referral Program</strong></td>
+        <td>Member-driven acquisition with revenue-share on referred member yield activity</td>
+        <td class="td-gold">B · Dev</td>
+        <td>Performance-based; low marginal CAC</td>
+      </tr>
+      <tr>
+        <td style="color:var(--teal);font-weight:700;font-size:14px;">6</td>
+        <td class="td-lbl"><strong>Yield-Funded Legacy Protection ★</strong></td>
+        <td>IMO partnership routes vault yield to life insurance premiums; Company earns renewal trail commission on active policies</td>
+        <td style="color:var(--teal);font-weight:700;">C · This Runway</td>
+        <td style="color:var(--gold);font-weight:700;">$12–18M/yr at $1B TVL · 40% adoption</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SECTION IX — MANAGEMENT & TEAM
+══════════════════════════════════════════════════════════ -->
+<div class="sec">
+  <div class="sec-num">Section IX</div>
+  <h2 class="sec-title">Management &amp; Team</h2>
+  <div class="sec-rule"></div>
+
+  <div class="sub">
+    <div class="sub-title">Founder &amp; Chief Executive Officer</div>
+    <table class="dt">
+      <tbody>
+        <tr><td class="td-lbl">Name</td><td class="td-val">Anthony Beedles</td></tr>
+        <tr><td class="td-lbl">Role</td><td class="td-val">Founder · Sole Incorporator · Chief Executive Officer</td></tr>
+        <tr><td class="td-lbl">Entity Responsibility</td><td class="td-val">Genesis App, Inc. (Issuer) · AMB Trust Fund · Genesis Banking</td></tr>
+        <tr><td class="td-lbl">Location</td><td class="td-val">Atlanta, Georgia</td></tr>
+        <tr><td class="td-lbl">Contact</td><td class="td-val">crownmcllc@gmail.com</td></tr>
+      </tbody>
+    </table>
+    <p>Anthony Beedles is the founder of the Genesis ecosystem and sole incorporator of Genesis App, Inc. He conceived, architected, and has led development of the Genesis Reserve platform from inception through its current state of technical readiness, encompassing smart contract deployment, wallet integration, DeFi protocol integrations, compliance infrastructure, and the full product application. He is responsible for all strategic, product, and fundraising decisions.</p>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">Advisory &amp; Technical Resources</div>
+    <p>The Company currently operates with a lean founding team supported by specialized technical contractors for smart contract development, frontend engineering, and compliance architecture. Proceeds from this offering will be used in part to expand the core team in preparation for Series A diligence requirements.</p>
+    <p>The Company is actively building an advisory board including DeFi protocol veterans, insurance industry professionals for Phase C, and fintech compliance experts. Advisory board members will be disclosed to investors upon request and formally announced in connection with the Series A process.</p>
+  </div>
+
+  <div class="callout">
+    <p><strong>Note on Team Disclosure.</strong> Additional team members, advisors, and strategic partners will be disclosed during due diligence. Certain team and partnership details are considered competitively sensitive at this stage. A complete team disclosure will accompany the Series A data room.</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SECTION X — FINANCIAL PROJECTIONS
+══════════════════════════════════════════════════════════ -->
+<div class="sec">
+  <div class="sec-num">Section X</div>
+  <h2 class="sec-title">Financial Projections</h2>
+  <div class="sec-rule"></div>
+
+  <div class="callout callout-warn">
+    <p><strong>Forward-Looking Statement Disclaimer.</strong> The projections in this section are based on the Company's current plans, assumptions, and market estimates. They are not guarantees of future performance. Actual results may differ materially due to competitive, regulatory, technical, and macroeconomic factors. Prospective investors should not rely on these projections as the basis for an investment decision.</p>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">TVL Growth Milestones</div>
+    <table class="ptbl">
+      <thead><tr><th>Milestone</th><th>Target Date</th><th>Conservative</th><th>Base Case</th><th>Optimistic</th></tr></thead>
+      <tbody>
+        <tr><td>Pre-Seed Close</td><td>Q3 2026</td><td>—</td><td>—</td><td>—</td></tr>
+        <tr><td>First 1,000 Members</td><td>Q4 2026</td><td>$500K TVL</td><td>$2M TVL</td><td>$5M TVL</td></tr>
+        <tr><td>Phase C IMO Signed</td><td>Q4 2026</td><td>Term only</td><td>Term + IUL</td><td>Full suite</td></tr>
+        <tr><td>Series A Raise</td><td>Q1–Q2 2027</td><td>$5M TVL</td><td>$25M TVL</td><td>$75M TVL</td></tr>
+        <tr class="hl"><td>Series A Target TVL</td><td>12–18 months</td><td>$10M</td><td>$50M</td><td>$200M</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">Revenue Projections (Base Case)</div>
+    <table class="ptbl">
+      <thead><tr><th>Revenue Stream</th><th>Year 1</th><th>Year 2 (Series A)</th><th>Year 3</th><th>At $1B TVL</th></tr></thead>
+      <tbody>
+        <tr><td>Yield Spread</td><td>$0–$25K</td><td>$50K–$250K</td><td>$500K–$2M</td><td>$5–10M/yr</td></tr>
+        <tr><td>Transaction Fee Revenue</td><td>$0–$10K</td><td>$25K–$100K</td><td>$200K–$1M</td><td>Variable</td></tr>
+        <tr><td>Premium Subscriptions</td><td>—</td><td>$10K–$50K</td><td>$100K–$500K</td><td>$1–3M/yr</td></tr>
+        <tr><td>Compliance API</td><td>—</td><td>$0–$50K</td><td>$100K–$500K</td><td>$1–5M/yr</td></tr>
+        <tr><td>Insurance Trail (Phase C)</td><td>—</td><td>$0–$100K</td><td>$500K–$3M</td><td style="color:var(--gold);font-weight:700;">$12–18M/yr</td></tr>
+        <tr class="hl"><td>Total Revenue</td><td>$0–$35K</td><td>$85K–$550K</td><td>$1.4M–$7M</td><td style="color:var(--gold);font-weight:700;">$19–36M/yr</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">Pre-Seed to Series A Bridge</div>
+    <p>The $500,000 pre-seed raise funds a focused 10-week sprint with three measurable outcomes: (1) production-ready platform with first user cohort data; (2) Phase C insurance partnership activation pipeline; and (3) the metrics package required for institutional Series A diligence.</p>
+    <p>At Series A, the Company targets a pre-money valuation of $20–40M — representing a 4×–16× multiple on the $2.5M pre-seed pre-money valuation. Pre-seed SAFE holders convert at the $3M cap, implying an implied conversion gain of <strong>6.7×–13.3×</strong> at the Series A conversion event before any secondary or liquidity event.</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SECTION XI — RISK FACTORS
+══════════════════════════════════════════════════════════ -->
+<div class="sec">
+  <div class="sec-num">Section XI</div>
+  <h2 class="sec-title">Risk Factors</h2>
+  <div class="sec-rule"></div>
+
+  <div class="callout callout-risk">
+    <p><strong>Investment Risk.</strong> The following risk factors do not constitute a complete list of all risks. Prospective investors should carefully consider these risks, consult their own advisors, and review all sections of this Memorandum. <strong>You could lose your entire investment.</strong></p>
+  </div>
+
+  <div class="risk-item"><div class="risk-ttl">Early-Stage Company Risk</div><div class="risk-body">Genesis App, Inc. was incorporated in July 2025 and has a limited operating history. The Company has generated minimal revenue to date. There is no assurance that the Company will achieve its projected milestones, generate revenue, or become profitable. Early-stage companies have high failure rates.</div></div>
+
+  <div class="risk-item"><div class="risk-ttl">Regulatory &amp; Compliance Risk</div><div class="risk-body">The regulatory landscape for digital assets, DeFi protocols, and blockchain-based financial services is rapidly evolving. Changes in regulations by the SEC, CFTC, FinCEN, or state regulators could materially impact the Company's ability to operate or require significant changes to its business model. Regulatory action could result in forced product modifications, fines, or operational shutdown. The Company's compliance-first architecture reduces but cannot eliminate this risk.</div></div>
+
+  <div class="risk-item"><div class="risk-ttl">Smart Contract &amp; Technology Risk</div><div class="risk-body">The Company's core infrastructure relies on smart contracts deployed on Arbitrum One. Smart contracts may contain vulnerabilities that could be exploited. A smart contract vulnerability could result in partial or total loss of user funds, exposing the Company to significant legal and reputational liability. While the Company employs security best practices and role-based access controls, no smart contract system is immune from all risks.</div></div>
+
+  <div class="risk-item"><div class="risk-ttl">Third-Party DeFi Protocol Risk</div><div class="risk-body">The Company routes user capital through Aave V3 and Balancer V3. These protocols have their own smart contract risks, governance risks, and liquidity risks. A failure, exploit, or adverse governance decision at any integrated protocol could result in capital loss. The Company has no control over third-party protocol decisions or security practices.</div></div>
+
+  <div class="risk-item"><div class="risk-ttl">Market &amp; Stablecoin Risk</div><div class="risk-body">The digital asset market is highly volatile. Significant declines in USDC adoption or a stablecoin de-pegging event could result in losses to users and reputational damage to the Company. Broader crypto market downturns could reduce TVL and revenue. The Company's operations are materially dependent on the continued stability and adoption of USDC.</div></div>
+
+  <div class="risk-item"><div class="risk-ttl">Competition Risk</div><div class="risk-body">While Genesis Reserve currently occupies a first-mover position, well-capitalized competitors — including existing major wallet providers, DeFi protocols, and centralized financial institutions — could develop competing products. Many potential competitors have significantly greater financial, technical, and marketing resources than the Company.</div></div>
+
+  <div class="risk-item"><div class="risk-ttl">Key Person Risk</div><div class="risk-body">The Company is currently highly dependent on its founder, Anthony Beedles. The loss of his services could materially and adversely affect the Company's business, operations, and ability to raise future capital. The Company currently has no key-person insurance.</div></div>
+
+  <div class="risk-item"><div class="risk-ttl">Illiquidity of Securities</div><div class="risk-body">The securities offered herein are illiquid. There is no public market for these SAFEs, and no guarantee that any public market will develop. Investors must be prepared to hold their investment indefinitely. The SAFE will convert only upon a Qualified Financing, Change of Control, or dissolution, none of which may occur within any particular timeframe or at all.</div></div>
+
+  <div class="risk-item"><div class="risk-ttl">Dilution Risk</div><div class="risk-body">Future equity financings — including the Series A — will dilute SAFE holders at conversion. The Company may issue additional shares, options, warrants, or convertible instruments that will reduce percentage ownership. The capitalization structure is subject to change, including employee option pool creation at the Series A which will dilute pre-conversion SAFE holders.</div></div>
+
+  <div class="risk-item"><div class="risk-ttl">Phase C Insurance Program Risk</div><div class="risk-body">Phase C is dependent on establishing an IMO partnership and navigating insurance licensing requirements across multiple states. Delays in partnership execution or regulatory changes could delay or prevent Phase C activation. The $12–18M/yr renewal trail projection assumes $1B TVL and 40% member adoption, neither of which may be achieved. Insurance commission revenue is also subject to policyholder lapse risk and regulatory changes in insurance products offered.</div></div>
+
+  <div class="risk-item"><div class="risk-ttl">Arbitrum Network Dependency</div><div class="risk-body">The Company's smart contracts depend on the Arbitrum One Layer 2 network. Network outages, protocol upgrades, governance disputes, or changes to Arbitrum's fee structure could disrupt operations. Arbitrum remains a third-party infrastructure dependency outside the Company's control.</div></div>
+
+  <div class="risk-item"><div class="risk-ttl">Capital Adequacy Risk</div><div class="risk-body">The $500,000 raised in this offering may prove insufficient to achieve all planned milestones. The Company may require additional capital before achieving positive cash flow. Additional fundraising may dilute existing investors or may not be available on acceptable terms. If the Company is unable to raise sufficient capital, it may curtail operations or cease operations altogether.</div></div>
+
+  <div class="risk-item"><div class="risk-ttl">Tax Risk</div><div class="risk-body">The tax treatment of SAFE instruments, their conversion, and subsequent disposition is complex. Changes in tax law could adversely affect investors' after-tax returns. The Company's operations involve digital assets and DeFi protocols whose tax treatment remains subject to IRS guidance that is still evolving. Investors should consult their own tax advisors.</div></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SECTION XII — CAPITALIZATION
+══════════════════════════════════════════════════════════ -->
+<div class="sec">
+  <div class="sec-num">Section XII</div>
+  <h2 class="sec-title">Capitalization</h2>
+  <div class="sec-rule"></div>
+
+  <div class="sub">
+    <div class="sub-title">Current Capital Structure</div>
+    <table class="dt">
+      <thead><tr><th>Class</th><th>Authorized Shares</th><th>Par Value</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="td-lbl">Common Stock</td>
+          <td class="td-val">25,000,000</td>
+          <td>$0.0001</td>
+          <td>Authorized per Certificate of Incorporation; shares issued to founder(s) upon formation</td>
+        </tr>
+        <tr>
+          <td class="td-lbl">Preferred Stock</td>
+          <td class="td-val">To be designated</td>
+          <td>TBD</td>
+          <td>Board-authorized to be designated in series; Series Seed Preferred to be created at Qualified Financing (Series A)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">SAFE Impact at Conversion</div>
+    <p>Upon conversion of the full $500,000 SAFE offering at the $3,000,000 post-money valuation cap, SAFE investors will collectively hold approximately <strong>16.7%</strong> of fully diluted equity before any option pool creation at the conversion financing. Individual ownership ranges from approximately 2.0% ($50K) to 4.0% ($100K) based on investment amount.</p>
+    <p>The conversion price per share is determined at the Qualified Financing at the lower of: (i) $3,000,000 ÷ fully-diluted share count; or (ii) Series A price × 0.80. A complete capitalization table including all founder shares, option designations, and existing SAFE commitments will be provided in the due diligence data room.</p>
+  </div>
+
+  <div class="callout">
+    <p><strong>Cap Table Note.</strong> A full capitalization model showing pre- and post-conversion ownership at each Series A valuation scenario will be provided to prospective investors upon execution of an NDA and commencement of due diligence. Contact Anthony Beedles at crownmcllc@gmail.com.</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SECTION XIII — SERIES A ADDENDUM
+══════════════════════════════════════════════════════════ -->
+<div class="sec">
+  <div class="sec-num">Section XIII — Series A Addendum</div>
+  <h2 class="sec-title">Series A Preparation &amp; Roadmap</h2>
+  <div class="sec-rule"></div>
+
+  <div class="sa-badge">◈ Series A Preparation Framework</div>
+
+  <p>This pre-seed round is structured as the formal foundation for a Series A raise. Every element of the Company's operations — Delaware C Corporation structure, SAFE instrument with MFN and pro-rata rights, compliance architecture, product roadmap, and investor documentation — is calibrated to meet institutional investor standards at the Series A stage.</p>
+
+  <div class="sub">
+    <div class="sub-title">Series A Target Parameters</div>
+    <table class="dt">
+      <tbody>
+        <tr><td class="td-lbl">Target Raise</td><td class="td-val">$5,000,000 – $10,000,000</td></tr>
+        <tr><td class="td-lbl">Pre-Money Valuation (Target)</td><td class="td-val">$20,000,000 – $40,000,000</td></tr>
+        <tr><td class="td-lbl">Target Close Window</td><td class="td-val">12–18 months post pre-seed close</td></tr>
+        <tr><td class="td-lbl">Target TVL at Series A</td><td class="td-val">$25M – $100M (base case)</td></tr>
+        <tr><td class="td-lbl">Target Active Members at Series A</td><td class="td-val">5,000 – 25,000</td></tr>
+        <tr><td class="td-lbl">Revenue Run Rate at Series A</td><td class="td-val">$250K – $2M ARR</td></tr>
+        <tr><td class="td-lbl">Phase C Status at Series A</td><td class="td-val">IMO partnership executed; first insurance policies in force</td></tr>
+        <tr><td class="td-lbl">Institutional Depositor Partnerships</td><td class="td-val">1–3 signed (target for Series A pipeline)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">Implied Returns for Pre-Seed Investors at Series A</div>
+    <table class="ptbl">
+      <thead><tr><th>Investment</th><th>Series A $10M Pre</th><th>Series A $20M Pre</th><th>Series A $40M Pre</th></tr></thead>
+      <tbody>
+        <tr><td>$50,000 (~2% equiv.)</td><td>~3.3× implied</td><td>~6.7× implied</td><td>~13.3× implied</td></tr>
+        <tr><td>$75,000 (~3% equiv.)</td><td>~3.3× implied</td><td>~6.7× implied</td><td>~13.3× implied</td></tr>
+        <tr class="hl"><td>$100,000 Lead (~4% equiv.)</td><td>~3.3× implied</td><td>~6.7× implied</td><td>~13.3× implied</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:12px;color:var(--text-faint);font-family:'Tenor Sans',sans-serif;margin-top:10px;letter-spacing:.03em;">Implied multiples reflect SAFE conversion at $3M cap. Actual returns depend on Series A pricing, dilution from new share issuance and option pool, and ultimate liquidity event. These figures are illustrative projections, not guarantees.</p>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">Why $20–40M Series A is Conservative</div>
+    <div class="callout callout-teal">
+      <p>Comparable DeFi infrastructure protocols have raised Series A rounds at $50M–$200M pre-money valuations with less mature infrastructure and without any yield-funded insurance revenue category. Genesis Reserve at a $20M pre-money Series A — with live mainnet smart contracts, Circle MPC integration, active yield strategies, and Phase C IMO pipeline — represents a 4×–16× discount to peer DeFi infrastructure Series A valuations. The pre-seed entry at $2.5M pre-money compounds this further, creating an asymmetric risk/reward profile for early investors who participate at this stage.</p>
+    </div>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">Series A Use of Proceeds (Preview)</div>
+    <p>The Series A will fund four primary areas: (1) engineering team expansion to 8–12 full-time engineers; (2) institutional business development targeting 3–5 institutional depositor partnerships for TVL scale; (3) geographic expansion and multi-state regulatory licensing; and (4) Phase C insurance program scaling — activation of the renewal trail revenue engine across multiple states and IMO distribution channels at full commercialization.</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SECTION XIV — SUBSCRIPTION PROCEDURES
+══════════════════════════════════════════════════════════ -->
+<div class="sec">
+  <div class="sec-num">Section XIV</div>
+  <h2 class="sec-title">Subscription Procedures</h2>
+  <div class="sec-rule"></div>
+
+  <div class="sub">
+    <div class="sub-title">How to Subscribe</div>
+    <ol>
+      <li><strong>Request Subscription Documents</strong> — Contact Anthony Beedles at crownmcllc@gmail.com to receive the SAFE Subscription Agreement and Investor Questionnaire.</li>
+      <li><strong>Complete Investor Questionnaire</strong> — Execute and return the Investor Questionnaire confirming accredited investor status. The Company will conduct verification in accordance with Rule 506(b) requirements.</li>
+      <li><strong>Execute SAFE Agreement</strong> — Review and execute the SAFE agreement. The Company will countersign upon verification of accredited investor status.</li>
+      <li><strong>Wire Transfer</strong> — Wire the investment amount to the Company's designated account. Wire instructions are provided upon execution of the subscription agreement.</li>
+      <li><strong>Confirmation</strong> — The Company will deliver a fully-executed copy of the SAFE within 5 business days of receipt of funds.</li>
+    </ol>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">Contact</div>
+    <table class="dt">
+      <tbody>
+        <tr><td class="td-lbl">Contact</td><td class="td-val">Anthony Beedles — Founder &amp; CEO</td></tr>
+        <tr><td class="td-lbl">Company</td><td class="td-val">Genesis App, Inc.</td></tr>
+        <tr><td class="td-lbl">Address</td><td class="td-val">8735 Dunwoody Place, Suite 10305, Atlanta, GA 30350</td></tr>
+        <tr><td class="td-lbl">Email</td><td class="td-val">crownmcllc@gmail.com</td></tr>
+        <tr><td class="td-lbl">EIN</td><td class="td-val">39-2527497</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-warn">
+    <p><strong>No Escrow.</strong> Investor funds will be deposited directly into the Company's operating account upon acceptance of subscription and are not held in escrow. The Company does not intend to return subscription funds if the offering is not fully subscribed. Investors should only wire funds after execution of the SAFE agreement.</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SECTION XV — LEGAL MATTERS & TAX
+══════════════════════════════════════════════════════════ -->
+<div class="sec">
+  <div class="sec-num">Section XV</div>
+  <h2 class="sec-title">Legal Matters &amp; Tax Considerations</h2>
+  <div class="sec-rule"></div>
+
+  <div class="sub">
+    <div class="sub-title">Legal Counsel</div>
+    <p>The Company is in the process of retaining securities counsel for formal review of this offering. Prospective investors are strongly encouraged to retain independent legal counsel to review this Memorandum and the SAFE agreement prior to investing. This Memorandum has been prepared for planning and organizational purposes and should be reviewed and finalized by qualified securities counsel before formal distribution.</p>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">Tax Considerations</div>
+    <p>An investment in the Company may have material federal, state, and local tax consequences. The tax treatment of SAFE instruments, their conversion into equity, and any subsequent disposition of shares is complex and depends on individual investor circumstances. The Company files its federal income taxes on Form 1120 (C Corporation return), with fiscal year ending December 31. The first required filing date is September 15, 2026.</p>
+    <p>Prospective investors are strongly encouraged to consult with their own tax advisors regarding the tax implications of this investment before subscribing. Consult with a tax professional familiar with digital asset and DeFi-related tax treatment given the nature of the Company's operations.</p>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title">Governing Law</div>
+    <p>This offering, the SAFE instruments, and all matters related thereto shall be governed by and construed in accordance with the laws of the State of Delaware, without regard to conflict of laws provisions. Any disputes arising in connection with this offering shall be subject to the exclusive jurisdiction of the courts of the State of Delaware.</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     EXHIBIT A — SAFE TERMS SUMMARY
+══════════════════════════════════════════════════════════ -->
+<div class="sec">
+  <div class="sec-num">Exhibit A</div>
+  <h2 class="sec-title">SAFE Terms Summary</h2>
+  <div class="sec-rule"></div>
+
+  <p>The following summarizes the material terms of the SAFE to be issued in this offering. The definitive SAFE agreement controls in all respects. A form of SAFE will be provided to prospective investors upon request.</p>
+
+  <table class="dt">
+    <thead><tr><th>Term</th><th>Detail</th></tr></thead>
+    <tbody>
+      <tr><td class="td-lbl">Framework</td><td>Y Combinator Post-Money SAFE (modified)</td></tr>
+      <tr><td class="td-lbl">Purchase Amount</td><td>$50,000 minimum · $100,000 Lead Seat · up to $200,000 per investor</td></tr>
+      <tr><td class="td-lbl">Valuation Cap</td><td>$3,000,000 post-money</td></tr>
+      <tr><td class="td-lbl">Discount Rate</td><td>20% to Series A price per share</td></tr>
+      <tr><td class="td-lbl">Conversion Trigger</td><td>Qualified Financing — next equity financing ≥ $1,000,000 gross proceeds</td></tr>
+      <tr><td class="td-lbl">Conversion Price</td><td>Lower of: (i) Cap Price = $3,000,000 ÷ fully-diluted shares; or (ii) Discount Price = Series A price × 0.80</td></tr>
+      <tr><td class="td-lbl">Liquidity Event</td><td>Upon Change of Control, SAFE holder receives greater of (i) Purchase Amount or (ii) Liquidity Conversion Amount</td></tr>
+      <tr><td class="td-lbl">Dissolution Event</td><td>SAFE holders receive Purchase Amount from available proceeds before common stockholders</td></tr>
+      <tr><td class="td-lbl">Pro-Rata Rights</td><td>Right to participate in Qualified Financing on pro-rata basis up to SAFE-converted ownership</td></tr>
+      <tr><td class="td-lbl">MFN Clause</td><td>If Company issues SAFEs on more favorable terms before conversion, existing holders may elect to amend to reflect such terms</td></tr>
+      <tr><td class="td-lbl">Information Rights</td><td>Quarterly financial updates · notice of material events · annual financials</td></tr>
+      <tr><td class="td-lbl">Board Observer</td><td>$100,000 Lead Seat investor may request board observer seat at Company's discretion</td></tr>
+      <tr><td class="td-lbl">Transfer Restrictions</td><td>Not transferable without Company consent; subject to applicable securities laws</td></tr>
+      <tr><td class="td-lbl">Interest</td><td>None</td></tr>
+      <tr><td class="td-lbl">Maturity Date</td><td>None — SAFE does not expire</td></tr>
+      <tr><td class="td-lbl">Voting Rights</td><td>None until conversion to equity</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     EXHIBIT B — CORPORATE DOCUMENTS REFERENCE
+══════════════════════════════════════════════════════════ -->
+<div class="sec">
+  <div class="sec-num">Exhibit B</div>
+  <h2 class="sec-title">Corporate Documents Reference</h2>
+  <div class="sec-rule"></div>
+
+  <p>The following corporate documents are available to prospective investors upon execution of a Non-Disclosure Agreement:</p>
+
+  <ul>
+    <li><strong>Certificate of Incorporation</strong> — Genesis App, Inc., filed with the Delaware Secretary of State on July 3, 2025 (Authentication No. 204288645 · File No. 10250412 · SR# 20253267208)</li>
+    <li><strong>IRS EIN Confirmation (CP 575 A)</strong> — Employer Identification Number 39-2527497, issued June 5, 2025; name control: GENE</li>
+    <tr><td class="td-lbl">Registered Agent Confirmation</td><td class="td-val">Northwest Registered Agent Service, Inc. · 8 The Green Suite B, Dover, Kent County, DE 19901</td></tr>
+    <li><strong>Smart Contract Deployment Verification</strong> — GenesisVault and StrategyRouter deployment receipts on Arbitrum One mainnet, verifiable at arbiscan.io</li>
+    <li><strong>Genesis Reserve Whitepaper v2</strong> — Full protocol specification including Phase C Yield-Funded Legacy Protection architecture (Section 11)</li>
+    <li><strong>Form of SAFE Agreement</strong> — Available upon request to qualified accredited investors</li>
+    <li><strong>Pitch Deck &amp; Investor Brief</strong> — 15-slide Series Seed pitch deck and supporting investor brief available upon request</li>
+  </ul>
+
+  <div class="callout">
+    <p><strong>Due Diligence Package.</strong> The Company will provide a complete due diligence data room to serious prospective investors including: corporate documents, smart contract audit materials, technical architecture documentation, financial records to date, team backgrounds, and the Series A preparation roadmap. Contact Anthony Beedles at crownmcllc@gmail.com to schedule a due diligence session.</p>
+  </div>
+</div>
+
+<!-- Footer -->
+<div class="doc-footer">
+  <div class="footer-rule"></div>
+  <div>GENESIS APP, INC. &nbsp;·&nbsp; PRIVATE PLACEMENT MEMORANDUM &nbsp;·&nbsp; JUNE 2026</div>
+  <div>EIN 39-2527497 &nbsp;·&nbsp; Delaware File No. 10250412 &nbsp;·&nbsp; Incorporated July 3, 2025</div>
+  <div style="margin-top:6px;">8735 Dunwoody Place, Suite 10305 &nbsp;·&nbsp; Atlanta, GA 30350 &nbsp;·&nbsp; crownmcllc@gmail.com</div>
+  <div style="margin-top:16px;font-size:9px;max-width:640px;margin-left:auto;margin-right:auto;line-height:1.95;">
+    This document is confidential and intended solely for the named recipient. Any reproduction, distribution, or unauthorized use is strictly prohibited. The securities described herein have not been registered under the Securities Act of 1933. This offering is made pursuant to Rule 506(b) of Regulation D. This Memorandum should be reviewed by qualified securities counsel prior to formal use in an offering. Forward-looking statements are not guarantees of future results.
+  </div>
+</div>
+
+</div><!-- /.page -->
+</div><!-- /.outer -->
+</body>
+</html>
