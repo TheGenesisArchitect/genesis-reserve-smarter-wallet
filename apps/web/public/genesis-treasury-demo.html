@@ -444,12 +444,12 @@ select.form-input option{background:#0d1018;color:var(--text)}
       </svg>
     </div>
 
-    <!-- Annual Strip -->
+    <!-- Earned to Date Strip -->
     <div class="ann-strip">
-      <div class="ann-item"><div class="ann-lbl">Annual Member Return</div><div class="ann-val green" id="pgAnnI">$790K</div></div>
-      <div class="ann-item"><div class="ann-lbl">Genesis Spread</div><div class="ann-val" id="pgAnnG">$619K</div></div>
-      <div class="ann-item"><div class="ann-lbl">Mgmt Fee</div><div class="ann-val purple" id="pgAnnT">$82.5K</div></div>
-      <div class="ann-item"><div class="ann-lbl">Total Genesis Revenue</div><div class="ann-val" id="pgAnnO">$251.5K</div></div>
+      <div class="ann-item"><div class="ann-lbl">Member Return · To Date</div><div class="ann-val green" id="pgAnnI">$0.00</div></div>
+      <div class="ann-item"><div class="ann-lbl">Genesis Spread · To Date</div><div class="ann-val" id="pgAnnG">$0.00</div></div>
+      <div class="ann-item"><div class="ann-lbl">Mgmt Fee · To Date</div><div class="ann-val purple" id="pgAnnT">$0.00</div></div>
+      <div class="ann-item"><div class="ann-lbl">Genesis Revenue · To Date</div><div class="ann-val" id="pgAnnO">$0.00</div></div>
     </div>
 
   </div><!-- /demo-col -->
@@ -563,13 +563,13 @@ select.form-input option{background:#0d1018;color:var(--text)}
 
     <!-- Annual Projections (live simulation) -->
     <div>
-      <div class="cta-label">Annual Projections &middot; Active Simulation</div>
-      <div class="ann-stat"><span class="ast-lbl">Member annual return</span><span class="ast-val green" id="ctaMember">$790,000</span></div>
-      <div class="ann-stat"><span class="ast-lbl">Genesis yield spread</span><span class="ast-val gold" id="ctaSpread">$619,000</span></div>
-      <div class="ann-stat"><span class="ast-lbl">AUM management fee</span><span class="ast-val purple" id="ctaFee">$82,500</span></div>
+      <div class="cta-label">Earned to Date &middot; Active Simulation</div>
+      <div class="ann-stat"><span class="ast-lbl">Member return earned</span><span class="ast-val green" id="ctaMember">$0</span></div>
+      <div class="ann-stat"><span class="ast-lbl">Genesis spread earned</span><span class="ast-val gold" id="ctaSpread">$0</span></div>
+      <div class="ann-stat"><span class="ast-lbl">AUM fee earned</span><span class="ast-val purple" id="ctaFee">$0</span></div>
       <div class="total-row">
         <span class="total-lbl">Total Genesis Revenue</span>
-        <span class="total-val" id="ctaTotal">$701,500</span>
+        <span class="total-val" id="ctaTotal">$0</span>
       </div>
     </div>
 
@@ -713,21 +713,18 @@ select.form-input option{background:#0d1018;color:var(--text)}
     });
   }
 
-  // ── Annualized ────────────────────────────────────────
+  // ── Earned to date ────────────────────────────────────
   function updateAnnualized(){
-    var capD   = blendedCap()/100;
-    var feeR   = blendedFeeRate();
-    var spr    = Math.max(0, grossApy - capD);
-    var aM = tvl*capD, aS = tvl*spr, aF = tvl*feeR, aG = aS+aF;
-    if(g('pgAnnI')) g('pgAnnI').textContent = fmtC(aM);
-    if(g('pgAnnG')) g('pgAnnG').textContent = fmtC(aS);
-    if(g('pgAnnT')) g('pgAnnT').textContent = fmtC(aF);
-    if(g('pgAnnO')) g('pgAnnO').textContent = fmtC(aG);
-    if(g('ctaMember')) g('ctaMember').textContent = fmtF(aM);
-    if(g('ctaSpread'))  g('ctaSpread').textContent  = fmtF(aS);
-    if(g('ctaFee'))     g('ctaFee').textContent     = fmtF(aF);
-    if(g('ctaTotal'))   g('ctaTotal').textContent   = fmtF(aG);
-    if(g('pgAPY'))      g('pgAPY').textContent      = (grossApy*100).toFixed(1)+'%';
+    if(g('pgAPY')) g('pgAPY').textContent = (grossApy*100).toFixed(1)+'%';
+    var tG = totals.spread + totals.fee;
+    if(g('pgAnnI')) g('pgAnnI').textContent = fmtC(totals.member);
+    if(g('pgAnnG')) g('pgAnnG').textContent = fmtC(totals.spread);
+    if(g('pgAnnT')) g('pgAnnT').textContent = fmtC(totals.fee);
+    if(g('pgAnnO')) g('pgAnnO').textContent = fmtC(tG);
+    if(g('ctaMember')) g('ctaMember').textContent = fmtF(totals.member);
+    if(g('ctaSpread'))  g('ctaSpread').textContent  = fmtF(totals.spread);
+    if(g('ctaFee'))     g('ctaFee').textContent     = fmtF(totals.fee);
+    if(g('ctaTotal'))   g('ctaTotal').textContent   = fmtF(tG);
   }
 
   function updateRoundRevenue(){
