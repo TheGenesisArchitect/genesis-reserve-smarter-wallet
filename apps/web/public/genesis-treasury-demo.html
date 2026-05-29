@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Genesis Reserve — Perpetual Capital Engine</title>
-<meta name="description" content="Live simulation of the Perpetual Capital Engine — 96-epoch daily settlement, institutional yield infrastructure.">
+<meta name="description" content="Live simulation of the Perpetual Capital Engine — three-tier yield vault, 96-epoch daily settlement, self-reinforcing institutional treasury infrastructure.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=JetBrains+Mono:wght@400;600;700&family=Tenor+Sans&display=swap" rel="stylesheet">
 <style>
@@ -14,6 +14,7 @@
   --border:rgba(255,255,255,0.06);--border-gold:rgba(201,168,76,0.22);
   --gold:#C9A84C;--gold2:#E8CB6E;--gold-dim:rgba(201,168,76,0.10);
   --green:#00D4AA;--green-dim:rgba(0,212,170,0.10);
+  --purple:#9B6DFF;--purple-dim:rgba(155,109,255,0.10);
   --text:#f5f0e8;--sub:rgba(245,240,232,0.55);--muted:rgba(245,240,232,0.32)
 }
 html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',Georgia,serif}
@@ -31,34 +32,53 @@ button{font-family:'Cormorant Garamond',Georgia,serif}
 .hdr-nav a:hover{color:var(--gold)}
 
 /* ── Layout ── */
-.layout{display:grid;grid-template-columns:1fr 400px;height:calc(100vh - 52px);overflow:hidden;position:relative;z-index:1}
-.demo-col{padding:20px 28px 16px;overflow-y:auto;border-right:1px solid var(--border)}
-.cta-col{padding:24px 26px 20px;overflow-y:auto;display:flex;flex-direction:column;gap:20px;background:rgba(255,255,255,0.012)}
+.layout{display:grid;grid-template-columns:1fr 420px;height:calc(100vh - 52px);overflow:hidden;position:relative;z-index:1}
+.demo-col{padding:15px 22px 14px;overflow-y:auto;border-right:1px solid var(--border)}
+.cta-col{padding:18px 20px 14px;overflow-y:auto;display:flex;flex-direction:column;gap:14px;background:rgba(255,255,255,0.012)}
+.demo-title{font-size:10px;font-weight:700;letter-spacing:0.13em;color:var(--gold);text-transform:uppercase;margin-bottom:2px}
+.demo-sub{font-size:12px;color:var(--sub);margin-bottom:11px;line-height:1.5}
 
-/* ── Demo column ── */
-.demo-title{font-size:10.5px;font-weight:700;letter-spacing:0.13em;color:var(--gold);text-transform:uppercase;margin-bottom:3px}
-.demo-sub{font-size:13px;color:var(--sub);margin-bottom:14px;line-height:1.5}
+/* ── Tier Mix Controls ── */
+.tier-mix{display:flex;gap:7px;margin-bottom:9px}
+.tm-item{flex:1;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:9px;padding:8px 9px}
+.tm-label{font-size:8.5px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:4px}
+.tm-pct{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;margin-bottom:4px}
+.tm-track{height:2px;background:rgba(255,255,255,0.08);border-radius:2px;margin-bottom:5px}
+.tm-fill{height:100%;border-radius:2px;transition:width .4s ease}
+.tm-btns{display:flex;gap:3px}
+.tm-btn{flex:1;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:4px;padding:3px 0;font-size:13px;font-family:'JetBrains Mono',monospace;color:var(--sub);cursor:pointer;transition:all .15s;text-align:center;line-height:1}
+.tm-btn:hover{border-color:var(--border-gold);color:var(--gold)}
+.tm-preserve .tm-label,.tm-preserve .tm-pct{color:#22c55e}.tm-preserve .tm-fill{background:#22c55e}
+.tm-grow .tm-label,.tm-grow .tm-pct{color:var(--gold)}.tm-grow .tm-fill{background:var(--gold)}
+.tm-accel .tm-label,.tm-accel .tm-pct{color:var(--purple)}.tm-accel .tm-fill{background:var(--purple)}
+.tm-blended{display:flex;align-items:center;justify-content:space-between;padding:6px 11px;background:var(--gold-dim);border:1px solid var(--border-gold);border-radius:7px;margin-bottom:10px}
+.tm-blended-lbl{font-size:9.5px;color:var(--sub);letter-spacing:0.05em}
+.tm-blended-val{font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:700}
 
-/* Scale selector */
-.scale-bar{display:flex;align-items:center;gap:7px;margin-bottom:14px;flex-wrap:wrap}
-.scale-lbl{font-size:10.5px;color:var(--muted);letter-spacing:0.05em;font-family:'JetBrains Mono',monospace}
-.scale-btn{background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:20px;padding:5px 14px;font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--sub);cursor:pointer;transition:all .2s}
-.scale-btn:hover{border-color:var(--border-gold);color:var(--gold)}
-.scale-btn.active{background:var(--gold-dim);border-color:var(--border-gold);color:var(--gold);font-weight:600}
+/* ── Round Selector ── */
+.round-bar{display:flex;gap:5px;margin-bottom:10px}
+.round-btn{flex:1;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:7px;padding:6px 5px;cursor:pointer;text-align:center;transition:all .2s}
+.round-btn:hover{border-color:var(--border-gold)}
+.round-btn.active{background:var(--gold-dim);border-color:var(--border-gold)}
+.rb-label{font-size:9.5px;font-weight:700;letter-spacing:0.05em;color:var(--sub);display:block}
+.rb-tvl{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--muted);display:block;margin-top:2px}
+.round-btn.active .rb-label{color:var(--gold)}
+.round-btn.active .rb-tvl{color:rgba(201,168,76,0.55)}
 
-/* Status bar */
-.status-bar{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap}
-.s-chip{border-radius:20px;padding:4px 12px;font-size:11px;font-family:'JetBrains Mono',monospace}
+/* ── Status bar ── */
+.status-bar{display:flex;align-items:center;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.s-chip{border-radius:20px;padding:4px 10px;font-size:10.5px;font-family:'JetBrains Mono',monospace}
 .s-chip-gold{background:var(--gold-dim);border:1px solid var(--border-gold);color:var(--gold)}
 .s-chip-gold .dim{color:rgba(201,168,76,0.4)}
 .s-chip-green{background:var(--green-dim);border:1px solid rgba(0,212,170,0.2);color:var(--green)}
-.run-btn{background:linear-gradient(135deg,#c9a84c,#a8863c);color:#1a1400;border:none;border-radius:20px;padding:6px 18px;font-size:11.5px;font-weight:700;cursor:pointer;letter-spacing:0.04em;margin-left:auto;transition:filter .2s}
+.s-chip-purple{background:var(--purple-dim);border:1px solid rgba(155,109,255,0.2);color:var(--purple)}
+.run-btn{background:linear-gradient(135deg,#c9a84c,#a8863c);color:#1a1400;border:none;border-radius:20px;padding:5px 15px;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:0.04em;margin-left:auto;transition:filter .2s}
 .run-btn:hover{filter:brightness(1.1)}
 
-/* Diagram */
+/* ── Engine Diagram ── */
 .diag{display:flex;flex-direction:column;align-items:center}
-.d-row{display:flex;justify-content:center;align-items:stretch;gap:8px;width:100%}
-.vline{width:2px;min-height:20px;position:relative;margin:0 auto;overflow:visible}
+.d-row{display:flex;justify-content:center;align-items:stretch;gap:7px;width:100%}
+.vline{width:2px;min-height:16px;position:relative;margin:0 auto;overflow:visible}
 .vline-gold{background:linear-gradient(to bottom,rgba(201,168,76,0.18),rgba(201,168,76,0.5),rgba(201,168,76,0.18))}
 .vline-green{background:linear-gradient(to bottom,rgba(0,212,170,0.18),rgba(0,212,170,0.5),rgba(0,212,170,0.18))}
 .pt{width:7px;height:7px;border-radius:50%;position:absolute;left:-2.5px;top:-7px;animation:ptDown 1s linear infinite;animation-play-state:paused}
@@ -67,121 +87,144 @@ button{font-family:'Cormorant Garamond',Georgia,serif}
 .diag.running .pt{animation-play-state:running}
 @keyframes ptDown{from{top:-7px}to{top:calc(100% + 7px)}}
 @keyframes ptUp{from{top:calc(100% + 7px)}to{top:-7px}}
-
-/* Source nodes */
-.src{flex:1;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:9px;padding:9px 8px;text-align:center;max-width:140px}
-.src-lbl{font-size:11.5px;font-weight:600;color:var(--text)}
-.src-sub{font-size:9.5px;color:var(--muted);margin-top:2px}
-
-/* Vault */
-.vault-row{gap:14px;justify-content:center;align-items:center}
-.vault{background:var(--gold-dim);border:1.5px solid var(--border-gold);border-radius:12px;padding:12px 24px;text-align:center}
+.src{flex:1;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:7px 6px;text-align:center;max-width:120px}
+.src-lbl{font-size:10.5px;font-weight:600;color:var(--text)}
+.src-sub{font-size:8.5px;color:var(--muted);margin-top:2px}
+.vault-row{gap:11px;justify-content:center;align-items:center}
+.vault{background:var(--gold-dim);border:1.5px solid var(--border-gold);border-radius:11px;padding:10px 18px;text-align:center}
 .vault.pulsing{animation:vPulse .45s ease-out}
 @keyframes vPulse{0%,100%{box-shadow:none}50%{box-shadow:0 0 0 8px rgba(201,168,76,0.15),0 0 28px rgba(201,168,76,0.1)}}
-.vault-lbl{font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(201,168,76,0.6);margin-bottom:5px}
-.vault-bal{font-family:'JetBrains Mono',monospace;font-size:19px;font-weight:700;color:var(--gold)}
-.vault-sub{font-size:9px;color:var(--muted);margin-top:2px}
-.epoch-ring{position:relative;width:72px;height:72px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0}
-.epoch-ring svg{position:absolute;top:0;left:0;width:72px;height:72px}
-.epoch-num{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;color:var(--gold);position:relative;z-index:1}
-.epoch-tag{font-size:7.5px;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;position:relative;z-index:1;margin-top:1px}
-
-/* Router */
-.router{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.09);border-radius:10px;padding:10px 24px;text-align:center;width:100%;max-width:420px}
-.router-lbl{font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text)}
-.router-sub{font-size:9.5px;color:var(--muted);margin-top:2px}
-
-/* Fan lines */
-.fan{width:100%;height:14px;position:relative}
+.vault-lbl{font-size:8px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(201,168,76,0.6);margin-bottom:3px}
+.vault-bal{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;color:var(--gold)}
+.vault-sub{font-size:8px;color:var(--muted);margin-top:2px}
+.epoch-ring{position:relative;width:60px;height:60px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0}
+.epoch-ring svg{position:absolute;top:0;left:0;width:60px;height:60px}
+.epoch-num{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:var(--gold);position:relative;z-index:1}
+.epoch-tag{font-size:6.5px;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;position:relative;z-index:1;margin-top:1px}
+.router{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.09);border-radius:9px;padding:8px 18px;text-align:center;width:100%;max-width:380px}
+.router-lbl{font-size:9.5px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text)}
+.router-sub{font-size:8.5px;color:var(--muted);margin-top:2px}
+.fan{width:100%;height:11px;position:relative}
 .fan::before{content:'';position:absolute;bottom:0;left:3%;right:3%;height:1.5px;background:rgba(201,168,76,0.18)}
 .fan-green::before{background:rgba(0,212,170,0.18)}
 
-/* Corridors */
+/* ── Corridors ── */
 .corridors{display:flex;gap:5px;width:100%}
-.corr{flex:1;border-radius:8px;padding:8px 5px;text-align:center;border:1px solid transparent;min-width:50px}
-.corr-name{font-size:10px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.corr-tier{font-size:7.5px;color:var(--muted);margin:2px 0 5px;text-transform:uppercase;letter-spacing:0.05em}
+.corr{flex:1;border-radius:7px;padding:7px 5px;text-align:center;border:1px solid transparent;min-width:44px}
+.corr-name{font-size:9px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.corr-tier{font-size:6.5px;color:var(--muted);margin:2px 0 4px;text-transform:uppercase;letter-spacing:0.05em}
 .corr-track{height:3px;background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden}
 .corr-fill{height:100%;border-radius:2px;transition:width .5s ease}
-.corr-pct{font-size:9px;color:var(--muted);margin-top:3px;font-family:'JetBrains Mono',monospace}
-.c-p{background:rgba(34,197,94,0.07);border-color:rgba(34,197,94,0.2)}.c-p .corr-fill{background:#22c55e}
-.c-c{background:rgba(59,130,246,0.07);border-color:rgba(59,130,246,0.2)}.c-c .corr-fill{background:#3b82f6}
-.c-s{background:rgba(168,85,247,0.07);border-color:rgba(168,85,247,0.2)}.c-s .corr-fill{background:#a855f7}
-.c-a{background:rgba(249,115,22,0.07);border-color:rgba(249,115,22,0.2)}.c-a .corr-fill{background:#f97316}
-.c-t{background:rgba(234,179,8,0.07);border-color:rgba(234,179,8,0.2)}.c-t .corr-fill{background:#eab308}
-.c-v{background:rgba(239,68,68,0.07);border-color:rgba(239,68,68,0.2)}.c-v .corr-fill{background:#ef4444}
-.c-k{background:rgba(236,72,153,0.07);border-color:rgba(236,72,153,0.2)}.c-k .corr-fill{background:#ec4899}
+.corr-pct{font-size:8px;color:var(--muted);margin-top:3px;font-family:'JetBrains Mono',monospace}
+.c-tbills{background:rgba(34,197,94,0.07);border-color:rgba(34,197,94,0.2)}.c-tbills .corr-fill{background:#22c55e}
+.c-aave{background:rgba(0,212,170,0.07);border-color:rgba(0,212,170,0.2)}.c-aave .corr-fill{background:#00D4AA}
+.c-balancer{background:rgba(201,168,76,0.07);border-color:rgba(201,168,76,0.2)}.c-balancer .corr-fill{background:#C9A84C}
+.c-morpho{background:rgba(155,109,255,0.07);border-color:rgba(155,109,255,0.2)}.c-morpho .corr-fill{background:#9B6DFF}
 
-/* Waterfall */
-.wfall-row{gap:6px;flex-wrap:wrap}
-.wf{flex:1;min-width:95px;border-radius:10px;padding:10px 8px;text-align:center}
+/* ── Waterfall ── */
+.wfall-row{gap:5px;flex-wrap:wrap}
+.wf{flex:1;min-width:80px;border-radius:8px;padding:8px 6px;text-align:center}
 .wf.pulsing{animation:wPulse .45s ease-out}
 @keyframes wPulse{0%,100%{filter:none}50%{filter:brightness(1.35)}}
-.wf-lbl{font-size:8.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);margin-bottom:3px}
-.wf-cut{font-size:7.5px;color:rgba(245,240,232,0.22);margin-bottom:5px}
-.wf-val{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700}
-.wf-i{background:rgba(0,212,170,0.07);border:1px solid rgba(0,212,170,0.2)}.wf-i .wf-val{color:var(--green)}
-.wf-g{background:rgba(201,168,76,0.07);border:1px solid rgba(201,168,76,0.2)}.wf-g .wf-val{color:var(--gold)}
-.wf-t{background:rgba(34,197,94,0.07);border:1px solid rgba(34,197,94,0.2)}.wf-t .wf-val{color:#22c55e}
-.wf-o{background:rgba(255,255,255,0.03);border:1px solid var(--border)}.wf-o .wf-val{color:var(--sub)}
-.reinvest-note{font-size:10px;color:rgba(34,197,94,0.55);text-align:center;margin-top:8px;font-style:italic}
+.wf-lbl{font-size:7.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);margin-bottom:2px}
+.wf-cut{font-size:6.5px;color:rgba(245,240,232,0.22);margin-bottom:4px}
+.wf-val{font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:700}
+.wf-member{background:rgba(0,212,170,0.07);border:1px solid rgba(0,212,170,0.2)}.wf-member .wf-val{color:var(--green)}
+.wf-spread{background:rgba(201,168,76,0.07);border:1px solid rgba(201,168,76,0.2)}.wf-spread .wf-val{color:var(--gold)}
+.wf-fee{background:rgba(155,109,255,0.07);border:1px solid rgba(155,109,255,0.2)}.wf-fee .wf-val{color:var(--purple)}
+.wf-reinvest{background:rgba(34,197,94,0.07);border:1px solid rgba(34,197,94,0.2)}.wf-reinvest .wf-val{color:#22c55e}
+.reinvest-note{font-size:9px;color:rgba(34,197,94,0.5);text-align:center;margin-top:6px;font-style:italic}
 
-/* Sparkline */
-.spark-wrap{margin-top:11px;background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:10px;padding:10px 12px}
-.spark-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
-.spark-lbl{font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em}
-.spark-total{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold)}
-.spark-svg{width:100%;height:40px;display:block}
+/* ── Sparkline ── */
+.spark-wrap{margin-top:9px;background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:8px;padding:8px 10px}
+.spark-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.spark-lbl{font-size:8.5px;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em}
+.spark-total{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gold)}
+.spark-svg{width:100%;height:34px;display:block}
 
-/* Annual strip */
-.ann-strip{margin-top:10px;background:var(--gold-dim);border:1px solid var(--border-gold);border-radius:10px;padding:10px 14px;display:flex;gap:0;flex-wrap:wrap}
-.ann-item{flex:1;min-width:110px;text-align:center;padding:4px 8px}
+/* ── Annual strip ── */
+.ann-strip{margin-top:8px;background:var(--gold-dim);border:1px solid var(--border-gold);border-radius:8px;padding:8px 10px;display:flex;gap:0;flex-wrap:wrap}
+.ann-item{flex:1;min-width:85px;text-align:center;padding:2px 5px}
 .ann-item+.ann-item{border-left:1px solid rgba(201,168,76,0.15)}
-.ann-lbl{font-size:8.5px;color:rgba(245,240,232,0.4);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px}
-.ann-val{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:var(--gold)}
-.ann-val.green{color:var(--green)}
+.ann-lbl{font-size:7px;color:rgba(245,240,232,0.4);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:2px}
+.ann-val{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--gold)}
+.ann-val.green{color:var(--green)}.ann-val.purple{color:var(--purple)}
 
 /* ── CTA Column ── */
-.cta-label{font-size:9.5px;font-weight:700;letter-spacing:0.12em;color:var(--gold);text-transform:uppercase;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border-gold)}
-.ann-stat{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)}
-.ann-stat:last-child{border-bottom:none}
-.ast-lbl{font-size:12px;color:var(--sub)}
-.ast-val{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700}
-.ast-val.gold{color:var(--gold)}.ast-val.green{color:var(--green)}.ast-val.lime{color:#22c55e}
-.total-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0 0;border-top:1px solid var(--border-gold);margin-top:6px}
-.total-lbl{font-size:12.5px;font-weight:600;color:var(--text)}
-.total-val{font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:700;color:var(--gold)}
+.cta-label{font-size:8.5px;font-weight:700;letter-spacing:0.12em;color:var(--gold);text-transform:uppercase;margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid var(--border-gold)}
 
-/* Form */
-.form-wrap{display:flex;flex-direction:column;gap:11px}
-.form-field{display:flex;flex-direction:column;gap:4px}
-.form-field label{font-size:9.5px;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase}
-.form-input{background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:13px;color:var(--text);font-family:'Cormorant Garamond',serif;outline:none;transition:border-color .2s;width:100%}
+/* ── Funding Roadmap ── */
+.roadmap{display:flex;flex-direction:column;gap:6px}
+.round-card{border-radius:9px;padding:9px 11px;border:1px solid var(--border);background:rgba(255,255,255,0.02);transition:all .25s;cursor:pointer}
+.round-card:hover{border-color:var(--border-gold)}
+.round-card.active{border-color:var(--border-gold);background:var(--gold-dim)}
+.rc-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
+.rc-round{font-size:10px;font-weight:700;letter-spacing:0.08em;color:var(--gold)}
+.rc-raise{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text);font-weight:700}
+.rc-body{display:flex;gap:0}
+.rc-stat{flex:1;text-align:center;padding:0 5px}
+.rc-stat+.rc-stat{border-left:1px solid rgba(255,255,255,0.06)}
+.rc-stat-lbl{font-size:6.5px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:2px}
+.rc-stat-val{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--text);font-weight:600}
+.rc-stat-val.gold{color:var(--gold)}.rc-stat-val.green{color:var(--green)}
+.rc-month{font-size:8px;color:var(--muted);margin-top:5px;letter-spacing:0.03em}
+
+/* ── VC Market Pulse ── */
+.vc-pulse{display:flex;flex-wrap:wrap;gap:5px}
+.vc-chip{border-radius:14px;padding:3px 9px;font-size:9px;font-family:'JetBrains Mono',monospace;letter-spacing:0.02em}
+.vc-chip-gold{background:var(--gold-dim);border:1px solid var(--border-gold);color:rgba(201,168,76,0.85)}
+.vc-chip-teal{background:var(--green-dim);border:1px solid rgba(0,212,170,0.2);color:rgba(0,212,170,0.85)}
+.vc-chip-white{background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--sub)}
+
+/* ── 72-Month Projection ── */
+.proj-list{display:flex;flex-direction:column;gap:7px}
+.proj-row{display:flex;flex-direction:column;gap:3px}
+.proj-header{display:flex;justify-content:space-between;align-items:center}
+.proj-scenario{font-size:10px;color:var(--sub);letter-spacing:0.04em}
+.proj-val{font-family:'JetBrains Mono',monospace;font-size:11.5px;font-weight:700}
+.proj-track{height:4px;background:rgba(255,255,255,0.06);border-radius:2px}
+.proj-fill{height:100%;border-radius:2px}
+.proj-conservative .proj-fill{background:rgba(100,200,130,0.7)}.proj-conservative .proj-val{color:rgba(100,210,140,0.9)}
+.proj-moderate .proj-fill{background:var(--gold)}.proj-moderate .proj-val{color:var(--gold)}
+.proj-aggressive .proj-fill{background:var(--purple)}.proj-aggressive .proj-val{color:var(--purple)}
+
+/* ── Annual Projections ── */
+.ann-stat{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border)}
+.ann-stat:last-child{border-bottom:none}
+.ast-lbl{font-size:11px;color:var(--sub)}
+.ast-val{font-family:'JetBrains Mono',monospace;font-size:11.5px;font-weight:700}
+.ast-val.gold{color:var(--gold)}.ast-val.green{color:var(--green)}.ast-val.purple{color:var(--purple)}
+.total-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0 0;border-top:1px solid var(--border-gold);margin-top:4px}
+.total-lbl{font-size:11.5px;font-weight:600;color:var(--text)}
+.total-val{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:var(--gold)}
+
+/* ── Form ── */
+.form-wrap{display:flex;flex-direction:column;gap:8px}
+.form-field{display:flex;flex-direction:column;gap:3px}
+.form-field label{font-size:8.5px;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase}
+.form-input{background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:7px;padding:8px 10px;font-size:12px;color:var(--text);font-family:'Cormorant Garamond',serif;outline:none;transition:border-color .2s;width:100%}
 .form-input:focus{border-color:var(--border-gold)}
 .form-input::placeholder{color:var(--muted)}
 select.form-input option{background:#0d1018;color:var(--text)}
-.form-textarea{resize:none;height:72px;font-family:'Cormorant Garamond',serif}
-.form-submit{width:100%;padding:13px;background:linear-gradient(135deg,#c9a84c,#a8863c,#c9a84c);background-size:200%;color:#1a1400;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;letter-spacing:0.06em;font-family:'Cormorant Garamond',serif;transition:background-position .4s,filter .2s}
+.form-textarea{resize:none;height:60px;font-family:'Cormorant Garamond',serif}
+.form-submit{width:100%;padding:11px;background:linear-gradient(135deg,#c9a84c,#a8863c,#c9a84c);background-size:200%;color:#1a1400;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:0.06em;font-family:'Cormorant Garamond',serif;transition:background-position .4s,filter .2s}
 .form-submit:hover{background-position:100%;filter:brightness(1.08)}
-
-/* Success */
-.success-state{display:none;text-align:center;padding:32px 16px;flex-direction:column;align-items:center;gap:12px}
-.success-check{font-size:40px;color:var(--green)}
-.success-title{font-size:20px;font-weight:600;color:var(--text)}
-.success-sub{font-size:13px;color:var(--sub);line-height:1.65;max-width:280px}
-
-/* Trust */
-.trust{display:flex;align-items:center;justify-content:center;gap:8px;font-size:10px;color:var(--muted);padding-top:2px;margin-top:auto}
+.success-state{display:none;text-align:center;padding:24px 12px;flex-direction:column;align-items:center;gap:9px}
+.success-check{font-size:34px;color:var(--green)}
+.success-title{font-size:17px;font-weight:600;color:var(--text)}
+.success-sub{font-size:11.5px;color:var(--sub);line-height:1.65;max-width:250px}
+.trust{display:flex;align-items:center;justify-content:center;gap:7px;font-size:9px;color:var(--muted);padding-top:2px;margin-top:auto}
 .trust-dot{width:3px;height:3px;border-radius:50%;background:var(--muted);flex-shrink:0}
 
 @media(max-width:960px){
   html,body{height:auto;overflow:auto}
   .layout{grid-template-columns:1fr;height:auto;overflow:visible}
-  .demo-col{border-right:none;border-bottom:1px solid var(--border);overflow-y:visible;padding-bottom:28px}
-  .cta-col{padding:28px 26px 36px}
+  .demo-col{border-right:none;border-bottom:1px solid var(--border);overflow-y:visible;padding-bottom:22px}
+  .cta-col{padding:18px 20px 30px}
   .corridors{flex-wrap:wrap}
-  .corr{min-width:calc(25% - 5px)}
-  .ann-item+.ann-item{border-left:none;border-top:1px solid rgba(201,168,76,0.15)}
+  .corr{min-width:calc(50% - 5px)}
+  .tier-mix{flex-wrap:wrap}
+  .tm-item{min-width:calc(33% - 5px)}
 }
 </style>
 </head>
@@ -193,99 +236,182 @@ select.form-input option{background:#0d1018;color:var(--text)}
     <span class="hdr-reserve">RESERVE</span>
   </div>
   <nav class="hdr-nav">
-    <a href="/whitepaper">← Whitepaper</a>
+    <a href="/whitepaper">&larr; Whitepaper</a>
     <a href="/demo">Smarter Wallet</a>
   </nav>
 </header>
 
 <div class="layout">
 
-  <!-- ── Demo Column ─────────────────────────────────── -->
+  <!-- ════════════════════════ Demo Column ════════════════════════ -->
   <div class="demo-col">
     <div class="demo-title">Perpetual Capital Engine</div>
-    <div class="demo-sub">96-epoch daily settlement &middot; Policy-controlled yield routing &middot; Self-reinforcing treasury</div>
+    <div class="demo-sub">96-epoch daily settlement &middot; Three-tier yield vault &middot; Policy-controlled routing &middot; Self-reinforcing treasury</div>
 
-    <div class="scale-bar">
-      <span class="scale-lbl">Simulate at</span>
-      <button class="scale-btn" data-tvl="1000000" onclick="setScale(this)">$1M</button>
-      <button class="scale-btn active" data-tvl="10000000" onclick="setScale(this)">$10M</button>
-      <button class="scale-btn" data-tvl="100000000" onclick="setScale(this)">$100M</button>
-      <button class="scale-btn" data-tvl="1000000000" onclick="setScale(this)">$1B</button>
+    <!-- Tier Mix Simulator -->
+    <div class="tier-mix">
+      <div class="tm-item tm-preserve">
+        <div class="tm-label">Preserve</div>
+        <div class="tm-pct" id="tm-pct-preserve">30%</div>
+        <div class="tm-track"><div class="tm-fill" id="tm-bar-preserve" style="width:30%"></div></div>
+        <div class="tm-btns">
+          <button class="tm-btn" onclick="adjustTier('preserve',-5)">&minus;</button>
+          <button class="tm-btn" onclick="adjustTier('preserve',5)">+</button>
+        </div>
+      </div>
+      <div class="tm-item tm-grow">
+        <div class="tm-label">Grow</div>
+        <div class="tm-pct" id="tm-pct-grow">50%</div>
+        <div class="tm-track"><div class="tm-fill" id="tm-bar-grow" style="width:50%"></div></div>
+        <div class="tm-btns">
+          <button class="tm-btn" onclick="adjustTier('grow',-5)">&minus;</button>
+          <button class="tm-btn" onclick="adjustTier('grow',5)">+</button>
+        </div>
+      </div>
+      <div class="tm-item tm-accel">
+        <div class="tm-label">Accelerate</div>
+        <div class="tm-pct" id="tm-pct-accel">20%</div>
+        <div class="tm-track"><div class="tm-fill" id="tm-bar-accel" style="width:20%"></div></div>
+        <div class="tm-btns">
+          <button class="tm-btn" onclick="adjustTier('accel',-5)">&minus;</button>
+          <button class="tm-btn" onclick="adjustTier('accel',5)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="tm-blended">
+      <span class="tm-blended-lbl">Blended Member Cap</span>
+      <span class="tm-blended-val" id="blendedCap" style="color:var(--gold)">7.9%</span>
+      <span class="tm-blended-lbl" style="margin-left:18px">Genesis Revenue Rate</span>
+      <span class="tm-blended-val" id="genesisRate" style="color:var(--green)">2.52%</span>
     </div>
 
+    <!-- Funding Round Selector -->
+    <div class="round-bar">
+      <button class="round-btn" data-round-idx="0" onclick="setRound(this,0)">
+        <span class="rb-label">Bridge</span><span class="rb-tvl">$1M TVL</span>
+      </button>
+      <button class="round-btn active" data-round-idx="1" onclick="setRound(this,1)">
+        <span class="rb-label">Series Seed</span><span class="rb-tvl">$10M TVL</span>
+      </button>
+      <button class="round-btn" data-round-idx="2" onclick="setRound(this,2)">
+        <span class="rb-label">Series A</span><span class="rb-tvl">$100M TVL</span>
+      </button>
+      <button class="round-btn" data-round-idx="3" onclick="setRound(this,3)">
+        <span class="rb-label">Series B</span><span class="rb-tvl">$1B TVL</span>
+      </button>
+    </div>
+
+    <!-- Status Bar -->
     <div class="status-bar">
       <div class="s-chip s-chip-gold">Epoch <span id="pgEpoch">0</span><span class="dim">/96</span></div>
       <div class="s-chip s-chip-gold">TVL <span id="pgTVL">$10.000M</span></div>
-      <div class="s-chip s-chip-green">APY <span id="pgAPY">11.0%</span></div>
-      <button class="run-btn" id="pgRunBtn" onclick="pgToggle()">▶ Run Engine</button>
+      <div class="s-chip s-chip-green">Engine <span id="pgAPY">14.1%</span></div>
+      <div class="s-chip s-chip-purple">Cap <span id="pgCapBadge">7.9%</span></div>
+      <button class="run-btn" id="pgRunBtn" onclick="pgToggle()">&#9654; Run Engine</button>
     </div>
 
+    <!-- Engine Diagram -->
     <div class="diag" id="engineDiag">
-      <!-- Sources -->
-      <div class="d-row" style="gap:8px">
+
+      <!-- Capital Sources -->
+      <div class="d-row" style="gap:7px">
         <div class="src"><div class="src-lbl">Retail</div><div class="src-sub">Smarter Wallet</div></div>
         <div class="src"><div class="src-lbl">Institutional</div><div class="src-sub">Treasury API</div></div>
         <div class="src"><div class="src-lbl">Embedded</div><div class="src-sub">B2B Partners</div></div>
       </div>
-      <div class="vline vline-gold" style="height:22px">
+      <div class="vline vline-gold" style="height:16px">
         <div class="pt pt-gold" style="animation-delay:0s"></div>
         <div class="pt pt-gold" style="animation-delay:0.35s"></div>
         <div class="pt pt-gold" style="animation-delay:0.7s"></div>
       </div>
-      <!-- Vault + Epoch -->
+
+      <!-- Vault + Epoch Ring -->
       <div class="d-row vault-row">
         <div class="vault" id="pgVault">
-          <div class="vault-lbl">ERC-4626 Vault</div>
+          <div class="vault-lbl">ERC-4626 Vault &middot; Arbitrum One</div>
           <div class="vault-bal" id="pgVaultBal">$10,000,000</div>
-          <div class="vault-sub">Standard deposit / withdraw &middot; No lock-up &middot; No minimums</div>
+          <div class="vault-sub">No lock-up &middot; No minimums &middot; Self-custody</div>
         </div>
         <div class="epoch-ring">
-          <svg viewBox="0 0 72 72">
-            <circle cx="36" cy="36" r="28" fill="none" stroke="rgba(201,168,76,0.1)" stroke-width="5"/>
-            <circle cx="36" cy="36" r="28" fill="none" stroke="#C9A84C" stroke-width="5"
-                    stroke-linecap="round" stroke-dasharray="175.9" id="pgArc"
-                    stroke-dashoffset="175.9" transform="rotate(-90 36 36)"/>
+          <svg viewBox="0 0 60 60">
+            <circle cx="30" cy="30" r="22" fill="none" stroke="rgba(201,168,76,0.1)" stroke-width="5"/>
+            <circle cx="30" cy="30" r="22" fill="none" stroke="#C9A84C" stroke-width="5"
+                    stroke-linecap="round" stroke-dasharray="138.2" id="pgArc"
+                    stroke-dashoffset="138.2" transform="rotate(-90 30 30)"/>
           </svg>
           <div class="epoch-num" id="pgEpochBig">0</div>
           <div class="epoch-tag">of 96</div>
         </div>
       </div>
-      <div class="vline vline-gold" style="height:22px">
+      <div class="vline vline-gold" style="height:16px">
         <div class="pt pt-gold" style="animation-delay:0s"></div>
         <div class="pt pt-gold" style="animation-delay:0.5s"></div>
       </div>
-      <!-- Router -->
+
+      <!-- Strategy Router -->
       <div class="d-row">
         <div class="router">
           <div class="router-lbl">Strategy Router</div>
-          <div class="router-sub">Policy-controlled allocation &middot; Real-time risk scoring &middot; Rebalances every epoch</div>
+          <div class="router-sub">Risk-scored allocation &middot; Three-tier baskets &middot; Rebalances every 15 min</div>
         </div>
       </div>
       <div class="fan"></div>
-      <!-- 7 Corridors -->
+
+      <!-- Protocol Corridors: T-Bills / Aave V3 / Balancer V3 / Morpho -->
       <div class="corridors">
-        <div class="corr c-p"><div class="corr-name">T-Bills</div><div class="corr-tier">Preserve</div><div class="corr-track"><div class="corr-fill" id="pgA0" style="width:30%"></div></div><div class="corr-pct" id="pgP0">30%</div></div>
-        <div class="corr c-c"><div class="corr-name">Aave</div><div class="corr-tier">Core DeFi</div><div class="corr-track"><div class="corr-fill" id="pgA1" style="width:25%"></div></div><div class="corr-pct" id="pgP1">25%</div></div>
-        <div class="corr c-s"><div class="corr-name">Pendle</div><div class="corr-tier">Structured</div><div class="corr-track"><div class="corr-fill" id="pgA2" style="width:15%"></div></div><div class="corr-pct" id="pgP2">15%</div></div>
-        <div class="corr c-a"><div class="corr-name">Gearbox</div><div class="corr-tier">Accelerate</div><div class="corr-track"><div class="corr-fill" id="pgA3" style="width:12%"></div></div><div class="corr-pct" id="pgP3">12%</div></div>
-        <div class="corr c-t"><div class="corr-name">DEX LP</div><div class="corr-tier">Tactical</div><div class="corr-track"><div class="corr-fill" id="pgA4" style="width:10%"></div></div><div class="corr-pct" id="pgP4">10%</div></div>
-        <div class="corr c-v"><div class="corr-name">Basis</div><div class="corr-tier">Advanced</div><div class="corr-track"><div class="corr-fill" id="pgA5" style="width:6%"></div></div><div class="corr-pct" id="pgP5">6%</div></div>
-        <div class="corr c-k"><div class="corr-name">Arb</div><div class="corr-tier">Canary</div><div class="corr-track"><div class="corr-fill" id="pgA6" style="width:2%"></div></div><div class="corr-pct" id="pgP6">2%</div></div>
+        <div class="corr c-tbills">
+          <div class="corr-name">T-Bills</div><div class="corr-tier">Preserve</div>
+          <div class="corr-track"><div class="corr-fill" id="pgA-tbills" style="width:19%"></div></div>
+          <div class="corr-pct" id="pgP-tbills">19%</div>
+        </div>
+        <div class="corr c-aave">
+          <div class="corr-name">Aave V3</div><div class="corr-tier">All Tiers</div>
+          <div class="corr-track"><div class="corr-fill" id="pgA-aave" style="width:34%"></div></div>
+          <div class="corr-pct" id="pgP-aave">34%</div>
+        </div>
+        <div class="corr c-balancer">
+          <div class="corr-name">Balancer V3</div><div class="corr-tier">Grow + Accel</div>
+          <div class="corr-track"><div class="corr-fill" id="pgA-balancer" style="width:31%"></div></div>
+          <div class="corr-pct" id="pgP-balancer">31%</div>
+        </div>
+        <div class="corr c-morpho">
+          <div class="corr-name">Morpho</div><div class="corr-tier">Grow + Accel</div>
+          <div class="corr-track"><div class="corr-fill" id="pgA-morpho" style="width:16%"></div></div>
+          <div class="corr-pct" id="pgP-morpho">16%</div>
+        </div>
       </div>
       <div class="fan fan-green"></div>
-      <div class="vline vline-green" style="height:22px">
+      <div class="vline vline-green" style="height:16px">
         <div class="pt pt-green" style="animation-delay:0s"></div>
         <div class="pt pt-green" style="animation-delay:0.45s"></div>
       </div>
-      <!-- Waterfall -->
+
+      <!-- Waterfall: new cap model -->
       <div class="d-row wfall-row">
-        <div class="wf wf-i" id="wfI"><div class="wf-lbl">Investor Return</div><div class="wf-cut">8% preferred</div><div class="wf-val" id="pgWfI">$0.00</div></div>
-        <div class="wf wf-g" id="wfG"><div class="wf-lbl">$GRX Pool</div><div class="wf-cut">20% of spread</div><div class="wf-val" id="pgWfG">$0.00</div></div>
-        <div class="wf wf-t" id="wfT"><div class="wf-lbl">Treasury Reinvest</div><div class="wf-cut">40% of spread</div><div class="wf-val" id="pgWfT">$0.00</div></div>
-        <div class="wf wf-o" id="wfO"><div class="wf-lbl">Genesis Ops</div><div class="wf-cut">40% of spread</div><div class="wf-val" id="pgWfO">$0.00</div></div>
+        <div class="wf wf-member" id="wfMember">
+          <div class="wf-lbl">Member Returns</div>
+          <div class="wf-cut" id="wfMemberCut">Blended cap 7.9%</div>
+          <div class="wf-val" id="pgWfMember">$0.00</div>
+        </div>
+        <div class="wf wf-spread" id="wfSpread">
+          <div class="wf-lbl">Genesis Spread</div>
+          <div class="wf-cut">Above member cap</div>
+          <div class="wf-val" id="pgWfSpread">$0.00</div>
+        </div>
+        <div class="wf wf-fee" id="wfFee">
+          <div class="wf-lbl">Mgmt Fee</div>
+          <div class="wf-cut">0.60–1.10% AUM</div>
+          <div class="wf-val" id="pgWfFee">$0.00</div>
+        </div>
+        <div class="wf wf-reinvest" id="wfReinvest">
+          <div class="wf-lbl">Treasury Reinvest</div>
+          <div class="wf-cut">35% of spread</div>
+          <div class="wf-val" id="pgWfReinvest">$0.00</div>
+        </div>
       </div>
-      <div class="reinvest-note">&#8635; 40% of spread reinvested into vault each epoch &mdash; the engine compounds its own AUM continuously</div>
-    </div>
+      <div class="reinvest-note">&#8635; Spread reinvested each epoch — the engine compounds its own AUM continuously</div>
+
+    </div><!-- /diag -->
 
     <!-- Sparkline -->
     <div class="spark-wrap">
@@ -293,44 +419,145 @@ select.form-input option{background:#0d1018;color:var(--text)}
         <span class="spark-lbl">Yield accumulation &mdash; current simulation day</span>
         <span class="spark-total" id="pgSparkTotal">$0.00 settled</span>
       </div>
-      <svg class="spark-svg" viewBox="0 0 300 40" preserveAspectRatio="none">
+      <svg class="spark-svg" viewBox="0 0 300 34" preserveAspectRatio="none">
         <defs>
           <linearGradient id="sGrad" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stop-color="rgba(201,168,76,0.3)"/>
             <stop offset="100%" stop-color="rgba(201,168,76,0)"/>
           </linearGradient>
         </defs>
-        <polygon id="pgSparkFill" fill="url(#sGrad)" points="0,40 300,40"/>
-        <polyline id="pgSparkLine" fill="none" stroke="#C9A84C" stroke-width="1.5" stroke-linejoin="round" points="0,40"/>
+        <polygon id="pgSparkFill" fill="url(#sGrad)" points="0,34 300,34"/>
+        <polyline id="pgSparkLine" fill="none" stroke="#C9A84C" stroke-width="1.5" stroke-linejoin="round" points="0,34"/>
       </svg>
     </div>
 
-    <!-- Annualized Strip -->
+    <!-- Annual Strip -->
     <div class="ann-strip">
-      <div class="ann-item"><div class="ann-lbl">Annual Investor Return</div><div class="ann-val green" id="pgAnnI">$800K</div></div>
-      <div class="ann-item"><div class="ann-lbl">Annual $GRX Distribution</div><div class="ann-val" id="pgAnnG">$40K</div></div>
-      <div class="ann-item"><div class="ann-lbl">Annual Treasury Growth</div><div class="ann-val" id="pgAnnT">$80K</div></div>
-      <div class="ann-item"><div class="ann-lbl">Annual Genesis Revenue</div><div class="ann-val" id="pgAnnO">$80K</div></div>
+      <div class="ann-item"><div class="ann-lbl">Annual Member Return</div><div class="ann-val green" id="pgAnnI">$790K</div></div>
+      <div class="ann-item"><div class="ann-lbl">Genesis Spread</div><div class="ann-val" id="pgAnnG">$619K</div></div>
+      <div class="ann-item"><div class="ann-lbl">Mgmt Fee</div><div class="ann-val purple" id="pgAnnT">$82.5K</div></div>
+      <div class="ann-item"><div class="ann-lbl">Total Genesis Revenue</div><div class="ann-val" id="pgAnnO">$251.5K</div></div>
     </div>
-  </div>
 
-  <!-- ── CTA Column ─────────────────────────────────── -->
+  </div><!-- /demo-col -->
+
+  <!-- ════════════════════════ CTA Column ════════════════════════ -->
   <div class="cta-col">
 
-    <!-- Annual Projections -->
+    <!-- Funding Roadmap -->
     <div>
-      <div class="cta-label">Annual Projections</div>
-      <div class="ann-stat"><span class="ast-lbl">Investor preferred return</span><span class="ast-val green" id="ctaI">$800,000</span></div>
-      <div class="ann-stat"><span class="ast-lbl">$GRX holder distribution</span><span class="ast-val gold" id="ctaG">$40,000</span></div>
-      <div class="ann-stat"><span class="ast-lbl">Treasury AUM growth</span><span class="ast-val lime" id="ctaT">$80,000</span></div>
-      <div class="ann-stat"><span class="ast-lbl">Genesis operations</span><span class="ast-val" id="ctaO">$80,000</span></div>
-      <div class="total-row">
-        <span class="total-lbl">Total annual gross yield</span>
-        <span class="total-val" id="ctaTotal">$1,100,000</span>
+      <div class="cta-label">Funding Roadmap &mdash; Scale Path</div>
+      <div class="roadmap">
+
+        <div class="round-card" id="round-card-0" onclick="setRoundByCard(0)">
+          <div class="rc-header">
+            <span class="rc-round">Bridge Round</span>
+            <span class="rc-raise">$50K &ndash; $100K</span>
+          </div>
+          <div class="rc-body">
+            <div class="rc-stat"><div class="rc-stat-lbl">TVL Target</div><div class="rc-stat-val">$1M</div></div>
+            <div class="rc-stat"><div class="rc-stat-lbl">Genesis Rev.</div><div class="rc-stat-val gold" id="round-rev-0">$25.2K/yr</div></div>
+            <div class="rc-stat"><div class="rc-stat-lbl">Users</div><div class="rc-stat-val green">100</div></div>
+          </div>
+          <div class="rc-month">Beta sprint &middot; 10 weeks &middot; Proof of traction</div>
+        </div>
+
+        <div class="round-card active" id="round-card-1" onclick="setRoundByCard(1)">
+          <div class="rc-header">
+            <span class="rc-round">Series Seed</span>
+            <span class="rc-raise">$2M &ndash; $5M</span>
+          </div>
+          <div class="rc-body">
+            <div class="rc-stat"><div class="rc-stat-lbl">TVL Target</div><div class="rc-stat-val">$10M</div></div>
+            <div class="rc-stat"><div class="rc-stat-lbl">Genesis Rev.</div><div class="rc-stat-val gold" id="round-rev-1">$251.5K/yr</div></div>
+            <div class="rc-stat"><div class="rc-stat-lbl">Users</div><div class="rc-stat-val green">1,000</div></div>
+          </div>
+          <div class="rc-month">Growth phase &middot; 100-user beta closes &middot; Month 8</div>
+        </div>
+
+        <div class="round-card" id="round-card-2" onclick="setRoundByCard(2)">
+          <div class="rc-header">
+            <span class="rc-round">Series A</span>
+            <span class="rc-raise">~$20M</span>
+          </div>
+          <div class="rc-body">
+            <div class="rc-stat"><div class="rc-stat-lbl">TVL Target</div><div class="rc-stat-val">$100M</div></div>
+            <div class="rc-stat"><div class="rc-stat-lbl">Genesis Rev.</div><div class="rc-stat-val gold" id="round-rev-2">$2.52M/yr</div></div>
+            <div class="rc-stat"><div class="rc-stat-lbl">Users</div><div class="rc-stat-val green">10,000</div></div>
+          </div>
+          <div class="rc-month">Scale infrastructure &middot; B2B licensing launch &middot; Month 18</div>
+        </div>
+
+        <div class="round-card" id="round-card-3" onclick="setRoundByCard(3)">
+          <div class="rc-header">
+            <span class="rc-round">Series B</span>
+            <span class="rc-raise">~$100M</span>
+          </div>
+          <div class="rc-body">
+            <div class="rc-stat"><div class="rc-stat-lbl">TVL Target</div><div class="rc-stat-val">$1B</div></div>
+            <div class="rc-stat"><div class="rc-stat-lbl">Genesis Rev.</div><div class="rc-stat-val gold" id="round-rev-3">$25.2M/yr</div></div>
+            <div class="rc-stat"><div class="rc-stat-lbl">Users</div><div class="rc-stat-val green">100K+</div></div>
+          </div>
+          <div class="rc-month">Category dominance &middot; Legacy Protection launch &middot; Month 36</div>
+        </div>
+
       </div>
     </div>
 
-    <!-- Request Access Form -->
+    <!-- VC Market Pulse -->
+    <div>
+      <div class="cta-label">Market Validation &middot; 2025&ndash;2026</div>
+      <div class="vc-pulse">
+        <span class="vc-chip vc-chip-gold">$33T stablecoin volume &middot; 2025</span>
+        <span class="vc-chip vc-chip-teal">$1.5B VC deployed &middot; stablecoins</span>
+        <span class="vc-chip vc-chip-gold">Rain: Seed &rarr; Series C &lt;12 months &middot; 17&times; valuation</span>
+        <span class="vc-chip vc-chip-white">GENIUS Act &middot; Federal stablecoin framework</span>
+        <span class="vc-chip vc-chip-teal">Stripe + Bridge &middot; $1.1B acquisition</span>
+        <span class="vc-chip vc-chip-white">Median seed check $5M &middot; $34M valuation</span>
+      </div>
+    </div>
+
+    <!-- 72-Month Revenue Projection -->
+    <div>
+      <div class="cta-label">72-Month Cumulative Revenue</div>
+      <div class="proj-list">
+        <div class="proj-row proj-conservative">
+          <div class="proj-header">
+            <span class="proj-scenario">Conservative</span>
+            <span class="proj-val">$47.2M</span>
+          </div>
+          <div class="proj-track"><div class="proj-fill" style="width:22.7%"></div></div>
+        </div>
+        <div class="proj-row proj-moderate">
+          <div class="proj-header">
+            <span class="proj-scenario">Moderate</span>
+            <span class="proj-val">$92.3M</span>
+          </div>
+          <div class="proj-track"><div class="proj-fill" style="width:44.5%"></div></div>
+        </div>
+        <div class="proj-row proj-aggressive">
+          <div class="proj-header">
+            <span class="proj-scenario">Aggressive</span>
+            <span class="proj-val">$207.5M</span>
+          </div>
+          <div class="proj-track"><div class="proj-fill" style="width:100%"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Annual Projections (live simulation) -->
+    <div>
+      <div class="cta-label">Annual Projections &middot; Active Simulation</div>
+      <div class="ann-stat"><span class="ast-lbl">Member annual return</span><span class="ast-val green" id="ctaMember">$790,000</span></div>
+      <div class="ann-stat"><span class="ast-lbl">Genesis yield spread</span><span class="ast-val gold" id="ctaSpread">$619,000</span></div>
+      <div class="ann-stat"><span class="ast-lbl">AUM management fee</span><span class="ast-val purple" id="ctaFee">$82,500</span></div>
+      <div class="total-row">
+        <span class="total-lbl">Total Genesis Revenue</span>
+        <span class="total-val" id="ctaTotal">$701,500</span>
+      </div>
+    </div>
+
+    <!-- Institutional Access Form -->
     <div style="flex:1">
       <div class="cta-label">Request Institutional Access</div>
       <form class="form-wrap" id="accessForm" onsubmit="submitAccess(event)">
@@ -347,9 +574,9 @@ select.form-input option{background:#0d1018;color:var(--text)}
           <select class="form-input" id="af-capital" required>
             <option value="">Select range</option>
             <option>Under $1M</option>
-            <option>$1M – $10M</option>
-            <option>$10M – $100M</option>
-            <option>$100M – $1B</option>
+            <option>$1M &ndash; $10M</option>
+            <option>$10M &ndash; $100M</option>
+            <option>$100M &ndash; $1B</option>
             <option>$1B+</option>
           </select>
         </div>
@@ -362,184 +589,280 @@ select.form-input option{background:#0d1018;color:var(--text)}
       <div class="success-state" id="accessSuccess">
         <div class="success-check">&#10003;</div>
         <div class="success-title">Request Received</div>
-        <div class="success-sub">We'll be in touch within 24 hours to discuss your institutional access and walk through the engine in detail.</div>
+        <div class="success-sub">We&rsquo;ll be in touch within 24 hours to discuss your institutional access and walk through the engine in detail.</div>
       </div>
     </div>
 
-    <!-- Trust -->
     <div class="trust">
-      <span>Secured by Privy</span>
-      <div class="trust-dot"></div>
-      <span>Powered by Arbitrum</span>
-      <div class="trust-dot"></div>
+      <span>Secured by Privy</span><div class="trust-dot"></div>
+      <span>Powered by Arbitrum</span><div class="trust-dot"></div>
       <span>Zero Hash licensed</span>
     </div>
-  </div>
 
-</div>
+  </div><!-- /cta-col -->
+
+</div><!-- /layout -->
 
 <script>
 (function(){
-  var epoch=0,running=false,timer=null;
-  var baseTVL=10000000,tvl=10000000;
-  var grossApy=0.110,prefRate=0.08,mgmtRate=0.01;
-  var totals={inv:0,grx:0,tres:0,ops:0};
-  var allocs=[30,25,15,12,10,6,2];
-  var sparkPts=new Array(96).fill(0);
+  // ── Constants ─────────────────────────────────────────
+  var CAPS  = {preserve:5.0, grow:8.0, accel:12.0};   // member cap %
+  var FEES  = {preserve:0.60, grow:0.85, accel:1.10};  // mgmt fee %
+  var ROUNDS = [
+    {label:'Bridge',      tvl:1000000},
+    {label:'Series Seed', tvl:10000000},
+    {label:'Series A',    tvl:100000000},
+    {label:'Series B',    tvl:1000000000}
+  ];
 
-  function g(id){return document.getElementById(id);}
+  // ── State ─────────────────────────────────────────────
+  var mix      = {preserve:30, grow:50, accel:20};
+  var epoch    = 0, running = false, timer = null;
+  var baseTVL  = 10000000, tvl = 10000000;
+  var grossApy = 0.1409;
+  var totals   = {member:0, spread:0, fee:0, reinvest:0};
+  var sparkPts = new Array(96).fill(0);
+  var curRound = 1;
 
-  function fmtCompact(n){
-    if(n>=1e9)return '$'+(n/1e9).toFixed(2)+'B';
-    if(n>=1e6)return '$'+(n/1e6).toFixed(n>=100e6?1:3)+'M';
-    if(n>=1e3)return '$'+(n/1e3).toFixed(1)+'K';
+  // ── Helpers ───────────────────────────────────────────
+  function g(id){ return document.getElementById(id); }
+  function fmtC(n){
+    if(n>=1e9) return '$'+(n/1e9).toFixed(2)+'B';
+    if(n>=1e6) return '$'+(n/1e6).toFixed(n>=100e6?1:3)+'M';
+    if(n>=1e3) return '$'+(n/1e3).toFixed(1)+'K';
     return '$'+n.toFixed(2);
   }
-  function fmtFull(n){return '$'+Math.round(n).toLocaleString();}
+  function fmtF(n){ return '$'+Math.round(n).toLocaleString(); }
 
-  function normalize(){
-    var sum=allocs.reduce(function(a,b){return a+b;},0);
-    for(var i=0;i<allocs.length;i++){allocs[i]=allocs[i]/sum*100;}
+  // ── Model ─────────────────────────────────────────────
+  function blendedCap(){
+    return (mix.preserve*CAPS.preserve + mix.grow*CAPS.grow + mix.accel*CAPS.accel)/100;
+  }
+  function blendedFeeRate(){
+    return (mix.preserve*FEES.preserve + mix.grow*FEES.grow + mix.accel*FEES.accel)/100/100;
+  }
+  function genesisRevenueRate(){
+    return Math.max(0, grossApy - blendedCap()/100) + blendedFeeRate();
+  }
+  function corridorPcts(){
+    var p=mix.preserve/100, gw=mix.grow/100, a=mix.accel/100;
+    return {
+      tbills:   p*0.64,
+      aave:     p*0.16 + gw*0.50 + a*0.20,
+      balancer: p*0.20 + gw*0.35 + a*0.40,
+      morpho:   gw*0.15 + a*0.40
+    };
   }
 
+  // ── Tier Mix ──────────────────────────────────────────
+  function adjustTier(tier, delta){
+    var nv = Math.max(10, Math.min(80, mix[tier]+delta));
+    var diff = nv - mix[tier];
+    if(!diff) return;
+    mix[tier] = nv;
+    var others = ['preserve','grow','accel'].filter(function(k){return k!==tier;});
+    var os = mix[others[0]] + mix[others[1]];
+    if(os > 0){
+      mix[others[0]] = Math.max(10, Math.round(mix[others[0]] - diff*(mix[others[0]]/os)));
+    }
+    mix[others[1]] = Math.max(10, 100 - mix[tier] - mix[others[0]]);
+    var tot = mix.preserve+mix.grow+mix.accel;
+    if(tot !== 100){ mix[others[1]] += 100-tot; }
+    renderTierMix();
+    updateAnnualized();
+    updateRoundRevenue();
+  }
+
+  function renderTierMix(){
+    ['preserve','grow','accel'].forEach(function(k){
+      var pe=g('tm-pct-'+k), be=g('tm-bar-'+k);
+      if(pe) pe.textContent = mix[k]+'%';
+      if(be) be.style.width = mix[k]+'%';
+    });
+    if(g('blendedCap'))  g('blendedCap').textContent  = blendedCap().toFixed(1)+'%';
+    if(g('genesisRate')) g('genesisRate').textContent  = (genesisRevenueRate()*100).toFixed(2)+'%';
+    if(g('pgCapBadge'))  g('pgCapBadge').textContent   = blendedCap().toFixed(1)+'%';
+    if(g('wfMemberCut')) g('wfMemberCut').textContent  = 'Blended cap '+blendedCap().toFixed(1)+'%';
+    updateCorridors(false);
+  }
+
+  function updateCorridors(drift){
+    var cp = corridorPcts();
+    ['tbills','aave','balancer','morpho'].forEach(function(k){
+      var d = drift ? (Math.random()-0.5)*0.015 : 0;
+      var pv = Math.max(1, Math.min(70, (cp[k]+d)*100));
+      var f=g('pgA-'+k), p=g('pgP-'+k);
+      if(f) f.style.width = pv.toFixed(0)+'%';
+      if(p) p.textContent = pv.toFixed(0)+'%';
+    });
+  }
+
+  // ── Annualized ────────────────────────────────────────
   function updateAnnualized(){
-    var aGross=tvl*grossApy;
-    var aFee=tvl*mgmtRate;
-    var aNet=aGross-aFee;
-    var aPref=tvl*prefRate;
-    var aInv=Math.min(aNet,aPref);
-    var aSpread=Math.max(0,aNet-aInv);
-    var aGRX=aSpread*0.2;
-    var aTres=aSpread*0.4;
-    var aOps=aSpread*0.4;
-    if(g('pgAnnI'))g('pgAnnI').textContent=fmtCompact(aInv);
-    if(g('pgAnnG'))g('pgAnnG').textContent=fmtCompact(aGRX);
-    if(g('pgAnnT'))g('pgAnnT').textContent=fmtCompact(aTres);
-    if(g('pgAnnO'))g('pgAnnO').textContent=fmtCompact(aOps);
-    if(g('ctaI'))g('ctaI').textContent=fmtFull(aInv);
-    if(g('ctaG'))g('ctaG').textContent=fmtFull(aGRX);
-    if(g('ctaT'))g('ctaT').textContent=fmtFull(aTres);
-    if(g('ctaO'))g('ctaO').textContent=fmtFull(aOps);
-    if(g('ctaTotal'))g('ctaTotal').textContent=fmtFull(aGross);
+    var capD   = blendedCap()/100;
+    var feeR   = blendedFeeRate();
+    var spr    = Math.max(0, grossApy - capD);
+    var aM = tvl*capD, aS = tvl*spr, aF = tvl*feeR, aG = aS+aF;
+    if(g('pgAnnI')) g('pgAnnI').textContent = fmtC(aM);
+    if(g('pgAnnG')) g('pgAnnG').textContent = fmtC(aS);
+    if(g('pgAnnT')) g('pgAnnT').textContent = fmtC(aF);
+    if(g('pgAnnO')) g('pgAnnO').textContent = fmtC(aG);
+    if(g('ctaMember')) g('ctaMember').textContent = fmtF(aM);
+    if(g('ctaSpread'))  g('ctaSpread').textContent  = fmtF(aS);
+    if(g('ctaFee'))     g('ctaFee').textContent     = fmtF(aF);
+    if(g('ctaTotal'))   g('ctaTotal').textContent   = fmtF(aG);
+    if(g('pgAPY'))      g('pgAPY').textContent      = (grossApy*100).toFixed(1)+'%';
+  }
+
+  function updateRoundRevenue(){
+    ROUNDS.forEach(function(r,i){
+      var el=g('round-rev-'+i);
+      if(el) el.textContent = fmtC(r.tvl*genesisRevenueRate())+'/yr';
+    });
+  }
+
+  // ── Round Selector ────────────────────────────────────
+  function setRound(btn, idx){
+    document.querySelectorAll('.round-btn').forEach(function(b){b.classList.remove('active');});
+    btn.classList.add('active');
+    _activateRound(idx);
+  }
+  function setRoundByCard(idx){
+    var btns=document.querySelectorAll('.round-btn');
+    btns.forEach(function(b){b.classList.remove('active');});
+    if(btns[idx]) btns[idx].classList.add('active');
+    _activateRound(idx);
+  }
+  function _activateRound(idx){
+    curRound=idx; baseTVL=ROUNDS[idx].tvl; tvl=baseTVL;
+    epoch=0; totals={member:0,spread:0,fee:0,reinvest:0};
+    sparkPts=new Array(96).fill(0);
+    document.querySelectorAll('.round-card').forEach(function(c,i){
+      c.classList.toggle('active',i===idx);
+    });
+    resetSimUI();
+    updateAnnualized();
+    if(running){clearInterval(timer);timer=setInterval(tick,130);}
+  }
+
+  function resetSimUI(){
+    if(g('pgEpoch'))    g('pgEpoch').textContent='0';
+    if(g('pgEpochBig')) g('pgEpochBig').textContent='0';
+    if(g('pgArc'))      g('pgArc').setAttribute('stroke-dashoffset','138.2');
+    var ts=tvl>=1e9?'$'+(tvl/1e9).toFixed(2)+'B':'$'+(tvl/1e6).toFixed(3)+'M';
+    if(g('pgTVL'))      g('pgTVL').textContent=ts;
+    if(g('pgVaultBal')) g('pgVaultBal').textContent='$'+Math.round(tvl).toLocaleString();
+    ['pgWfMember','pgWfSpread','pgWfFee','pgWfReinvest'].forEach(function(id){
+      if(g(id)) g(id).textContent='$0.00';
+    });
+    if(g('pgSparkLine')) g('pgSparkLine').setAttribute('points','0,34');
+    if(g('pgSparkFill')) g('pgSparkFill').setAttribute('points','0,34 300,34');
+    if(g('pgSparkTotal')) g('pgSparkTotal').textContent='$0.00 settled';
+  }
+
+  // ── Simulation Tick ───────────────────────────────────
+  function tick(){
+    epoch++;
+    if(epoch>96){
+      epoch=1; totals={member:0,spread:0,fee:0,reinvest:0};
+      sparkPts=new Array(96).fill(0); tvl=baseTVL;
+    }
+    var EPY=35040;
+    var capD=blendedCap()/100, feeR=blendedFeeRate();
+    var eGross=tvl*grossApy/EPY;
+    var eMember=tvl*capD/EPY;
+    var eFee=tvl*feeR/EPY;
+    var eSpread=Math.max(0,eGross-eMember-eFee);
+    var eReinvest=eSpread*0.35;
+    tvl+=eReinvest;
+    grossApy=0.133+Math.random()*0.016;
+    totals.member+=eMember; totals.spread+=eSpread;
+    totals.fee+=eFee; totals.reinvest+=eReinvest;
+
+    if(g('pgEpoch'))    g('pgEpoch').textContent=epoch;
+    if(g('pgEpochBig')) g('pgEpochBig').textContent=epoch;
+    var ts=tvl>=1e9?'$'+(tvl/1e9).toFixed(3)+'B':'$'+(tvl/1e6).toFixed(3)+'M';
+    if(g('pgTVL'))      g('pgTVL').textContent=ts;
+    if(g('pgAPY'))      g('pgAPY').textContent=(grossApy*100).toFixed(1)+'%';
+    if(g('pgVaultBal')) g('pgVaultBal').textContent='$'+Math.round(tvl).toLocaleString();
+    var arc=g('pgArc');
+    if(arc) arc.setAttribute('stroke-dashoffset',(138.2*(1-epoch/96)).toFixed(1));
+    if(g('pgWfMember'))   g('pgWfMember').textContent=fmtC(totals.member);
+    if(g('pgWfSpread'))   g('pgWfSpread').textContent=fmtC(totals.spread);
+    if(g('pgWfFee'))      g('pgWfFee').textContent=fmtC(totals.fee);
+    if(g('pgWfReinvest')) g('pgWfReinvest').textContent=fmtC(totals.reinvest);
+    updateCorridors(true);
+    pulse();
+    updateSparkline();
+    updateAnnualized();
   }
 
   function pulse(){
-    ['pgVault','wfI','wfG','wfT','wfO'].forEach(function(id){
-      var el=g(id);if(!el)return;
-      el.classList.remove('pulsing');
-      void el.offsetWidth;
+    ['pgVault','wfMember','wfSpread','wfFee','wfReinvest'].forEach(function(id){
+      var el=g(id); if(!el) return;
+      el.classList.remove('pulsing'); void el.offsetWidth;
       el.classList.add('pulsing');
       setTimeout(function(){el.classList.remove('pulsing');},460);
     });
   }
 
   function updateSparkline(){
-    var total=totals.inv+totals.grx+totals.tres+totals.ops;
-    if(epoch>0)sparkPts[epoch-1]=total;
+    var total=totals.member+totals.spread+totals.fee+totals.reinvest;
+    if(epoch>0) sparkPts[epoch-1]=total;
     var filled=sparkPts.slice(0,Math.max(epoch,1));
     var maxV=Math.max.apply(null,filled)||1;
-    var W=300,H=38;
+    var W=300,H=32;
     var pts=filled.map(function(v,i){
       return [(i/95)*W,(H-(v/maxV)*(H-4))].join(',');
     }).join(' ');
     var lastX=((filled.length-1)/95)*W;
-    if(g('pgSparkLine'))g('pgSparkLine').setAttribute('points',pts);
-    if(g('pgSparkFill'))g('pgSparkFill').setAttribute('points','0,'+H+' '+pts+' '+lastX+','+H);
-    if(g('pgSparkTotal'))g('pgSparkTotal').textContent=fmtCompact(total)+' settled';
+    if(g('pgSparkLine')) g('pgSparkLine').setAttribute('points',pts);
+    if(g('pgSparkFill')) g('pgSparkFill').setAttribute('points','0,'+H+' '+pts+' '+lastX+','+H);
+    if(g('pgSparkTotal')) g('pgSparkTotal').textContent=fmtC(total)+' settled';
   }
 
-  function tick(){
-    epoch++;
-    if(epoch>96){epoch=1;totals={inv:0,grx:0,tres:0,ops:0};sparkPts=new Array(96).fill(0);tvl=baseTVL;}
-    // Per-epoch: annual / 35040 epochs/year
-    var gE=tvl*grossApy/35040;
-    var fE=tvl*mgmtRate/35040;
-    var nE=gE-fE;
-    var pE=tvl*prefRate/35040;
-    var invP=Math.min(nE,pE);
-    var spr=Math.max(0,nE-invP);
-    tvl+=spr*0.4; // treasury reinvest compounds TVL
-    grossApy=0.105+Math.random()*0.010;
-    // Drift two corridors, always normalize
-    var i=Math.floor(Math.random()*7);
-    var j=(i+1+Math.floor(Math.random()*6))%7;
-    var d=(Math.random()-0.5)*3;
-    allocs[i]=Math.max(2,Math.min(52,allocs[i]+d));
-    allocs[j]=Math.max(2,Math.min(52,allocs[j]-d));
-    normalize();
-    totals.inv+=invP;totals.grx+=spr*0.2;totals.tres+=spr*0.4;totals.ops+=spr*0.4;
-    // UI
-    if(g('pgEpoch'))g('pgEpoch').textContent=epoch;
-    if(g('pgEpochBig'))g('pgEpochBig').textContent=epoch;
-    var tvlStr=tvl>=1e9?'$'+(tvl/1e9).toFixed(2)+'B':'$'+(tvl/1e6).toFixed(3)+'M';
-    if(g('pgTVL'))g('pgTVL').textContent=tvlStr;
-    if(g('pgAPY'))g('pgAPY').textContent=(grossApy*100).toFixed(1)+'%';
-    if(g('pgVaultBal'))g('pgVaultBal').textContent='$'+Math.round(tvl).toLocaleString();
-    var arc=g('pgArc');
-    if(arc)arc.setAttribute('stroke-dashoffset',(175.9*(1-epoch/96)).toFixed(1));
-    for(var k=0;k<7;k++){
-      var f=g('pgA'+k),p=g('pgP'+k);
-      if(f)f.style.width=allocs[k].toFixed(0)+'%';
-      if(p)p.textContent=allocs[k].toFixed(0)+'%';
-    }
-    if(g('pgWfI'))g('pgWfI').textContent=fmtCompact(totals.inv);
-    if(g('pgWfG'))g('pgWfG').textContent=fmtCompact(totals.grx);
-    if(g('pgWfT'))g('pgWfT').textContent=fmtCompact(totals.tres);
-    if(g('pgWfO'))g('pgWfO').textContent=fmtCompact(totals.ops);
-    pulse();
-    updateSparkline();
-    updateAnnualized();
-  }
-
+  // ── Toggle ────────────────────────────────────────────
   function pgToggle(){
     running=!running;
-    var btn=g('pgRunBtn'),diag=g('engineDiag');
+    var btn=g('pgRunBtn'), diag=g('engineDiag');
     if(running){
-      if(btn)btn.textContent='&#9646;&#9646; Pause';
-      if(diag)diag.classList.add('running');
+      if(btn)  btn.textContent='&#9646;&#9646; Pause';
+      if(diag) diag.classList.add('running');
       timer=setInterval(tick,130);
     } else {
-      if(btn)btn.textContent='&#9654; Run Engine';
-      if(diag)diag.classList.remove('running');
+      if(btn)  btn.textContent='&#9654; Run Engine';
+      if(diag) diag.classList.remove('running');
       clearInterval(timer);
     }
   }
 
-  function setScale(btn){
-    document.querySelectorAll('.scale-btn').forEach(function(b){b.classList.remove('active');});
-    btn.classList.add('active');
-    baseTVL=parseFloat(btn.getAttribute('data-tvl'));
-    tvl=baseTVL;epoch=0;totals={inv:0,grx:0,tres:0,ops:0};
-    sparkPts=new Array(96).fill(0);allocs=[30,25,15,12,10,6,2];
-    if(g('pgEpoch'))g('pgEpoch').textContent='0';
-    if(g('pgEpochBig'))g('pgEpochBig').textContent='0';
-    if(g('pgArc'))g('pgArc').setAttribute('stroke-dashoffset','175.9');
-    if(g('pgVaultBal'))g('pgVaultBal').textContent='$'+Math.round(baseTVL).toLocaleString();
-    var ts=baseTVL>=1e9?'$'+(baseTVL/1e9).toFixed(2)+'B':'$'+(baseTVL/1e6).toFixed(3)+'M';
-    if(g('pgTVL'))g('pgTVL').textContent=ts;
-    ['pgWfI','pgWfG','pgWfT','pgWfO'].forEach(function(id){if(g(id))g(id).textContent='$0.00';});
-    if(g('pgSparkLine'))g('pgSparkLine').setAttribute('points','0,40');
-    if(g('pgSparkFill'))g('pgSparkFill').setAttribute('points','0,40 300,40');
-    if(g('pgSparkTotal'))g('pgSparkTotal').textContent='$0.00 settled';
-    updateAnnualized();
-    if(running){clearInterval(timer);timer=setInterval(tick,130);}
-  }
-
+  // ── Form (fetch POST, no mailto) ──────────────────────
   function submitAccess(e){
     e.preventDefault();
-    var name=g('af-name').value,org=g('af-org').value,cap=g('af-capital').value,msg=g('af-msg').value;
-    var subj='Genesis Reserve — Institutional Access Request';
-    var body=['Name: '+name,'Organization: '+org,'Capital Under Management: '+cap,'','Message:',msg,'','---','Submitted via Genesis Reserve institutional access page.'].join('\n');
+    var payload={
+      name:g('af-name').value, organization:g('af-org').value,
+      capital:g('af-capital').value, message:g('af-msg').value,
+      source:'treasury-demo', timestamp:new Date().toISOString(),
+      simulation:{tvl:tvl, round:ROUNDS[curRound].label, tierMix:{preserve:mix.preserve,grow:mix.grow,accel:mix.accel}}
+    };
+    fetch('/api/gr/treasury/finalize',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload)
+    }).catch(function(){});
     g('accessForm').style.display='none';
-    var s=g('accessSuccess');s.style.display='flex';
-    setTimeout(function(){window.open('mailto:crownmcllc@gmail.com?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body),'_self');},700);
+    var s=g('accessSuccess'); s.style.display='flex';
   }
 
-  window.pgToggle=pgToggle;
-  window.setScale=setScale;
-  window.submitAccess=submitAccess;
+  // ── Init ─────────────────────────────────────────────
+  window.pgToggle       = pgToggle;
+  window.setRound       = setRound;
+  window.setRoundByCard = setRoundByCard;
+  window.adjustTier     = adjustTier;
+  window.submitAccess   = submitAccess;
+  renderTierMix();
   updateAnnualized();
-  setTimeout(function(){pgToggle();},900);
+  updateRoundRevenue();
+  setTimeout(pgToggle, 900);
 })();
 </script>
 
