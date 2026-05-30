@@ -28,7 +28,7 @@
   --teal: #00D4AA;
   --text: #f5f0e8;
   --sub: rgba(245,240,232,0.92);
-  --muted: rgba(245,240,232,0.68);
+  --muted: rgba(245,240,232,0.82);
   --border: rgba(255,255,255,0.07);
   --cover-bg: linear-gradient(160deg,#06080d 55%,#0d1018);
   --transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
@@ -124,8 +124,18 @@ body {
   letter-spacing: .28em;
   text-transform: uppercase;
   color: var(--gold);
-  opacity: .85;
   margin-bottom: 18px;
+  position: relative;
+}
+/* ── Cover emblem ── */
+.cover-emblem {
+  width: 72px;
+  height: 72px;
+  margin-bottom: 22px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  filter: drop-shadow(0 0 14px rgba(201,168,76,0.35));
   position: relative;
 }
 .cover-title {
@@ -187,7 +197,6 @@ section {}
   letter-spacing: .22em;
   text-transform: uppercase;
   color: var(--gold);
-  opacity: .75;
   margin-bottom: 8px;
 }
 .section-title {
@@ -236,7 +245,6 @@ section {}
   letter-spacing: .18em;
   text-transform: uppercase;
   color: var(--gold);
-  opacity: .7;
   margin-bottom: 8px;
 }
 .callout-text {
@@ -500,7 +508,6 @@ section {}
   letter-spacing: .22em;
   text-transform: uppercase;
   color: var(--gold);
-  opacity: .75;
   margin-bottom: 12px;
 }
 .ask-amount {
@@ -575,7 +582,6 @@ footer {
   letter-spacing: .24em;
   text-transform: uppercase;
   color: var(--gold);
-  opacity: .6;
   white-space: nowrap;
 }
 
@@ -613,7 +619,7 @@ footer {
 }
 .entity-node.root { border-color: var(--gold); background: var(--gold-dim); }
 .entity-node.trust { border-color: rgba(0,212,170,.3); background: rgba(0,212,170,.06); }
-.entity-node.future { border-color: var(--border); opacity: .7; }
+.entity-node.future { border-color: var(--border); opacity: .88; }
 .entity-name {
   font-family: 'Cormorant Garamond', serif;
   font-size: 17px;
@@ -626,7 +632,7 @@ footer {
   font-size: 9px;
   letter-spacing: .14em;
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--sub);
   margin-bottom: 6px;
 }
 .entity-desc { font-family: 'Cormorant Garamond', serif; font-size: 14px; color: var(--sub); line-height: 1.5; }
@@ -670,13 +676,13 @@ footer {
 }
 .ops-table .cat-row td {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: .14em;
   text-transform: uppercase;
   color: var(--gold);
-  opacity: .8;
   padding: 16px 12px 6px;
   border-bottom: none;
+  font-weight: 600;
 }
 .ops-table .subtotal-row td {
   border-top: 1px solid var(--border);
@@ -724,7 +730,7 @@ footer {
   font-size: 15px;
 }
 .terms-item:last-child { border-bottom: none; }
-.terms-key { color: var(--muted); flex-shrink: 0; }
+.terms-key { color: var(--sub); flex-shrink: 0; }
 .terms-val { color: var(--text); text-align: right; font-weight: 600; }
 
 /* ── Next steps ── */
@@ -846,6 +852,7 @@ footer {
 
 <!-- ═══ COVER ═══ -->
 <div class="cover">
+  <img src="/genesis-logo.svg" class="cover-emblem" alt="Genesis Reserve">
   <div class="cover-eyebrow">Confidential — For Lead Investor Review</div>
   <div class="cover-title">Berlin <span>Graduation</span></div>
   <div class="cover-sub">Capital Brief &amp; Representation Plan</div>
@@ -1208,6 +1215,7 @@ footer {
 </div>
 
 <div class="ops-cover">
+  <img src="/genesis-logo.svg" class="cover-emblem" alt="Genesis Reserve">
   <div class="cover-eyebrow">Confidential — Seed Round Deployment Plan</div>
   <div class="cover-title">30-Day <span>Operational</span> Blueprint</div>
   <div class="cover-sub">Immediate Capital Requirements · Entity Formation · Investment Terms</div>
@@ -1240,11 +1248,11 @@ footer {
         <span class="stat-lbl">Days to full launch</span>
       </div>
       <div class="stat-card teal">
-        <span class="stat-val">$120.5K</span>
+        <span class="stat-val">$137.5K</span>
         <span class="stat-lbl">Sprint capital required</span>
       </div>
       <div class="stat-card">
-        <span class="stat-val" style="color:var(--sub)">24.1%</span>
+        <span class="stat-val" style="color:var(--sub)">27.5%</span>
         <span class="stat-lbl">Of $500K seed round</span>
       </div>
     </div>
@@ -1329,11 +1337,14 @@ footer {
         <tr><td>Insurance</td><td>D&amp;O liability + Cyber liability policy deposit</td><td>$3,500</td></tr>
         <tr class="subtotal-row"><td colspan="2">Administrative Subtotal</td><td>$8,000</td></tr>
 
-        <tr class="cat-row"><td colspan="3">Staffing</td></tr>
-        <tr><td>Founder / CEO</td><td>Anthony Beedles — full-time operational leadership, investor relations, product</td><td>$10,000</td></tr>
-        <tr><td>Co-Founder / CTO</td><td>Engineering leadership, smart contract architecture, DevOps</td><td>$10,000</td></tr>
-        <tr><td>Compliance Officer</td><td>Part-time engagement — regulatory filings, member onboarding compliance</td><td>$5,000</td></tr>
-        <tr class="subtotal-row"><td colspan="2">Staffing Subtotal</td><td>$25,000</td></tr>
+        <tr class="cat-row"><td colspan="3">Founding Team</td></tr>
+        <tr><td>Anthony Beedles<br><small style="font-size:13px;color:var(--gold)">Founder / CEO</small></td><td>Full-time operational leadership, investor relations, product vision, capital markets</td><td>$10,000</td></tr>
+        <tr><td>Co-Founder / CTO</td><td>Engineering leadership, smart contract architecture, protocol security, DevOps</td><td>$10,000</td></tr>
+        <tr><td>Kiarra Smith<br><small style="font-size:13px;color:var(--gold)">Co-Founder / COO</small></td><td>Operations &amp; Member Services — process infrastructure, member onboarding, operational systems</td><td>$6,000</td></tr>
+        <tr><td>Whitney McCray<br><small style="font-size:13px;color:var(--gold)">Co-Founder / CMO</small></td><td>Brand, Marketing &amp; Business Development — brand strategy, growth, partner outreach, content</td><td>$6,000</td></tr>
+        <tr><td>Larry Timberlake<br><small style="font-size:13px;color:var(--gold)">Co-Founder / CRO</small></td><td>Revenue &amp; Strategic Partnerships — enterprise relationships, IMO network, institutional BD</td><td>$6,000</td></tr>
+        <tr><td>Compliance Officer</td><td>Part-time engagement — regulatory filings, member onboarding compliance, entity governance</td><td>$4,000</td></tr>
+        <tr class="subtotal-row"><td colspan="2">Founding Team Subtotal</td><td>$42,000</td></tr>
 
         <tr class="cat-row"><td colspan="3">Security &amp; Business Development</td></tr>
         <tr><td>Security Audit Deposit</td><td>Initial engagement deposit — Weeks 5–7 penetration testing + SOC framework (Lesley's engagement)</td><td>$5,000</td></tr>
@@ -1343,7 +1354,7 @@ footer {
 
         <tr class="grand-total">
           <td colspan="2"><strong>30-Day Total Capital Required</strong></td>
-          <td>$120,500</td>
+          <td>$137,500</td>
         </tr>
       </tbody>
     </table>
@@ -1351,7 +1362,7 @@ footer {
     <div class="callout">
       <div class="callout-label">Deployment Context</div>
       <div class="callout-text">
-        $120,500 represents <strong>24.1% of the $500K seed round</strong>, deployed in the first 30 days to produce a fully incorporated, legally defensible, launched company. The remaining $379,500 funds months 2–6 of operations at approximately <strong>$63,000/month burn rate</strong> — a bridge to Series A.
+        $137,500 represents <strong>27.5% of the $500K seed round</strong>, deployed in the first 30 days to produce a fully incorporated, legally defensible, launched company with a full founding team. The remaining $362,500 funds months 2–6 of operations at approximately <strong>$60,000/month burn rate</strong> — a bridge to Series A.
       </div>
     </div>
   </section>
@@ -1475,12 +1486,12 @@ footer {
 
     <div class="ask-box" style="margin-top:24px;">
       <div class="ask-label">Total Immediate Capital Ask — Berlin + 30-Day Sprint</div>
-      <div class="ask-amount">$126,800</div>
-      <div class="ask-desc">$6,300 Berlin representation + $120,500 30-day operational sprint. Together these two capital deployments produce a graduated founder at an international ceremony and a fully launched, legally incorporated company.</div>
+      <div class="ask-amount">$143,800</div>
+      <div class="ask-desc">$6,300 Berlin representation + $137,500 30-day operational sprint. Together these two capital deployments produce a graduated founder at an international ceremony and a fully launched, legally incorporated company with a full founding team in place.</div>
       <div class="ask-breakdown">
         <span><strong>$6,300</strong>Berlin Trip</span>
-        <span><strong>$120,500</strong>30-Day Ops</span>
-        <span><strong>$379,500</strong>Remaining Seed</span>
+        <span><strong>$137,500</strong>30-Day Ops</span>
+        <span><strong>$356,200</strong>Remaining Seed</span>
         <span><strong>$500,000</strong>Full Round</span>
       </div>
     </div>
