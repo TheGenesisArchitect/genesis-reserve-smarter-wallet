@@ -27,8 +27,8 @@
   --gold-border: rgba(201,168,76,0.20);
   --teal: #00D4AA;
   --text: #f5f0e8;
-  --sub: rgba(245,240,232,0.75);
-  --muted: rgba(245,240,232,0.48);
+  --sub: rgba(245,240,232,0.92);
+  --muted: rgba(245,240,232,0.68);
   --border: rgba(255,255,255,0.07);
   --cover-bg: linear-gradient(160deg,#06080d 55%,#0d1018);
   --transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
@@ -130,7 +130,7 @@ body {
 }
 .cover-title {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 54px;
+  font-size: 64px;
   font-weight: 300;
   letter-spacing: .06em;
   color: var(--text);
@@ -141,7 +141,7 @@ body {
 .cover-title span { color: var(--gold); }
 .cover-sub {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 22px;
+  font-size: 26px;
   font-weight: 300;
   font-style: italic;
   color: var(--sub);
@@ -183,7 +183,7 @@ body {
 section {}
 .section-eyebrow {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: .22em;
   text-transform: uppercase;
   color: var(--gold);
@@ -192,7 +192,7 @@ section {}
 }
 .section-title {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 32px;
+  font-size: 40px;
   font-weight: 400;
   color: var(--text);
   margin-bottom: 6px;
@@ -207,7 +207,7 @@ section {}
 }
 .body-text {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 18px;
+  font-size: 22px;
   color: var(--sub);
   line-height: 1.75;
   margin-bottom: 16px;
@@ -232,7 +232,7 @@ section {}
 }
 .callout-label {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 9.5px;
+  font-size: 11px;
   letter-spacing: .18em;
   text-transform: uppercase;
   color: var(--gold);
@@ -241,7 +241,7 @@ section {}
 }
 .callout-text {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 17px;
+  font-size: 20px;
   color: var(--sub);
   line-height: 1.65;
 }
@@ -266,7 +266,7 @@ section {}
 .stat-card.teal { border-color: rgba(0,212,170,.2); background: rgba(0,212,170,.06); }
 .stat-val {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 22px;
+  font-size: 26px;
   font-weight: 600;
   color: var(--gold);
   display: block;
@@ -274,7 +274,7 @@ section {}
 }
 .stat-card.teal .stat-val { color: var(--teal); }
 .stat-lbl {
-  font-size: 11.5px;
+  font-size: 13px;
   color: var(--muted);
   letter-spacing: .03em;
 }
@@ -288,7 +288,7 @@ section {}
 }
 .budget-table th {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 9px;
+  font-size: 11px;
   letter-spacing: .16em;
   text-transform: uppercase;
   color: var(--muted);
@@ -298,7 +298,7 @@ section {}
 }
 .budget-table td {
   padding: 13px 12px;
-  font-size: 16px;
+  font-size: 18px;
   color: var(--sub);
   border-bottom: 1px solid var(--border);
   vertical-align: top;
@@ -306,7 +306,7 @@ section {}
 .budget-table tr:last-child td { border-bottom: none; }
 .budget-table td:last-child {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 14px;
+  font-size: 16px;
   color: var(--gold);
   text-align: right;
   white-space: nowrap;
@@ -318,11 +318,11 @@ section {}
   font-weight: 600;
 }
 .budget-table .total-row td:last-child {
-  font-size: 18px;
+  font-size: 22px;
   color: var(--gold2);
 }
 .budget-table .note-row td {
-  font-size: 13px;
+  font-size: 15px;
   color: var(--muted);
   padding-top: 4px;
   border-bottom: none;
@@ -348,13 +348,13 @@ section {}
 }
 .hotel-name {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 22px;
+  font-size: 26px;
   font-weight: 600;
   color: var(--text);
   margin-bottom: 4px;
 }
 .hotel-location {
-  font-size: 13px;
+  font-size: 15px;
   color: var(--muted);
   letter-spacing: .03em;
 }
@@ -380,7 +380,7 @@ section {}
   color: var(--muted);
 }
 .hotel-item-val {
-  font-size: 15px;
+  font-size: 17px;
   color: var(--sub);
 }
 .hotel-item-val strong { color: var(--text); }
@@ -396,7 +396,7 @@ section {}
   border: 1px solid var(--border);
   border-radius: 999px;
   padding: 3px 12px;
-  font-size: 12px;
+  font-size: 14px;
   color: var(--muted);
 }
 
@@ -420,7 +420,7 @@ section {}
 .tl-content { flex: 1; padding-bottom: 28px; }
 .tl-date {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: .12em;
   color: var(--gold);
   margin-bottom: 4px;
@@ -428,14 +428,14 @@ section {}
 .tl-date.teal { color: var(--teal); }
 .tl-title {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 18px;
+  font-size: 22px;
   font-weight: 600;
   color: var(--text);
   margin-bottom: 4px;
 }
 .tl-desc {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 15px;
+  font-size: 18px;
   color: var(--sub);
   line-height: 1.6;
 }
@@ -452,7 +452,7 @@ section {}
 .roi-card.negative { border-color: rgba(232,64,64,.15); opacity: .7; }
 .roi-tag {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 9px;
+  font-size: 11px;
   letter-spacing: .16em;
   text-transform: uppercase;
   margin-bottom: 10px;
@@ -461,7 +461,7 @@ section {}
 .roi-card.negative .roi-tag { color: rgba(232,64,64,.7); }
 .roi-item {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 15px;
+  font-size: 17px;
   color: var(--sub);
   line-height: 1.65;
   padding: 5px 0;
@@ -488,7 +488,7 @@ section {}
 }
 .ask-label {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: .22em;
   text-transform: uppercase;
   color: var(--gold);
@@ -506,7 +506,7 @@ section {}
 }
 .ask-desc {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 18px;
+  font-size: 21px;
   font-style: italic;
   color: var(--sub);
   margin-bottom: 24px;
@@ -518,11 +518,11 @@ section {}
   gap: 28px;
   flex-wrap: wrap;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
+  font-size: 13px;
   color: var(--muted);
 }
 .ask-breakdown span { display: flex; flex-direction: column; align-items: center; gap: 3px; }
-.ask-breakdown strong { color: var(--gold); font-size: 13px; }
+.ask-breakdown strong { color: var(--gold); font-size: 15px; }
 
 /* ── Contact ── */
 .contact-strip {
@@ -531,7 +531,7 @@ section {}
   justify-content: center;
   gap: 8px;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
+  font-size: 13px;
   color: var(--muted);
   padding: 20px 0 0;
   border-top: 1px solid var(--border);
