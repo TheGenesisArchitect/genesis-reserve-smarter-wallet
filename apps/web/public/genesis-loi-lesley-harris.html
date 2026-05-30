@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Letter of Intent — Genesis App, Inc. & Lesley Harris</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Tenor+Sans&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-size: 11.5pt;
+  line-height: 1.65;
+  color: #1a1a1a;
+  background: #fff;
+  padding: 0;
+}
+
+/* ── Print layout ── */
+@page {
+  size: letter;
+  margin: 1in 1in 1in 1in;
+}
+@media print {
+  .no-print { display: none !important; }
+  body { background: #fff; }
+  .page { padding: 0; max-width: 100%; box-shadow: none; }
+  section { page-break-inside: avoid; }
+  .sig-block { page-break-inside: avoid; }
+}
+
+/* ── Screen layout ── */
+.page {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 60px 64px;
+  background: #fff;
+  box-shadow: 0 0 40px rgba(0,0,0,0.08);
+  min-height: 100vh;
+}
+
+/* ── Print / Download button ── */
+.no-print {
+  position: fixed;
+  top: 18px;
+  right: 22px;
+  display: flex;
+  gap: 10px;
+  z-index: 100;
+}
+.btn-print {
+  background: #1a2a40;
+  color: #C9A84C;
+  border: 1px solid #C9A84C;
+  border-radius: 6px;
+  padding: 7px 18px;
+  font-family: 'Tenor Sans', sans-serif;
+  font-size: 12px;
+  letter-spacing: .06em;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+.btn-print:hover { background: #C9A84C; color: #fff; }
+
+/* ── Letterhead ── */
+.letterhead {
+  text-align: center;
+  border-bottom: 2.5px solid #C9A84C;
+  padding-bottom: 18px;
+  margin-bottom: 28px;
+}
+.lh-emblem {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  margin-bottom: 8px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+.lh-company {
+  font-family: 'Tenor Sans', sans-serif;
+  font-size: 15pt;
+  font-weight: 700;
+  letter-spacing: .12em;
+  color: #1a1a1a;
+  text-transform: uppercase;
+}
+.lh-dba {
+  font-family: 'Tenor Sans', sans-serif;
+  font-size: 9pt;
+  letter-spacing: .18em;
+  color: #888;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+.lh-sub {
+  font-family: 'Georgia', serif;
+  font-size: 9pt;
+  color: #888;
+  margin-top: 4px;
+}
+
+/* ── Doc title block ── */
+.doc-title {
+  text-align: center;
+  margin: 22px 0 28px;
+}
+.doc-title h1 {
+  font-family: 'Tenor Sans', sans-serif;
+  font-size: 16pt;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: #1a1a1a;
+  margin-bottom: 4px;
+}
+.doc-title .doc-conf {
+  font-family: 'Tenor Sans', sans-serif;
+  font-size: 8.5pt;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: #C9A84C;
+}
+
+/* ── Intro block ── */
+.intro { margin-bottom: 22px; }
+.intro p { margin-bottom: 10px; font-size: 11.5pt; }
+.intro strong { font-weight: 700; }
+
+/* ── Section headings ── */
+h2 {
+  font-family: 'Tenor Sans', sans-serif;
+  font-size: 10.5pt;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: #1a2a40;
+  border-bottom: 1px solid #C9A84C;
+  padding-bottom: 4px;
+  margin: 26px 0 12px;
+}
+
+/* ── Body text ── */
+p { margin-bottom: 10px; font-size: 11.5pt; }
+ul, ol { padding-left: 22px; margin-bottom: 12px; }
+li { margin-bottom: 5px; font-size: 11.5pt; }
+
+/* ── Terms table ── */
+.terms-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12px 0 18px;
+  font-size: 11pt;
+}
+.terms-table th {
+  font-family: 'Tenor Sans', sans-serif;
+  font-size: 9pt;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  background: #f5f0e8;
+  color: #1a2a40;
+  padding: 8px 12px;
+  text-align: left;
+  border: 1px solid #ddd6c8;
+}
+.terms-table td {
+  padding: 8px 12px;
+  border: 1px solid #ddd6c8;
+  vertical-align: top;
+}
+.terms-table tr:nth-child(even) td { background: #faf8f4; }
+.terms-table .term-key { font-weight: 700; width: 38%; color: #333; }
+.terms-table .term-val { color: #1a1a1a; }
+.tbl-note { font-size: 9pt; color: #888; font-style: italic; margin-top: -10px; margin-bottom: 14px; }
+
+/* ── Placeholder highlight ── */
+.tbd {
+  background: #fff3cd;
+  border-radius: 3px;
+  padding: 0 4px;
+  font-style: italic;
+  color: #856404;
+}
+
+/* ── Non-binding callout ── */
+.nb-box {
+  border: 1.5px solid #C9A84C;
+  border-radius: 6px;
+  background: #fdf9f0;
+  padding: 14px 18px;
+  margin: 18px 0;
+  font-size: 10.5pt;
+  color: #4a3a10;
+}
+.nb-box strong { font-weight: 700; }
+
+/* ── Signature blocks ── */
+.sig-section { margin-top: 40px; }
+.sig-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  margin-top: 20px;
+}
+.sig-block { }
+.sig-party {
+  font-family: 'Tenor Sans', sans-serif;
+  font-size: 10pt;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: #1a2a40;
+  margin-bottom: 4px;
+}
+.sig-entity-type {
+  font-size: 9.5pt;
+  color: #888;
+  margin-bottom: 24px;
+}
+.sig-line {
+  border-bottom: 1.5px solid #1a1a1a;
+  margin-bottom: 6px;
+  height: 36px;
+}
+.sig-label {
+  font-size: 9.5pt;
+  color: #555;
+  margin-bottom: 14px;
+}
+.sig-field {
+  margin-bottom: 10px;
+}
+.sig-field-label {
+  font-size: 9pt;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.sig-field-line {
+  border-bottom: 1px solid #bbb;
+  margin-top: 3px;
+  height: 24px;
+}
+
+/* ── Footer ── */
+.doc-footer {
+  border-top: 1px solid #ddd6c8;
+  margin-top: 48px;
+  padding-top: 12px;
+  text-align: center;
+  font-size: 8.5pt;
+  color: #aaa;
+  font-family: 'Tenor Sans', sans-serif;
+  letter-spacing: .06em;
+}
+
+/* ── Authority block ── */
+.authority-box {
+  border-top: 1px solid #ddd6c8;
+  margin-top: 28px;
+  padding-top: 16px;
+  font-size: 10pt;
+  color: #555;
+  font-style: italic;
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<div class="no-print">
+  <button class="btn-print" onclick="window.print()">&#128438; Save as PDF</button>
+</div>
+
+<div class="page">
+
+  <!-- Letterhead -->
+  <div class="letterhead">
+    <img src="/genesis-emblem.png" class="lh-emblem" alt="Genesis Reserve">
+    <div class="lh-company">Genesis App, Inc.</div>
+    <div class="lh-dba">Doing Business As Genesis Reserve</div>
+    <div class="lh-sub">A Delaware Corporation &nbsp;·&nbsp; 218 Neely Rd, Fayetteville, GA 30214</div>
+  </div>
+
+  <!-- Title -->
+  <div class="doc-title">
+    <h1>Non-Binding Letter of Intent</h1>
+    <div class="doc-conf">Seed Round — Lead Investment Position</div>
+  </div>
+
+  <!-- Intro -->
+  <div class="intro">
+    <p>This Letter of Intent (this <strong>"LOI"</strong>) is submitted as of <strong>May 30, 2026</strong> (the <strong>"LOI Date"</strong>), by and between:</p>
+
+    <p><strong>Genesis App, Inc.</strong>, a Delaware corporation, doing business as <strong>Genesis Reserve</strong>, with its principal place of business at 218 Neely Rd, Fayetteville, GA 30214 (the <strong>"Company"</strong>); and</p>
+
+    <p><strong>Lesley Harris</strong>, an individual (the <strong>"Investor"</strong> and, together with the Company, the <strong>"Parties"</strong>).</p>
+
+    <p>This LOI sets forth the principal terms and conditions under which the Investor intends to make an investment in the Company as part of the Company's initial seed financing round (the <strong>"Seed Round"</strong>). <em>Except as expressly set forth in Sections 7 (Exclusivity), 8 (Confidentiality), 9 (Governing Law), and 10 (Expenses), this LOI is non-binding and does not create any legal obligation on either Party.</em></p>
+  </div>
+
+  <!-- Non-binding notice -->
+  <div class="nb-box">
+    <strong>Non-Binding Notice.</strong> This Letter of Intent is a statement of intent only. The proposed terms set forth herein are subject to negotiation, due diligence, and execution of definitive agreements. No binding obligation to invest, close, or proceed shall arise until both Parties have executed a definitive SAFE Agreement (as defined herein). The only binding provisions of this LOI are Sections 7, 8, 9, and 10.
+  </div>
+
+  <!-- 1. Background -->
+  <h2>1. Background &amp; Purpose</h2>
+  <p>Genesis Reserve is a digital-native financial infrastructure platform providing members access to on-chain yield, custodial treasury services, and a Smarter Wallet interface designed for responsible wealth accumulation. The Company is a top-performing graduate of its accelerator cohort, graduating June 12, 2026, in Berlin, Germany.</p>
+
+  <p>The Company is raising a <strong>$500,000 Seed Round</strong> via Post-Money Simple Agreements for Future Equity (SAFEs), structured across up to five (5) investor seats. The Investor has agreed to serve as <strong>Lead Investor</strong> and <strong>Lead Advisor</strong> for the Seed Round. This LOI reflects the proposed terms of the Investor's participation.</p>
+
+  <!-- 2. Proposed Investment Terms -->
+  <h2>2. Proposed Investment Terms</h2>
+
+  <table class="terms-table">
+    <thead>
+      <tr>
+        <th class="term-key">Term</th>
+        <th class="term-val">Proposed Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="term-key">Investment Instrument</td>
+        <td class="term-val">Post-Money Simple Agreement for Future Equity (<strong>"SAFE"</strong>), based on Y Combinator Post-Money SAFE standard form</td>
+      </tr>
+      <tr>
+        <td class="term-key">Investment Amount</td>
+        <td class="term-val"><span class="tbd">[INVESTMENT AMOUNT — to be confirmed by Investor prior to LOI execution]</span></td>
+      </tr>
+      <tr>
+        <td class="term-key">Total Seed Round</td>
+        <td class="term-val">$500,000 USD, structured across up to five (5) investor seats</td>
+      </tr>
+      <tr>
+        <td class="term-key">Post-Money Valuation Cap</td>
+        <td class="term-val"><strong>$3,000,000 USD</strong></td>
+      </tr>
+      <tr>
+        <td class="term-key">Series A Conversion Discount</td>
+        <td class="term-val"><strong>20%</strong> discount to the price per share in a Qualified Financing</td>
+      </tr>
+      <tr>
+        <td class="term-key">Qualified Financing Threshold</td>
+        <td class="term-val">Aggregate new capital of not less than $1,000,000 in a single bona fide equity financing round</td>
+      </tr>
+      <tr>
+        <td class="term-key">Most Favored Nation (MFN)</td>
+        <td class="term-val">Yes. If the Company issues any future SAFE with terms more favorable to an investor, the Investor shall have the right to elect to exchange this SAFE for such more favorable instrument.</td>
+      </tr>
+      <tr>
+        <td class="term-key">Pro-Rata Rights</td>
+        <td class="term-val">Yes. The Investor shall have the right, but not the obligation, to participate in the Company's next Qualified Financing up to the Investor's pro-rata share based on ownership at time of conversion.</td>
+      </tr>
+      <tr>
+        <td class="term-key">Use of Proceeds</td>
+        <td class="term-val">As described in the 30-Day Operational Blueprint delivered concurrently with this LOI. Initial deployment: founding team compensation, entity formation, Smarter Wallet product launch, and Berlin graduation representation.</td>
+      </tr>
+      <tr>
+        <td class="term-key">Target Close Date</td>
+        <td class="term-val">On or before <strong>June 15, 2026</strong></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 3. Lead Investor Rights -->
+  <h2>3. Lead Investor Rights &amp; Designations</h2>
+  <p>In recognition of the Investor's role as Lead Investor and Lead Advisor, and subject to execution of the definitive SAFE and a separate Advisor Agreement, the Company agrees to extend the following rights and designations:</p>
+
+  <table class="terms-table">
+    <thead>
+      <tr>
+        <th class="term-key">Right / Designation</th>
+        <th class="term-val">Terms</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="term-key">Lead Investor Designation</td>
+        <td class="term-val">The Investor shall be designated as the Lead Investor for the Seed Round. All other Seed Round investors will be acknowledged as co-investors under the Lead Investor's referral relationship.</td>
+      </tr>
+      <tr>
+        <td class="term-key">Board Observer Seat</td>
+        <td class="term-val">Non-voting board observer seat for the duration of the investment. The Investor shall receive all board meeting notices, agendas, and materials delivered to board members, and shall have the right to attend and participate (but not vote) at all board meetings.</td>
+      </tr>
+      <tr>
+        <td class="term-key">Information Rights</td>
+        <td class="term-val">Quarterly financial statements, product metrics, and investor updates. Annual audited financials (when available). Prompt notice of any material events, regulatory developments, or round activity.</td>
+      </tr>
+      <tr>
+        <td class="term-key">Advisory Equity</td>
+        <td class="term-val"><strong>0.75%</strong> of the Company's fully diluted capitalization, issued pursuant to a separate Advisor Agreement. Vesting schedule: 4-year straight-line vest with a 1-year cliff. Acceleration: single-trigger acceleration upon a Change of Control.</td>
+      </tr>
+      <tr>
+        <td class="term-key">Security Audit Engagement</td>
+        <td class="term-val">The Company engages the Investor to conduct a paid penetration testing and SOC compliance framework engagement, commencing during Weeks 5–7 following Seed Round close. Scope, compensation, and deliverables to be set forth in a separate Statement of Work.</td>
+      </tr>
+      <tr>
+        <td class="term-key">Seat Referral Priority</td>
+        <td class="term-val">The Investor shall have first right to introduce candidates for any remaining Seed Round seats. Any investor introduced by the Investor and admitted to the round will be attributed to the Investor's referral relationship and noted in Company records accordingly.</td>
+      </tr>
+      <tr>
+        <td class="term-key">Lead Investor Designation — Future Rounds</td>
+        <td class="term-val">The Company agrees in good faith to acknowledge the Investor's lead contribution in all future investor materials and communications, and to provide the Investor with advance notice of any Series A process initiation no less than thirty (30) days prior to any public announcement or outreach to new investors.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 4. Conditions -->
+  <h2>4. Conditions to Closing</h2>
+  <p>The closing of the investment contemplated by this LOI is subject to the satisfaction or waiver of the following conditions:</p>
+  <ol type="a">
+    <li>Execution of a definitive Post-Money SAFE Agreement in a form mutually acceptable to the Parties;</li>
+    <li>Execution of a separate Advisor Agreement setting forth advisory equity vesting terms;</li>
+    <li>Completion of entity formation (Wyoming Holdings LLC, Wyoming Statutory Trust, and any related subsidiary entities) to the Company's reasonable satisfaction;</li>
+    <li>Completion of Investor's due diligence review of the Company's data room materials, technical architecture, cap table, and financial projections;</li>
+    <li>Receipt of the Investment Amount by wire transfer to the Company's designated account; and</li>
+    <li>No material adverse change in the Company's business, financial condition, or technology between the LOI Date and the closing date.</li>
+  </ol>
+
+  <!-- 5. Pre-Closing Covenants -->
+  <h2>5. Pre-Closing Covenants</h2>
+  <p>From the LOI Date through the earlier of closing or termination of this LOI, the Company agrees to:</p>
+  <ol type="a">
+    <li>Provide the Investor with access to the Company's full data room, including financial models, technical architecture documentation, cap table, and the 30-Day Operational Blueprint;</li>
+    <li>Promptly respond to any reasonable due diligence requests from the Investor;</li>
+    <li>Notify the Investor of any material adverse change in the Company's business or any new investor discussions; and</li>
+    <li>Not issue any equity, SAFEs, convertible notes, or other securities to any third party without first notifying the Investor, except as otherwise agreed in writing.</li>
+  </ol>
+
+  <!-- 6. No Obligation -->
+  <h2>6. No Obligation to Proceed</h2>
+  <p>Nothing in this LOI obligates either Party to execute any definitive agreement, consummate any investment, or proceed with any transaction described herein. Either Party may terminate this LOI at any time upon written notice to the other Party, subject only to the surviving obligations set forth in Sections 7 through 10.</p>
+
+  <!-- 7. Exclusivity (BINDING) -->
+  <h2>7. Exclusivity <em style="font-style:normal;font-size:9pt;color:#C9A84C;font-family:'Tenor Sans',sans-serif;letter-spacing:.06em;text-transform:uppercase;">[Binding]</em></h2>
+  <p>From the LOI Date through the date that is <strong>thirty (30) days</strong> thereafter (the <strong>"Exclusivity Period"</strong>), the Company agrees not to solicit, negotiate, or accept any investment from any third party in the Seed Round without first providing the Investor with written notice and a <strong>5-business-day</strong> right of first opportunity to match or improve any such proposed terms. This Section 7 is binding upon execution of this LOI.</p>
+
+  <!-- 8. Confidentiality (BINDING) -->
+  <h2>8. Confidentiality <em style="font-style:normal;font-size:9pt;color:#C9A84C;font-family:'Tenor Sans',sans-serif;letter-spacing:.06em;text-transform:uppercase;">[Binding]</em></h2>
+  <p>The existence of this LOI, its terms, and all information disclosed in connection with the transactions contemplated herein are Confidential Information subject to the Mutual Non-Disclosure Agreement between Genesis App, Inc. and Lesley Harris, effective <strong>May 12, 2026</strong> (the <strong>"NDA"</strong>), which is incorporated herein by reference. The Parties' obligations under the NDA shall govern all confidentiality matters and shall survive any termination of this LOI. This Section 8 is binding upon execution of this LOI.</p>
+
+  <!-- 9. Governing Law (BINDING) -->
+  <h2>9. Governing Law <em style="font-style:normal;font-size:9pt;color:#C9A84C;font-family:'Tenor Sans',sans-serif;letter-spacing:.06em;text-transform:uppercase;">[Binding]</em></h2>
+  <p>The binding provisions of this LOI (Sections 7 through 10) shall be governed by and construed in accordance with the laws of the State of <strong>Delaware</strong>, without regard to its conflict of law principles. Any dispute arising out of or relating to the binding provisions of this LOI shall be subject to the exclusive jurisdiction of the state and federal courts located in <strong>New Castle County, Delaware</strong>. This Section 9 is binding upon execution of this LOI.</p>
+
+  <!-- 10. Expenses (BINDING) -->
+  <h2>10. Expenses <em style="font-style:normal;font-size:9pt;color:#C9A84C;font-family:'Tenor Sans',sans-serif;letter-spacing:.06em;text-transform:uppercase;">[Binding]</em></h2>
+  <p>Each Party shall bear its own legal fees, costs, and expenses incurred in connection with the negotiation, preparation, and execution of this LOI and any definitive agreements contemplated herein, unless otherwise agreed in writing. This Section 10 is binding upon execution of this LOI.</p>
+
+  <!-- 11. Expiration -->
+  <h2>11. Expiration</h2>
+  <p>This LOI shall expire and be of no further force or effect if not executed by both Parties on or before <strong>June 10, 2026</strong>, unless extended by mutual written agreement.</p>
+
+  <!-- 12. General -->
+  <h2>12. General</h2>
+  <ul>
+    <li><strong>Entire Understanding.</strong> This LOI, together with the NDA dated May 12, 2026, constitutes the entire understanding of the Parties with respect to the subject matter hereof and supersedes all prior discussions, representations, and agreements relating thereto.</li>
+    <li><strong>Amendments.</strong> No modification of this LOI shall be binding unless made in writing and signed by both Parties.</li>
+    <li><strong>Counterparts; Electronic Signatures.</strong> This LOI may be executed in one or more counterparts. Electronic signatures (including DocuSign, PDF, and digital execution formats) shall be deemed valid and binding to the same extent as original ink signatures.</li>
+    <li><strong>Notices.</strong> Notices shall be delivered by email with confirmation of receipt, overnight courier, or personal delivery to the addresses set forth in the signature block below.</li>
+    <li><strong>No Third-Party Beneficiaries.</strong> This LOI is for the sole benefit of the Parties and their permitted assigns. Nothing herein shall create any rights in any third party.</li>
+  </ul>
+
+  <!-- Signature -->
+  <div class="sig-section">
+    <p style="margin-top:28px;">The Parties have reviewed and acknowledged this Letter of Intent as of the date first written above. By signing below, each Party confirms their intent to proceed toward a definitive SAFE Agreement on the terms set forth herein, subject to the non-binding nature described above.</p>
+
+    <div class="sig-grid">
+      <!-- Company sig -->
+      <div class="sig-block">
+        <div class="sig-party">Genesis App, Inc.</div>
+        <div class="sig-entity-type">A Delaware Corporation<br>Doing Business As Genesis Reserve</div>
+
+        <div class="sig-line"></div>
+        <div class="sig-label">Authorized Signature</div>
+
+        <div class="sig-field">
+          <div class="sig-field-label">Name</div>
+          <div class="sig-field-line"></div>
+        </div>
+        <div class="sig-field">
+          <div class="sig-field-label">Title</div>
+          <div class="sig-field-line" style="margin-top:3px; height:24px; border-bottom:1px solid #bbb; line-height:24px; font-size:10.5pt; color:#333; padding-left:4px;">Founder &amp; Chief Executive Officer</div>
+        </div>
+        <div class="sig-field">
+          <div class="sig-field-label">Date</div>
+          <div class="sig-field-line"></div>
+        </div>
+        <div class="sig-field">
+          <div class="sig-field-label">Notice Email</div>
+          <div class="sig-field-line"></div>
+        </div>
+      </div>
+
+      <!-- Investor sig -->
+      <div class="sig-block">
+        <div class="sig-party">Lesley Harris</div>
+        <div class="sig-entity-type">Individual<br>Lead Investor &amp; Lead Advisor</div>
+
+        <div class="sig-line"></div>
+        <div class="sig-label">Signature</div>
+
+        <div class="sig-field">
+          <div class="sig-field-label">Name</div>
+          <div class="sig-field-line" style="margin-top:3px; height:24px; border-bottom:1px solid #bbb; line-height:24px; font-size:10.5pt; color:#333; padding-left:4px;">Lesley Harris</div>
+        </div>
+        <div class="sig-field">
+          <div class="sig-field-label">Investment Amount</div>
+          <div class="sig-field-line"></div>
+        </div>
+        <div class="sig-field">
+          <div class="sig-field-label">Date</div>
+          <div class="sig-field-line"></div>
+        </div>
+        <div class="sig-field">
+          <div class="sig-field-label">Notice Email</div>
+          <div class="sig-field-line"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="authority-box">
+      Each signatory represents and warrants that: (a) such signatory has read and fully understands this LOI; (b) such signatory has full power and authority to execute this LOI and to legally bind the Party on whose behalf such signatory is signing; and (c) the execution of this LOI does not violate any obligation owed to any third party.
+    </div>
+  </div>
+
+  <div class="doc-footer">
+    Genesis App, Inc. &nbsp;·&nbsp; Delaware C Corporation &nbsp;·&nbsp; Doing Business As Genesis Reserve &nbsp;·&nbsp; Confidential &amp; Proprietary
+  </div>
+
+</div>
+</body>
+</html>
