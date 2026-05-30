@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Genesis Reserve — Investor Deck · Seed 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Tenor+Sans&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --gold:#C9A84C;--gold2:#E8CB6E;--gold-d:#8A6E2A;
+  --gold-dim:rgba(201,168,76,.10);--gold-border:rgba(201,168,76,.22);
+  --teal:#00D4AA;--teal-dim:rgba(0,212,170,.10);--teal-border:rgba(0,212,170,.22);
+  --bg:#06080d;--bg2:#0d1018;--bg3:#141b22;--bg4:#1a2230;
+  --text:#f5f0e8;--sub:rgba(245,240,232,.88);--muted:rgba(245,240,232,.60);
+  --border:rgba(255,255,255,.07);--red:#e84040;
+}
+
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Tenor Sans',sans-serif}
+
+/* ── Deck shell ── */
+.deck{width:100%;height:100%;position:relative;overflow:hidden}
+
+/* ── Slides ── */
+.slide{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;
+  justify-content:center;align-items:center;
+  padding:60px 80px;
+  opacity:0;pointer-events:none;
+  transition:opacity .5s ease, transform .5s ease;
+  transform:translateX(60px);
+  overflow:hidden;
+}
+.slide.active{opacity:1;pointer-events:all;transform:translateX(0)}
+.slide.exit-left{opacity:0;transform:translateX(-60px)}
+
+/* ── Common slide elements ── */
+.slide-eyebrow{
+  font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--gold);margin-bottom:12px;
+}
+.slide-title{
+  font-family:'Cormorant Garamond',serif;font-size:clamp(32px,4.5vw,56px);
+  font-weight:600;line-height:1.1;color:var(--text);text-align:center;margin-bottom:16px;
+}
+.slide-title span{color:var(--gold)}
+.slide-sub{
+  font-family:'Cormorant Garamond',serif;font-size:clamp(15px,1.8vw,20px);
+  color:var(--sub);text-align:center;line-height:1.5;max-width:680px;
+}
+.slide-rule{width:60px;height:2px;background:linear-gradient(90deg,var(--gold),var(--teal));margin:20px auto}
+
+/* ── Watermark emblem ── */
+.slide-emblem{
+  position:absolute;bottom:28px;right:36px;
+  width:32px;height:32px;object-fit:contain;opacity:.25;
+}
+
+/* ── Logo corner ── */
+.slide-logo-corner{
+  position:absolute;top:26px;left:36px;
+  display:flex;align-items:center;gap:10px;
+}
+.slide-logo-corner img{width:26px;height:26px;object-fit:contain;opacity:.7}
+.slide-logo-corner span{
+  font-family:'Tenor Sans',sans-serif;font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);
+}
+
+/* ── Slide number ── */
+.slide-num{
+  position:absolute;bottom:28px;left:36px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  letter-spacing:.1em;color:var(--muted);
+}
+
+/* ── Nav ── */
+.nav{
+  position:fixed;bottom:0;left:0;right:0;
+  display:flex;align-items:center;justify-content:center;
+  gap:10px;padding:18px;z-index:100;
+}
+.nav-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--border);border:1px solid rgba(255,255,255,.15);
+  cursor:pointer;transition:all .3s;
+}
+.nav-dot.active{background:var(--gold);border-color:var(--gold);transform:scale(1.4)}
+.nav-arr{
+  position:fixed;top:50%;transform:translateY(-50%);
+  background:rgba(13,16,24,.6);border:1px solid var(--border);
+  color:var(--muted);width:42px;height:42px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:18px;transition:all .2s;z-index:100;
+  backdrop-filter:blur(6px);
+}
+.nav-arr:hover{border-color:var(--gold);color:var(--gold)}
+.nav-arr.prev{left:18px}
+.nav-arr.next{right:18px}
+.nav-arr.hidden{opacity:0;pointer-events:none}
+
+/* ── Toolbar ── */
+.toolbar{
+  position:fixed;top:18px;right:18px;z-index:200;
+  display:flex;gap:8px;
+}
+.tb-btn{
+  background:rgba(13,16,24,.7);border:1px solid var(--border);
+  color:var(--muted);padding:6px 14px;border-radius:20px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;
+  cursor:pointer;transition:all .2s;backdrop-filter:blur(8px);
+  text-transform:uppercase;
+}
+.tb-btn:hover{border-color:var(--gold);color:var(--gold)}
+
+/* ── Print / PDF ── */
+@media print{
+  html,body{overflow:visible;height:auto}
+  .deck{overflow:visible;height:auto}
+  .slide{
+    position:relative;opacity:1!important;transform:none!important;
+    pointer-events:all;page-break-after:always;
+    height:100vh;min-height:100vh;
+  }
+  .nav,.nav-arr,.toolbar{display:none!important}
+}
+
+/* ══════════════════════════════════
+   SLIDE-SPECIFIC STYLES
+══════════════════════════════════ */
+
+/* S1: Cover */
+.s1{
+  background:linear-gradient(160deg,#06080d 50%,#0c1520 100%);
+  justify-content:center;
+}
+.s1-emblem{width:90px;height:90px;object-fit:contain;margin-bottom:24px;filter:drop-shadow(0 0 28px rgba(201,168,76,.35))}
+.s1-title{
+  font-family:'Cormorant Garamond',serif;font-size:clamp(44px,6vw,72px);
+  font-weight:600;letter-spacing:.04em;color:var(--text);text-align:center;
+  margin-bottom:6px;
+}
+.s1-title span{color:var(--gold)}
+.s1-tagline{
+  font-family:'Cormorant Garamond',serif;font-size:clamp(15px,1.6vw,19px);
+  font-style:italic;color:var(--sub);margin-bottom:32px;text-align:center;
+}
+.s1-pills{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:40px}
+.pill{
+  font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--gold);
+  border:1px solid var(--gold-border);border-radius:20px;
+  padding:5px 14px;background:var(--gold-dim);
+}
+.pill.teal{color:var(--teal);border-color:var(--teal-border);background:var(--teal-dim)}
+.s1-conf{
+  font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--muted);
+}
+.s1-rule{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--gold-border),transparent);margin:20px 0}
+
+/* S2: Problem */
+.problem-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;width:100%;max-width:900px;margin-top:24px}
+.prob-card{
+  background:var(--bg2);border:1px solid var(--border);border-radius:14px;
+  padding:28px 24px;display:flex;flex-direction:column;gap:12px;
+}
+.prob-icon{font-size:28px;margin-bottom:4px}
+.prob-label{
+  font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--gold);
+}
+.prob-head{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--text);line-height:1.2}
+.prob-body{font-family:'Cormorant Garamond',serif;font-size:14px;color:var(--sub);line-height:1.5}
+.prob-stat{
+  font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--red);
+  border-top:1px solid var(--border);padding-top:10px;margin-top:auto;
+}
+
+/* S3: Solution */
+.sol-flow{display:flex;align-items:center;gap:0;width:100%;max-width:860px;margin-top:28px}
+.sol-node{
+  flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:12px;
+  padding:20px 16px;text-align:center;
+}
+.sol-node.gold-border{border-color:var(--gold-border);background:var(--gold-dim)}
+.sol-node.teal-border{border-color:var(--teal-border);background:var(--teal-dim)}
+.sol-node-icon{font-size:24px;margin-bottom:8px}
+.sol-node-label{
+  font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:4px;
+}
+.sol-node-name{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;color:var(--text)}
+.sol-node-desc{font-family:'Cormorant Garamond',serif;font-size:13px;color:var(--sub);margin-top:6px;line-height:1.4}
+.sol-arrow{font-size:20px;color:var(--gold);padding:0 10px;flex-shrink:0}
+
+/* S4: Product — Smarter Wallet */
+.product-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;width:100%;max-width:860px;margin-top:20px}
+.feat-card{
+  background:var(--bg2);border:1px solid var(--border);border-radius:12px;
+  padding:22px 22px;
+}
+.feat-label{
+  font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--teal);margin-bottom:8px;
+}
+.feat-head{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:600;color:var(--text);margin-bottom:6px}
+.feat-body{font-family:'Cormorant Garamond',serif;font-size:13.5px;color:var(--sub);line-height:1.5}
+
+/* S5: YFLPP */
+.yflpp-wrap{display:grid;grid-template-columns:1fr 1fr;gap:28px;width:100%;max-width:900px;margin-top:20px;align-items:start}
+.yflpp-left{}
+.yflpp-flow{display:flex;flex-direction:column;gap:0;margin-top:16px}
+.yf-step{
+  display:flex;align-items:flex-start;gap:14px;
+  padding:14px 18px;background:var(--bg2);border:1px solid var(--border);
+}
+.yf-step:first-child{border-radius:10px 10px 0 0}
+.yf-step:last-child{border-radius:0 0 10px 10px}
+.yf-step+.yf-step{border-top:none}
+.yf-num{
+  font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--teal);
+  background:var(--teal-dim);border:1px solid var(--teal-border);
+  border-radius:50%;width:24px;height:24px;display:flex;align-items:center;
+  justify-content:center;flex-shrink:0;font-weight:600;margin-top:2px;
+}
+.yf-body{}
+.yf-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:2px}
+.yf-text{font-family:'Cormorant Garamond',serif;font-size:14px;color:var(--sub);line-height:1.4}
+.yflpp-right{}
+.yflpp-callout{
+  background:linear-gradient(135deg,rgba(0,212,170,.08),rgba(201,168,76,.06));
+  border:1px solid var(--teal-border);border-radius:12px;
+  padding:22px 22px;margin-bottom:16px;
+}
+.yflpp-callout-label{
+  font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--teal);margin-bottom:10px;
+}
+.yflpp-callout-text{
+  font-family:'Cormorant Garamond',serif;font-size:15px;color:var(--text);line-height:1.5;
+}
+.yflpp-callout-text strong{color:var(--gold)}
+.products-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.prod-chip{
+  background:var(--bg3);border:1px solid var(--border);border-radius:8px;
+  padding:10px 10px;text-align:center;
+}
+.prod-chip-name{font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:600;color:var(--text)}
+.prod-chip-sub{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+.prod-chip.anchor .prod-chip-name{color:var(--gold)}
+.prod-chip.anchor{border-color:var(--gold-border)}
+
+/* S6: Market */
+.market-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;width:100%;max-width:860px;margin-top:24px}
+.mkt-card{
+  background:var(--bg2);border:1px solid var(--border);border-radius:12px;
+  padding:24px 20px;text-align:center;
+}
+.mkt-card.gold{border-color:var(--gold-border)}
+.mkt-num{
+  font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:600;
+  color:var(--gold);line-height:1;margin-bottom:4px;
+}
+.mkt-card.gold .mkt-num{font-size:50px}
+.mkt-label{
+  font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:8px;
+}
+.mkt-desc{font-family:'Cormorant Garamond',serif;font-size:13px;color:var(--sub);line-height:1.4}
+.market-note{
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;
+  color:var(--muted);text-align:center;margin-top:18px;max-width:700px;
+}
+
+/* S7: Competitive Validation */
+.comp-val-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;width:100%;max-width:940px;margin-top:22px}
+.cv-card{
+  background:var(--bg2);border:1px solid var(--border);border-radius:10px;
+  padding:16px 14px;
+}
+.cv-company{
+  font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:700;
+  color:var(--text);margin-bottom:4px;
+}
+.cv-raise{
+  font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gold);
+  margin-bottom:8px;
+}
+.cv-what{font-family:'Cormorant Garamond',serif;font-size:12.5px;color:var(--sub);line-height:1.4;margin-bottom:8px}
+.cv-lesson{
+  font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.08em;
+  color:var(--teal);border-top:1px solid var(--border);padding-top:7px;margin-top:auto;
+  line-height:1.4;
+}
+.comp-val-thesis{
+  margin-top:18px;max-width:900px;text-align:center;
+  font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--sub);line-height:1.5;
+}
+.comp-val-thesis strong{color:var(--text)}
+
+/* S8: White Space */
+.ws-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;width:100%;max-width:860px;margin-top:22px}
+.ws-col{}
+.ws-col-head{
+  font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.18em;
+  text-transform:uppercase;margin-bottom:12px;
+}
+.ws-col-head.red{color:var(--red)}
+.ws-col-head.teal{color:var(--teal)}
+.ws-item{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:10px 14px;border-radius:8px;margin-bottom:8px;
+}
+.ws-item.has{background:rgba(0,212,170,.06);border:1px solid var(--teal-border)}
+.ws-item.missing{background:rgba(232,64,64,.06);border:1px solid rgba(232,64,64,.18)}
+.ws-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+.ws-text{font-family:'Cormorant Garamond',serif;font-size:14px;color:var(--sub);line-height:1.4}
+.ws-text strong{color:var(--text)}
+.ws-callout{
+  margin-top:22px;max-width:860px;width:100%;
+  background:linear-gradient(135deg,rgba(201,168,76,.08),rgba(0,212,170,.05));
+  border:1px solid var(--gold-border);border-radius:12px;
+  padding:20px 24px;text-align:center;
+}
+.ws-callout-text{
+  font-family:'Cormorant Garamond',serif;font-size:18px;font-style:italic;
+  color:var(--text);line-height:1.5;
+}
+.ws-callout-text strong{color:var(--gold);font-style:normal}
+
+/* S9: Competitive Map */
+.cmap-table{width:100%;max-width:920px;border-collapse:collapse;margin-top:20px;font-size:12.5px}
+.cmap-table th{
+  font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);
+  padding:8px 12px;border-bottom:1px solid var(--border);text-align:left;
+}
+.cmap-table td{
+  padding:9px 12px;border-bottom:1px solid var(--border);
+  font-family:'Cormorant Garamond',serif;color:var(--sub);vertical-align:top;line-height:1.35;
+}
+.cmap-table .co-name{font-weight:700;color:var(--text)}
+.cmap-table .gr-row td{background:linear-gradient(90deg,rgba(201,168,76,.08),transparent);border-bottom:none;border-top:1px solid var(--gold-border)}
+.cmap-table .gr-row .co-name{color:var(--gold);font-size:14px}
+.cmap-table .gr-row td{color:var(--text)}
+.check{color:var(--teal);font-weight:700}
+.cross{color:var(--muted)}
+
+/* S10: GTM */
+.gtm-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;width:100%;max-width:860px;margin-top:20px}
+.gtm-card{
+  background:var(--bg2);border:1px solid var(--border);border-radius:12px;
+  padding:22px 22px;
+}
+.gtm-label{
+  font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--gold);margin-bottom:10px;
+}
+.gtm-head{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--text);margin-bottom:8px}
+.gtm-list{list-style:none;display:flex;flex-direction:column;gap:6px}
+.gtm-list li{
+  font-family:'Cormorant Garamond',serif;font-size:14px;color:var(--sub);
+  padding-left:14px;position:relative;line-height:1.4;
+}
+.gtm-list li::before{content:'→';position:absolute;left:0;color:var(--teal);font-size:12px}
+
+/* S11: Entity */
+.entity-stack{display:flex;flex-direction:column;align-items:center;gap:0;width:100%;max-width:640px;margin-top:20px}
+.ent-node{
+  width:100%;background:var(--bg2);border:1px solid var(--border);
+  border-radius:10px;padding:16px 22px;text-align:center;
+}
+.ent-node.top{border-color:var(--gold-border);background:var(--gold-dim)}
+.ent-node.future{opacity:.55;border-style:dashed}
+.ent-name{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:700;color:var(--text)}
+.ent-type{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-top:2px}
+.ent-desc{font-family:'Cormorant Garamond',serif;font-size:12.5px;color:var(--sub);margin-top:5px;line-height:1.4}
+.ent-branch{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%}
+.ent-connector{width:2px;height:18px;background:var(--gold-border);margin:0 auto}
+.ent-connector-h{display:flex;align-items:flex-start;justify-content:center;gap:0;width:100%;position:relative}
+.ent-connector-h::before{
+  content:'';position:absolute;top:0;left:calc(25% + 6px);right:calc(25% + 6px);
+  height:1px;background:var(--gold-border);top:18px;
+}
+.ent-sub-conn{width:1px;height:18px;background:var(--gold-border);margin:0 auto}
+
+/* S12: Team */
+.team-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;width:100%;max-width:960px;margin-top:22px}
+.team-card{
+  background:var(--bg2);border:1px solid var(--border);border-radius:12px;
+  padding:18px 14px;text-align:center;
+}
+.team-card.advisor{border-color:var(--teal-border)}
+.team-avatar{
+  width:52px;height:52px;border-radius:50%;
+  background:var(--bg3);border:2px solid var(--gold-border);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 10px;font-size:20px;
+}
+.team-card.advisor .team-avatar{border-color:var(--teal-border)}
+.team-name{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:700;color:var(--text);margin-bottom:2px}
+.team-title{font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.team-card.advisor .team-title{color:var(--teal)}
+.team-creds{font-family:'Cormorant Garamond',serif;font-size:12px;color:var(--sub);line-height:1.4}
+
+/* S13: Traction & Milestones */
+.roadmap{display:flex;flex-direction:column;gap:10px;width:100%;max-width:820px;margin-top:20px}
+.rm-item{
+  display:grid;grid-template-columns:140px 1fr;gap:18px;align-items:center;
+  background:var(--bg2);border:1px solid var(--border);border-radius:10px;
+  padding:14px 20px;
+}
+.rm-item.done{border-color:var(--teal-border)}
+.rm-item.active-now{border-color:var(--gold-border);background:var(--gold-dim)}
+.rm-date{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase}
+.rm-item.done .rm-date{color:var(--teal)}
+.rm-item.active-now .rm-date{color:var(--gold)}
+.rm-item .rm-date{color:var(--muted)}
+.rm-body{}
+.rm-title{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;color:var(--text);margin-bottom:2px}
+.rm-desc{font-family:'Cormorant Garamond',serif;font-size:13px;color:var(--sub);line-height:1.4}
+.rm-check{color:var(--teal);margin-right:4px}
+
+/* S14: Financials / Model */
+.rev-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;width:100%;max-width:860px;margin-top:20px}
+.rev-card{
+  background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px 18px;
+}
+.rev-stream{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.rev-name{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:var(--text);margin-bottom:6px}
+.rev-desc{font-family:'Cormorant Garamond',serif;font-size:13px;color:var(--sub);line-height:1.4;margin-bottom:10px}
+.rev-model{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--teal);border-top:1px solid var(--border);padding-top:8px}
+.proj-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;width:100%;max-width:860px;margin-top:14px}
+.proj-card{
+  background:var(--bg3);border:1px solid var(--border);border-radius:10px;
+  padding:16px 18px;text-align:center;
+}
+.proj-year{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.proj-rev{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:600;color:var(--gold)}
+.proj-label{font-family:'Cormorant Garamond',serif;font-size:12px;color:var(--sub);margin-top:4px}
+
+/* S15: The Ask */
+.ask-center{display:flex;flex-direction:column;align-items:center;gap:24px;width:100%;max-width:820px;margin-top:16px}
+.ask-main{
+  background:linear-gradient(135deg,rgba(201,168,76,.10),rgba(0,212,170,.05));
+  border:1px solid var(--gold-border);border-radius:16px;
+  padding:32px 40px;text-align:center;width:100%;
+}
+.ask-amount{
+  font-family:'Cormorant Garamond',serif;font-size:clamp(44px,6vw,72px);
+  font-weight:700;color:var(--gold);line-height:1;margin-bottom:4px;
+}
+.ask-label-main{
+  font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:20px;
+}
+.ask-terms-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+.ask-term{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-align:center}
+.ask-term-key{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.ask-term-val{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;color:var(--text)}
+.ask-seats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;width:100%}
+.seat{
+  background:var(--bg2);border:2px solid var(--border);border-radius:10px;
+  padding:14px 10px;text-align:center;
+}
+.seat.filled{border-color:var(--teal-border);background:rgba(0,212,170,.06)}
+.seat.lead{border-color:var(--gold-border);background:rgba(201,168,76,.08)}
+.seat-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.seat.filled .seat-label{color:var(--teal)}
+.seat.lead .seat-label{color:var(--gold)}
+.seat-name{font-family:'Cormorant Garamond',serif;font-size:14px;font-weight:600;color:var(--sub)}
+.seat.filled .seat-name,.seat.lead .seat-name{color:var(--text)}
+.seat-amt{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-top:3px}
+
+/* S16: Close */
+.s16{background:linear-gradient(160deg,#06080d 50%,#0c1520 100%)}
+.close-emblem{width:80px;height:80px;object-fit:contain;margin-bottom:20px;filter:drop-shadow(0 0 24px rgba(201,168,76,.3))}
+.close-title{
+  font-family:'Cormorant Garamond',serif;font-size:clamp(28px,4vw,48px);
+  font-weight:600;color:var(--text);text-align:center;margin-bottom:10px;line-height:1.2;
+}
+.close-title span{color:var(--gold)}
+.close-sub{
+  font-family:'Cormorant Garamond',serif;font-size:clamp(14px,1.6vw,18px);
+  font-style:italic;color:var(--sub);text-align:center;max-width:600px;margin-bottom:30px;line-height:1.6;
+}
+.close-contacts{display:flex;flex-direction:column;gap:8px;align-items:center}
+.close-contact-row{
+  display:flex;align-items:center;gap:12px;
+  font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.06em;color:var(--muted);
+}
+.close-contact-row span.hi{color:var(--text)}
+.close-dot{width:3px;height:3px;border-radius:50%;background:var(--gold)}
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <button class="tb-btn" onclick="window.print()">&#128438; PDF</button>
+  <button class="tb-btn" id="fsBtn" onclick="toggleFullscreen()">&#9974; Fullscreen</button>
+</div>
+
+<div class="deck" id="deck">
+
+  <!-- ══ S1: COVER ══ -->
+  <div class="slide s1 active" data-slide="1">
+    <img src="/genesis-emblem.png" class="s1-emblem" alt="Genesis Reserve">
+    <div class="s1-title">Genesis <span>Reserve</span></div>
+    <div class="s1-tagline">Yield-Powered. Trust-Structured. Community-First.</div>
+    <div class="s1-rule"></div>
+    <div class="s1-pills">
+      <div class="pill">Seed Round 2026</div>
+      <div class="pill">$500,000</div>
+      <div class="pill teal">Post-Money SAFE</div>
+      <div class="pill">$3M Valuation Cap</div>
+      <div class="pill teal">Berlin Accelerator · Top Cohort</div>
+    </div>
+    <div class="s1-conf">Confidential · For Accredited Investors Only</div>
+    <div class="slide-num">01 / 16</div>
+  </div>
+
+  <!-- ══ S2: THE PROBLEM ══ -->
+  <div class="slide" data-slide="2">
+    <div class="slide-logo-corner"><img src="/genesis-emblem.png" alt="GR"><span>Genesis Reserve</span></div>
+    <div class="slide-eyebrow">The Problem</div>
+    <div class="slide-title">Three broken systems.<br><span>One community paying the price.</span></div>
+    <div class="problem-grid">
+      <div class="prob-card">
+        <div class="prob-icon">🏦</div>
+        <div class="prob-label">Yield Inequality</div>
+        <div class="prob-head">The yield stays on Wall Street</div>
+        <div class="prob-body">Institutional investors earn 4–8% on idle capital. Retail depositors earn 0.01%–0.5% at the same banks. The infrastructure to access real yield has never been designed for everyday people.</div>
+        <div class="prob-stat">↑ $27T in US retail savings — earning near zero</div>
+      </div>
+      <div class="prob-card">
+        <div class="prob-icon">🛡️</div>
+        <div class="prob-label">Insurance Gap</div>
+        <div class="prob-head">Life insurance is out of reach</div>
+        <div class="prob-body">40% of American households have no life insurance. The barriers are cost, complexity, and distrust — not lack of desire. Communities that need protection most are systematically excluded from it.</div>
+        <div class="prob-stat">↑ $25T in unmet life insurance need in the US</div>
+      </div>
+      <div class="prob-card">
+        <div class="prob-icon">⛓️</div>
+        <div class="prob-label">Trust Deficit</div>
+        <div class="prob-head">Web3 has the tools. Not the trust.</div>
+        <div class="prob-body">DeFi protocols generate real yield. But the complexity, risk, and cultural distance from underserved communities means those who need it most have the least access to it.</div>
+        <div class="prob-stat">↑ &lt;3% of underserved households use DeFi products</div>
+      </div>
+    </div>
+    <div class="slide-num">02 / 16</div>
+    <img src="/genesis-emblem.png" class="slide-emblem" alt="">
+  </div>
+
+  <!-- ══ S3: THE SOLUTION ══ -->
+  <div class="slide" data-slide="3">
+    <div class="slide-logo-corner"><img src="/genesis-emblem.png" alt="GR"><span>Genesis Reserve</span></div>
+    <div class="slide-eyebrow">The Solution</div>
+    <div class="slide-title">One platform.<br><span>Three problems solved simultaneously.</span></div>
+    <div class="sol-flow">
+      <div class="sol-node">
+        <div class="sol-node-icon">💵</div>
+        <div class="sol-node-label">Step 1</div>
+        <div class="sol-node-name">Member Deposits</div>
+        <div class="sol-node-desc">Members deposit into the Genesis Reserve Smarter Wallet. Funds held in Wyoming Statutory Trust — member-custodied.</div>
+      </div>
+      <div class="sol-arrow">→</div>
+      <div class="sol-node gold-border">
+        <div class="sol-node-icon">⚡</div>
+        <div class="sol-node-label">Step 2</div>
+        <div class="sol-node-name">Yield Protocol</div>
+        <div class="sol-node-desc">On-chain yield strategies generate 4–8% annually on member capital. Yield accrues in real time.</div>
+      </div>
+      <div class="sol-arrow">→</div>
+      <div class="sol-node teal-border">
+        <div class="sol-node-icon">🛡️</div>
+        <div class="sol-node-label">Step 3 — YFLPP</div>
+        <div class="sol-node-name">Insurance Funded</div>
+        <div class="sol-node-desc">Yield slice automatically funds life insurance premiums. Members get coverage — no out-of-pocket cost.</div>
+      </div>
+      <div class="sol-arrow">→</div>
+      <div class="sol-node">
+        <div class="sol-node-icon">🌱</div>
+        <div class="sol-node-label">Outcome</div>
+        <div class="sol-node-name">Wealth + Protection</div>
+        <div class="sol-node-desc">Members build real yield-earning wealth and carry life insurance — simultaneously. A category that did not exist.</div>
+      </div>
+    </div>
+    <div class="slide-num">03 / 16</div>
+    <img src="/genesis-emblem.png" class="slide-emblem" alt="">
+  </div>
+
+  <!-- ══ S4: THE PRODUCT ══ -->
+  <div class="slide" data-slide="4">
+    <div class="slide-logo-corner"><img src="/genesis-emblem.png" alt="GR"><span>Genesis Reserve</span></div>
+    <div class="slide-eyebrow">The Product</div>
+    <div class="slide-title">Genesis Reserve <span>Smarter Wallet</span></div>
+    <div class="product-grid">
+      <div class="feat-card">
+        <div class="feat-label">Core Infrastructure</div>
+        <div class="feat-head">On-Chain Yield Engine</div>
+        <div class="feat-body">Smart contract-based yield strategies deliver institutional-grade returns on member deposits. Real-time accrual. Non-custodial trust layer via Wyoming Statutory Trust structure. Members own their positions — Genesis Reserve is the infrastructure, not the custodian.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-label">Member Interface</div>
+        <div class="feat-head">Smarter Wallet Dashboard</div>
+        <div class="feat-body">A clean, consumer-grade interface showing live yield, deposit balance, insurance coverage status, and YFLPP allocation. Designed for members who have never touched crypto — not for traders. The complexity is hidden. The benefit is visible.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-label">Yield Funded Legacy Protection Program</div>
+        <div class="feat-head">YFLPP — The Moat</div>
+        <div class="feat-body">Members allocate a portion of their yield to fund life insurance premiums. Two entry paths: connect an existing policy, or apply for new coverage through the Genesis Reserve insurance shelf. No premium out of pocket when yield covers the cost.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-label">Agent &amp; Partner Layer</div>
+        <div class="feat-head">Licensed Agent Portal</div>
+        <div class="feat-body">Licensed insurance agents register through the Genesis Reserve agent portal. NPN verification via NIPR API. Agents manage client yield-funding configurations, new policy issuance, and commission pipelines — all through one dashboard. IMO partnership path to market in 30–60 days.</div>
+      </div>
+    </div>
+    <div class="slide-num">04 / 16</div>
+    <img src="/genesis-emblem.png" class="slide-emblem" alt="">
+  </div>
+
+  <!-- ══ S5: YFLPP DEEP DIVE ══ -->
+  <div class="slide" data-slide="5">
+    <div class="slide-logo-corner"><img src="/genesis-emblem.png" alt="GR"><span>Genesis Reserve</span></div>
+    <div class="slide-eyebrow">The Moat</div>
+    <div class="slide-title">YFLPP — <span>A category that does not exist.</span></div>
+    <div class="yflpp-wrap">
+      <div class="yflpp-left">
+        <div class="slide-eyebrow" style="text-align:left;margin-bottom:8px">How It Works</div>
+        <div class="yflpp-flow">
+          <div class="yf-step">
+            <div class="yf-num">1</div>
+            <div class="yf-body">
+              <div class="yf-label">Deposit</div>
+              <div class="yf-text">Member deposits into Smarter Wallet. Capital is held in Wyoming Statutory Trust structure.</div>
+            </div>
+          </div>
+          <div class="yf-step">
+            <div class="yf-num">2</div>
+            <div class="yf-body">
+              <div class="yf-label">Yield Accrues</div>
+              <div class="yf-text">On-chain yield strategies generate returns. Member configures what percentage routes to YFLPP.</div>
+            </div>
+          </div>
+          <div class="yf-step">
+            <div class="yf-num">3</div>
+            <div class="yf-body">
+              <div class="yf-label">Premium Funded</div>
+              <div class="yf-text">Yield slice automatically pays life insurance premium. Carrier receives payment. Member remains covered.</div>
+            </div>
+          </div>
+          <div class="yf-step">
+            <div class="yf-num">4</div>
+            <div class="yf-body">
+              <div class="yf-label">Member Outcome</div>
+              <div class="yf-text">Growing deposit balance + active life insurance coverage. Both funded from a single deposit. Zero additional out-of-pocket cost.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="yflpp-right">
+        <div class="yflpp-callout">
+          <div class="yflpp-callout-label">The Pegasus Thesis</div>
+          <div class="yflpp-callout-text">YFLPP crosses <strong>DeFi yield infrastructure</strong> with <strong>traditional insurance rails</strong> for <strong>underserved communities</strong> — three industries simultaneously. <strong>No company on earth is doing this.</strong></div>
+        </div>
+        <div class="slide-eyebrow" style="text-align:left;margin-bottom:10px">Insurance Product Shelf</div>
+        <div class="products-grid">
+          <div class="prod-chip anchor">
+            <div class="prod-chip-name">IUL</div>
+            <div class="prod-chip-sub">Anchor Product</div>
+          </div>
+          <div class="prod-chip">
+            <div class="prod-chip-name">Final Expense</div>
+            <div class="prod-chip-sub">Entry Ramp</div>
+          </div>
+          <div class="prod-chip">
+            <div class="prod-chip-name">Term Life</div>
+            <div class="prod-chip-sub">Volume Play</div>
+          </div>
+        </div>
+        <div style="margin-top:14px">
+          <div class="slide-eyebrow" style="text-align:left;margin-bottom:8px">Two Member Entry Paths</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:13.5px;color:var(--sub);line-height:1.6">
+            <strong style="color:var(--text)">Existing policy</strong> — Enter policy number + carrier + agent NPN. Yield routes to service premium immediately.<br><br>
+            <strong style="color:var(--text)">New policy</strong> — Apply through Genesis Reserve insurance shelf. Agent issues policy. Yield funding configured at issuance.
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-num">05 / 16</div>
+    <img src="/genesis-emblem.png" class="slide-emblem" alt="">
+  </div>
+
+  <!-- ══ S6: MARKET ══ -->
+  <div class="slide" data-slide="6">
+    <div class="slide-logo-corner"><img src="/genesis-emblem.png" alt="GR"><span>Genesis Reserve</span></div>
+    <div class="slide-eyebrow">Market Opportunity</div>
+    <div class="slide-title">Three markets. <span>One intersection nobody owns.</span></div>
+    <div class="market-grid">
+      <div class="mkt-card">
+        <div class="mkt-num">$27T</div>
+        <div class="mkt-label">US Retail Savings &amp; Deposits</div>
+        <div class="mkt-desc">Capital sitting in savings accounts earning near-zero returns. Every dollar is a potential Smarter Wallet conversion.</div>
+      </div>
+      <div class="mkt-card gold">
+        <div class="mkt-num">$25T</div>
+        <div class="mkt-label">Unmet Life Insurance Need (US)</div>
+        <div class="mkt-desc">LIMRA estimates $25T in unmet life insurance need. 40% of households carry zero coverage. YFLPP is the first product to solve cost as the primary barrier.</div>
+      </div>
+      <div class="mkt-card">
+        <div class="mkt-num">$890B</div>
+        <div class="mkt-label">Underserved Community Financial Services</div>
+        <div class="mkt-desc">The market gap for Black, Hispanic, and underbanked households across savings, insurance, and investment products. Redemption network is our distribution into this market.</div>
+      </div>
+    </div>
+    <div class="market-note">Genesis Reserve does not need to capture 1% of any one of these markets to reach unicorn scale. At the intersection of all three, capturing a fraction of each is a billion-dollar business.</div>
+    <div class="slide-num">06 / 16</div>
+    <img src="/genesis-emblem.png" class="slide-emblem" alt="">
+  </div>
+
+  <!-- ══ S7: COMPETITIVE VALIDATION ══ -->
+  <div class="slide" data-slide="7">
+    <div class="slide-logo-corner"><img src="/genesis-emblem.png" alt="GR"><span>Genesis Reserve</span></div>
+    <div class="slide-eyebrow">Category Validation</div>
+    <div class="slide-title">Web3 financial infrastructure <span>raised $100M+</span> in 2025–2026.</div>
+    <div class="comp-val-grid">
+      <div class="cv-card">
+        <div class="cv-company">Slash</div>
+        <div class="cv-raise">$100M Series C · $1.4B</div>
+        <div class="cv-what">Business banking with stablecoin rails. $250M+ annualized revenue. $1B+ stablecoin payment volume.</div>
+        <div class="cv-lesson">Lesson: Institutional stablecoin adoption is real and fundable at scale</div>
+      </div>
+      <div class="cv-card">
+        <div class="cv-company">Rain</div>
+        <div class="cv-raise">$250M Series C · $1.95B</div>
+        <div class="cv-what">Stablecoin payment infrastructure. 30x active card growth. 38x annualized payment volume.</div>
+        <div class="cv-lesson">Lesson: Volume velocity justifies premium valuations — investors pay for growth rate, not current revenue</div>
+      </div>
+      <div class="cv-card">
+        <div class="cv-company">Phantom</div>
+        <div class="cv-raise">$150M Series C · $3B</div>
+        <div class="cv-what">Crypto wallet expanding into consumer finance — cards, savings, yield. 7M+ users at wallet launch.</div>
+        <div class="cv-lesson">Lesson: Wallet-first → consumer finance expansion is the proven playbook</div>
+      </div>
+      <div class="cv-card">
+        <div class="cv-company">ZeroHash</div>
+        <div class="cv-raise">$104M Series D · $1B</div>
+        <div class="cv-what">White-label crypto + stablecoin compliance infrastructure for financial institutions.</div>
+        <div class="cv-lesson">Lesson: Compliance infrastructure for regulated markets is a durable, compounding business</div>
+      </div>
+      <div class="cv-card">
+        <div class="cv-company">OpenFX</div>
+        <div class="cv-raise">$94M Series A · $500M</div>
+        <div class="cv-what">Cross-border stablecoin payments. $45B annualized volume. 98%+ settled in &lt;60 minutes.</div>
+        <div class="cv-lesson">Lesson: Pick a painful legacy process and replace it with a stablecoin rail</div>
+      </div>
+      <div class="cv-card">
+        <div class="cv-company">Basis</div>
+        <div class="cv-raise">$100M Series B · $1.15B</div>
+        <div class="cv-what">Agentic AI for accounting firms. Automating financial professional workflows.</div>
+        <div class="cv-lesson">Lesson: AI + financial infrastructure wins regardless of blockchain — the category is the opportunity</div>
+      </div>
+      <div class="cv-card">
+        <div class="cv-company">Parallel</div>
+        <div class="cv-raise">$200M · $2B (6 months)</div>
+        <div class="cv-what">AI agent infrastructure. Doubled from $740M to $2B valuation in 6 months.</div>
+        <div class="cv-lesson">Lesson: Infrastructure layer bets earn infrastructure-layer multiples — position as rails, not apps</div>
+      </div>
+      <div class="cv-card">
+        <div class="cv-company">Tempo</div>
+        <div class="cv-raise">$500M Series A · $5B</div>
+        <div class="cv-what">Stablecoin payments blockchain. Incubated by Stripe + Paradigm. Pre-launch $5B valuation.</div>
+        <div class="cv-lesson">Lesson: Strategic backing from a payment incumbent signals market capture, not just a startup bet</div>
+      </div>
+    </div>
+    <div class="slide-num">07 / 16</div>
+    <img src="/genesis-emblem.png" class="slide-emblem" alt="">
+  </div>
+
+  <!-- ══ S8: THE WHITE SPACE ══ -->
+  <div class="slide" data-slide="8">
+    <div class="slide-logo-corner"><img src="/genesis-emblem.png" alt="GR"><span>Genesis Reserve</span></div>
+    <div class="slide-eyebrow">Competitive Positioning</div>
+    <div class="slide-title">Every company on that list <span>missed this lane.</span></div>
+    <div class="ws-grid">
+      <div class="ws-col">
+        <div class="ws-col-head red">What the $100M+ companies do NOT have</div>
+        <div class="ws-item missing">
+          <div class="ws-icon">✗</div>
+          <div class="ws-text"><strong>No yield-to-insurance bridge.</strong> Rain, Slash, ZeroHash, OpenFX — all move money. None of them grow it and protect the member simultaneously.</div>
+        </div>
+        <div class="ws-item missing">
+          <div class="ws-icon">✗</div>
+          <div class="ws-text"><strong>No underserved community strategy.</strong> Phantom has 7M users. Zero of their marketing targets Black or Hispanic households systematically.</div>
+        </div>
+        <div class="ws-item missing">
+          <div class="ws-icon">✗</div>
+          <div class="ws-text"><strong>No insurance infrastructure play.</strong> Not one company on the list has a licensed insurance distribution layer. YFLPP requires an IMO/FMO — a moat none of them can replicate quickly.</div>
+        </div>
+        <div class="ws-item missing">
+          <div class="ws-icon">✗</div>
+          <div class="ws-text"><strong>No community anchor distribution.</strong> The Redemption network — Bernice King (board), Ashley Bell (CEO) — is not a growth hack. It is a pre-built, high-trust pipeline none of these companies have access to.</div>
+        </div>
+      </div>
+      <div class="ws-col">
+        <div class="ws-col-head teal">What Genesis Reserve has that they don't</div>
+        <div class="ws-item has">
+          <div class="ws-icon">✓</div>
+          <div class="ws-text"><strong>YFLPP.</strong> Yield funds insurance premiums. Members carry life insurance without paying a premium out of pocket. A product category that doesn't exist anywhere else on earth.</div>
+        </div>
+        <div class="ws-item has">
+          <div class="ws-icon">✓</div>
+          <div class="ws-text"><strong>Wyoming Statutory Trust structure.</strong> Member-custodied capital. Not held by Genesis Reserve. A trust and compliance layer that signals institutional-grade protection to members who have been burned by financial institutions.</div>
+        </div>
+        <div class="ws-item has">
+          <div class="ws-icon">✓</div>
+          <div class="ws-text"><strong>Redemption network pipeline.</strong> Direct path to an existing, underserved, community-anchored user base that Phantom spent hundreds of millions in marketing to try to reach.</div>
+        </div>
+        <div class="ws-item has">
+          <div class="ws-icon">✓</div>
+          <div class="ws-text"><strong>Insurance shelf + agent portal.</strong> YFLPP requires licensed agents and carrier relationships. This creates a regulated distribution moat that a payment infrastructure company cannot replicate without a multi-year licensing effort.</div>
+        </div>
+      </div>
+    </div>
+    <div class="ws-callout">
+      <div class="ws-callout-text">Phantom proved the wallet-to-consumer-finance playbook works. Genesis Reserve runs that same playbook — in a market Phantom will never touch, with a product Phantom cannot build, backed by a community network Phantom cannot buy.</div>
+    </div>
+    <div class="slide-num">08 / 16</div>
+    <img src="/genesis-emblem.png" class="slide-emblem" alt="">
+  </div>
+
+  <!-- ══ S9: COMPETITIVE MAP ══ -->
+  <div class="slide" data-slide="9">
+    <div class="slide-logo-corner"><img src="/genesis-emblem.png" alt="GR"><span>Genesis Reserve</span></div>
+    <div class="slide-eyebrow">Competitive Landscape</div>
+    <div class="slide-title">Genesis Reserve's <span>unique position</span> in the market.</div>
+    <table class="cmap-table">
+      <thead>
+        <tr>
+          <th>Company</th>
+          <th>Yield to Members</th>
+          <th>Insurance Integration</th>
+          <th>Community Focus</th>
+          <th>Member-Custodied Trust</th>
+          <th>Agent Distribution</th>
+          <th>Underserved Market</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="co-name">Phantom</td>
+          <td><span class="check">✓</span> Partial</td>
+          <td><span class="cross">—</span></td>
+          <td><span class="cross">—</span></td>
+          <td><span class="cross">—</span></td>
+          <td><span class="cross">—</span></td>
+          <td><span class="cross">—</span></td>
+        </tr>
+        <tr>
+          <td class="co-name">Slash</td>
+          <td><span class="cross">—</span></td>
+          <td><span class="cross">—</span></td>
+          <td><span class="cross">—</span></td>
+          <td><span class="cross">—</span></td>
+          <td><span class="cross">—</span></td>
+          <td><span class="cross">—</span></td>
+        </tr>
+        <tr>
+          <td class="co-name">Rain</td>
+          <td><span class="cross">—</span></td>
+          <td><span class="cross">—</span></td>
+          <td><span class="cross">—</span></td>
+          <td><span class="cross">—</span></td>
+          <td><span class="cross">—</span></td>
+          <td><span class="cross">—</span></td>
+        </tr>
+        <tr>
+          <td class="co-name">ZeroHash</td>
+          <td><span class="cross">—</span></td>
+          <td><span class="cross">—</span></td>
+          <td><span class="cross">—</span></td>
+          <td><span class="cross">—</span></td>
+          <td><span class="cross">—</span></td>
+          <td><span class="cross">—</span></td>
+        </tr>
+        <tr>
+          <td class="co-name">OpenFX</td>
+          <td><span class="cross">—</span></td>
+          <td><span class="cross">—</span></td>
+          <td><span class="cross">—</span></td>
+          <td><span class="cross">—</span></td>
+          <td><span class="cross">—</span></td>
+          <td><span class="cross">—</span></td>
+        </tr>
+        <tr class="gr-row">
+          <td class="co-name">Genesis Reserve</td>
+          <td><span class="check">✓ Full</span></td>
+          <td><span class="check">✓ YFLPP</span></td>
+          <td><span class="check">✓ Redemption</span></td>
+          <td><span class="check">✓ WY Trust</span></td>
+          <td><span class="check">✓ IMO/FMO</span></td>
+          <td><span class="check">✓ Primary</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="comp-val-thesis">In every dimension that matters to the underserved market — <strong>Genesis Reserve is the only company at the table.</strong></div>
+    <div class="slide-num">09 / 16</div>
+    <img src="/genesis-emblem.png" class="slide-emblem" alt="">
+  </div>
+
+  <!-- ══ S10: GO-TO-MARKET ══ -->
+  <div class="slide" data-slide="10">
+    <div class="slide-logo-corner"><img src="/genesis-emblem.png" alt="GR"><span>Genesis Reserve</span></div>
+    <div class="slide-eyebrow">Go-to-Market</div>
+    <div class="slide-title">Distribution is <span>already built.</span></div>
+    <div class="gtm-grid">
+      <div class="gtm-card">
+        <div class="gtm-label">Channel 1 — Community Anchor</div>
+        <div class="gtm-head">Redemption Network</div>
+        <div class="gtm-list">
+          <li>Equity partner: Lesley Harris (Lead Investor &amp; Advisor)</li>
+          <li>Board: Dr. Bernice King — credibility signal that opens doors no marketing budget can</li>
+          <li>CEO: Ashley Bell — existing personal relationship with Genesis Reserve founder</li>
+          <li>5–6 loan vehicles, growing user base already interested in crypto products</li>
+          <li>User base can transition to Genesis Reserve "with limited effort"</li>
+          <li>Impact investor narrative: underserved community + DeFi yield + life insurance = rare trifecta</li>
+        </div>
+      </div>
+      <div class="gtm-card">
+        <div class="gtm-label">Channel 2 — IMO / Insurance Distribution</div>
+        <div class="gtm-head">Agent Network (YFLPP)</div>
+        <div class="gtm-list">
+          <li>Phase 1: IMO partnership — fastest path to market (30–60 days). IMO brings carrier appointments + compliance. Genesis Reserve brings yield rails + member base.</li>
+          <li>Phase 2: Build toward FMO status in Year 2 as agent network scales</li>
+          <li>Agent portal: NPN verification, state license check, client dashboard, commission pipeline</li>
+          <li>Each licensed agent = a distribution node into their existing book of business</li>
+          <li>Anchor carriers: North American Company (IUL), Mutual of Omaha, National Life Group</li>
+        </div>
+      </div>
+      <div class="gtm-card">
+        <div class="gtm-label">Channel 3 — Accelerator Network</div>
+        <div class="gtm-head">Berlin Graduation · June 12</div>
+        <div class="gtm-list">
+          <li>Top-performing organization in accelerator cohort</li>
+          <li>Berlin graduation ceremony: direct access to cohort LPs, institutional contacts, and global fintech founders</li>
+          <li>Lesley Harris in attendance: signals to every LP in the room that credible, technical co-investors are already committed</li>
+          <li>Accelerator alumni network as warm referral channel for remaining seed seats</li>
+        </div>
+      </div>
+      <div class="gtm-card">
+        <div class="gtm-label">Channel 4 — Harvard &amp; VC Network</div>
+        <div class="gtm-head">Investor-Led Referral</div>
+        <div class="gtm-list">
+          <li>Lesley Harris: Harvard Master's in Systems Engineering — direct pipeline to Harvard engineering &amp; blockchain academic network</li>
+          <li>VC friend (former Chief of Policy at Meta, cyber background) — deck review + VC lens intro</li>
+          <li>Investment partner: co-founded crypto company, 30–40K social media following — potential ambassador role</li>
+          <li>Each referral investor carries their own network of follow-on introductions</li>
+        </div>
+      </div>
+    </div>
+    <div class="slide-num">10 / 16</div>
+    <img src="/genesis-emblem.png" class="slide-emblem" alt="">
+  </div>
+
+  <!-- ══ S11: ENTITY ARCHITECTURE ══ -->
+  <div class="slide" data-slide="11">
+    <div class="slide-logo-corner"><img src="/genesis-emblem.png" alt="GR"><span>Genesis Reserve</span></div>
+    <div class="slide-eyebrow">Legal Structure</div>
+    <div class="slide-title">Genesis Reserve <span>Entity Architecture</span></div>
+    <div style="display:flex;gap:40px;align-items:flex-start;width:100%;max-width:900px;margin-top:20px">
+      <div class="entity-stack" style="flex:1">
+        <div class="ent-node top">
+          <div class="ent-name">Genesis Holdings, LLC</div>
+          <div class="ent-type">Wyoming LLC · Holding Entity</div>
+          <div class="ent-desc">Top-level holding company. Owns equity in all downstream entities. Provides asset isolation for investor capital and IP.</div>
+        </div>
+        <div class="ent-connector"></div>
+        <div class="ent-branch">
+          <div>
+            <div class="ent-node">
+              <div class="ent-name">Genesis App, Inc.</div>
+              <div class="ent-type">Delaware C-Corp · Investor Equity</div>
+              <div class="ent-desc">Issues preferred stock to investors. Holds all IP, technology, and employee contracts. Delaware Court of Chancery governs.</div>
+            </div>
+            <div class="ent-sub-conn"></div>
+            <div class="ent-node">
+              <div class="ent-name">Genesis Reserve Trust</div>
+              <div class="ent-type">Wyoming Statutory Trust · Member Custodian</div>
+              <div class="ent-desc">Holds member deposits. Members are beneficial owners. Capital is not on Genesis Reserve's balance sheet.</div>
+            </div>
+          </div>
+          <div>
+            <div class="ent-node future">
+              <div class="ent-name">Genesis IMO, LLC</div>
+              <div class="ent-type">Georgia LLC · Insurance · Year 2</div>
+              <div class="ent-desc">Licensed insurance marketing organization. Issues and manages YFLPP policies. Carrier relationships and agent commissions.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:14px;padding-top:10px">
+        <div class="feat-card">
+          <div class="feat-label">Why Delaware C-Corp for Investment</div>
+          <div class="feat-head">Investor-Standard Structure</div>
+          <div class="feat-body">Every institutional investor and VC expects Delaware C-Corp for preferred stock issuance. Delaware Court of Chancery is the gold standard for corporate dispute resolution. SAFEs convert into preferred equity in this entity.</div>
+        </div>
+        <div class="feat-card">
+          <div class="feat-label">Why Wyoming Statutory Trust for Members</div>
+          <div class="feat-head">Members Own Their Capital</div>
+          <div class="feat-body">The Trust holds member deposits — not Genesis Reserve. Members are beneficial owners. This is the structural trust signal that makes Genesis Reserve credible to communities historically burned by financial institutions.</div>
+        </div>
+        <div class="feat-card" style="opacity:.65;border-style:dashed">
+          <div class="feat-label">Phase 2 — Year 2</div>
+          <div class="feat-head">Georgia IMO · Insurance Rail</div>
+          <div class="feat-body">Georgia-licensed IMO entity enables YFLPP at full scale. Phase 1 launches via IMO partnership (30–60 days). Phase 2 brings the licensing in-house as agent network justifies it.</div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-num">11 / 16</div>
+    <img src="/genesis-emblem.png" class="slide-emblem" alt="">
+  </div>
+
+  <!-- ══ S12: TEAM ══ -->
+  <div class="slide" data-slide="12">
+    <div class="slide-logo-corner"><img src="/genesis-emblem.png" alt="GR"><span>Genesis Reserve</span></div>
+    <div class="slide-eyebrow">The Team</div>
+    <div class="slide-title">Built to <span>execute and scale.</span></div>
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="team-avatar">AB</div>
+        <div class="team-name">Anthony Beedles</div>
+        <div class="team-title">Founder &amp; CEO</div>
+        <div class="team-creds">Founder of Genesis Reserve. Architect of the YFLPP thesis. AMB Trust Fund principal. Berlin accelerator top-cohort graduate. Product, strategy, and vision.</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">KS</div>
+        <div class="team-name">Kiarra Smith</div>
+        <div class="team-title">Co-Founder · COO</div>
+        <div class="team-creds">Operations &amp; Member Services. Manages internal build execution, member onboarding infrastructure, and operational workflows for the 30-day sprint.</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">WM</div>
+        <div class="team-name">Whitney McCray</div>
+        <div class="team-title">Co-Founder · CMO</div>
+        <div class="team-creds">Brand, Marketing &amp; Business Development. Leads community-facing narrative, Redemption network outreach, and the consumer brand that makes Web3 feel safe to underserved markets.</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">LT</div>
+        <div class="team-name">Larry Timberlake</div>
+        <div class="team-title">Co-Founder · CRO</div>
+        <div class="team-creds">Revenue &amp; Strategic Partnerships. IMO relationships, agent portal development partnerships, carrier introductions, and B2B revenue strategy for the YFLPP distribution layer.</div>
+      </div>
+      <div class="team-card advisor">
+        <div class="team-avatar">LH</div>
+        <div class="team-name">Lesley Harris</div>
+        <div class="team-title">Lead Investor · Lead Advisor</div>
+        <div class="team-creds">Harvard Master's in Systems Engineering. Penetration testing &amp; SOC compliance expertise. Network: Harvard blockchain academics, Meta policy VC, El Salvador Bitcoin developer, Redemption equity partner.</div>
+      </div>
+    </div>
+    <div class="slide-num">12 / 16</div>
+    <img src="/genesis-emblem.png" class="slide-emblem" alt="">
+  </div>
+
+  <!-- ══ S13: ROADMAP ══ -->
+  <div class="slide" data-slide="13">
+    <div class="slide-logo-corner"><img src="/genesis-emblem.png" alt="GR"><span>Genesis Reserve</span></div>
+    <div class="slide-eyebrow">Milestones &amp; Roadmap</div>
+    <div class="slide-title">Executed today. <span>Scaled by Q4.</span></div>
+    <div class="roadmap">
+      <div class="rm-item done">
+        <div class="rm-date"><span class="rm-check">✓</span> May 12, 2026</div>
+        <div class="rm-body">
+          <div class="rm-title">Mutual NDA Executed — Data Room Open</div>
+          <div class="rm-desc">Signed &amp; effective. Full financials, architecture, and cap table shared with Lead Investor. Berlin brief delivered.</div>
+        </div>
+      </div>
+      <div class="rm-item active-now">
+        <div class="rm-date">Now → June 10</div>
+        <div class="rm-body">
+          <div class="rm-title">LOI Signed · Seed Round Closes · Flights Booked</div>
+          <div class="rm-desc">Letter of Intent executed. SAFE agreements issued to seed investors. ATL → BER Premium Economy confirmed.</div>
+        </div>
+      </div>
+      <div class="rm-item">
+        <div class="rm-date">June 12, 2026</div>
+        <div class="rm-body">
+          <div class="rm-title">Berlin — Graduation Ceremony &amp; International Network</div>
+          <div class="rm-desc">Genesis Reserve graduates top of cohort. Cohort LP introductions made. Lesley's VC and Harvard network engaged for remaining seats. Series A positioning begins.</div>
+        </div>
+      </div>
+      <div class="rm-item">
+        <div class="rm-date">June 15 → July 15</div>
+        <div class="rm-body">
+          <div class="rm-title">30-Day Sprint — Full Product Launch</div>
+          <div class="rm-desc">Entity formation. Founding team onboarded. Smarter Wallet live. YFLPP existing-policy connection launched. First member yield generated. IMO partnership signed.</div>
+        </div>
+      </div>
+      <div class="rm-item">
+        <div class="rm-date">Weeks 5–7 Post-Close</div>
+        <div class="rm-body">
+          <div class="rm-title">Security Audit + SOC Framework (Lesley Harris)</div>
+          <div class="rm-desc">Penetration testing engagement. Smart contract audit. Infrastructure security review. SOC compliance posture documented for institutional &amp; Series A readiness.</div>
+        </div>
+      </div>
+      <div class="rm-item">
+        <div class="rm-date">Q4 2026</div>
+        <div class="rm-body">
+          <div class="rm-title">Redemption Network Onboarding + Series A Preparation</div>
+          <div class="rm-desc">Formal Redemption partnership. Agent network at scale. YFLPP premium volume metric established. Series A deck and outreach with Berlin narrative + live product metrics.</div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-num">13 / 16</div>
+    <img src="/genesis-emblem.png" class="slide-emblem" alt="">
+  </div>
+
+  <!-- ══ S14: BUSINESS MODEL ══ -->
+  <div class="slide" data-slide="14">
+    <div class="slide-logo-corner"><img src="/genesis-emblem.png" alt="GR"><span>Genesis Reserve</span></div>
+    <div class="slide-eyebrow">Business Model</div>
+    <div class="slide-title">Multiple revenue streams. <span>All from a single member relationship.</span></div>
+    <div class="rev-grid">
+      <div class="rev-card">
+        <div class="rev-stream">Stream 1</div>
+        <div class="rev-name">Yield Spread</div>
+        <div class="rev-desc">Genesis Reserve earns a spread between gross protocol yield and net yield distributed to members. As total deposit volume grows, spread compounds.</div>
+        <div class="rev-model">Model: AUM-based · Scales with deposit growth</div>
+      </div>
+      <div class="rev-card">
+        <div class="rev-stream">Stream 2</div>
+        <div class="rev-name">YFLPP Premium Management</div>
+        <div class="rev-desc">Fee on yield routed through YFLPP. As more members activate insurance funding, recurring premium volume generates a durable, recurring revenue line.</div>
+        <div class="rev-model">Model: % of premium volume · Recurring</div>
+      </div>
+      <div class="rev-card">
+        <div class="rev-stream">Stream 3</div>
+        <div class="rev-name">Agent Commissions</div>
+        <div class="rev-desc">Genesis Reserve earns an override on insurance policies issued through its agent portal. As the agent network scales toward FMO status, override revenue compounds across all policies in the network.</div>
+        <div class="rev-model">Model: Override commission · IMO → FMO scale</div>
+      </div>
+      <div class="rev-card">
+        <div class="rev-stream">Stream 4</div>
+        <div class="rev-name">Membership</div>
+        <div class="rev-desc">Tiered membership fees for premium Smarter Wallet features, enhanced yield tiers, and priority YFLPP configuration. Low ARPU at launch; grows as product surface expands.</div>
+        <div class="rev-model">Model: SaaS recurring · Tiered</div>
+      </div>
+      <div class="rev-card">
+        <div class="rev-stream">Stream 5</div>
+        <div class="rev-name">Security Audit Services</div>
+        <div class="rev-desc">Lesley Harris–led penetration testing and SOC compliance engagements initially for Genesis Reserve, then offered as a paid service to other Web3 financial infrastructure companies through Genesis Reserve's advisor network.</div>
+        <div class="rev-model">Model: Project-based · Advisory</div>
+      </div>
+      <div class="rev-card" style="background:var(--gold-dim);border-color:var(--gold-border)">
+        <div class="rev-stream" style="color:var(--gold2)">Projections</div>
+        <div class="rev-name" style="color:var(--gold2)">Revenue Trajectory</div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+          <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--gold-border);padding-bottom:6px">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Year 1</span>
+            <span style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--gold)">$500K</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--gold-border);padding-bottom:6px">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Year 2</span>
+            <span style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--gold)">$3M</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Year 3</span>
+            <span style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--gold2)">$15M</span>
+          </div>
+        </div>
+        <div class="rev-model" style="margin-top:10px">Target: Series A at $50M+ ARR run rate</div>
+      </div>
+    </div>
+    <div class="slide-num">14 / 16</div>
+    <img src="/genesis-emblem.png" class="slide-emblem" alt="">
+  </div>
+
+  <!-- ══ S15: THE ASK ══ -->
+  <div class="slide" data-slide="15">
+    <div class="slide-logo-corner"><img src="/genesis-emblem.png" alt="GR"><span>Genesis Reserve</span></div>
+    <div class="slide-eyebrow">The Opportunity</div>
+    <div class="slide-title">Seed Round — <span>$500,000</span></div>
+    <div class="ask-center">
+      <div class="ask-main">
+        <div class="ask-label-main">Total Seed Raise</div>
+        <div class="ask-amount">$500,000</div>
+        <div class="ask-terms-grid">
+          <div class="ask-term">
+            <div class="ask-term-key">Instrument</div>
+            <div class="ask-term-val">Post-Money SAFE</div>
+          </div>
+          <div class="ask-term">
+            <div class="ask-term-key">Valuation Cap</div>
+            <div class="ask-term-val">$3,000,000</div>
+          </div>
+          <div class="ask-term">
+            <div class="ask-term-key">Series A Discount</div>
+            <div class="ask-term-val">20%</div>
+          </div>
+          <div class="ask-term">
+            <div class="ask-term-key">MFN Clause</div>
+            <div class="ask-term-val">Yes</div>
+          </div>
+          <div class="ask-term">
+            <div class="ask-term-key">Pro-Rata Rights</div>
+            <div class="ask-term-val">Series A</div>
+          </div>
+          <div class="ask-term">
+            <div class="ask-term-key">Target Close</div>
+            <div class="ask-term-val">June 15, 2026</div>
+          </div>
+        </div>
+      </div>
+      <div style="width:100%">
+        <div class="slide-eyebrow" style="text-align:left;margin-bottom:10px">Round Structure — 5 Seats</div>
+        <div class="ask-seats">
+          <div class="seat lead">
+            <div class="seat-label">Lead Investor</div>
+            <div class="seat-name">Lesley Harris</div>
+            <div class="seat-amt">$50K–$100K</div>
+          </div>
+          <div class="seat">
+            <div class="seat-label">Seat 2</div>
+            <div class="seat-name">Bernice King</div>
+            <div class="seat-amt">$50K–$100K</div>
+          </div>
+          <div class="seat">
+            <div class="seat-label">Seat 3</div>
+            <div class="seat-name">Ashley Bell</div>
+            <div class="seat-amt">$50K–$100K</div>
+          </div>
+          <div class="seat">
+            <div class="seat-label">Seat 4</div>
+            <div class="seat-name">VC / Harvard</div>
+            <div class="seat-amt">$50K–$100K</div>
+          </div>
+          <div class="seat">
+            <div class="seat-label">Seat 5</div>
+            <div class="seat-name">Ambassador</div>
+            <div class="seat-amt">$50K–$100K</div>
+          </div>
+        </div>
+      </div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:14px;color:var(--sub);text-align:center;max-width:700px;line-height:1.6">
+        Lead investor receives: Board observer seat · 0.75% advisory equity (4yr vest) · Paid security audit engagement (Weeks 5–7) · Seat referral priority · Quarterly information rights · 30-day Series A advance notice
+      </div>
+    </div>
+    <div class="slide-num">15 / 16</div>
+    <img src="/genesis-emblem.png" class="slide-emblem" alt="">
+  </div>
+
+  <!-- ══ S16: CLOSE ══ -->
+  <div class="slide s16" data-slide="16">
+    <img src="/genesis-emblem.png" class="close-emblem" alt="Genesis Reserve">
+    <div class="close-title">The next company on that list<br>is <span>Genesis Reserve.</span></div>
+    <div class="close-sub">Eight companies proved that Web3 financial infrastructure is fundable, scalable, and urgently needed. None of them entered the intersection of yield, insurance, and community — because they didn't see it. We did.</div>
+    <div class="slide-rule"></div>
+    <div class="close-contacts">
+      <div class="close-contact-row">
+        <span class="hi">Anthony Beedles</span>
+        <div class="close-dot"></div>
+        <span>Founder &amp; CEO, Genesis Reserve</span>
+      </div>
+      <div class="close-contact-row">
+        <span>info@genesisreserve.io</span>
+        <div class="close-dot"></div>
+        <span>crownmcllc@gmail.com</span>
+      </div>
+      <div class="close-contact-row" style="margin-top:4px">
+        <span>218 Neely Rd, Fayetteville, GA 30214</span>
+        <div class="close-dot"></div>
+        <span>Genesis App, Inc. · Delaware C Corporation</span>
+      </div>
+    </div>
+    <div class="slide-num">16 / 16</div>
+  </div>
+
+</div><!-- /deck -->
+
+<!-- Navigation -->
+<button class="nav-arr prev hidden" id="prevBtn" onclick="navigate(-1)">&#8592;</button>
+<button class="nav-arr next" id="nextBtn" onclick="navigate(1)">&#8594;</button>
+
+<div class="nav" id="navDots"></div>
+
+<script>
+(function(){
+  var total = 16;
+  var current = 1;
+  var slides = document.querySelectorAll('.slide');
+  var dotsEl = document.getElementById('navDots');
+  var prevBtn = document.getElementById('prevBtn');
+  var nextBtn = document.getElementById('nextBtn');
+
+  // Build dots
+  for(var i=1;i<=total;i++){
+    var d = document.createElement('div');
+    d.className = 'nav-dot' + (i===1?' active':'');
+    d.dataset.slide = i;
+    d.addEventListener('click', (function(n){ return function(){ goTo(n); }; })(i));
+    dotsEl.appendChild(d);
+  }
+
+  function goTo(n){
+    if(n<1||n>total) return;
+    var prev = current;
+    current = n;
+
+    slides.forEach(function(s){
+      var sn = parseInt(s.dataset.slide);
+      s.classList.remove('active','exit-left');
+      if(sn === current) s.classList.add('active');
+      else if(sn === prev) s.classList.add('exit-left');
+    });
+
+    document.querySelectorAll('.nav-dot').forEach(function(d,i){
+      d.classList.toggle('active', (i+1) === current);
+    });
+
+    prevBtn.classList.toggle('hidden', current === 1);
+    nextBtn.classList.toggle('hidden', current === total);
+  }
+
+  window.navigate = function(dir){ goTo(current + dir); };
+
+  document.addEventListener('keydown', function(e){
+    if(e.key==='ArrowRight'||e.key==='ArrowDown') navigate(1);
+    if(e.key==='ArrowLeft'||e.key==='ArrowUp') navigate(-1);
+  });
+
+  // Touch swipe
+  var tx = null;
+  document.addEventListener('touchstart', function(e){ tx = e.touches[0].clientX; });
+  document.addEventListener('touchend', function(e){
+    if(tx===null) return;
+    var dx = e.changedTouches[0].clientX - tx;
+    if(Math.abs(dx)>50) navigate(dx<0?1:-1);
+    tx = null;
+  });
+
+  window.toggleFullscreen = function(){
+    if(!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else document.exitFullscreen();
+  };
+})();
+</script>
+</body>
+</html>
