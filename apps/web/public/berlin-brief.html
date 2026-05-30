@@ -51,6 +51,14 @@
   --cover-bg: linear-gradient(160deg,#1c1510 55%,#2a1f0f);
 }
 
+/* Cover always stays dark — lock all cover text to light values regardless of theme */
+:root.light .cover-title        { color: #f5f0e8; }
+:root.light .cover-title span   { color: #C9A84C; }
+:root.light .cover-sub          { color: rgba(245,240,232,0.75); }
+:root.light .cover-eyebrow      { color: #C9A84C; }
+:root.light .pill               { color: #C9A84C; border-color: rgba(201,168,76,0.30); background: rgba(201,168,76,0.12); }
+:root.light .pill-teal          { color: #00D4AA; border-color: rgba(0,212,170,0.28); background: rgba(0,212,170,0.10); }
+
 /* ── Theme toggle button ── */
 .theme-toggle {
   position: fixed;
