@@ -1,5 +1,16 @@
 {
     "buildCommand": "npm run build",
     "installCommand": "npm install --legacy-peer-deps",
-    "framework": "nextjs"
+    "framework": "nextjs",
+    "headers": [
+        {
+            "source": "/(.*\\.html)",
+            "headers": [
+                {
+                    "key": "Cache-Control",
+                    "value": "public, max-age=0, must-revalidate"
+                }
+            ]
+        }
+    ]
 }
