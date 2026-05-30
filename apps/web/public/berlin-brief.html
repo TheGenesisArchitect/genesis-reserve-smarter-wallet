@@ -30,6 +30,49 @@
   --sub: rgba(245,240,232,0.75);
   --muted: rgba(245,240,232,0.48);
   --border: rgba(255,255,255,0.07);
+  --cover-bg: linear-gradient(160deg,#06080d 55%,#0d1018);
+  --transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+:root.light {
+  --bg: #faf8f4;
+  --bg2: #f0ebe1;
+  --bg3: #e6dfd3;
+  --gold: #8A6E2A;
+  --gold2: #6B5520;
+  --gold-d: #5a4518;
+  --gold-dim: rgba(138,110,42,0.10);
+  --gold-border: rgba(138,110,42,0.28);
+  --teal: #007a5e;
+  --text: #1c1a16;
+  --sub: rgba(28,26,22,0.78);
+  --muted: rgba(28,26,22,0.48);
+  --border: rgba(0,0,0,0.09);
+  --cover-bg: linear-gradient(160deg,#1c1510 55%,#2a1f0f);
+}
+
+/* ── Theme toggle button ── */
+.theme-toggle {
+  position: fixed;
+  top: 18px;
+  right: 22px;
+  z-index: 999;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--gold-border);
+  background: var(--bg2);
+  color: var(--gold);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  transition: var(--transition), box-shadow 0.2s;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+}
+.theme-toggle:hover {
+  box-shadow: 0 0 0 2px var(--gold-border), 0 2px 16px rgba(0,0,0,0.3);
 }
 
 @media print {
@@ -46,12 +89,14 @@ body {
   font-size: 16px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  transition: var(--transition);
 }
 
 /* ── Cover ── */
 .cover {
-  background: linear-gradient(160deg, #06080d 55%, #0d1018);
+  background: var(--cover-bg);
   border-bottom: 1px solid var(--gold-border);
+  transition: var(--transition);
   padding: 72px 80px 60px;
   position: relative;
   overflow: hidden;
@@ -862,6 +907,23 @@ footer {
 <footer>
   Copyright &copy; 2026 Genesis App, Inc. &nbsp;|&nbsp; Confidential &amp; Proprietary &nbsp;|&nbsp; Prepared for Lesley Harris &mdash; Lead Investor
 </footer>
+
+<button class="theme-toggle no-print" id="themeToggle" title="Toggle light / dark mode">🌙</button>
+
+<script>
+(function(){
+  var root = document.documentElement;
+  var btn  = document.getElementById('themeToggle');
+  var stored = localStorage.getItem('gr-brief-theme');
+  if(stored === 'light'){ root.classList.add('light'); btn.textContent = '☀️'; }
+
+  btn.addEventListener('click', function(){
+    var isLight = root.classList.toggle('light');
+    btn.textContent = isLight ? '☀️' : '🌙';
+    localStorage.setItem('gr-brief-theme', isLight ? 'light' : 'dark');
+  });
+})();
+</script>
 
 </body>
 </html>
