@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Genesis Reserve — Berlin Graduation Brief · June 12, 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Tenor+Sans&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+
+/* Luxury scrollbar */
+::-webkit-scrollbar{width:3px;height:3px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#8A6E2A 0%,#C9A84C 55%,#E8CB6E 100%);border-radius:999px}
+::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,#C9A84C 0%,#E8CB6E 100%)}
+*{scrollbar-width:thin;scrollbar-color:#C9A84C transparent}
+
+:root {
+  --bg: #06080d;
+  --bg2: #0d1018;
+  --bg3: #141b22;
+  --gold: #C9A84C;
+  --gold2: #E8CB6E;
+  --gold-d: #8A6E2A;
+  --gold-dim: rgba(201,168,76,0.10);
+  --gold-border: rgba(201,168,76,0.20);
+  --teal: #00D4AA;
+  --text: #f5f0e8;
+  --sub: rgba(245,240,232,0.75);
+  --muted: rgba(245,240,232,0.48);
+  --border: rgba(255,255,255,0.07);
+}
+
+@media print {
+  body { background: #fff !important; color: #111 !important; }
+  .cover { background: #06080d !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .no-print { display: none !important; }
+  section { page-break-inside: avoid; }
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Tenor Sans', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Cover ── */
+.cover {
+  background: linear-gradient(160deg, #06080d 55%, #0d1018);
+  border-bottom: 1px solid var(--gold-border);
+  padding: 72px 80px 60px;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+.cover::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse at 70% 10%, rgba(201,168,76,.11) 0%, transparent 55%),
+    radial-gradient(ellipse at 15% 85%, rgba(0,212,170,.06) 0%, transparent 50%);
+  pointer-events: none;
+}
+.cover-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: .28em;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: .85;
+  margin-bottom: 18px;
+  position: relative;
+}
+.cover-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 54px;
+  font-weight: 300;
+  letter-spacing: .06em;
+  color: var(--text);
+  line-height: 1.1;
+  margin-bottom: 10px;
+  position: relative;
+}
+.cover-title span { color: var(--gold); }
+.cover-sub {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--sub);
+  margin-bottom: 32px;
+  position: relative;
+}
+.cover-rule {
+  width: 80px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  margin: 0 auto 32px;
+}
+.cover-pills {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  position: relative;
+}
+.pill {
+  border: 1px solid var(--gold-border);
+  background: var(--gold-dim);
+  border-radius: 999px;
+  padding: 6px 18px;
+  font-size: 12px;
+  letter-spacing: .08em;
+  color: var(--gold);
+}
+.pill-teal {
+  border-color: rgba(0,212,170,.25);
+  background: rgba(0,212,170,.08);
+  color: var(--teal);
+}
+
+/* ── Body ── */
+.body { max-width: 900px; margin: 0 auto; padding: 60px 72px 80px; display: flex; flex-direction: column; gap: 56px; }
+
+/* ── Section ── */
+section {}
+.section-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: .75;
+  margin-bottom: 8px;
+}
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 32px;
+  font-weight: 400;
+  color: var(--text);
+  margin-bottom: 6px;
+  line-height: 1.2;
+}
+.section-rule {
+  width: 48px;
+  height: 1px;
+  background: var(--gold);
+  opacity: .4;
+  margin-bottom: 22px;
+}
+.body-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  color: var(--sub);
+  line-height: 1.75;
+  margin-bottom: 16px;
+}
+.body-text strong { color: var(--text); font-weight: 600; }
+.body-text em { color: var(--gold); font-style: normal; }
+
+/* ── Callout card ── */
+.callout {
+  background: linear-gradient(135deg, rgba(201,168,76,.09), rgba(201,168,76,.03));
+  border: 1px solid var(--gold-border);
+  border-radius: 14px;
+  padding: 24px 28px;
+  margin: 8px 0 16px;
+  position: relative;
+  overflow: hidden;
+}
+.callout::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201,168,76,.35), transparent);
+}
+.callout-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: .7;
+  margin-bottom: 8px;
+}
+.callout-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 17px;
+  color: var(--sub);
+  line-height: 1.65;
+}
+.callout-text strong { color: var(--text); font-weight: 600; }
+
+/* ── Stat row ── */
+.stat-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 6px 0 16px;
+}
+.stat-card {
+  flex: 1;
+  min-width: 160px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 20px;
+}
+.stat-card.gold { border-color: var(--gold-border); background: var(--gold-dim); }
+.stat-card.teal { border-color: rgba(0,212,170,.2); background: rgba(0,212,170,.06); }
+.stat-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--gold);
+  display: block;
+  margin-bottom: 4px;
+}
+.stat-card.teal .stat-val { color: var(--teal); }
+.stat-lbl {
+  font-size: 11.5px;
+  color: var(--muted);
+  letter-spacing: .03em;
+}
+
+/* ── Budget table ── */
+.budget-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 8px 0 16px;
+  font-family: 'Cormorant Garamond', serif;
+}
+.budget-table th {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: left;
+  padding: 0 12px 10px;
+  border-bottom: 1px solid var(--border);
+}
+.budget-table td {
+  padding: 13px 12px;
+  font-size: 16px;
+  color: var(--sub);
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+.budget-table tr:last-child td { border-bottom: none; }
+.budget-table td:last-child {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  color: var(--gold);
+  text-align: right;
+  white-space: nowrap;
+}
+.budget-table .total-row td {
+  border-top: 1px solid var(--gold-border);
+  padding-top: 16px;
+  color: var(--text);
+  font-weight: 600;
+}
+.budget-table .total-row td:last-child {
+  font-size: 18px;
+  color: var(--gold2);
+}
+.budget-table .note-row td {
+  font-size: 13px;
+  color: var(--muted);
+  padding-top: 4px;
+  border-bottom: none;
+  font-style: italic;
+}
+
+/* ── Hotel card ── */
+.hotel-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  margin: 8px 0 16px;
+}
+.hotel-header {
+  background: linear-gradient(135deg, rgba(201,168,76,.09), rgba(201,168,76,.02));
+  border-bottom: 1px solid var(--gold-border);
+  padding: 20px 24px 16px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+.hotel-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.hotel-location {
+  font-size: 13px;
+  color: var(--muted);
+  letter-spacing: .03em;
+}
+.hotel-badge {
+  background: var(--gold-dim);
+  border: 1px solid var(--gold-border);
+  border-radius: 999px;
+  padding: 4px 14px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--gold);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.hotel-body { padding: 20px 24px; display: flex; flex-direction: column; gap: 12px; }
+.hotel-row { display: flex; gap: 28px; flex-wrap: wrap; }
+.hotel-item { display: flex; flex-direction: column; gap: 3px; }
+.hotel-item-lbl {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.hotel-item-val {
+  font-size: 15px;
+  color: var(--sub);
+}
+.hotel-item-val strong { color: var(--text); }
+.hotel-amenities {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding-top: 4px;
+  border-top: 1px solid var(--border);
+}
+.amenity {
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 3px 12px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* ── Timeline ── */
+.timeline { display: flex; flex-direction: column; gap: 0; }
+.tl-item { display: flex; gap: 20px; position: relative; }
+.tl-item + .tl-item .tl-dot-wrap::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 1px;
+  height: 100%;
+  background: var(--border);
+}
+.tl-dot-wrap { width: 32px; display: flex; flex-direction: column; align-items: center; flex-shrink: 0; position: relative; padding-top: 3px; }
+.tl-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 10px rgba(201,168,76,.4); flex-shrink: 0; z-index: 1; }
+.tl-dot.teal { background: var(--teal); box-shadow: 0 0 10px rgba(0,212,170,.4); }
+.tl-dot.dim { background: var(--bg3); border: 1px solid var(--border); box-shadow: none; }
+.tl-line { flex: 1; width: 1px; background: var(--border); margin-top: 4px; }
+.tl-content { flex: 1; padding-bottom: 28px; }
+.tl-date {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: .12em;
+  color: var(--gold);
+  margin-bottom: 4px;
+}
+.tl-date.teal { color: var(--teal); }
+.tl-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.tl-desc {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 15px;
+  color: var(--sub);
+  line-height: 1.6;
+}
+
+/* ── ROI grid ── */
+.roi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 8px 0 16px; }
+.roi-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 20px;
+}
+.roi-card.positive { border-color: rgba(0,212,170,.2); }
+.roi-card.negative { border-color: rgba(232,64,64,.15); opacity: .7; }
+.roi-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.roi-card.positive .roi-tag { color: var(--teal); }
+.roi-card.negative .roi-tag { color: rgba(232,64,64,.7); }
+.roi-item {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 15px;
+  color: var(--sub);
+  line-height: 1.65;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--border);
+}
+.roi-item:last-child { border-bottom: none; }
+.roi-item::before { content: '+ '; color: var(--teal); font-weight: 700; }
+.roi-card.negative .roi-item::before { content: '− '; color: rgba(232,64,64,.7); }
+
+/* ── Ask box ── */
+.ask-box {
+  background: linear-gradient(135deg, rgba(201,168,76,.12), rgba(201,168,76,.04));
+  border: 1px solid rgba(201,168,76,.35);
+  border-radius: 16px;
+  padding: 32px 36px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.ask-box::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201,168,76,.6), transparent);
+}
+.ask-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: .75;
+  margin-bottom: 12px;
+}
+.ask-amount {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 64px;
+  font-weight: 300;
+  color: var(--gold2);
+  letter-spacing: .04em;
+  line-height: 1;
+  margin-bottom: 10px;
+}
+.ask-desc {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-style: italic;
+  color: var(--sub);
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+.ask-breakdown {
+  display: flex;
+  justify-content: center;
+  gap: 28px;
+  flex-wrap: wrap;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+}
+.ask-breakdown span { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.ask-breakdown strong { color: var(--gold); font-size: 13px; }
+
+/* ── Contact ── */
+.contact-strip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+  padding: 20px 0 0;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.contact-strip a { color: var(--gold); text-decoration: none; }
+.contact-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--muted); }
+
+/* ── Footer ── */
+footer {
+  text-align: center;
+  padding: 18px 24px;
+  border-top: 1px solid var(--gold-border);
+  font-size: 10px;
+  color: rgba(201,168,76,.45);
+  font-family: 'Tenor Sans', sans-serif;
+  letter-spacing: .04em;
+}
+
+@media (max-width: 700px) {
+  .cover { padding: 52px 28px 40px; }
+  .cover-title { font-size: 38px; }
+  .body { padding: 40px 24px 60px; }
+  .roi-grid { grid-template-columns: 1fr; }
+  .ask-amount { font-size: 48px; }
+  .hotel-header { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ COVER ═══ -->
+<div class="cover">
+  <div class="cover-eyebrow">Confidential — For Lead Investor Review</div>
+  <div class="cover-title">Berlin <span>Graduation</span></div>
+  <div class="cover-sub">Capital Brief &amp; Representation Plan</div>
+  <div class="cover-rule"></div>
+  <div class="cover-pills">
+    <div class="pill">Genesis Reserve Accelerator · Class of 2026</div>
+    <div class="pill">Top Organization in Cohort</div>
+    <div class="pill teal">June 12, 2026 · Berlin</div>
+    <div class="pill">13 Days</div>
+  </div>
+</div>
+
+<!-- ═══ BODY ═══ -->
+<div class="body">
+
+  <!-- ── What This Is ── -->
+  <section>
+    <div class="section-eyebrow">The Moment</div>
+    <div class="section-title">Why Berlin Changes Everything</div>
+    <div class="section-rule"></div>
+    <p class="body-text">
+      Genesis Reserve has been selected as the <em>top-performing organization</em> in our accelerator cohort. On June 12, 2026, the class graduates in Berlin — an international ceremony that places Genesis Reserve in front of the global investor, founder, and policy community that is shaping the next decade of financial infrastructure.
+    </p>
+    <p class="body-text">
+      This is not a conference. <strong>This is a graduation.</strong> The distinction matters. Conferences are where companies pitch. Graduations are where credibility is conferred — in person, on record, in a room full of the people who decide which companies become generational. Virtual attendance preserves none of that value.
+    </p>
+    <div class="callout">
+      <div class="callout-label">The Strategic Thesis</div>
+      <div class="callout-text">
+        Every relationship built in that room in Berlin is a relationship that cannot be manufactured later. The capital required to put Genesis Reserve in that room is the most efficient capital we will ever deploy. <strong>The cost of not being there is measured in years, not dollars.</strong>
+      </div>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-card gold">
+        <span class="stat-val">1st</span>
+        <span class="stat-lbl">Cohort ranking</span>
+      </div>
+      <div class="stat-card gold">
+        <span class="stat-val">June 12</span>
+        <span class="stat-lbl">Ceremony date · Berlin</span>
+      </div>
+      <div class="stat-card teal">
+        <span class="stat-val">13 Days</span>
+        <span class="stat-lbl">Time to departure</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-val" style="color:var(--sub)">Virtual</span>
+        <span class="stat-lbl">Is not an equivalent option</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Trip Timeline ── -->
+  <section>
+    <div class="section-eyebrow">Travel Plan</div>
+    <div class="section-title">Representation Schedule</div>
+    <div class="section-rule"></div>
+
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-dot-wrap">
+          <div class="tl-dot"></div>
+          <div class="tl-line"></div>
+        </div>
+        <div class="tl-content">
+          <div class="tl-date">Tuesday, June 10</div>
+          <div class="tl-title">Departure Day</div>
+          <div class="tl-desc">Fly from origin city to Berlin Brandenburg Airport (BER). Transatlantic flight, approximately 8–10 hours. Check in to hotel, establish presence, review graduation materials and briefing.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot-wrap">
+          <div class="tl-dot"></div>
+          <div class="tl-line"></div>
+        </div>
+        <div class="tl-content">
+          <div class="tl-date">Wednesday, June 11</div>
+          <div class="tl-title">Pre-Ceremony Networking</div>
+          <div class="tl-desc">Cohort pre-events and dinners. First introductions with co-founders, LPs, and accelerator leadership. Position Genesis Reserve ahead of tomorrow's ceremony. Explore Berlin's emerging fintech corridor.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot-wrap">
+          <div class="tl-dot teal"></div>
+          <div class="tl-line"></div>
+        </div>
+        <div class="tl-content">
+          <div class="tl-date teal">Thursday, June 12 — Graduation Day</div>
+          <div class="tl-title">Ceremony &amp; Milestone</div>
+          <div class="tl-desc">Genesis Reserve graduates at the top of the cohort. Anthony Beedles accepts recognition on behalf of the company. Formal photos, press opportunity, LP introduction sessions, and post-ceremony networking. <strong>This is the moment.</strong></div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot-wrap">
+          <div class="tl-dot"></div>
+          <div class="tl-line"></div>
+        </div>
+        <div class="tl-content">
+          <div class="tl-date">Friday, June 13</div>
+          <div class="tl-title">Follow-Up &amp; Debrief</div>
+          <div class="tl-desc">Post-ceremony connections and scheduled follow-ups from the previous day's introductions. Begin documentation of network outcomes. Afternoon travel prep.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot-wrap">
+          <div class="tl-dot dim"></div>
+        </div>
+        <div class="tl-content">
+          <div class="tl-date" style="color:var(--muted)">Saturday, June 14</div>
+          <div class="tl-title" style="color:var(--sub)">Return</div>
+          <div class="tl-desc">Return flight to origin city. Arrive with international credibility, a documented network of cohort relationships, and the story that drives the next funding round.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Accommodation ── -->
+  <section>
+    <div class="section-eyebrow">Accommodation</div>
+    <div class="section-title">Selected Property</div>
+    <div class="section-rule"></div>
+
+    <div class="hotel-card">
+      <div class="hotel-header">
+        <div>
+          <div class="hotel-name">Premier Inn Berlin Alexanderplatz</div>
+          <div class="hotel-location">Stralauer Strasse 3 · 10179 Berlin · Mitte District</div>
+        </div>
+        <div class="hotel-badge">Central Berlin</div>
+      </div>
+      <div class="hotel-body">
+        <div class="hotel-row">
+          <div class="hotel-item">
+            <span class="hotel-item-lbl">Check-In</span>
+            <span class="hotel-item-val"><strong>June 10, 2026</strong></span>
+          </div>
+          <div class="hotel-item">
+            <span class="hotel-item-lbl">Check-Out</span>
+            <span class="hotel-item-val"><strong>June 14, 2026</strong></span>
+          </div>
+          <div class="hotel-item">
+            <span class="hotel-item-lbl">Duration</span>
+            <span class="hotel-item-val"><strong>4 Nights</strong></span>
+          </div>
+          <div class="hotel-item">
+            <span class="hotel-item-lbl">Rate / Night</span>
+            <span class="hotel-item-val"><strong>Confirm at booking.com</strong></span>
+          </div>
+        </div>
+        <div class="hotel-row">
+          <div class="hotel-item" style="flex:1">
+            <span class="hotel-item-lbl">Why This Property</span>
+            <span class="hotel-item-val">Alexanderplatz is Berlin's central hub — immediate access to S-Bahn and U-Bahn, 5 minutes from the Berlin TV Tower landmark, and within the city's primary business and cultural corridor. Premier Inn delivers reliable, professional-grade accommodation with consistent standards across Europe. Clean. Central. Appropriate for business representation. Zero distraction from the mission.</span>
+          </div>
+        </div>
+        <div class="hotel-amenities">
+          <span class="amenity">City Centre Location</span>
+          <span class="amenity">S-Bahn / U-Bahn Access</span>
+          <span class="amenity">Business-Grade WiFi</span>
+          <span class="amenity">Breakfast Available</span>
+          <span class="amenity">24hr Reception</span>
+          <span class="amenity">Flexible Cancellation</span>
+        </div>
+      </div>
+    </div>
+
+    <p class="body-text" style="font-size:14px;margin-top:4px;">
+      <span style="color:var(--gold)">→ Booking Reference:</span> <a href="https://www.booking.com/hotel/de/premier-inn-berlin-alexanderplatz.html" target="_blank" style="color:var(--gold);text-decoration:underline;text-underline-offset:3px;">booking.com/hotel/de/premier-inn-berlin-alexanderplatz</a> — confirm nightly rate and availability for June 10–14 before this document is finalized.
+    </p>
+  </section>
+
+  <!-- ── Budget ── -->
+  <section>
+    <div class="section-eyebrow">Capital Required</div>
+    <div class="section-title">Trip Budget Breakdown</div>
+    <div class="section-rule"></div>
+
+    <table class="budget-table">
+      <thead>
+        <tr>
+          <th>Line Item</th>
+          <th>Detail</th>
+          <th>Est. Cost</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Round-Trip Airfare</strong></td>
+          <td>Origin → Berlin Brandenburg (BER) · Economy or Premium Economy · Book by June 5 for best rate</td>
+          <td>Confirm</td>
+        </tr>
+        <tr class="note-row">
+          <td colspan="3">Typical transatlantic fares at 13-day booking window: $700–$1,400 economy · $2,200–$3,800 premium economy</td>
+        </tr>
+        <tr>
+          <td><strong>Hotel — 4 Nights</strong></td>
+          <td>Premier Inn Berlin Alexanderplatz · June 10–14 · Confirm rate at booking link above</td>
+          <td>Confirm</td>
+        </tr>
+        <tr class="note-row">
+          <td colspan="3">Premier Inn European properties typically range €90–€160/night depending on availability</td>
+        </tr>
+        <tr>
+          <td><strong>Airport Transfers</strong></td>
+          <td>BER → Alexanderplatz × 2 (arrival + departure) · Taxi or private car</td>
+          <td>~$80–$120</td>
+        </tr>
+        <tr>
+          <td><strong>Local Transport</strong></td>
+          <td>Berlin transit (4-day pass) + incidentals within city</td>
+          <td>~$60–$80</td>
+        </tr>
+        <tr>
+          <td><strong>Meals &amp; Entertainment</strong></td>
+          <td>4 days · Business-level dining · Cohort dinners may be partially hosted</td>
+          <td>~$300–$500</td>
+        </tr>
+        <tr>
+          <td><strong>Representation Materials</strong></td>
+          <td>Printed one-pagers, business cards, leave-behind decks for in-room distribution</td>
+          <td>~$150–$250</td>
+        </tr>
+        <tr>
+          <td><strong>Buffer / Contingency</strong></td>
+          <td>Visa fees if required, unexpected expenses, upgrades</td>
+          <td>~$200</td>
+        </tr>
+        <tr class="total-row">
+          <td colspan="2"><strong>Total Trip Capital Required</strong></td>
+          <td>$2,500 – $5,000</td>
+        </tr>
+        <tr class="note-row">
+          <td colspan="3">Final figure confirmed once airfare and hotel rates are locked. Exact numbers provided by June 1.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout">
+      <div class="callout-label">Context</div>
+      <div class="callout-text">
+        This capital request represents <strong>less than 1% of the $500,000 seed round</strong> and activates access to the international credibility, network, and press opportunity that the full round is designed to enable. It is the highest-leverage deployment of capital in the current sprint.
+      </div>
+    </div>
+  </section>
+
+  <!-- ── ROI ── -->
+  <section>
+    <div class="section-eyebrow">The Case</div>
+    <div class="section-title">In-Person vs. Virtual</div>
+    <div class="section-rule"></div>
+    <p class="body-text">This is not a philosophical preference. The table below represents what in-person attendance produces versus what does not exist in a virtual setting.</p>
+
+    <div class="roi-grid">
+      <div class="roi-card positive">
+        <div class="roi-tag">In-Person — What We Gain</div>
+        <div class="roi-item">Top-cohort recognition on international record</div>
+        <div class="roi-item">Face-to-face introductions with LPs in the room</div>
+        <div class="roi-item">Cohort network — future co-investors and partners</div>
+        <div class="roi-item">Accelerator leadership relationship deepened</div>
+        <div class="roi-item">Press and documentation opportunity</div>
+        <div class="roi-item">Lead investor co-representation (Lesley, if attending)</div>
+        <div class="roi-item">"Graduated in Berlin" as a credibility anchor in all future decks</div>
+      </div>
+      <div class="roi-card negative">
+        <div class="roi-tag">Virtual — What We Miss</div>
+        <div class="roi-item">Every in-room introduction above</div>
+        <div class="roi-item">The credibility of physical presence</div>
+        <div class="roi-item">Spontaneous relationship formation</div>
+        <div class="roi-item">Photography and press record</div>
+        <div class="roi-item">Lesley co-attending as co-validator</div>
+        <div class="roi-item">The story "we were there" for Series A decks</div>
+        <div class="roi-item">First-mover positioning in cohort network</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Lesley's Role ── -->
+  <section>
+    <div class="section-eyebrow">Lead Advisor Opportunity</div>
+    <div class="section-title">Lesley in Berlin</div>
+    <div class="section-rule"></div>
+    <p class="body-text">
+      If Lesley attends the Berlin graduation as lead advisor and lead investor, the dynamic of the trip changes entirely. Anthony is no longer a founder representing his company alone — <strong>he is a CEO walking into the room with a committed, credentialed technical investor.</strong>
+    </p>
+    <p class="body-text">
+      Lesley's Harvard systems engineering background and cybersecurity depth make him the exact profile that accelerator LPs and institutional contacts respect. His presence signals that Genesis Reserve has already done the work of attracting serious people with aligned incentives.
+    </p>
+    <div class="callout">
+      <div class="callout-label">The Signal Lesley's Attendance Sends</div>
+      <div class="callout-text">
+        When a technical co-investor flies to Berlin for a graduation, the message to every person in that room is: <strong>this company is real, the team is real, and the conviction is demonstrated by presence.</strong> That signal cannot be purchased at any other price point.
+      </div>
+    </div>
+    <p class="body-text">
+      We respectfully invite Lesley to consider attending — independently financed — and would coordinate full schedules, introductions, and representation materials to make the trip as productive as possible.
+    </p>
+  </section>
+
+  <!-- ── Closing Ask ── -->
+  <section>
+    <div class="section-eyebrow">The Ask</div>
+    <div class="section-title">Capital &amp; Timeline</div>
+    <div class="section-rule"></div>
+
+    <div class="ask-box">
+      <div class="ask-label">Berlin Representation Capital — Total Request</div>
+      <div class="ask-amount">$2,500 – $5,000</div>
+      <div class="ask-desc">Exact figure confirmed by June 1 once airfare and hotel rates are locked.</div>
+      <div class="ask-breakdown">
+        <span><strong>June 1</strong>Final budget delivered</span>
+        <span><strong>June 5</strong>Flights booked</span>
+        <span><strong>June 10</strong>Depart for Berlin</span>
+        <span><strong>June 12</strong>Graduation day</span>
+      </div>
+    </div>
+
+    <p class="body-text" style="margin-top:24px;">
+      This request exists outside the $500,000 seed round structure and represents operational capital for the Berlin trip specifically. It will be documented, accounted for, and reported as a pre-seed operational expense against the company's founding equity.
+    </p>
+    <p class="body-text">
+      <strong>If this capital is secured by June 5, flights can be booked at acceptable rates and full representation materials prepared before departure.</strong> Beyond June 5, booking windows close and rate options narrow significantly.
+    </p>
+
+    <div class="contact-strip">
+      <span>Anthony Beedles</span>
+      <div class="contact-dot"></div>
+      <span>Founder &amp; CEO, Genesis Reserve</span>
+      <div class="contact-dot"></div>
+      <a href="mailto:info@genesisreserve.io">info@genesisreserve.io</a>
+      <div class="contact-dot"></div>
+      <span>crownmcllc@gmail.com</span>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  Copyright &copy; 2026 Genesis App, Inc. &nbsp;|&nbsp; Confidential &amp; Proprietary &nbsp;|&nbsp; Prepared for Lesley Harris &mdash; Lead Investor
+</footer>
+
+</body>
+</html>
