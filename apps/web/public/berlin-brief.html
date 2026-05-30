@@ -559,6 +559,211 @@ footer {
   letter-spacing: .04em;
 }
 
+/* ── Doc separator ── */
+.doc-separator {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 56px 72px 0;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.doc-sep-line { flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--gold-border), transparent); }
+.doc-sep-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: .6;
+  white-space: nowrap;
+}
+
+/* ── Ops cover ── */
+.ops-cover {
+  background: var(--cover-bg);
+  border-bottom: 1px solid var(--gold-border);
+  border-top: 1px solid var(--gold-border);
+  padding: 60px 80px 52px;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  margin-top: 56px;
+}
+.ops-cover::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse at 30% 20%, rgba(0,212,170,.07) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, rgba(201,168,76,.10) 0%, transparent 55%);
+  pointer-events: none;
+}
+
+/* ── Entity tree ── */
+.entity-tree { display: flex; flex-direction: column; align-items: center; gap: 0; margin: 8px 0 16px; }
+.entity-node {
+  background: var(--bg2);
+  border: 1px solid var(--gold-border);
+  border-radius: 12px;
+  padding: 16px 22px;
+  text-align: center;
+  position: relative;
+  min-width: 220px;
+  max-width: 320px;
+}
+.entity-node.root { border-color: var(--gold); background: var(--gold-dim); }
+.entity-node.trust { border-color: rgba(0,212,170,.3); background: rgba(0,212,170,.06); }
+.entity-node.future { border-color: var(--border); opacity: .7; }
+.entity-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 3px;
+}
+.entity-sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.entity-desc { font-family: 'Cormorant Garamond', serif; font-size: 14px; color: var(--sub); line-height: 1.5; }
+.entity-connector { width: 1px; height: 28px; background: var(--gold-border); margin: 0 auto; }
+.entity-row { display: flex; gap: 16px; align-items: flex-start; justify-content: center; flex-wrap: wrap; }
+.entity-row-wrap { display: flex; flex-direction: column; align-items: center; }
+.entity-row-connector { display: flex; align-items: flex-start; justify-content: center; width: 100%; margin-bottom: 0; }
+.entity-branch { width: 1px; height: 28px; background: var(--gold-border); }
+
+/* ── Ops budget table ── */
+.ops-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Cormorant Garamond', serif;
+  margin: 8px 0 4px;
+}
+.ops-table th {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: left;
+  padding: 0 12px 10px;
+  border-bottom: 1px solid var(--border);
+}
+.ops-table td {
+  padding: 11px 12px;
+  font-size: 17px;
+  color: var(--sub);
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+  word-wrap: break-word;
+}
+.ops-table td:last-child {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 15px;
+  color: var(--gold);
+  text-align: right;
+  white-space: nowrap;
+}
+.ops-table .cat-row td {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: .8;
+  padding: 16px 12px 6px;
+  border-bottom: none;
+}
+.ops-table .subtotal-row td {
+  border-top: 1px solid var(--border);
+  font-size: 15px;
+  color: var(--text);
+  font-weight: 600;
+  padding: 10px 12px;
+}
+.ops-table .subtotal-row td:last-child { font-size: 15px; color: var(--gold2); }
+.ops-table .grand-total td {
+  border-top: 2px solid var(--gold-border);
+  padding-top: 18px;
+  font-size: 19px;
+  color: var(--text);
+  font-weight: 600;
+}
+.ops-table .grand-total td:last-child { font-size: 22px; color: var(--gold2); }
+
+/* ── LOI / NDA cards ── */
+.terms-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 8px 0 16px; }
+.terms-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 22px;
+}
+.terms-card.gold { border-color: var(--gold-border); background: var(--gold-dim); }
+.terms-card.teal { border-color: rgba(0,212,170,.2); background: rgba(0,212,170,.05); }
+.terms-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 12px;
+}
+.terms-card.teal .terms-label { color: var(--teal); }
+.terms-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--border);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 15px;
+}
+.terms-item:last-child { border-bottom: none; }
+.terms-key { color: var(--muted); flex-shrink: 0; }
+.terms-val { color: var(--text); text-align: right; font-weight: 600; }
+
+/* ── Next steps ── */
+.steps-list { display: flex; flex-direction: column; gap: 10px; margin: 8px 0 16px; }
+.step-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 18px;
+}
+.step-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--gold);
+  background: var(--gold-dim);
+  border: 1px solid var(--gold-border);
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-weight: 600;
+}
+.step-body { flex: 1; }
+.step-date {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: .1em;
+  color: var(--gold);
+  margin-bottom: 3px;
+}
+.step-title { font-family: 'Cormorant Garamond', serif; font-size: 17px; color: var(--text); font-weight: 600; margin-bottom: 2px; }
+.step-desc { font-family: 'Cormorant Garamond', serif; font-size: 14px; color: var(--sub); line-height: 1.5; }
+
 @media (max-width: 700px) {
   .cover { padding: 52px 24px 40px; }
   .cover-title { font-size: 40px; }
@@ -579,6 +784,10 @@ footer {
   .budget-table { font-size: 15px; }
   .budget-table td { font-size: 15px; padding: 10px 8px; }
   .budget-table td:last-child { font-size: 14px; }
+  .terms-grid { grid-template-columns: 1fr; }
+  .doc-separator { padding: 40px 24px 0; }
+  .ops-cover { padding: 48px 24px 40px; }
+  .entity-row { flex-direction: column; align-items: center; }
 }
 
 /* ── Print ── */
@@ -988,8 +1197,309 @@ footer {
 
 </div>
 
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- ═══ ATTACHMENT A · OPERATIONAL BRIEF ══════════════════ -->
+<!-- ═══════════════════════════════════════════════════════ -->
+
+<div class="doc-separator">
+  <div class="doc-sep-line"></div>
+  <div class="doc-sep-label">Attachment A &nbsp;·&nbsp; Operational Brief &amp; Investment Terms</div>
+  <div class="doc-sep-line"></div>
+</div>
+
+<div class="ops-cover">
+  <div class="cover-eyebrow">Confidential — Seed Round Deployment Plan</div>
+  <div class="cover-title">30-Day <span>Operational</span> Blueprint</div>
+  <div class="cover-sub">Immediate Capital Requirements · Entity Formation · Investment Terms</div>
+  <div class="cover-rule"></div>
+  <div class="cover-pills">
+    <div class="pill">Genesis Reserve · $500K Seed Round</div>
+    <div class="pill teal">30-Day Sprint · June–July 2026</div>
+    <div class="pill">Smarter Wallet Full Launch</div>
+    <div class="pill">LOI + NDA Required</div>
+  </div>
+</div>
+
+<div class="body">
+
+  <!-- ── What Gets Built ── -->
+  <section>
+    <div class="section-eyebrow">The Sprint</div>
+    <div class="section-title">What 30 Days Buys</div>
+    <div class="section-rule"></div>
+    <p class="body-text">
+      The first 30 days are the most capital-efficient period in Genesis Reserve's lifecycle. The core protocol is built. The yield engine is live. The entity structure does not yet exist. <strong>This sprint converts a working prototype into a fully incorporated, legally defensible, investor-grade company with a launched product.</strong>
+    </p>
+    <div class="stat-row">
+      <div class="stat-card gold">
+        <span class="stat-val">4</span>
+        <span class="stat-lbl">Entities formed</span>
+      </div>
+      <div class="stat-card gold">
+        <span class="stat-val">30</span>
+        <span class="stat-lbl">Days to full launch</span>
+      </div>
+      <div class="stat-card teal">
+        <span class="stat-val">$120.5K</span>
+        <span class="stat-lbl">Sprint capital required</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-val" style="color:var(--sub)">24.1%</span>
+        <span class="stat-lbl">Of $500K seed round</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Entity Architecture ── -->
+  <section>
+    <div class="section-eyebrow">Legal Infrastructure</div>
+    <div class="section-title">Recommended Entity Architecture</div>
+    <div class="section-rule"></div>
+    <p class="body-text">A four-entity stack isolates liability, optimizes tax treatment at each layer, satisfies investor expectations, and positions Genesis Reserve for regulated financial services expansion — including the insurance distribution arm — without cross-contaminating the core technology company.</p>
+
+    <div class="entity-tree">
+      <div class="entity-node root">
+        <div class="entity-name">Genesis Reserve Holdings, LLC</div>
+        <div class="entity-sub">Wyoming · Parent Holding Company</div>
+        <div class="entity-desc">Founders hold equity here via AMB Trust structure. Owns all subsidiary interests. No state income tax. Wyoming Digital Asset laws (HB0070) are the strongest in the US.</div>
+      </div>
+      <div class="entity-connector"></div>
+      <div class="entity-row">
+        <div class="entity-row-wrap">
+          <div class="entity-node">
+            <div class="entity-name">Genesis App, Inc.</div>
+            <div class="entity-sub">Delaware C-Corp · Operating Entity</div>
+            <div class="entity-desc">Issues preferred stock to investors. Holds all IP, technology, and employee contracts. Investor standard — Delaware Court of Chancery governs.</div>
+          </div>
+          <div class="entity-connector"></div>
+          <div class="entity-node future">
+            <div class="entity-name">Genesis Reserve IMO, LLC</div>
+            <div class="entity-sub">Georgia · Insurance Distribution · Phase 2</div>
+            <div class="entity-desc">Yield Funded Legacy Protection Program distribution arm. Isolates insurance regulatory requirements. Georgia domicile for initial agent licensing.</div>
+          </div>
+        </div>
+        <div class="entity-row-wrap">
+          <div class="entity-node trust">
+            <div class="entity-name">Genesis Reserve Trust, LLC</div>
+            <div class="entity-sub">Wyoming Statutory Trust · Member Custodian</div>
+            <div class="entity-desc">Holds member yield protocol positions and stablecoin reserves. Operates under Wyoming Trust Act (SF0125). Evolves into state-chartered trust company. Makes member assets legally protected and custodied.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:16px;">
+      <div class="callout-label">Why This Stack</div>
+      <div class="callout-text">
+        Wyoming gives us the most progressive Digital Asset law in the country. Delaware gives investors what they expect. The Trust entity gives members legal assurance their assets are custodied — not commingled. The IMO entity keeps insurance regulatory requirements from touching the core tech company. <strong>This is the architecture that gets institutional investors to the table.</strong>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 30-Day Budget ── -->
+  <section>
+    <div class="section-eyebrow">Capital Deployment</div>
+    <div class="section-title">30-Day Operational Budget</div>
+    <div class="section-rule"></div>
+    <div class="budget-wrap">
+    <table class="ops-table">
+      <thead>
+        <tr><th>Line Item</th><th>Detail</th><th>Amount</th></tr>
+      </thead>
+      <tbody>
+        <tr class="cat-row"><td colspan="3">Engineering</td></tr>
+        <tr><td>Smart Contract Hardening</td><td>Final Arbitrum One deployment, security hardening, ERC-4626 audit prep</td><td>$15,000</td></tr>
+        <tr><td>Smarter Wallet Frontend</td><td>Privy v3 integration, vault dashboard, yield display, member portal completion</td><td>$12,000</td></tr>
+        <tr><td>Backend API + Yield Engine</td><td>Aave V3, Balancer V3, Morpho harvest automation, tier routing</td><td>$10,000</td></tr>
+        <tr><td>DevOps + Infrastructure</td><td>Vercel Pro, RPC providers, monitoring, uptime alerting</td><td>$5,000</td></tr>
+        <tr class="subtotal-row"><td colspan="2">Engineering Subtotal</td><td>$42,000</td></tr>
+
+        <tr class="cat-row"><td colspan="3">Legal &amp; Compliance</td></tr>
+        <tr><td>Entity Formation × 4</td><td>State filings, registered agents, first-year fees — Wyoming × 2, Delaware × 1, Georgia × 1</td><td>$8,000</td></tr>
+        <tr><td>Governing Documents</td><td>Operating agreements, bylaws, cap table structuring, founder agreements</td><td>$5,000</td></tr>
+        <tr><td>Securities Law Review</td><td>SAFE instrument drafting, investor rights agreements, disclosure review</td><td>$12,000</td></tr>
+        <tr><td>Member Agreements</td><td>Terms of Service, Privacy Policy, Member Agreement, Risk Disclosures</td><td>$4,000</td></tr>
+        <tr><td>Regulatory Assessment</td><td>FinTech / crypto regulatory posture review, state money transmission analysis</td><td>$8,000</td></tr>
+        <tr class="subtotal-row"><td colspan="2">Legal &amp; Compliance Subtotal</td><td>$37,000</td></tr>
+
+        <tr class="cat-row"><td colspan="3">Administrative</td></tr>
+        <tr><td>Virtual Office + Address</td><td>Registered business address, mail forwarding, professional presence</td><td>$500</td></tr>
+        <tr><td>Software Subscriptions</td><td>GitHub Teams, Vercel Pro, Alchemy RPC, Supabase, Upstash, tooling</td><td>$1,500</td></tr>
+        <tr><td>Accounting Setup</td><td>Chart of accounts, bookkeeping system, fractional CFO (first month)</td><td>$2,500</td></tr>
+        <tr><td>Insurance</td><td>D&amp;O liability + Cyber liability policy deposit</td><td>$3,500</td></tr>
+        <tr class="subtotal-row"><td colspan="2">Administrative Subtotal</td><td>$8,000</td></tr>
+
+        <tr class="cat-row"><td colspan="3">Staffing</td></tr>
+        <tr><td>Founder / CEO</td><td>Anthony Beedles — full-time operational leadership, investor relations, product</td><td>$10,000</td></tr>
+        <tr><td>Co-Founder / CTO</td><td>Engineering leadership, smart contract architecture, DevOps</td><td>$10,000</td></tr>
+        <tr><td>Compliance Officer</td><td>Part-time engagement — regulatory filings, member onboarding compliance</td><td>$5,000</td></tr>
+        <tr class="subtotal-row"><td colspan="2">Staffing Subtotal</td><td>$25,000</td></tr>
+
+        <tr class="cat-row"><td colspan="3">Security &amp; Business Development</td></tr>
+        <tr><td>Security Audit Deposit</td><td>Initial engagement deposit — Weeks 5–7 penetration testing + SOC framework (Lesley's engagement)</td><td>$5,000</td></tr>
+        <tr><td>Investor Materials</td><td>Data room setup, pitch deck refresh, one-pagers</td><td>$2,000</td></tr>
+        <tr><td>Brand Assets</td><td>Design system refresh, marketing collateral</td><td>$1,500</td></tr>
+        <tr class="subtotal-row"><td colspan="2">Security &amp; BD Subtotal</td><td>$8,500</td></tr>
+
+        <tr class="grand-total">
+          <td colspan="2"><strong>30-Day Total Capital Required</strong></td>
+          <td>$120,500</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="callout">
+      <div class="callout-label">Deployment Context</div>
+      <div class="callout-text">
+        $120,500 represents <strong>24.1% of the $500K seed round</strong>, deployed in the first 30 days to produce a fully incorporated, legally defensible, launched company. The remaining $379,500 funds months 2–6 of operations at approximately <strong>$63,000/month burn rate</strong> — a bridge to Series A.
+      </div>
+    </div>
+  </section>
+
+  <!-- ── LOI Terms ── -->
+  <section>
+    <div class="section-eyebrow">Investment Terms</div>
+    <div class="section-title">Letter of Intent — Summary Terms</div>
+    <div class="section-rule"></div>
+    <p class="body-text">The following terms are proposed for Lesley's lead investment position. These will be formalized in a binding LOI and definitive SAFE agreement following NDA execution and final round documentation.</p>
+
+    <div class="terms-grid">
+      <div class="terms-card gold">
+        <div class="terms-label">Investment Terms</div>
+        <div class="terms-item"><span class="terms-key">Instrument</span><span class="terms-val">SAFE Note</span></div>
+        <div class="terms-item"><span class="terms-key">Total Raise</span><span class="terms-val">$500,000</span></div>
+        <div class="terms-item"><span class="terms-key">Seats</span><span class="terms-val">5 × $50K–$100K</span></div>
+        <div class="terms-item"><span class="terms-key">Valuation Cap</span><span class="terms-val">TBD — June 1</span></div>
+        <div class="terms-item"><span class="terms-key">Discount Rate</span><span class="terms-val">20% at Series A</span></div>
+        <div class="terms-item"><span class="terms-key">MFN Clause</span><span class="terms-val">Yes</span></div>
+        <div class="terms-item"><span class="terms-key">Pro-Rata Rights</span><span class="terms-val">Yes — Series A</span></div>
+      </div>
+      <div class="terms-card">
+        <div class="terms-label">Lead Investor Rights</div>
+        <div class="terms-item"><span class="terms-key">Position</span><span class="terms-val">Lead Investor</span></div>
+        <div class="terms-item"><span class="terms-key">Board Role</span><span class="terms-val">Observer Seat</span></div>
+        <div class="terms-item"><span class="terms-key">Information Rights</span><span class="terms-val">Quarterly</span></div>
+        <div class="terms-item"><span class="terms-key">Advisory Equity</span><span class="terms-val">0.75% — 4yr vest</span></div>
+        <div class="terms-item"><span class="terms-key">Audit Engagement</span><span class="terms-val">Paid — Weeks 5–7</span></div>
+        <div class="terms-item"><span class="terms-key">Network Rights</span><span class="terms-val">Seat referral priority</span></div>
+        <div class="terms-item"><span class="terms-key">Expected Close</span><span class="terms-val">June 15, 2026</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── NDA ── -->
+  <section>
+    <div class="section-eyebrow">Confidentiality</div>
+    <div class="section-title">Mutual Non-Disclosure Agreement</div>
+    <div class="section-rule"></div>
+    <p class="body-text">A Mutual NDA between Anthony Beedles / Genesis App, Inc. and Lesley Harris is required prior to the exchange of detailed financial models, technical architecture, investor lists, and proprietary business strategy. The following framework governs the agreement.</p>
+
+    <div class="terms-grid">
+      <div class="terms-card teal">
+        <div class="terms-label">NDA Framework</div>
+        <div class="terms-item"><span class="terms-key">Type</span><span class="terms-val">Mutual</span></div>
+        <div class="terms-item"><span class="terms-key">Parties</span><span class="terms-val">Both directions</span></div>
+        <div class="terms-item"><span class="terms-key">Term</span><span class="terms-val">3 years</span></div>
+        <div class="terms-item"><span class="terms-key">Governing Law</span><span class="terms-val">Delaware</span></div>
+        <div class="terms-item"><span class="terms-key">Execution</span><span class="terms-val">DocuSign</span></div>
+        <div class="terms-item"><span class="terms-key">Target Date</span><span class="terms-val">June 1, 2026</span></div>
+      </div>
+      <div class="terms-card">
+        <div class="terms-label">Scope of Confidential Information</div>
+        <div class="terms-item"><span class="terms-key">Technology</span><span class="terms-val">Smart contracts, protocol</span></div>
+        <div class="terms-item"><span class="terms-key">Financials</span><span class="terms-val">Models, projections, burn</span></div>
+        <div class="terms-item"><span class="terms-key">Strategy</span><span class="terms-val">Roadmap, partnerships</span></div>
+        <div class="terms-item"><span class="terms-key">Investors</span><span class="terms-val">All seat holders</span></div>
+        <div class="terms-item"><span class="terms-key">Carveouts</span><span class="terms-val">Public info, legal order</span></div>
+        <div class="terms-item"><span class="terms-key">Remedy</span><span class="terms-val">Injunctive relief</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Next Steps ── -->
+  <section>
+    <div class="section-eyebrow">Action Plan</div>
+    <div class="section-title">Next Steps to Close</div>
+    <div class="section-rule"></div>
+
+    <div class="steps-list">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-date">By June 1, 2026</div>
+          <div class="step-title">Execute Mutual NDA</div>
+          <div class="step-desc">DocuSign mutual NDA — opens full data room access including financials, technical architecture, and cap table.</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-date">By June 1, 2026</div>
+          <div class="step-title">Anthony Delivers Final Round Terms</div>
+          <div class="step-desc">Valuation cap, SAFE terms, and 30-day deployment plan delivered to Lesley for review. Berlin trip budget finalized.</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-date">By June 5, 2026</div>
+          <div class="step-title">LOI Signed + Flights Booked</div>
+          <div class="step-desc">Letter of Intent executed by both parties. Berlin flights booked at Premium Economy rate from ATL. Lesley confirms Berlin attendance decision.</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-date">June 9–14, 2026</div>
+          <div class="step-title">Berlin — Graduation + International Network</div>
+          <div class="step-desc">Genesis Reserve graduates top of cohort. Introductions made with cohort LPs. Lesley's Harvard and VC network contacts engaged for remaining seats.</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <div class="step-date">By June 15, 2026</div>
+          <div class="step-title">SAFE Executed + Wire Received</div>
+          <div class="step-desc">Definitive SAFE agreement signed. Investment wire received. Entity formation begins immediately. 30-day sprint clock starts.</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">6</div>
+        <div class="step-body">
+          <div class="step-date">Weeks 5–7 (Post-Close)</div>
+          <div class="step-title">Security Audit + SOC Framework</div>
+          <div class="step-desc">Lesley's penetration testing and SOC compliance engagement begins. Smart contract audit. Infrastructure security review. Genesis Reserve Trust, LLC regulatory posture assessed.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ask-box" style="margin-top:24px;">
+      <div class="ask-label">Total Immediate Capital Ask — Berlin + 30-Day Sprint</div>
+      <div class="ask-amount">$126,800</div>
+      <div class="ask-desc">$6,300 Berlin representation + $120,500 30-day operational sprint. Together these two capital deployments produce a graduated founder at an international ceremony and a fully launched, legally incorporated company.</div>
+      <div class="ask-breakdown">
+        <span><strong>$6,300</strong>Berlin Trip</span>
+        <span><strong>$120,500</strong>30-Day Ops</span>
+        <span><strong>$379,500</strong>Remaining Seed</span>
+        <span><strong>$500,000</strong>Full Round</span>
+      </div>
+    </div>
+
+    <div class="contact-strip" style="margin-top:32px;">
+      <span>Anthony Beedles</span>
+      <div class="contact-dot"></div>
+      <span>Founder &amp; CEO, Genesis Reserve</span>
+      <div class="contact-dot"></div>
+      <a href="mailto:info@genesisreserve.io">info@genesisreserve.io</a>
+      <div class="contact-dot"></div>
+      <span>crownmcllc@gmail.com</span>
+    </div>
+  </section>
+
+</div>
+
 <footer>
-  Copyright &copy; 2026 Genesis App, Inc. &nbsp;|&nbsp; Confidential &amp; Proprietary &nbsp;|&nbsp; Prepared for Lesley Harris &mdash; Lead Investor
+  Copyright &copy; 2026 Genesis App, Inc. &nbsp;|&nbsp; Confidential &amp; Proprietary &nbsp;|&nbsp; Berlin Brief + Operational Attachment &nbsp;|&nbsp; Prepared for Lesley Harris &mdash; Lead Investor
 </footer>
 
 <button class="print-btn no-print" onclick="window.print()" title="Print or save as PDF">🖨️</button>
