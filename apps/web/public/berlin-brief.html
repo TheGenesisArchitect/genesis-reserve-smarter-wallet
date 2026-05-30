@@ -280,12 +280,17 @@ section {}
 }
 
 /* ── Budget table ── */
+.budget-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 8px 0 16px; }
 .budget-table {
   width: 100%;
+  min-width: 520px;
   border-collapse: collapse;
-  margin: 8px 0 16px;
   font-family: 'Cormorant Garamond', serif;
+  table-layout: fixed;
 }
+.budget-table colgroup col:nth-child(1) { width: 22%; }
+.budget-table colgroup col:nth-child(2) { width: 58%; }
+.budget-table colgroup col:nth-child(3) { width: 20%; }
 .budget-table th {
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
@@ -302,6 +307,8 @@ section {}
   color: var(--sub);
   border-bottom: 1px solid var(--border);
   vertical-align: top;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 .budget-table tr:last-child td { border-bottom: none; }
 .budget-table td:last-child {
@@ -327,6 +334,7 @@ section {}
   padding-top: 4px;
   border-bottom: none;
   font-style: italic;
+  white-space: normal;
 }
 
 /* ── Hotel card ── */
@@ -448,8 +456,8 @@ section {}
   border-radius: 12px;
   padding: 18px 20px;
 }
-.roi-card.positive { border-color: rgba(0,212,170,.2); }
-.roi-card.negative { border-color: rgba(232,64,64,.15); opacity: .7; }
+.roi-card.positive { border-color: rgba(0,212,170,.25); }
+.roi-card.negative { border-color: rgba(232,64,64,.35); }
 .roi-tag {
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
@@ -458,18 +466,18 @@ section {}
   margin-bottom: 10px;
 }
 .roi-card.positive .roi-tag { color: var(--teal); }
-.roi-card.negative .roi-tag { color: rgba(232,64,64,.7); }
+.roi-card.negative .roi-tag { color: #e84040; }
 .roi-item {
   font-family: 'Cormorant Garamond', serif;
   font-size: 17px;
-  color: var(--sub);
+  color: var(--text);
   line-height: 1.65;
   padding: 5px 0;
   border-bottom: 1px solid var(--border);
 }
 .roi-item:last-child { border-bottom: none; }
 .roi-item::before { content: '+ '; color: var(--teal); font-weight: 700; }
-.roi-card.negative .roi-item::before { content: '− '; color: rgba(232,64,64,.7); }
+.roi-card.negative .roi-item::before { content: '− '; color: #e84040; font-weight: 700; }
 
 /* ── Ask box ── */
 .ask-box {
@@ -552,12 +560,76 @@ footer {
 }
 
 @media (max-width: 700px) {
-  .cover { padding: 52px 28px 40px; }
-  .cover-title { font-size: 38px; }
-  .body { padding: 40px 24px 60px; }
+  .cover { padding: 52px 24px 40px; }
+  .cover-title { font-size: 40px; }
+  .cover-sub { font-size: 20px; }
+  .body { padding: 36px 18px 60px; gap: 40px; }
+  .section-title { font-size: 30px; }
+  .body-text { font-size: 18px; }
+  .callout-text { font-size: 17px; }
   .roi-grid { grid-template-columns: 1fr; }
   .ask-amount { font-size: 48px; }
+  .ask-desc { font-size: 17px; }
   .hotel-header { flex-direction: column; }
+  .hotel-row { flex-direction: column; gap: 14px; }
+  .tl-desc { font-size: 16px; }
+  .stat-row { gap: 8px; }
+  .stat-card { min-width: 130px; }
+  .ask-breakdown { gap: 16px; }
+  .budget-table { font-size: 15px; }
+  .budget-table td { font-size: 15px; padding: 10px 8px; }
+  .budget-table td:last-child { font-size: 14px; }
+}
+
+/* ── Print ── */
+@media print {
+  .theme-toggle, .print-btn { display: none !important; }
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  body { background: #fff !important; color: #111 !important; font-size: 13px !important; }
+  .cover {
+    background: #06080d !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    padding: 48px 60px 40px !important;
+  }
+  .body { padding: 32px 60px 48px !important; gap: 36px !important; max-width: 100% !important; }
+  .section-title { font-size: 26px !important; }
+  .body-text { font-size: 14px !important; }
+  .callout-text { font-size: 14px !important; }
+  .tl-desc { font-size: 13px !important; }
+  .budget-table td { font-size: 13px !important; padding: 9px 10px !important; }
+  .roi-grid { grid-template-columns: 1fr 1fr !important; }
+  .ask-amount { font-size: 44px !important; }
+  section { page-break-inside: avoid; }
+  .bg2, .hotel-card, .roi-card, .stat-card, .callout, .ask-box {
+    border: 1px solid #ccc !important;
+    background: #f9f9f9 !important;
+  }
+}
+
+/* ── Print button ── */
+.print-btn {
+  position: fixed;
+  top: 18px;
+  right: 70px;
+  z-index: 999;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--gold-border);
+  background: var(--bg2);
+  color: var(--gold);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  transition: var(--transition), box-shadow 0.2s;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+  text-decoration: none;
+}
+.print-btn:hover {
+  box-shadow: 0 0 0 2px var(--gold-border), 0 2px 16px rgba(0,0,0,0.3);
 }
 </style>
 </head>
@@ -723,7 +795,7 @@ footer {
           </div>
           <div class="hotel-item">
             <span class="hotel-item-lbl">Rate / Night</span>
-            <span class="hotel-item-val"><strong>$150 / night</strong></span>
+            <span class="hotel-item-val"><strong>$200 / night</strong></span>
           </div>
         </div>
         <div class="hotel-row">
@@ -754,7 +826,9 @@ footer {
     <div class="section-title">Trip Budget Breakdown</div>
     <div class="section-rule"></div>
 
+    <div class="budget-wrap">
     <table class="budget-table">
+      <colgroup><col><col><col></colgroup>
       <thead>
         <tr>
           <th>Line Item</th>
@@ -770,8 +844,8 @@ footer {
         </tr>
         <tr>
           <td><strong>Hotel — 4 Nights</strong></td>
-          <td>Premier Inn Berlin Alexanderplatz · June 10–14 · $150/night × 4 nights</td>
-          <td>$600</td>
+          <td>Premier Inn Berlin Alexanderplatz · June 10–14 · $200/night × 4 nights (taxes included)</td>
+          <td>$800</td>
         </tr>
         <tr>
           <td><strong>Airport Transfers</strong></td>
@@ -785,8 +859,8 @@ footer {
         </tr>
         <tr>
           <td><strong>Meals &amp; Entertainment</strong></td>
-          <td>5 days · Business-level dining · Cohort dinners and post-ceremony receptions</td>
-          <td>$800</td>
+          <td>5 days · Business-level dining · 1–2 hosted meals for high-value prospects and cohort networking receptions</td>
+          <td>$1,500</td>
         </tr>
         <tr>
           <td><strong>Representation Materials</strong></td>
@@ -805,18 +879,19 @@ footer {
         </tr>
         <tr class="total-row">
           <td colspan="2"><strong>Total Trip Capital Required</strong></td>
-          <td>$5,000</td>
+          <td>$5,900</td>
         </tr>
         <tr class="note-row">
-          <td colspan="3">Hotel confirmed at $150/night. Airfare quoted at Premium Economy rate departing June 9. Final receipts provided upon return.</td>
+          <td colspan="3">Hotel confirmed at $200/night including taxes. Airfare quoted at Premium Economy rate departing June 9. Final receipts provided upon return.</td>
         </tr>
       </tbody>
     </table>
+    </div>
 
     <div class="callout">
       <div class="callout-label">Context</div>
       <div class="callout-text">
-        This capital request represents <strong>less than 1% of the $500,000 seed round</strong> and activates access to the international credibility, network, and press opportunity that the full round is designed to enable. It is the highest-leverage deployment of capital in the current sprint.
+        This capital request represents <strong>1.2% of the $500,000 seed round</strong> and activates access to the international credibility, network, and press opportunity that the full round is designed to enable. It is the highest-leverage deployment of capital in the current sprint.
       </div>
     </div>
   </section>
@@ -882,8 +957,8 @@ footer {
 
     <div class="ask-box">
       <div class="ask-label">Berlin Representation Capital — Total Request</div>
-      <div class="ask-amount">$5,000</div>
-      <div class="ask-desc">All-in capital request — Premium Economy airfare, hotel, transport, meals, materials, and contingency.</div>
+      <div class="ask-amount">$5,900</div>
+      <div class="ask-desc">All-in capital request — Premium Economy airfare, hotel with taxes, transport, hosted prospect meals, materials, and contingency.</div>
       <div class="ask-breakdown">
         <span><strong>June 1</strong>Final budget delivered</span>
         <span><strong>June 5</strong>Flights booked</span>
@@ -916,6 +991,7 @@ footer {
   Copyright &copy; 2026 Genesis App, Inc. &nbsp;|&nbsp; Confidential &amp; Proprietary &nbsp;|&nbsp; Prepared for Lesley Harris &mdash; Lead Investor
 </footer>
 
+<button class="print-btn no-print" onclick="window.print()" title="Print or save as PDF">🖨️</button>
 <button class="theme-toggle no-print" id="themeToggle" title="Toggle light / dark mode">🌙</button>
 
 <script>
