@@ -778,13 +778,29 @@ function addMsg(role, text) {
 }
 
 /* ── VOICE: ALWAYS-ON ENGINE ─────────────────────────────── */
-var wakeRecog    = null;
-var isSpeaking   = false;
-var awaitCmd     = false;
-var voiceReady   = false;
-var pushActive   = false;
-var permBlocked  = false; /* set on not-allowed; prevents onend restart loop */
-var micStream    = null;  /* holds getUserMedia stream to keep permission alive */
+var wakeRecog      = null;
+var isSpeaking     = false;
+var awaitCmd       = false;
+var awaitCmdTimer  = null; /* auto-cancel awaitCmd after 8s if no follow-up heard */
+var voiceReady     = false;
+var pushActive     = false;
+var permBlocked    = false; /* set on not-allowed; prevents onend restart loop */
+var micStream      = null;  /* holds getUserMedia stream to keep permission alive */
+
+function setAwaitCmd(val) {
+  awaitCmd = val;
+  clearTimeout(awaitCmdTimer);
+  awaitCmdTimer = null;
+  if (val) {
+    /* Auto-expire: if nothing heard in 8s, drop back to wake-word mode */
+    awaitCmdTimer = setTimeout(function() {
+      awaitCmd = false;
+      awaitCmdTimer = null;
+      if (!isSpeaking) setVoicePill('active', 'Say "Hey ATLAS"');
+      setAtlasState('idle');
+    }, 8000);
+  }
+}
 
 function setVoicePill(state, text) {
   var pill = document.getElementById('voicePill');
@@ -829,7 +845,11 @@ function buildRecognition(SR) {
   wakeRecog.onstart = function() {
     voiceReady  = true;
     permBlocked = false;
-    if (!isSpeaking && !pushActive) setVoicePill('active', 'Say "Hey ATLAS"');
+    if (!isSpeaking && !pushActive) {
+      /* Preserve "Listening…" state if we're mid-command-await */
+      setVoicePill('active', awaitCmd ? 'Listening…' : 'Say "Hey ATLAS"');
+      if (awaitCmd) setAtlasState('listening');
+    }
     var p = document.getElementById('wakePrompt');
     if (p) p.classList.remove('show');
   };
@@ -844,12 +864,12 @@ function buildRecognition(SR) {
     var wm = text.match(/(?:hey\s+)?atlas[,.\s]*(.*)/i);
     if (wm) {
       var cmd = (wm[1] || '').trim();
-      awaitCmd = !cmd;
+      setAwaitCmd(!cmd); /* start 8s timer if no inline command */
       setAtlasState('listening');
       setVoicePill('active', awaitCmd ? 'Listening…' : 'Processing…');
       if (cmd) processCmd(cmd);
     } else if (awaitCmd) {
-      awaitCmd = false;
+      setAwaitCmd(false);
       processCmd(text);
     }
   };
@@ -906,13 +926,13 @@ function pushToTalk() {
 
   if (pushActive) {
     pushActive = false;
-    awaitCmd   = false;
+    setAwaitCmd(false);
     btn && btn.classList.remove('push-active');
     setAtlasState('idle');
     setVoicePill('active', 'Say "Hey ATLAS"');
   } else {
     pushActive = true;
-    awaitCmd   = true;
+    setAwaitCmd(true);
     btn && btn.classList.add('push-active');
     setAtlasState('listening');
     setVoicePill('active', 'Speak now…');
@@ -1026,6 +1046,7 @@ function speak(text, cb) {
 
 /* ── COMMAND PROCESSING ─────────────────────────────────── */
 function processCmd(text) {
+  setAwaitCmd(false); /* always clear — covers push-to-talk, text box, quick-action paths */
   pushActive = false;
   var btn = document.getElementById('micBtn');
   if (btn) btn.classList.remove('push-active');
