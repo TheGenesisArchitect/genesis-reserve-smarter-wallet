@@ -176,10 +176,12 @@ body{
 /* pages container */
 .pages-wrap{
   flex:1;overflow:hidden;position:relative;
+  perspective:1200px;perspective-origin:50% 50%;
 }
 .pages{
   display:flex;height:100%;
-  transition:transform .4s cubic-bezier(.25,.8,.25,1);
+  transform-style:preserve-3d;
+  will-change:transform;
 }
 .page{
   min-width:390px;height:100%;overflow:hidden;
@@ -457,6 +459,16 @@ body{
   display:flex;align-items:center;justify-content:center;
   font-family:'JetBrains Mono',monospace;font-weight:600;
   border:1.5px solid #06080d;
+  pointer-events:none;
+  animation:badge-pop .3s cubic-bezier(.34,1.56,.64,1) both;
+}
+.notif-urgent{background:var(--red)}
+.notif-info{background:var(--blue)}
+.notif-success{background:var(--teal)}
+.notif-warn{background:var(--orange)}
+@keyframes badge-pop{
+  0%{transform:scale(0);opacity:0}
+  100%{transform:scale(1);opacity:1}
 }
 
 /* runway indicator */
@@ -721,10 +733,7 @@ body{
                   <div class="app-label">Wallet Demo</div>
                 </div>
                 <div class="app" onclick="openApp('loi-lesley')">
-                  <div class="app-icon ic-orange" style="position:relative">
-                    <span>✍️</span>
-                    <div class="notif">1</div>
-                  </div>
+                  <div class="app-icon ic-orange">✍️</div>
                   <div class="app-label">LOI · Lesley</div>
                 </div>
                 <div class="app" onclick="openApp('berlin-brief')">
@@ -751,9 +760,7 @@ body{
                   <div class="app-label">Investor Deck</div>
                 </div>
                 <div class="app" onclick="openApp('loi-lesley')">
-                  <div class="app-icon ic-orange" style="position:relative">
-                    <span>✍️</span><div class="notif">1</div>
-                  </div>
+                  <div class="app-icon ic-orange">✍️</div>
                   <div class="app-label">LOI · Lesley</div>
                 </div>
                 <div class="app" onclick="openApp('ppm')">
@@ -1180,6 +1187,15 @@ body{
 </div><!-- /orbit -->
 
 <script>
+// ── NOTIFICATION REGISTRY ──
+// type: 'urgent' (red) | 'info' (blue) | 'success' (teal) | 'warn' (orange)
+var NOTIFICATIONS = {
+  'loi-lesley':    { count: 1, type: 'urgent',  label: 'Signature Required' },
+  'berlin-brief':  { count: 1, type: 'warn',    label: 'Jun 12 Deadline' },
+  'growth-model':  { count: 1, type: 'success', label: 'v2.1 Live' },
+  'investor-deck': { count: 1, type: 'info',    label: 'Review Ready' },
+};
+
 // ── APP REGISTRY ──
 var APPS = {
   'growth-model':        {title:'Growth Model v2.1',  url:'genesis-reserve-growth-model.html'},
@@ -1241,6 +1257,7 @@ var currentPage = 0;
 var currentAppKey = null;
 var totalPages = 6;
 var touchStartX = 0;
+var tiltTimer = null;
 
 // ── CLOCK ──
 function updateClock(){
@@ -1257,31 +1274,137 @@ function updateClock(){
 updateClock();
 setInterval(updateClock, 1000);
 
-// ── PAGE NAV ──
-function goToPage(n){
-  currentPage = Math.max(0, Math.min(totalPages-1, n));
-  document.getElementById('pages').style.transform = 'translateX(-' + (currentPage * 390) + 'px)';
-  var dots = document.querySelectorAll('.dot');
-  dots.forEach(function(d,i){ d.classList.toggle('active', i === currentPage); });
+// ── PAGE NAV (with depth animation) ──
+function setTransform(tx, ry, duration, easing){
+  var pages = document.getElementById('pages');
+  pages.style.transition = duration ? ('transform ' + duration + 'ms ' + (easing||'cubic-bezier(.25,.8,.25,1)')) : 'none';
+  pages.style.transform = 'perspective(1200px) translateX(' + tx + 'px) rotateY(' + ry + 'deg)';
 }
 
-// ── SWIPE ──
+function goToPage(n){
+  var prev = currentPage;
+  currentPage = Math.max(0, Math.min(totalPages-1, n));
+  if(prev === currentPage) return;
+  var dir = currentPage > prev ? -1 : 1; // -1 = swiped left, 1 = swiped right
+  var tx = -(currentPage * 390);
+
+  // Phase 1: slide + tilt (260ms)
+  clearTimeout(tiltTimer);
+  setTransform(tx, dir * 5, 260, 'cubic-bezier(.4,0,.2,1)');
+
+  // Phase 2: settle back to flat (220ms ease-out)
+  tiltTimer = setTimeout(function(){
+    setTransform(tx, 0, 220, 'ease-out');
+  }, 260);
+
+  document.querySelectorAll('.dot').forEach(function(d,i){
+    d.classList.toggle('active', i === currentPage);
+  });
+}
+
+// ── SWIPE — touch (live drag with tilt) ──
 var pagesWrap = document.getElementById('pagesWrap');
-pagesWrap.addEventListener('touchstart', function(e){ touchStartX = e.touches[0].clientX; });
+var touchLive = false;
+
+pagesWrap.addEventListener('touchstart', function(e){
+  touchStartX = e.touches[0].clientX;
+  touchLive = true;
+  clearTimeout(tiltTimer);
+  setTransform(-(currentPage * 390), 0, 0, '');
+}, {passive:true});
+
+pagesWrap.addEventListener('touchmove', function(e){
+  if(!touchLive) return;
+  var dx = e.touches[0].clientX - touchStartX;
+  var maxDrag = 390;
+  dx = Math.max(-maxDrag, Math.min(maxDrag, dx));
+  var tilt = (dx / maxDrag) * -6; // max ±6° as you drag
+  setTransform(-(currentPage * 390) + dx, tilt, 0, '');
+}, {passive:true});
+
 pagesWrap.addEventListener('touchend', function(e){
+  if(!touchLive) return;
+  touchLive = false;
   var dx = e.changedTouches[0].clientX - touchStartX;
-  if(dx < -40) goToPage(currentPage + 1);
-  else if(dx > 40) goToPage(currentPage - 1);
+  if(dx < -40)      goToPage(currentPage + 1);
+  else if(dx > 40)  goToPage(currentPage - 1);
+  else {
+    // snap back to current page
+    setTransform(-(currentPage * 390), 0, 300, 'cubic-bezier(.25,.8,.25,1)');
+  }
 });
-// mouse swipe for desktop testing
+
+// ── SWIPE — mouse (live drag with tilt) ──
 var mouseStartX = 0, isDragging = false;
-pagesWrap.addEventListener('mousedown', function(e){ mouseStartX = e.clientX; isDragging = true; });
-pagesWrap.addEventListener('mouseup', function(e){
-  if(!isDragging) return; isDragging = false;
-  var dx = e.clientX - mouseStartX;
-  if(dx < -50) goToPage(currentPage + 1);
-  else if(dx > 50) goToPage(currentPage - 1);
+
+pagesWrap.addEventListener('mousedown', function(e){
+  mouseStartX = e.clientX;
+  isDragging = true;
+  clearTimeout(tiltTimer);
+  setTransform(-(currentPage * 390), 0, 0, '');
 });
+
+pagesWrap.addEventListener('mousemove', function(e){
+  if(!isDragging) return;
+  var dx = e.clientX - mouseStartX;
+  var maxDrag = 390;
+  dx = Math.max(-maxDrag, Math.min(maxDrag, dx));
+  var tilt = (dx / maxDrag) * -6;
+  setTransform(-(currentPage * 390) + dx, tilt, 0, '');
+});
+
+pagesWrap.addEventListener('mouseup', function(e){
+  if(!isDragging) return;
+  isDragging = false;
+  var dx = e.clientX - mouseStartX;
+  if(dx < -50)      goToPage(currentPage + 1);
+  else if(dx > 50)  goToPage(currentPage - 1);
+  else {
+    setTransform(-(currentPage * 390), 0, 300, 'cubic-bezier(.25,.8,.25,1)');
+  }
+});
+
+pagesWrap.addEventListener('mouseleave', function(){
+  if(!isDragging) return;
+  isDragging = false;
+  setTransform(-(currentPage * 390), 0, 300, 'cubic-bezier(.25,.8,.25,1)');
+});
+
+// ── NOTIFICATIONS ──
+function injectBadge(iconEl, key){
+  var notif = NOTIFICATIONS[key];
+  if(!notif) return;
+  var existing = iconEl.querySelector('.notif');
+  if(existing) existing.remove();
+  iconEl.style.position = 'relative';
+  var badge = document.createElement('div');
+  badge.className = 'notif notif-' + notif.type;
+  badge.textContent = notif.count > 9 ? '9+' : String(notif.count);
+  badge.title = notif.label;
+  iconEl.appendChild(badge);
+}
+
+function renderNotifications(){
+  document.querySelectorAll('.app[onclick], .dock-app[onclick]').forEach(function(el){
+    var attr = el.getAttribute('onclick') || '';
+    var m = attr.match(/openApp\('([^']+)'\)/);
+    if(!m) return;
+    var iconEl = el.querySelector('.app-icon') || el.querySelector('.dock-icon');
+    if(iconEl) injectBadge(iconEl, m[1]);
+  });
+}
+
+function clearNotification(key){
+  if(!NOTIFICATIONS[key]) return;
+  NOTIFICATIONS[key].count = 0;
+  // Remove all visible badges for this key
+  document.querySelectorAll('.app[onclick], .dock-app[onclick]').forEach(function(el){
+    var attr = el.getAttribute('onclick') || '';
+    if(attr.indexOf("'" + key + "'") === -1) return;
+    var b = el.querySelector('.notif');
+    if(b) b.remove();
+  });
+}
 
 // ── APP OPEN ──
 function openApp(key){
@@ -1291,6 +1414,7 @@ function openApp(key){
   document.getElementById('overlayTitle').textContent = app.title;
   document.getElementById('overlayFrame').src = app.url;
   document.getElementById('appOverlay').classList.add('open');
+  clearNotification(key); // mark as read on open
 }
 function closeOverlay(){
   document.getElementById('appOverlay').classList.remove('open');
@@ -1314,7 +1438,17 @@ function openFolder(key){
     var el = document.createElement('div');
     el.className = 'app';
     el.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer';
-    el.innerHTML = '<div class="app-icon '+a.cls+'" style="width:56px;height:56px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:22px">'+a.icon+'</div><div class="app-label" style="font-size:9px;color:rgba(255,255,255,0.7);text-align:center">'+a.label+'</div>';
+    var iconDiv = document.createElement('div');
+    iconDiv.className = 'app-icon ' + a.cls;
+    iconDiv.style.cssText = 'width:56px;height:56px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:22px;position:relative';
+    iconDiv.textContent = a.icon;
+    injectBadge(iconDiv, a.key);
+    var labelDiv = document.createElement('div');
+    labelDiv.className = 'app-label';
+    labelDiv.style.cssText = 'font-size:9px;color:rgba(255,255,255,0.7);text-align:center';
+    labelDiv.textContent = a.label;
+    el.appendChild(iconDiv);
+    el.appendChild(labelDiv);
     el.addEventListener('click', function(){
       closeFolder();
       setTimeout(function(){ openApp(a.key); }, 200);
@@ -1341,6 +1475,12 @@ document.addEventListener('keydown', function(e){
   if(e.key === 'ArrowLeft') goToPage(currentPage - 1);
   if(e.key === 'Escape'){ closeOverlay(); closeFolder(); }
 });
+
+// ── INIT ──
+// Set initial page transform so perspective is applied from frame 0
+setTransform(0, 0, 0, '');
+// Render all dynamic notification badges
+renderNotifications();
 </script>
 </body>
 </html>
