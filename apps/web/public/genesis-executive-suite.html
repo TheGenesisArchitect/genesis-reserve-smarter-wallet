@@ -783,6 +783,8 @@ var isSpeaking   = false;
 var awaitCmd     = false;
 var voiceReady   = false;
 var pushActive   = false;
+var permBlocked  = false; /* set on not-allowed; prevents onend restart loop */
+var micStream    = null;  /* holds getUserMedia stream to keep permission alive */
 
 function setVoicePill(state, text) {
   var pill = document.getElementById('voicePill');
@@ -794,33 +796,57 @@ function setVoicePill(state, text) {
 
 function initAlwaysOn() {
   var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SR) { setVoicePill('off','Voice not supported in this browser'); return; }
+  if (!SR) { setVoicePill('off', 'Voice not supported in this browser'); return; }
 
+  /* Pre-warm mic permission via getUserMedia so the browser records it as
+     "granted" before SpeechRecognition ever calls start(). This prevents
+     Chrome from re-prompting on every restart after safeStop/safeStart. */
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    buildRecognition(SR); /* fallback for older browsers */
+    return;
+  }
+  navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+    .then(function(stream) {
+      micStream    = stream;
+      permBlocked  = false;
+      buildRecognition(SR);
+    })
+    .catch(function() {
+      permBlocked = true;
+      setVoicePill('pending', 'Tap to enable voice');
+      var p = document.getElementById('wakePrompt');
+      if (p) p.classList.add('show');
+    });
+}
+
+function buildRecognition(SR) {
   wakeRecog = new SR();
-  wakeRecog.continuous = true;
-  wakeRecog.interimResults = false;
-  wakeRecog.lang = 'en-US';
+  wakeRecog.continuous      = true;
+  wakeRecog.interimResults  = false;
+  wakeRecog.lang            = 'en-US';
   wakeRecog.maxAlternatives = 1;
 
   wakeRecog.onstart = function() {
-    voiceReady = true;
-    if (!isSpeaking && !pushActive) setVoicePill('active','Say "Hey ATLAS"');
-    document.getElementById('wakePrompt') && document.getElementById('wakePrompt').classList.remove('show');
+    voiceReady  = true;
+    permBlocked = false;
+    if (!isSpeaking && !pushActive) setVoicePill('active', 'Say "Hey ATLAS"');
+    var p = document.getElementById('wakePrompt');
+    if (p) p.classList.remove('show');
   };
 
   wakeRecog.onresult = function(e) {
+    /* Ignore everything while ATLAS is speaking — avoids echo triggers */
     if (isSpeaking) return;
     var res = e.results[e.results.length - 1];
     if (!res.isFinal) return;
     var text = res[0].transcript.toLowerCase().trim();
 
-    /* Wake word match: "hey atlas ..." or "atlas ..." */
     var wm = text.match(/(?:hey\s+)?atlas[,.\s]*(.*)/i);
     if (wm) {
       var cmd = (wm[1] || '').trim();
       awaitCmd = !cmd;
       setAtlasState('listening');
-      setVoicePill('active', awaitCmd ? 'Listening for command…' : 'Processing…');
+      setVoicePill('active', awaitCmd ? 'Listening…' : 'Processing…');
       if (cmd) processCmd(cmd);
     } else if (awaitCmd) {
       awaitCmd = false;
@@ -830,62 +856,63 @@ function initAlwaysOn() {
 
   wakeRecog.onend = function() {
     voiceReady = false;
-    /* Auto-restart unless we are currently speaking */
-    if (!isSpeaking) {
-      setTimeout(function() { safeStart(); }, 250);
+    /* Only restart if permission is still good and ATLAS isn't speaking.
+       permBlocked prevents the restart loop that follows a not-allowed error. */
+    if (!isSpeaking && !permBlocked) {
+      setTimeout(safeStart, 300);
     }
   };
 
   wakeRecog.onerror = function(e) {
     voiceReady = false;
     if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
+      permBlocked = true; /* onend will fire next — this stops the loop */
       setVoicePill('pending', 'Tap to enable voice');
       var p = document.getElementById('wakePrompt');
       if (p) p.classList.add('show');
       return;
     }
-    /* Restart on transient errors */
-    setTimeout(function() { safeStart(); }, 1000);
+    if (e.error === 'aborted') return; /* intentional abort, onend handles restart */
+    setTimeout(safeStart, 1500);
   };
 
   safeStart();
 }
 
 function safeStart() {
-  if (!wakeRecog || isSpeaking) return;
-  try { wakeRecog.start(); } catch(e) { /* already running */ }
+  if (!wakeRecog || isSpeaking || permBlocked) return;
+  try { wakeRecog.start(); } catch(ignored) { /* already running */ }
 }
 
-function safeStop() {
-  if (!wakeRecog) return;
-  try { wakeRecog.stop(); } catch(e) {}
-  voiceReady = false;
-}
-
-/* Called when user taps the voice pill or wake prompt banner */
+/* activateVoiceManually — called by voice pill tap or wake prompt banner */
 function activateVoiceManually() {
+  permBlocked = false;
   if (wakeRecog) safeStart();
   else initAlwaysOn();
 }
 
-/* Push-to-talk: mic button activates command mode directly */
+/* pushToTalk — mic button; interrupt TTS on tap when speaking */
 function pushToTalk() {
-  if (isSpeaking) { window.speechSynthesis && window.speechSynthesis.cancel(); isSpeaking = false; setAtlasState('idle'); return; }
-  var btn = document.getElementById('micBtn');
-  var input = document.getElementById('atlasInput');
+  if (isSpeaking) {
+    window.speechSynthesis && window.speechSynthesis.cancel();
+    stopTtsKeepAlive();
+    isSpeaking = false;
+    setAtlasState('idle');
+    setVoicePill('active', 'Say "Hey ATLAS"');
+    return;
+  }
   if (!wakeRecog) { initAlwaysOn(); return; }
+  var btn = document.getElementById('micBtn');
 
   if (pushActive) {
-    /* Second tap: cancel push-to-talk */
     pushActive = false;
+    awaitCmd   = false;
     btn && btn.classList.remove('push-active');
-    awaitCmd = false;
     setAtlasState('idle');
     setVoicePill('active', 'Say "Hey ATLAS"');
   } else {
-    /* First tap: enter push-to-talk listen mode */
     pushActive = true;
-    awaitCmd  = true;
+    awaitCmd   = true;
     btn && btn.classList.add('push-active');
     setAtlasState('listening');
     setVoicePill('active', 'Speak now…');
@@ -893,41 +920,108 @@ function pushToTalk() {
   }
 }
 
-/* ── TTS ─────────────────────────────────────────────────── */
-var ttsVoices = [];
-window.speechSynthesis && typeof window.speechSynthesis.addEventListener === 'function' &&
-  window.speechSynthesis.addEventListener('voiceschanged', function() { ttsVoices = window.speechSynthesis.getVoices(); });
+/* ── TTS — NATURAL SENTENCE-CHUNKED SPEECH ───────────────── */
+var ttsVoices    = [];
+var ttsKeepalive = null;
 
-function speak(text, cb) {
-  if (!window.speechSynthesis) { cb && cb(); return; }
-  speechSynthesis.cancel();
-  isSpeaking = true;
-  safeStop(); /* pause mic while speaking */
-  setVoicePill('off', 'ATLAS speaking…');
+if (window.speechSynthesis) {
+  window.speechSynthesis.getVoices(); /* prime on load */
+  if (typeof window.speechSynthesis.addEventListener === 'function') {
+    window.speechSynthesis.addEventListener('voiceschanged', function() {
+      ttsVoices = window.speechSynthesis.getVoices();
+    });
+  }
+}
 
-  var utt = new SpeechSynthesisUtterance(text);
-  utt.rate = 0.92; utt.pitch = 0.88; utt.volume = 1;
+/* Chrome silently pauses TTS after ~14s — this keepalive prevents that */
+function startTtsKeepalive() {
+  stopTtsKeepAlive();
+  ttsKeepalive = setInterval(function() {
+    if (window.speechSynthesis && window.speechSynthesis.speaking) {
+      window.speechSynthesis.pause();
+      window.speechSynthesis.resume();
+    }
+  }, 10000);
+}
+function stopTtsKeepAlive() {
+  if (ttsKeepalive) { clearInterval(ttsKeepalive); ttsKeepalive = null; }
+}
+
+function pickVoice() {
   if (!ttsVoices.length) ttsVoices = window.speechSynthesis.getVoices();
-  var v = ttsVoices.find(function(v){ return /daniel|google uk english male|alex|david/i.test(v.name); })
-       || ttsVoices.find(function(v){ return v.lang==='en-US' && v.localService; })
-       || ttsVoices[0];
-  if (v) utt.voice = v;
+  /* Priority: Google US English (Chrome) → Samantha (macOS) → Daniel (UK) →
+               any local en-US → any en-* → first available */
+  return ttsVoices.find(function(v){ return /google us english/i.test(v.name); })
+      || ttsVoices.find(function(v){ return /samantha/i.test(v.name); })
+      || ttsVoices.find(function(v){ return /daniel/i.test(v.name); })
+      || ttsVoices.find(function(v){ return /google uk english male/i.test(v.name); })
+      || ttsVoices.find(function(v){ return v.lang === 'en-US' && v.localService; })
+      || ttsVoices.find(function(v){ return /^en/i.test(v.lang); })
+      || ttsVoices[0]
+      || null;
+}
 
-  utt.onend = function() {
+/* Split text at sentence boundaries for natural pacing.
+   Each chunk is spoken as its own utterance with a small gap between. */
+function splitSentences(text) {
+  var chunks = text.replace(/([.!?])\s+/g, '$1\n').split('\n');
+  return chunks.map(function(s){ return s.trim(); }).filter(Boolean);
+}
+
+function speakChain(chunks, idx, voice, cb) {
+  if (idx >= chunks.length) {
+    /* All chunks done */
+    stopTtsKeepAlive();
     isSpeaking = false;
     pushActive = false;
     var btn = document.getElementById('micBtn');
     if (btn) btn.classList.remove('push-active');
     setAtlasState('idle');
-    setTimeout(function() { safeStart(); }, 350);
+    /* Brief buffer before restarting recognition to avoid echo pickup */
+    setTimeout(safeStart, 600);
     cb && cb();
+    return;
+  }
+
+  var utt   = new SpeechSynthesisUtterance(chunks[idx]);
+  utt.rate  = 0.87;  /* slightly measured — sounds authoritative, not robotic */
+  utt.pitch = 0.90;  /* slight bass without sounding synthetic */
+  utt.volume = 1;
+  if (voice) utt.voice = voice;
+
+  utt.onend = function() {
+    /* Natural inter-sentence pause: comma phrases 80ms, sentences 140ms */
+    var pause = chunks[idx].slice(-1) === ',' ? 80 : 140;
+    setTimeout(function() { speakChain(chunks, idx + 1, voice, cb); }, pause);
   };
   utt.onerror = function() {
+    stopTtsKeepAlive();
     isSpeaking = false;
     setAtlasState('idle');
-    setTimeout(function() { safeStart(); }, 350);
+    setTimeout(safeStart, 600);
   };
+
   window.speechSynthesis.speak(utt);
+}
+
+function speak(text, cb) {
+  if (!window.speechSynthesis) { cb && cb(); return; }
+
+  /* Cancel any in-flight speech and mark speaking BEFORE any recognition
+     restart can happen — do NOT call safeStop() here. Recognition keeps
+     running; onresult silently drops results while isSpeaking is true. */
+  window.speechSynthesis.cancel();
+  isSpeaking = true;
+  setAtlasState('speaking');
+  setVoicePill('off', 'ATLAS speaking…');
+  startTtsKeepalive();
+
+  var voice  = pickVoice();
+  var chunks = splitSentences(text);
+  if (!chunks.length) chunks = [text];
+
+  /* Small lead-in delay so state change renders before first utterance */
+  setTimeout(function() { speakChain(chunks, 0, voice, cb); }, 80);
 }
 
 /* ── COMMAND PROCESSING ─────────────────────────────────── */
