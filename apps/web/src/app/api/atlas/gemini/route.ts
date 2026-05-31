@@ -3,9 +3,12 @@ import { NextRequest, NextResponse } from 'next/server'
 export const runtime = 'nodejs'
 
 export async function POST(req: NextRequest) {
-  const apiKey = process.env.GeminiAtlas_API_Key
+  const apiKey =
+    process.env.GeminiAtlas_API_Key ||
+    process.env.GEMINI_API_KEY       ||
+    process.env.GeminiAtlas_API_KEY
   if (!apiKey) {
-    return NextResponse.json({ error: 'GeminiAtlas_API_Key not configured' }, { status: 503 })
+    return NextResponse.json({ error: 'Gemini API key not configured (tried GeminiAtlas_API_Key, GEMINI_API_KEY)' }, { status: 503 })
   }
 
   const body = await req.json()

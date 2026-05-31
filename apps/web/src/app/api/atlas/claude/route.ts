@@ -3,9 +3,11 @@ import { NextRequest, NextResponse } from 'next/server'
 export const runtime = 'nodejs'
 
 export async function POST(req: NextRequest) {
-  const apiKey = process.env.Claude_Helix_Atlas_API_Key
+  const apiKey =
+    process.env.Claude_Helix_Atlas_API_Key ||
+    process.env.ANTHROPIC_API_KEY
   if (!apiKey) {
-    return NextResponse.json({ error: 'Claude_Helix_Atlas_API_Key not configured' }, { status: 503 })
+    return NextResponse.json({ error: 'Claude API key not configured (tried Claude_Helix_Atlas_API_Key, ANTHROPIC_API_KEY)' }, { status: 503 })
   }
 
   const { system, messages } = await req.json()

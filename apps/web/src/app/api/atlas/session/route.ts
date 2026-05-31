@@ -8,9 +8,12 @@ export const runtime = 'nodejs'
  * it from being hard-coded in the client bundle.
  */
 export async function GET(_req: NextRequest) {
-  const apiKey = process.env.GeminiAtlas_API_Key
+  const apiKey =
+    process.env.GeminiAtlas_API_Key ||
+    process.env.GEMINI_API_KEY       ||
+    process.env.GeminiAtlas_API_KEY
   if (!apiKey) {
-    return NextResponse.json({ error: 'GeminiAtlas_API_Key not configured' }, { status: 503 })
+    return NextResponse.json({ error: 'Gemini API key not configured (tried GeminiAtlas_API_Key, GEMINI_API_KEY)' }, { status: 503 })
   }
 
   const wsUrl =
