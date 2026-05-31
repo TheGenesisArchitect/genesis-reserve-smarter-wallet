@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
 
 /**
  * Returns a Gemini Live WebSocket URL for the browser to connect directly.
