@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Executive Suite · ATLAS · Genesis Reserve</title>
+<script src="device.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -26,6 +27,7 @@
   --violet: #9B6DFF;
   --ease:   cubic-bezier(.4,0,.2,1);
   --spring: cubic-bezier(.34,1.56,.64,1);
+  --tab-h:  64px;
 }
 *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
 button { background: none; border: none; cursor: pointer; color: inherit; font: inherit; }
@@ -36,6 +38,7 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
   display: flex;
   flex-direction: column;
   height: 100vh;
+  height: 100dvh;
   background:
     radial-gradient(ellipse 80% 60% at 15% 50%, rgba(201,168,76,.04) 0%, transparent 60%),
     radial-gradient(ellipse 60% 80% at 85% 30%, rgba(155,109,255,.04) 0%, transparent 60%),
@@ -48,14 +51,15 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
   height: 56px;
   display: flex;
   align-items: center;
-  padding: 0 24px;
+  padding: 0 20px;
   border-bottom: 1px solid rgba(255,255,255,.06);
-  background: rgba(4,6,8,.8);
+  background: rgba(4,6,8,.85);
   backdrop-filter: blur(20px);
-  gap: 16px;
+  gap: 12px;
   position: relative;
+  z-index: 50;
 }
-.suite-header::before {
+.suite-header::after {
   content: '';
   position: absolute;
   bottom: 0; left: 0; right: 0;
@@ -65,75 +69,38 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
 .hdr-back {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   font-size: 12px;
   color: var(--muted);
   padding: 6px 10px;
   border-radius: 8px;
   transition: all .15s;
   text-decoration: none;
+  white-space: nowrap;
 }
 .hdr-back:hover { background: rgba(255,255,255,.06); color: var(--text); }
-.hdr-divider { width: 1px; height: 20px; background: rgba(255,255,255,.1); }
-.hdr-dept {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 18px;
-  font-weight: 300;
-  letter-spacing: .04em;
-  color: var(--text);
-}
-.hdr-sub {
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  color: var(--gold);
-}
+.hdr-divider { width: 1px; height: 20px; background: rgba(255,255,255,.1); flex-shrink: 0; }
+.hdr-dept { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 300; letter-spacing: .04em; color: var(--text); }
+.hdr-sub  { font-size: 10px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); }
 .hdr-spacer { flex: 1; }
 .atlas-status-pill {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  padding: 5px 12px;
-  background: rgba(26,191,106,.08);
-  border: 1px solid rgba(26,191,106,.18);
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--green);
+  display: flex; align-items: center; gap: 7px; padding: 5px 12px;
+  background: rgba(26,191,106,.08); border: 1px solid rgba(26,191,106,.18);
+  border-radius: 20px; font-size: 11px; font-weight: 500; color: var(--green);
+  white-space: nowrap;
 }
-.status-dot {
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  background: var(--green);
-  box-shadow: 0 0 6px var(--green);
-  animation: pulse-dot 2s ease-in-out infinite;
-}
-@keyframes pulse-dot {
-  0%,100% { opacity: 1; }
-  50%      { opacity: .4; }
-}
+.status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px var(--green); animation: dot-pulse 2s ease-in-out infinite; }
+@keyframes dot-pulse { 0%,100%{opacity:1}50%{opacity:.35} }
 .hdr-head {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 4px 10px;
-  border: 1px solid rgba(255,255,255,.07);
-  border-radius: 8px;
-  font-size: 12px;
-  color: var(--text);
+  display: flex; align-items: center; gap: 8px; padding: 4px 10px;
+  border: 1px solid rgba(255,255,255,.07); border-radius: 8px; font-size: 12px; color: var(--text);
 }
 .hdr-head-role { color: var(--muted); font-size: 10px; margin-top: 1px; }
 .head-avatar {
-  width: 28px; height: 28px;
-  border-radius: 8px;
+  width: 28px; height: 28px; border-radius: 8px;
   background: linear-gradient(135deg, var(--gold), var(--violet));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: var(--bg);
 }
 
 /* ── BODY ────────────────────────────────────────────────── */
@@ -142,6 +109,7 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
   display: flex;
   overflow: hidden;
   min-height: 0;
+  position: relative;
 }
 
 /* ── ATLAS PANEL ─────────────────────────────────────────── */
@@ -152,635 +120,377 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
   flex-direction: column;
   border-right: 1px solid rgba(255,255,255,.06);
   background: rgba(4,6,8,.6);
+  transition: transform .3s var(--ease), opacity .3s;
 }
-
-/* Avatar area */
 .atlas-avatar-wrap {
   flex-shrink: 0;
-  padding: 28px 20px 16px;
+  padding: 24px 20px 14px;
   display: flex;
   flex-direction: column;
   align-items: center;
   border-bottom: 1px solid rgba(255,255,255,.05);
-  background:
-    radial-gradient(ellipse 100% 80% at 50% 0%, rgba(201,168,76,.06) 0%, transparent 70%);
+  background: radial-gradient(ellipse 100% 80% at 50% 0%, rgba(201,168,76,.06) 0%, transparent 70%);
 }
-
-/* Spinning gradient ring */
-.avatar-ring-wrap {
-  position: relative;
-  width: 156px;
-  height: 156px;
-  margin-bottom: 16px;
-}
+/* Ring avatar */
+.avatar-ring-wrap { position: relative; width: 148px; height: 148px; margin-bottom: 14px; }
 .avatar-ring {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
+  position: absolute; inset: 0; border-radius: 50%;
   background: conic-gradient(from 0deg, #C9A84C 0%, #E8CB6E 20%, #9B6DFF 50%, #4A9EFF 70%, #C9A84C 100%);
   animation: ring-spin 8s linear infinite;
-  transition: animation-duration .6s;
 }
 @keyframes ring-spin { to { transform: rotate(360deg); } }
-
-.avatar-face-wrap {
-  position: absolute;
-  inset: 3px;
-  border-radius: 50%;
-  overflow: hidden;
-}
+.avatar-face-wrap { position: absolute; inset: 3px; border-radius: 50%; overflow: hidden; }
 .avatar-face {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
+  width: 100%; height: 100%; border-radius: 50%;
   background: radial-gradient(circle at 42% 38%, #0c1018, #040608);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
   position: relative;
 }
 .avatar-face::before {
-  content: 'ATLAS';
-  position: absolute;
-  top: 16px;
-  font-size: 8px;
-  font-weight: 700;
-  letter-spacing: .3em;
-  color: rgba(201,168,76,.35);
-  font-family: 'JetBrains Mono', monospace;
+  content: 'ATLAS'; position: absolute; top: 14px;
+  font-size: 8px; font-weight: 700; letter-spacing: .3em;
+  color: rgba(201,168,76,.35); font-family: 'JetBrains Mono', monospace;
 }
-
-/* Eyes */
-.atlas-eyes {
-  display: flex;
-  gap: 18px;
-  align-items: center;
-  margin-top: 8px;
-}
+.atlas-eyes { display: flex; gap: 18px; align-items: center; margin-top: 8px; }
 .atlas-eye {
-  width: 28px;
-  height: 3px;
-  background: var(--gold);
-  border-radius: 2px;
-  box-shadow: 0 0 8px var(--gold), 0 0 20px rgba(201,168,76,.4);
+  width: 26px; height: 3px; background: var(--gold); border-radius: 2px;
+  box-shadow: 0 0 8px var(--gold), 0 0 20px rgba(201,168,76,.35);
   animation: eye-blink 7s ease-in-out infinite, eye-glow 2s ease-in-out infinite alternate;
   transition: background .4s, box-shadow .4s;
 }
-@keyframes eye-blink {
-  0%,88%,100% { transform: scaleY(1); }
-  92%          { transform: scaleY(0.05); }
-}
-@keyframes eye-glow {
-  from { box-shadow: 0 0 6px var(--gold), 0 0 14px rgba(201,168,76,.3); }
-  to   { box-shadow: 0 0 10px var(--gold), 0 0 24px rgba(201,168,76,.5); }
-}
-
-/* Waveform bars */
-.atlas-wave {
-  display: flex;
-  align-items: flex-end;
-  gap: 3px;
-  height: 22px;
-  opacity: 0;
-  transition: opacity .3s;
-}
-.atlas-wave .wbar {
-  width: 3px;
-  border-radius: 1.5px;
-  background: var(--gold);
-  min-height: 3px;
-  animation: wave-bar 1.1s ease-in-out infinite;
-}
-.wbar:nth-child(1) { animation-delay: 0s;    height: 8px;  }
-.wbar:nth-child(2) { animation-delay: .1s;   height: 14px; }
-.wbar:nth-child(3) { animation-delay: .2s;   height: 20px; }
-.wbar:nth-child(4) { animation-delay: .15s;  height: 16px; }
-.wbar:nth-child(5) { animation-delay: .05s;  height: 10px; }
-.wbar:nth-child(6) { animation-delay: .25s;  height: 18px; }
-.wbar:nth-child(7) { animation-delay: .12s;  height: 12px; }
-@keyframes wave-bar {
-  0%,100% { transform: scaleY(.3); opacity: .6; }
-  50%      { transform: scaleY(1);  opacity: 1; }
-}
-
-/* Pulse overlay */
+@keyframes eye-blink { 0%,88%,100%{transform:scaleY(1)}92%{transform:scaleY(.05)} }
+@keyframes eye-glow  { from{box-shadow:0 0 6px var(--gold),0 0 14px rgba(201,168,76,.25)} to{box-shadow:0 0 10px var(--gold),0 0 24px rgba(201,168,76,.5)} }
+.atlas-wave { display: flex; align-items: flex-end; gap: 3px; height: 20px; opacity: 0; transition: opacity .3s; }
+.atlas-wave .wbar { width: 3px; border-radius: 1.5px; background: var(--gold); min-height: 3px; animation: wave-bar 1.1s ease-in-out infinite; }
+.wbar:nth-child(1){animation-delay:.00s;height:7px}.wbar:nth-child(2){animation-delay:.10s;height:13px}
+.wbar:nth-child(3){animation-delay:.20s;height:19px}.wbar:nth-child(4){animation-delay:.15s;height:15px}
+.wbar:nth-child(5){animation-delay:.05s;height:9px} .wbar:nth-child(6){animation-delay:.25s;height:17px}
+.wbar:nth-child(7){animation-delay:.12s;height:11px}
+@keyframes wave-bar { 0%,100%{transform:scaleY(.3);opacity:.6}50%{transform:scaleY(1);opacity:1} }
 .avatar-pulse {
-  position: absolute;
-  inset: -8px;
-  border-radius: 50%;
+  position: absolute; inset: -8px; border-radius: 50%;
   border: 1px solid rgba(201,168,76,.2);
-  animation: pulse-ring 2.5s ease-out infinite;
-  opacity: 0;
+  animation: pulse-ring 2.5s ease-out infinite; opacity: 0;
 }
-@keyframes pulse-ring {
-  0%   { transform: scale(.9); opacity: .6; }
-  100% { transform: scale(1.15); opacity: 0; }
-}
-
-/* State classes */
-.atlas-state-idle     .avatar-ring { animation-duration: 8s; }
-.atlas-state-listening .avatar-ring { animation-duration: 1.2s; background: conic-gradient(from 0deg, #1ABF6A, #00D4AA, #1ABF6A); }
-.atlas-state-listening .atlas-eye  { background: var(--teal); box-shadow: 0 0 8px var(--teal); }
-.atlas-state-thinking  .avatar-ring { animation-duration: 2s; background: conic-gradient(from 0deg, #9B6DFF, #4A9EFF, #9B6DFF); }
-.atlas-state-thinking  .atlas-eye  { background: var(--violet); box-shadow: 0 0 8px var(--violet); animation: eye-flicker .3s infinite; }
+@keyframes pulse-ring { 0%{transform:scale(.9);opacity:.6}100%{transform:scale(1.15);opacity:0} }
+/* Avatar states */
+.atlas-state-listening .avatar-ring { animation-duration: 1.2s; background: conic-gradient(from 0deg,#1ABF6A,#00D4AA,#1ABF6A); }
+.atlas-state-listening .atlas-eye  { background:var(--teal); box-shadow:0 0 8px var(--teal); }
+.atlas-state-thinking  .avatar-ring { animation-duration: 2s; background: conic-gradient(from 0deg,#9B6DFF,#4A9EFF,#9B6DFF); }
+.atlas-state-thinking  .atlas-eye  { background:var(--violet); box-shadow:0 0 8px var(--violet); animation:eye-flicker .3s infinite; }
 .atlas-state-speaking  .avatar-ring { animation-duration: .6s; }
 .atlas-state-speaking  .atlas-wave { opacity: 1; }
 .atlas-state-speaking  .avatar-pulse { animation-duration: 1.5s; opacity: 1; }
-@keyframes eye-flicker { 0%,100% { opacity: 1; } 50% { opacity: .2; } }
-
-.atlas-name {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 20px;
-  font-weight: 300;
-  letter-spacing: .1em;
-  color: var(--text);
+@keyframes eye-flicker { 0%,100%{opacity:1}50%{opacity:.15} }
+.atlas-name { font-family: 'Cormorant Garamond', serif; font-size: 19px; font-weight: 300; letter-spacing: .1em; color: var(--text); }
+.atlas-role { font-size: 9px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); margin-top: 2px; }
+.atlas-state-label { font-size: 10px; color: var(--muted); margin-top: 4px; font-family: 'JetBrains Mono', monospace; transition: color .3s; }
+/* Voice always-on pill */
+.voice-on-pill {
+  display: flex; align-items: center; gap: 6px; margin-top: 8px;
+  padding: 4px 10px; border-radius: 20px; font-size: 9.5px; font-weight: 500;
+  border: 1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.04);
+  cursor: pointer; transition: all .2s;
 }
-.atlas-role {
-  font-size: 9.5px;
-  font-weight: 500;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin-top: 2px;
-}
-.atlas-state-label {
-  font-size: 10px;
-  color: var(--muted);
-  margin-top: 4px;
-  transition: color .3s;
-  font-family: 'JetBrains Mono', monospace;
-}
-
+.voice-on-pill.active { background: rgba(26,191,106,.08); border-color: rgba(26,191,106,.2); color: var(--green); }
+.voice-on-pill.pending { background: rgba(232,130,10,.08); border-color: rgba(232,130,10,.2); color: var(--orange); }
+.voice-on-pill.off { background: rgba(255,255,255,.04); border-color: rgba(255,255,255,.08); color: var(--muted); }
+.voice-on-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.voice-on-pill.active .voice-on-dot { animation: dot-pulse 1.5s ease-in-out infinite; }
 /* Conversation */
 .atlas-convo {
-  flex: 1;
-  overflow-y: auto;
-  padding: 14px 16px;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(201,168,76,.15) transparent;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  min-height: 0;
+  flex: 1; overflow-y: auto; padding: 12px 14px;
+  scrollbar-width: thin; scrollbar-color: rgba(201,168,76,.15) transparent;
+  display: flex; flex-direction: column; gap: 10px; min-height: 0;
 }
-.msg {
-  display: flex;
-  flex-direction: column;
-  max-width: 88%;
-  gap: 3px;
-  animation: msg-in .22s var(--ease) both;
-}
-@keyframes msg-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+.msg { display: flex; flex-direction: column; max-width: 90%; gap: 3px; animation: msg-in .2s var(--ease) both; }
+@keyframes msg-in { from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)} }
 .msg.atlas { align-self: flex-start; }
 .msg.user  { align-self: flex-end; align-items: flex-end; }
-.msg-bubble {
-  padding: 9px 12px;
-  border-radius: 12px;
-  font-size: 12px;
-  line-height: 1.55;
-}
-.msg.atlas .msg-bubble {
-  background: rgba(201,168,76,.06);
-  border: 1px solid rgba(201,168,76,.14);
-  border-bottom-left-radius: 4px;
-  color: var(--text);
-}
-.msg.user .msg-bubble {
-  background: rgba(255,255,255,.05);
-  border: 1px solid rgba(255,255,255,.08);
-  border-bottom-right-radius: 4px;
-  color: var(--muted);
-}
-.msg-sender {
-  font-size: 9.5px;
-  font-weight: 600;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  color: var(--muted);
-  padding: 0 2px;
-}
+.msg-bubble { padding: 9px 12px; border-radius: 12px; font-size: 12px; line-height: 1.55; }
+.msg.atlas .msg-bubble { background: rgba(201,168,76,.06); border: 1px solid rgba(201,168,76,.14); border-bottom-left-radius: 4px; color: var(--text); }
+.msg.user  .msg-bubble { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08); border-bottom-right-radius: 4px; color: var(--muted); }
+.msg-sender { font-size: 9.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); padding: 0 2px; }
 .msg.atlas .msg-sender { color: var(--gold); }
-
-/* Input area */
-.atlas-input-area {
-  flex-shrink: 0;
-  padding: 12px 14px;
-  border-top: 1px solid rgba(255,255,255,.06);
-  background: rgba(4,6,8,.5);
-}
+/* Input */
+.atlas-input-area { flex-shrink: 0; padding: 10px 12px 12px; border-top: 1px solid rgba(255,255,255,.06); background: rgba(4,6,8,.5); }
 .atlas-input-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(255,255,255,.04);
-  border: 1px solid rgba(255,255,255,.08);
-  border-radius: 12px;
-  padding: 8px 10px;
-  transition: border-color .2s;
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08);
+  border-radius: 12px; padding: 8px 10px; transition: border-color .2s;
 }
 .atlas-input-row:focus-within { border-color: rgba(201,168,76,.3); }
-.atlas-text-input {
-  flex: 1;
-  background: none;
-  border: none;
-  outline: none;
-  color: var(--text);
-  font-family: 'Sora', sans-serif;
-  font-size: 12.5px;
-  placeholder-color: var(--muted);
-}
+.atlas-text-input { flex: 1; background: none; border: none; outline: none; color: var(--text); font-family: 'Sora', sans-serif; font-size: 12.5px; }
 .atlas-text-input::placeholder { color: var(--muted); }
-.mic-btn, .send-btn {
-  width: 30px; height: 30px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all .15s;
-  flex-shrink: 0;
-  color: var(--muted);
-}
+.mic-btn, .send-btn { width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; transition: all .15s; flex-shrink: 0; color: var(--muted); }
 .mic-btn:hover  { background: rgba(255,255,255,.08); color: var(--green); }
 .send-btn:hover { background: rgba(201,168,76,.15); color: var(--gold); }
-.mic-btn.active { background: rgba(26,191,106,.15); color: var(--green); }
-.mic-btn.active svg { animation: mic-pulse 1s ease-in-out infinite; }
-@keyframes mic-pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.15); } }
-
-/* Voice hint */
-.atlas-hint {
-  text-align: center;
-  font-size: 9.5px;
-  color: var(--muted);
-  margin-top: 6px;
-  letter-spacing: .04em;
+.mic-btn.push-active { background: rgba(26,191,106,.15); color: var(--green); }
+.atlas-hint { text-align: center; font-size: 9px; color: var(--muted); margin-top: 5px; letter-spacing: .04em; }
+/* Wake prompt banner */
+.wake-prompt {
+  display: none; align-items: center; gap: 8px;
+  margin: 0 12px 8px; padding: 8px 12px;
+  background: rgba(232,130,10,.08); border: 1px solid rgba(232,130,10,.2);
+  border-radius: 10px; font-size: 11px; color: var(--orange); cursor: pointer;
 }
+.wake-prompt.show { display: flex; }
 
 /* ── MAIN CONTENT ────────────────────────────────────────── */
 .main-content {
-  flex: 1;
-  overflow-y: auto;
-  padding: 20px 24px;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255,255,255,.08) transparent;
-  min-width: 0;
+  flex: 1; overflow-y: auto; padding: 18px 22px;
+  scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.08) transparent; min-width: 0;
 }
-
-/* Section */
-.content-section {
-  margin-bottom: 28px;
-}
-.section-hdr {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 14px;
-}
-.section-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 17px;
-  font-weight: 300;
-  letter-spacing: .04em;
-  color: var(--text);
-}
-.section-sub {
-  font-size: 10px;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-top: 2px;
-}
-.section-action {
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--gold);
-  padding: 4px 10px;
-  border: 1px solid rgba(201,168,76,.2);
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all .15s;
-}
+.content-section { margin-bottom: 26px; }
+.section-hdr { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.section-title { font-family: 'Cormorant Garamond', serif; font-size: 17px; font-weight: 300; letter-spacing: .04em; color: var(--text); }
+.section-sub { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-top: 2px; }
+.section-action { font-size: 11px; font-weight: 500; color: var(--gold); padding: 4px 10px; border: 1px solid rgba(201,168,76,.2); border-radius: 6px; cursor: pointer; transition: all .15s; }
 .section-action:hover { background: rgba(201,168,76,.08); }
-
 /* Entity cards */
-.entity-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-}
+.entity-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
 .entity-card {
-  background: rgba(255,255,255,.028);
-  border: 1px solid rgba(255,255,255,.07);
-  border-radius: 16px;
-  padding: 16px;
-  position: relative;
-  overflow: hidden;
-  transition: border-color .2s, transform .15s;
-  cursor: default;
+  background: rgba(255,255,255,.028); border: 1px solid rgba(255,255,255,.07);
+  border-radius: 16px; padding: 14px; position: relative; overflow: hidden;
+  transition: border-color .2s, transform .15s; cursor: default;
 }
-.entity-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(201,168,76,.35), transparent);
-}
+.entity-card::before { content:''; position:absolute; top:0;left:0;right:0;height:1px; background:linear-gradient(90deg,transparent,rgba(201,168,76,.35),transparent); }
 .entity-card:hover { border-color: rgba(201,168,76,.2); transform: translateY(-1px); }
-.entity-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  padding: 3px 8px;
-  border-radius: 20px;
-  margin-bottom: 10px;
-}
-.badge-active { background: rgba(26,191,106,.1); color: var(--green); border: 1px solid rgba(26,191,106,.2); }
-.badge-dot    { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
-.entity-name  { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
-.entity-type  { font-size: 10.5px; color: var(--muted); margin-bottom: 12px; }
-.entity-meta  { display: flex; flex-direction: column; gap: 5px; }
-.entity-row   { display: flex; justify-content: space-between; align-items: center; }
-.entity-key   { font-size: 10px; color: var(--muted); }
-.entity-val   { font-size: 10.5px; font-weight: 500; color: var(--text); font-family: 'JetBrains Mono', monospace; }
-
+.entity-badge { display:inline-flex;align-items:center;gap:5px;font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:20px;margin-bottom:9px; }
+.badge-active { background:rgba(26,191,106,.1);color:var(--green);border:1px solid rgba(26,191,106,.2); }
+.badge-dot    { width:5px;height:5px;border-radius:50%;background:currentColor; }
+.entity-name  { font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px; }
+.entity-type  { font-size:10px;color:var(--muted);margin-bottom:10px; }
+.entity-meta  { display:flex;flex-direction:column;gap:4px; }
+.entity-row   { display:flex;justify-content:space-between;align-items:center; }
+.entity-key   { font-size:10px;color:var(--muted); }
+.entity-val   { font-size:10.5px;font-weight:500;color:var(--text);font-family:'JetBrains Mono',monospace; }
 /* Contracts table */
-.contracts-table {
-  background: rgba(255,255,255,.02);
-  border: 1px solid rgba(255,255,255,.06);
-  border-radius: 14px;
-  overflow: hidden;
-}
-.ct-header, .ct-row {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
-  align-items: center;
-  padding: 10px 16px;
-  gap: 12px;
-}
-.ct-header {
-  background: rgba(255,255,255,.03);
-  border-bottom: 1px solid rgba(255,255,255,.06);
-}
-.ct-header span {
-  font-size: 9.5px;
-  font-weight: 600;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-.ct-row {
-  border-bottom: 1px solid rgba(255,255,255,.04);
-  transition: background .15s;
-}
-.ct-row:last-child { border-bottom: none; }
-.ct-row:hover { background: rgba(255,255,255,.03); }
-.ct-name  { font-size: 12.5px; font-weight: 500; color: var(--text); }
-.ct-party { font-size: 11.5px; color: var(--muted); }
-.ct-date  { font-size: 11.5px; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
-.ct-action-btn {
-  font-size: 10.5px;
-  font-weight: 500;
-  padding: 4px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all .15s;
-}
-.ct-sign    { background: rgba(232,130,10,.1); color: var(--orange); border: 1px solid rgba(232,130,10,.2); }
-.ct-sign:hover { background: rgba(232,130,10,.2); }
-.ct-view    { background: rgba(255,255,255,.04); color: var(--muted); border: 1px solid rgba(255,255,255,.07); }
-.ct-view:hover { background: rgba(255,255,255,.08); color: var(--text); }
-.ct-draft   { background: rgba(74,158,255,.06); color: var(--blue); border: 1px solid rgba(74,158,255,.15); }
-
+.contracts-table { background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:14px;overflow:hidden; }
+.ct-header,.ct-row { display:grid;grid-template-columns:2fr 1fr 1fr 1fr;align-items:center;padding:9px 14px;gap:10px; }
+.ct-header { background:rgba(255,255,255,.03);border-bottom:1px solid rgba(255,255,255,.06); }
+.ct-header span { font-size:9.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted); }
+.ct-row { border-bottom:1px solid rgba(255,255,255,.04);transition:background .15s; }
+.ct-row:last-child { border-bottom:none; }
+.ct-row:hover { background:rgba(255,255,255,.03); }
+.ct-name  { font-size:12px;font-weight:500;color:var(--text); }
+.ct-party { font-size:11px;color:var(--muted); }
+.ct-date  { font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace; }
+.ct-action-btn { font-size:10px;font-weight:500;padding:4px 9px;border-radius:6px;cursor:pointer;transition:all .15s; }
+.ct-sign  { background:rgba(232,130,10,.1);color:var(--orange);border:1px solid rgba(232,130,10,.2); }
+.ct-sign:hover { background:rgba(232,130,10,.2); }
+.ct-view  { background:rgba(255,255,255,.04);color:var(--muted);border:1px solid rgba(255,255,255,.07); }
+.ct-view:hover { background:rgba(255,255,255,.08);color:var(--text); }
+.ct-draft { background:rgba(74,158,255,.06);color:var(--blue);border:1px solid rgba(74,158,255,.15); }
 /* IP grid */
-.ip-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-}
-.ip-card {
-  background: rgba(255,255,255,.024);
-  border: 1px solid rgba(255,255,255,.06);
-  border-radius: 12px;
-  padding: 13px;
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  transition: border-color .2s;
-}
-.ip-card:hover { border-color: rgba(255,255,255,.12); }
-.ip-icon {
-  width: 36px; height: 36px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-.ip-name    { font-size: 12.5px; font-weight: 600; color: var(--text); }
-.ip-type    { font-size: 10.5px; color: var(--muted); margin-top: 2px; }
-.ip-status  { font-size: 10px; font-weight: 600; margin-top: 5px; }
-
-/* Quick Actions */
-.actions-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-}
-.action-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  padding: 14px 10px;
-  background: rgba(255,255,255,.028);
-  border: 1px solid rgba(255,255,255,.07);
-  border-radius: 14px;
-  cursor: pointer;
-  transition: all .2s var(--spring);
-  text-align: center;
-}
-.action-btn:hover { background: rgba(255,255,255,.055); transform: translateY(-2px); border-color: rgba(255,255,255,.12); }
-.action-icon {
-  width: 40px; height: 40px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.action-label { font-size: 11px; font-weight: 500; color: var(--text); line-height: 1.3; }
-
-/* Tools strip */
-.tools-strip {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-.tool-chip {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  padding: 7px 12px;
-  background: rgba(255,255,255,.04);
-  border: 1px solid rgba(255,255,255,.08);
-  border-radius: 8px;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text);
-  cursor: pointer;
-  transition: all .15s;
-  text-decoration: none;
-}
-.tool-chip:hover { background: rgba(255,255,255,.09); border-color: rgba(255,255,255,.14); }
+.ip-grid { display:grid;grid-template-columns:repeat(2,1fr);gap:10px; }
+.ip-card { background:rgba(255,255,255,.024);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:12px;display:flex;align-items:flex-start;gap:10px;transition:border-color .2s; }
+.ip-card:hover { border-color:rgba(255,255,255,.12); }
+.ip-icon { width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0; }
+.ip-name { font-size:12px;font-weight:600;color:var(--text); }
+.ip-type { font-size:10px;color:var(--muted);margin-top:2px; }
+.ip-status { font-size:10px;font-weight:600;margin-top:4px; }
+/* Actions */
+.actions-grid { display:grid;grid-template-columns:repeat(4,1fr);gap:10px; }
+.action-btn { display:flex;flex-direction:column;align-items:center;gap:7px;padding:12px 8px;background:rgba(255,255,255,.028);border:1px solid rgba(255,255,255,.07);border-radius:14px;cursor:pointer;transition:all .2s var(--spring);text-align:center; }
+.action-btn:hover { background:rgba(255,255,255,.055);transform:translateY(-2px);border-color:rgba(255,255,255,.12); }
+.action-icon { width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center; }
+.action-label { font-size:10.5px;font-weight:500;color:var(--text);line-height:1.3; }
+/* Tools */
+.tools-strip { display:flex;gap:8px;flex-wrap:wrap; }
+.tool-chip { display:flex;align-items:center;gap:7px;padding:7px 12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;font-size:12px;font-weight:500;color:var(--text);cursor:pointer;transition:all .15s;text-decoration:none; }
+.tool-chip:hover { background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.14); }
 
 /* ── KPI PANEL ───────────────────────────────────────────── */
-.kpi-panel {
-  width: 268px;
-  flex-shrink: 0;
-  border-left: 1px solid rgba(255,255,255,.06);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-.kpi-header {
-  flex-shrink: 0;
-  padding: 18px 18px 14px;
-  border-bottom: 1px solid rgba(255,255,255,.06);
-}
-.kpi-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 17px;
-  font-weight: 300;
-  color: var(--text);
-  letter-spacing: .04em;
-}
-.kpi-updated {
-  font-size: 9.5px;
-  color: var(--muted);
-  margin-top: 3px;
-  font-family: 'JetBrains Mono', monospace;
-}
-.kpi-scroll {
-  flex: 1;
-  overflow-y: auto;
-  padding: 14px 16px;
-  scrollbar-width: none;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.kpi-scroll::-webkit-scrollbar { display: none; }
+.kpi-panel { width:260px;flex-shrink:0;border-left:1px solid rgba(255,255,255,.06);display:flex;flex-direction:column;overflow:hidden; }
+.kpi-header { flex-shrink:0;padding:16px 16px 12px;border-bottom:1px solid rgba(255,255,255,.06); }
+.kpi-title { font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:300;color:var(--text);letter-spacing:.04em; }
+.kpi-updated { font-size:9.5px;color:var(--muted);margin-top:2px;font-family:'JetBrains Mono',monospace; }
+.kpi-scroll { flex:1;overflow-y:auto;padding:12px 14px;scrollbar-width:none;display:flex;flex-direction:column;gap:9px; }
+.kpi-scroll::-webkit-scrollbar { display:none; }
+.kpi-card { background:rgba(255,255,255,.028);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:11px;position:relative;overflow:hidden; }
+.kpi-card::before { content:'';position:absolute;top:0;left:0;right:0;height:1px; }
+.kpi-card.gold::before   { background:linear-gradient(90deg,transparent,rgba(201,168,76,.5),transparent); }
+.kpi-card.green::before  { background:linear-gradient(90deg,transparent,rgba(26,191,106,.5),transparent); }
+.kpi-card.blue::before   { background:linear-gradient(90deg,transparent,rgba(74,158,255,.5),transparent); }
+.kpi-card.teal::before   { background:linear-gradient(90deg,transparent,rgba(0,212,170,.5),transparent); }
+.kpi-card.orange::before { background:linear-gradient(90deg,transparent,rgba(232,130,10,.5),transparent); }
+.kpi-card.violet::before { background:linear-gradient(90deg,transparent,rgba(155,109,255,.5),transparent); }
+.kpi-card-label { font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:5px; }
+.kpi-val { font-family:'JetBrains Mono',monospace;font-size:21px;font-weight:500;line-height:1; }
+.kpi-card.gold .kpi-val   { color:var(--gold2); }
+.kpi-card.green .kpi-val  { color:var(--green); }
+.kpi-card.blue .kpi-val   { color:var(--blue); }
+.kpi-card.teal .kpi-val   { color:var(--teal); }
+.kpi-card.orange .kpi-val { color:var(--orange); }
+.kpi-card.violet .kpi-val { color:var(--violet); }
+.kpi-sub { font-size:10px;color:var(--muted);margin-top:3px; }
+.kpi-bar-wrap { margin-top:7px; }
+.kpi-bar-track { height:4px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden; }
+.kpi-bar-fill  { height:100%;border-radius:2px; }
+.kpi-card.gold .kpi-bar-fill  { background:linear-gradient(90deg,var(--gold),var(--gold2));box-shadow:0 0 8px rgba(201,168,76,.5); }
+.kpi-card.green .kpi-bar-fill { background:var(--green);box-shadow:0 0 6px rgba(26,191,106,.4); }
+.deadline-list { display:flex;flex-direction:column;gap:5px; }
+.dl-item { display:flex;align-items:center;gap:9px;padding:8px 9px;background:rgba(255,255,255,.024);border:1px solid rgba(255,255,255,.05);border-radius:9px; }
+.dl-dot  { width:7px;height:7px;border-radius:50%;flex-shrink:0; }
+.dl-name { flex:1;font-size:11px;font-weight:500;color:var(--text); }
+.dl-date { font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace;white-space:nowrap; }
+.feed-list { display:flex;flex-direction:column;gap:1px; }
+.feed-item { display:flex;gap:9px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.04);align-items:flex-start; }
+.feed-item:last-child { border-bottom:none; }
+.feed-ico { width:25px;height:25px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px; }
+.feed-text { font-size:10.5px;color:var(--text);line-height:1.4;flex:1; }
+.feed-time { font-size:9px;color:var(--muted);margin-top:2px; }
 
-/* KPI metric card */
-.kpi-card {
-  background: rgba(255,255,255,.028);
-  border: 1px solid rgba(255,255,255,.06);
-  border-radius: 12px;
-  padding: 12px;
-  position: relative;
-  overflow: hidden;
-}
-.kpi-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 1px;
-}
-.kpi-card.gold::before    { background: linear-gradient(90deg, transparent, rgba(201,168,76,.5), transparent); }
-.kpi-card.green::before   { background: linear-gradient(90deg, transparent, rgba(26,191,106,.5), transparent); }
-.kpi-card.blue::before    { background: linear-gradient(90deg, transparent, rgba(74,158,255,.5), transparent); }
-.kpi-card.teal::before    { background: linear-gradient(90deg, transparent, rgba(0,212,170,.5), transparent); }
-.kpi-card.orange::before  { background: linear-gradient(90deg, transparent, rgba(232,130,10,.5), transparent); }
-.kpi-card.violet::before  { background: linear-gradient(90deg, transparent, rgba(155,109,255,.5), transparent); }
-.kpi-card.red::before     { background: linear-gradient(90deg, transparent, rgba(232,64,64,.5), transparent); }
-
-.kpi-card-label {
-  font-size: 9.5px;
-  font-weight: 600;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 6px;
-}
-.kpi-val {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 22px;
-  font-weight: 500;
-  line-height: 1;
-}
-.kpi-card.gold   .kpi-val  { color: var(--gold2); }
-.kpi-card.green  .kpi-val  { color: var(--green); }
-.kpi-card.blue   .kpi-val  { color: var(--blue); }
-.kpi-card.teal   .kpi-val  { color: var(--teal); }
-.kpi-card.orange .kpi-val  { color: var(--orange); }
-.kpi-card.violet .kpi-val  { color: var(--violet); }
-.kpi-card.red    .kpi-val  { color: var(--red); }
-.kpi-sub { font-size: 10.5px; color: var(--muted); margin-top: 4px; }
-
-/* Progress bar in kpi */
-.kpi-bar-wrap { margin-top: 8px; }
-.kpi-bar-track { height: 4px; background: rgba(255,255,255,.07); border-radius: 2px; overflow: hidden; }
-.kpi-bar-fill  { height: 100%; border-radius: 2px; }
-.kpi-card.gold  .kpi-bar-fill { background: linear-gradient(90deg, var(--gold), var(--gold2)); box-shadow: 0 0 8px rgba(201,168,76,.5); }
-.kpi-card.green .kpi-bar-fill { background: var(--green); box-shadow: 0 0 8px rgba(26,191,106,.4); }
-
-/* Deadlines */
-.deadline-list { display: flex; flex-direction: column; gap: 6px; }
-.dl-item {
+/* ── DESKTOP LAUNCH BUTTON ───────────────────────────────── */
+.desktop-launch {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 200;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 9px 10px;
-  background: rgba(255,255,255,.024);
-  border: 1px solid rgba(255,255,255,.05);
-  border-radius: 10px;
+  gap: 8px;
+  padding: 9px 16px;
+  background: rgba(201,168,76,.12);
+  border: 1px solid rgba(201,168,76,.3);
+  border-radius: 24px;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--gold2);
+  cursor: pointer;
+  transition: all .2s var(--spring);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 24px rgba(0,0,0,.4);
 }
-.dl-dot   { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-.dl-name  { flex: 1; font-size: 11.5px; font-weight: 500; color: var(--text); }
-.dl-date  { font-size: 10px; color: var(--muted); font-family: 'JetBrains Mono', monospace; white-space: nowrap; }
+.desktop-launch:hover { background: rgba(201,168,76,.22); transform: translateY(-2px); box-shadow: 0 12px 32px rgba(0,0,0,.5); }
+.desktop-launch svg { flex-shrink: 0; }
+/* Hide desktop launch when already in desktop standalone mode */
+.is-desktop:not(.is-iframe) .desktop-launch { display: none; }
 
-/* Activity feed */
-.feed-list { display: flex; flex-direction: column; gap: 1px; }
-.feed-item {
-  display: flex;
-  gap: 10px;
-  padding: 8px 0;
-  border-bottom: 1px solid rgba(255,255,255,.04);
-  align-items: flex-start;
+/* ── MOBILE TAB NAV ──────────────────────────────────────── */
+.mobile-tab-nav {
+  display: none;
+  flex-shrink: 0;
+  height: var(--tab-h);
+  background: rgba(4,6,8,.96);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-top: 1px solid rgba(255,255,255,.08);
+  position: relative;
+  z-index: 60;
 }
-.feed-item:last-child { border-bottom: none; }
-.feed-ico {
-  width: 26px; height: 26px;
-  border-radius: 7px;
+.tab-nav-inner { display: flex; height: 100%; }
+.tab-btn {
+  flex: 1;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
-  margin-top: 1px;
+  gap: 4px;
+  color: var(--muted);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: .04em;
+  transition: color .2s;
+  position: relative;
+  -webkit-tap-highlight-color: transparent;
 }
-.feed-text { font-size: 11px; color: var(--text); line-height: 1.4; flex: 1; }
-.feed-time { font-size: 9.5px; color: var(--muted); margin-top: 2px; }
+.tab-btn.active { color: var(--gold); }
+.tab-btn::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 20%; right: 20%;
+  height: 2px;
+  background: var(--gold);
+  border-radius: 0 0 2px 2px;
+  opacity: 0;
+  transition: opacity .2s;
+  box-shadow: 0 0 8px var(--gold);
+}
+.tab-btn.active::after { opacity: 1; }
+.tab-badge {
+  position: absolute;
+  top: 8px; right: 28%;
+  width: 7px; height: 7px;
+  background: var(--red);
+  border-radius: 50%;
+  border: 1.5px solid var(--bg);
+}
 
-/* ── SECTION SEPARATOR ───────────────────────────────────── */
-.section-sep {
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,.07) 20%, rgba(255,255,255,.07) 80%, transparent);
-  margin: 4px 0 20px;
+/* ── MOBILE RESPONSIVE ───────────────────────────────────── */
+@media (max-width: 767px) {
+  /* Show tab nav */
+  .mobile-tab-nav { display: flex; }
+  /* Show desktop launch always on mobile */
+  .desktop-launch { display: flex !important; bottom: calc(var(--tab-h) + 12px); }
+
+  /* Stack panels, only active shown */
+  .atlas-panel, .main-content, .kpi-panel {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(16px);
+    transition: opacity .25s var(--ease), transform .25s var(--ease);
+    overflow-y: auto;
+  }
+  .atlas-panel.tab-active,
+  .main-content.tab-active,
+  .kpi-panel.tab-active {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateX(0);
+  }
+  /* Atlas panel needs flex column */
+  .atlas-panel { display: flex; flex-direction: column; overflow: hidden; }
+
+  /* Smaller avatar on mobile */
+  .avatar-ring-wrap { width: 118px; height: 118px; margin-bottom: 10px; }
+  .atlas-avatar-wrap { padding: 16px 20px 12px; }
+  .atlas-name { font-size: 17px; }
+
+  /* 1-col layouts on mobile */
+  .entity-grid  { grid-template-columns: 1fr; }
+  .ip-grid      { grid-template-columns: 1fr; }
+  .actions-grid { grid-template-columns: repeat(2, 1fr); }
+
+  /* Hide date col in contracts table */
+  .ct-header, .ct-row { grid-template-columns: 2fr 1fr 1fr; }
+  .ct-date { display: none; }
+
+  /* Header simplified */
+  .hdr-head-role { display: none; }
+  .hdr-sub       { display: none; }
+  .hdr-divider   { display: none; }
+
+  /* KPI panel full-width */
+  .kpi-panel { width: 100%; border-left: none; }
+
+  /* Main content padding */
+  .main-content { padding: 14px 16px; }
+}
+
+/* ── TABLET ───────────────────────────────────────────────── */
+@media (min-width: 768px) and (max-width: 1099px) {
+  .atlas-panel { width: 260px; }
+  .kpi-panel   { width: 220px; }
+  .entity-grid { grid-template-columns: repeat(2,1fr); }
+  .actions-grid { grid-template-columns: repeat(2,1fr); }
 }
 </style>
 </head>
 <body>
 <div class="suite" id="suite">
 
-  <!-- ── HEADER ────────────────────────────────────────── -->
+  <!-- ── HEADER ─────────────────────────────────────── -->
   <header class="suite-header">
     <a class="hdr-back" href="genesis-reserve-dashboard.html">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
-      Dashboard
+      <span>Dashboard</span>
     </a>
     <div class="hdr-divider"></div>
     <div>
@@ -788,10 +498,7 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
       <div class="hdr-sub">Genesis Reserve · Powered by ATLAS</div>
     </div>
     <div class="hdr-spacer"></div>
-    <div class="atlas-status-pill">
-      <div class="status-dot"></div>
-      ATLAS Online
-    </div>
+    <div class="atlas-status-pill"><div class="status-dot"></div>ATLAS Online</div>
     <div class="hdr-head">
       <div class="head-avatar">AB</div>
       <div>
@@ -801,21 +508,18 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
     </div>
   </header>
 
-  <!-- ── BODY ─────────────────────────────────────────── -->
+  <!-- ── BODY ───────────────────────────────────────── -->
   <div class="suite-body">
 
-    <!-- ═══ ATLAS PANEL ══════════════════════════════ -->
-    <div class="atlas-panel">
+    <!-- ═══ ATLAS PANEL ═══════════════════════════ -->
+    <div class="atlas-panel tab-active" id="panelAtlas" data-panel="atlas">
       <div class="atlas-avatar-wrap">
         <div class="avatar-ring-wrap" id="avatarWrap">
-          <div class="atlas-pulse avatar-pulse"></div>
+          <div class="avatar-pulse"></div>
           <div class="avatar-ring" id="avatarRing"></div>
           <div class="avatar-face-wrap">
             <div class="avatar-face">
-              <div class="atlas-eyes">
-                <div class="atlas-eye"></div>
-                <div class="atlas-eye"></div>
-              </div>
+              <div class="atlas-eyes"><div class="atlas-eye"></div><div class="atlas-eye"></div></div>
               <div class="atlas-wave" id="atlasWave">
                 <div class="wbar"></div><div class="wbar"></div><div class="wbar"></div>
                 <div class="wbar"></div><div class="wbar"></div><div class="wbar"></div>
@@ -827,38 +531,40 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
         <div class="atlas-name">ATLAS</div>
         <div class="atlas-role">Executive CoPilot</div>
         <div class="atlas-state-label" id="atlasStateLabel">Idle · Ready</div>
+        <div class="voice-on-pill off" id="voicePill" onclick="activateVoiceManually()">
+          <div class="voice-on-dot"></div>
+          <span id="voicePillText">Voice initializing…</span>
+        </div>
       </div>
 
-      <!-- Conversation -->
-      <div class="atlas-convo" id="atlasConvo">
-        <!-- seeded on init -->
+      <!-- Wake permission banner -->
+      <div class="wake-prompt" id="wakePrompt" onclick="activateVoiceManually()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
+        Tap to activate voice · then say "Hey ATLAS"
       </div>
 
-      <!-- Input -->
+      <div class="atlas-convo" id="atlasConvo"></div>
+
       <div class="atlas-input-area">
         <div class="atlas-input-row">
-          <button class="mic-btn" id="micBtn" onclick="toggleMic()" aria-label="Voice input">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
+          <button class="mic-btn" id="micBtn" onclick="pushToTalk()" aria-label="Push to talk">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
           </button>
-          <input class="atlas-text-input" id="atlasInput" placeholder="Ask ATLAS anything…" type="text">
+          <input class="atlas-text-input" id="atlasInput" placeholder='Ask ATLAS or say "Hey ATLAS"…' type="text">
           <button class="send-btn" onclick="submitText()" aria-label="Send">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
           </button>
         </div>
-        <div class="atlas-hint">Press mic or type · ATLAS governs executive operations</div>
+        <div class="atlas-hint" id="atlasHint">Say "Hey ATLAS" · Executive scope only</div>
       </div>
     </div>
 
-    <!-- ═══ MAIN CONTENT ═════════════════════════════ -->
-    <div class="main-content">
+    <!-- ═══ MAIN CONTENT ══════════════════════════ -->
+    <div class="main-content" id="panelOps" data-panel="ops">
 
-      <!-- Entity Registry -->
       <div class="content-section">
         <div class="section-hdr">
-          <div>
-            <div class="section-title">Entity Registry</div>
-            <div class="section-sub">3 Active Delaware Entities · All Compliant</div>
-          </div>
+          <div><div class="section-title">Entity Registry</div><div class="section-sub">3 Active Delaware Entities · All Compliant</div></div>
           <button class="section-action">+ Add Entity</button>
         </div>
         <div class="entity-grid">
@@ -869,7 +575,6 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
             <div class="entity-meta">
               <div class="entity-row"><span class="entity-key">State</span><span class="entity-val">Delaware</span></div>
               <div class="entity-row"><span class="entity-key">Type</span><span class="entity-val">LLC</span></div>
-              <div class="entity-row"><span class="entity-key">Role</span><span class="entity-val">Asset Hold</span></div>
               <div class="entity-row"><span class="entity-key">Filing</span><span class="entity-val" style="color:var(--green)">Current</span></div>
             </div>
           </div>
@@ -880,7 +585,6 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
             <div class="entity-meta">
               <div class="entity-row"><span class="entity-key">State</span><span class="entity-val">Delaware</span></div>
               <div class="entity-row"><span class="entity-key">Type</span><span class="entity-val">LLC</span></div>
-              <div class="entity-row"><span class="entity-key">Role</span><span class="entity-val">Banking Ops</span></div>
               <div class="entity-row"><span class="entity-key">Filing</span><span class="entity-val" style="color:var(--green)">Current</span></div>
             </div>
           </div>
@@ -891,429 +595,174 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
             <div class="entity-meta">
               <div class="entity-row"><span class="entity-key">State</span><span class="entity-val">Delaware</span></div>
               <div class="entity-row"><span class="entity-key">Type</span><span class="entity-val">C-Corp</span></div>
-              <div class="entity-row"><span class="entity-key">Role</span><span class="entity-val">B2B License</span></div>
               <div class="entity-row"><span class="entity-key">Filing</span><span class="entity-val" style="color:var(--green)">Current</span></div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Active Contracts -->
       <div class="content-section">
         <div class="section-hdr">
-          <div>
-            <div class="section-title">Contract Vault</div>
-            <div class="section-sub">1 Pending Signature · 2 Active · 2 Draft</div>
-          </div>
+          <div><div class="section-title">Contract Vault</div><div class="section-sub">1 Pending · 2 Active · 2 Draft</div></div>
           <button class="section-action" onclick="window.open('https://www.docusign.com','_blank','noopener,noreferrer')">DocuSign ↗</button>
         </div>
         <div class="contracts-table">
-          <div class="ct-header">
-            <span>Contract</span>
-            <span>Party</span>
-            <span>Date</span>
-            <span>Action</span>
-          </div>
-          <div class="ct-row">
-            <div class="ct-name">LOI · Seed Investment</div>
-            <div class="ct-party">Lesley Harris</div>
-            <div class="ct-date">May 30</div>
-            <button class="ct-action-btn ct-sign">Sign Now</button>
-          </div>
-          <div class="ct-row">
-            <div class="ct-name">GR Debit Card Agreement</div>
-            <div class="ct-party">Internal</div>
-            <div class="ct-date">Apr 15</div>
-            <button class="ct-action-btn ct-view">View</button>
-          </div>
-          <div class="ct-row">
-            <div class="ct-name">Revenue Share Protocol</div>
-            <div class="ct-party">TBD</div>
-            <div class="ct-date">Draft</div>
-            <button class="ct-action-btn ct-draft">Edit Draft</button>
-          </div>
-          <div class="ct-row">
-            <div class="ct-name">Helix Suite License Template</div>
-            <div class="ct-party">B2B Clients</div>
-            <div class="ct-date">Draft</div>
-            <button class="ct-action-btn ct-draft">Edit Draft</button>
-          </div>
-          <div class="ct-row">
-            <div class="ct-name">NDA · Standard Template</div>
-            <div class="ct-party">Investors / Partners</div>
-            <div class="ct-date">Active</div>
-            <button class="ct-action-btn ct-view">View</button>
-          </div>
+          <div class="ct-header"><span>Contract</span><span>Party</span><span>Date</span><span>Action</span></div>
+          <div class="ct-row"><div class="ct-name">LOI · Seed Investment</div><div class="ct-party">Lesley Harris</div><div class="ct-date">May 30</div><button class="ct-action-btn ct-sign">Sign Now</button></div>
+          <div class="ct-row"><div class="ct-name">GR Debit Card Agreement</div><div class="ct-party">Internal</div><div class="ct-date">Apr 15</div><button class="ct-action-btn ct-view">View</button></div>
+          <div class="ct-row"><div class="ct-name">Revenue Share Protocol</div><div class="ct-party">TBD</div><div class="ct-date">Draft</div><button class="ct-action-btn ct-draft">Edit Draft</button></div>
+          <div class="ct-row"><div class="ct-name">Helix Suite License Template</div><div class="ct-party">B2B Clients</div><div class="ct-date">Draft</div><button class="ct-action-btn ct-draft">Edit Draft</button></div>
+          <div class="ct-row"><div class="ct-name">NDA · Standard Template</div><div class="ct-party">Investors / Partners</div><div class="ct-date">Active</div><button class="ct-action-btn ct-view">View</button></div>
         </div>
       </div>
 
-      <!-- IP & Licensing -->
       <div class="content-section">
         <div class="section-hdr">
-          <div>
-            <div class="section-title">IP &amp; Licensing</div>
-            <div class="section-sub">2 Pending · 2 Protected · 1 Draft</div>
-          </div>
+          <div><div class="section-title">IP &amp; Licensing</div><div class="section-sub">2 Pending · 1 Protected · 1 Draft</div></div>
           <button class="section-action">File New</button>
         </div>
         <div class="ip-grid">
-          <div class="ip-card">
-            <div class="ip-icon" style="background:rgba(201,168,76,.1);color:var(--gold)">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
-            </div>
-            <div>
-              <div class="ip-name">Genesis Reserve™</div>
-              <div class="ip-type">Trademark · USPTO Filing</div>
-              <div class="ip-status" style="color:var(--orange)">Pending Review</div>
-            </div>
-          </div>
-          <div class="ip-card">
-            <div class="ip-icon" style="background:rgba(155,109,255,.1);color:var(--violet)">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
-            </div>
-            <div>
-              <div class="ip-name">Helix Suite™</div>
-              <div class="ip-type">Trademark · Draft</div>
-              <div class="ip-status" style="color:var(--blue)">File Before Berlin</div>
-            </div>
-          </div>
-          <div class="ip-card">
-            <div class="ip-icon" style="background:rgba(26,191,106,.1);color:var(--green)">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            </div>
-            <div>
-              <div class="ip-name">GR Sacred Emblem</div>
-              <div class="ip-type">Design Mark · Protected</div>
-              <div class="ip-status" style="color:var(--green)">Protected</div>
-            </div>
-          </div>
-          <div class="ip-card">
-            <div class="ip-icon" style="background:rgba(0,212,170,.1);color:var(--teal)">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            </div>
-            <div>
-              <div class="ip-name">YFLPP™</div>
-              <div class="ip-type">Trademark · USPTO Filing</div>
-              <div class="ip-status" style="color:var(--orange)">Pending Review</div>
-            </div>
-          </div>
+          <div class="ip-card"><div class="ip-icon" style="background:rgba(201,168,76,.1);color:var(--gold)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg></div><div><div class="ip-name">Genesis Reserve™</div><div class="ip-type">Trademark · USPTO</div><div class="ip-status" style="color:var(--orange)">Pending</div></div></div>
+          <div class="ip-card"><div class="ip-icon" style="background:rgba(155,109,255,.1);color:var(--violet)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></div><div><div class="ip-name">Helix Suite™</div><div class="ip-type">Trademark · Draft</div><div class="ip-status" style="color:var(--blue)">File Before Berlin</div></div></div>
+          <div class="ip-card"><div class="ip-icon" style="background:rgba(26,191,106,.1);color:var(--green)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div><div class="ip-name">GR Sacred Emblem</div><div class="ip-type">Design Mark</div><div class="ip-status" style="color:var(--green)">Protected</div></div></div>
+          <div class="ip-card"><div class="ip-icon" style="background:rgba(0,212,170,.1);color:var(--teal)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div><div class="ip-name">YFLPP™</div><div class="ip-type">Trademark · USPTO</div><div class="ip-status" style="color:var(--orange)">Pending</div></div></div>
         </div>
       </div>
 
-      <!-- Quick Actions -->
       <div class="content-section">
-        <div class="section-hdr">
-          <div>
-            <div class="section-title">Quick Actions</div>
-          </div>
-        </div>
+        <div class="section-hdr"><div><div class="section-title">Quick Actions</div></div></div>
         <div class="actions-grid">
-          <button class="action-btn" onclick="atlasRespond('loi')">
-            <div class="action-icon" style="background:rgba(232,130,10,.1);color:var(--orange)">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-            </div>
-            <div class="action-label">Send LOI for Signature</div>
-          </button>
-          <button class="action-btn" onclick="atlasRespond('berlin')">
-            <div class="action-icon" style="background:rgba(232,64,64,.1);color:var(--red)">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9z"/></svg>
-            </div>
-            <div class="action-label">Berlin Brief Review</div>
-          </button>
-          <button class="action-btn" onclick="window.open('https://calendar.google.com','_blank','noopener,noreferrer')">
-            <div class="action-icon" style="background:rgba(74,158,255,.1);color:var(--blue)">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            </div>
-            <div class="action-label">Schedule Board Meeting</div>
-          </button>
-          <button class="action-btn" onclick="atlasRespond('compliance')">
-            <div class="action-icon" style="background:rgba(0,212,170,.1);color:var(--teal)">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            </div>
-            <div class="action-label">Compliance Report</div>
-          </button>
-          <button class="action-btn" onclick="atlasRespond('ip')">
-            <div class="action-icon" style="background:rgba(201,168,76,.1);color:var(--gold)">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
-            </div>
-            <div class="action-label">IP Status Report</div>
-          </button>
-          <button class="action-btn" onclick="window.open('https://notion.so','_blank','noopener,noreferrer')">
-            <div class="action-icon" style="background:rgba(255,255,255,.06);color:var(--muted)">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h4"/></svg>
-            </div>
-            <div class="action-label">Board Notes (Notion)</div>
-          </button>
-          <button class="action-btn" onclick="window.open('https://drive.google.com','_blank','noopener,noreferrer')">
-            <div class="action-icon" style="background:rgba(74,158,255,.08);color:var(--blue)">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-            </div>
-            <div class="action-label">Entity Drive Folder</div>
-          </button>
-          <button class="action-btn" onclick="atlasRespond('series_a')">
-            <div class="action-icon" style="background:rgba(26,191,106,.1);color:var(--green)">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-            </div>
-            <div class="action-label">Series A Briefing</div>
-          </button>
+          <button class="action-btn" onclick="atlasRespond('loi')"><div class="action-icon" style="background:rgba(232,130,10,.1);color:var(--orange)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div><div class="action-label">Send LOI</div></button>
+          <button class="action-btn" onclick="atlasRespond('berlin')"><div class="action-icon" style="background:rgba(232,64,64,.1);color:var(--red)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9z"/></svg></div><div class="action-label">Berlin Brief</div></button>
+          <button class="action-btn" onclick="window.open('https://calendar.google.com','_blank','noopener,noreferrer')"><div class="action-icon" style="background:rgba(74,158,255,.1);color:var(--blue)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div class="action-label">Schedule</div></button>
+          <button class="action-btn" onclick="atlasRespond('compliance')"><div class="action-icon" style="background:rgba(0,212,170,.1);color:var(--teal)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div class="action-label">Compliance</div></button>
+          <button class="action-btn" onclick="atlasRespond('ip')"><div class="action-icon" style="background:rgba(201,168,76,.1);color:var(--gold)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg></div><div class="action-label">IP Report</div></button>
+          <button class="action-btn" onclick="window.open('https://notion.so','_blank','noopener,noreferrer')"><div class="action-icon" style="background:rgba(255,255,255,.06);color:var(--muted)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h4"/></svg></div><div class="action-label">Board Notes</div></button>
+          <button class="action-btn" onclick="window.open('https://drive.google.com','_blank','noopener,noreferrer')"><div class="action-icon" style="background:rgba(74,158,255,.08);color:var(--blue)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div><div class="action-label">Drive Folder</div></button>
+          <button class="action-btn" onclick="atlasRespond('series_a')"><div class="action-icon" style="background:rgba(26,191,106,.1);color:var(--green)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div><div class="action-label">Series A</div></button>
         </div>
       </div>
 
-      <!-- Tools -->
       <div class="content-section">
-        <div class="section-hdr">
-          <div>
-            <div class="section-title">Executive Toolstack</div>
-          </div>
-        </div>
+        <div class="section-hdr"><div><div class="section-title">Toolstack</div></div></div>
         <div class="tools-strip">
-          <a class="tool-chip" href="https://www.docusign.com" target="_blank" rel="noopener noreferrer">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-            DocuSign
-          </a>
-          <a class="tool-chip" href="https://notion.so" target="_blank" rel="noopener noreferrer">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h4"/></svg>
-            Notion
-          </a>
-          <a class="tool-chip" href="https://drive.google.com" target="_blank" rel="noopener noreferrer">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-            Google Drive
-          </a>
-          <a class="tool-chip" href="https://calendar.google.com" target="_blank" rel="noopener noreferrer">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            Calendar
-          </a>
-          <a class="tool-chip" href="https://claude.ai" target="_blank" rel="noopener noreferrer">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.46 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.46 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/></svg>
-            Claude AI
-          </a>
-          <a class="tool-chip" href="https://github.com/TheGenesisArchitect" target="_blank" rel="noopener noreferrer">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
-            GitHub
-          </a>
-          <a class="tool-chip" href="https://linkedin.com" target="_blank" rel="noopener noreferrer">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
-            LinkedIn
-          </a>
+          <a class="tool-chip" href="https://www.docusign.com" target="_blank" rel="noopener noreferrer"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>DocuSign</a>
+          <a class="tool-chip" href="https://notion.so" target="_blank" rel="noopener noreferrer"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h4"/></svg>Notion</a>
+          <a class="tool-chip" href="https://drive.google.com" target="_blank" rel="noopener noreferrer"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>Google Drive</a>
+          <a class="tool-chip" href="https://calendar.google.com" target="_blank" rel="noopener noreferrer"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Calendar</a>
+          <a class="tool-chip" href="https://claude.ai" target="_blank" rel="noopener noreferrer"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.46 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.46 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/></svg>Claude AI</a>
+          <a class="tool-chip" href="https://github.com/TheGenesisArchitect" target="_blank" rel="noopener noreferrer"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>GitHub</a>
         </div>
       </div>
+    </div>
 
-    </div><!-- /main-content -->
-
-    <!-- ═══ KPI CENTER ════════════════════════════════ -->
-    <div class="kpi-panel">
+    <!-- ═══ KPI CENTER ═════════════════════════════ -->
+    <div class="kpi-panel" id="panelKpi" data-panel="kpi">
       <div class="kpi-header">
         <div class="kpi-title">KPI Center</div>
         <div class="kpi-updated" id="kpiTime">Updated now</div>
       </div>
       <div class="kpi-scroll">
-
-        <div class="kpi-card gold">
-          <div class="kpi-card-label">Series A Progress</div>
-          <div class="kpi-val">$500K</div>
-          <div class="kpi-sub">of $2.5M target · 20%</div>
-          <div class="kpi-bar-wrap">
-            <div class="kpi-bar-track"><div class="kpi-bar-fill" style="width:20%"></div></div>
-          </div>
-        </div>
-
-        <div class="kpi-card green">
-          <div class="kpi-card-label">Compliance Score</div>
-          <div class="kpi-val">100%</div>
-          <div class="kpi-sub">All entities current · No alerts</div>
-          <div class="kpi-bar-wrap">
-            <div class="kpi-bar-track"><div class="kpi-bar-fill" style="width:100%"></div></div>
-          </div>
-        </div>
-
-        <div class="kpi-card teal">
-          <div class="kpi-card-label">Active Entities</div>
-          <div class="kpi-val">3</div>
-          <div class="kpi-sub">Delaware · All filings current</div>
-        </div>
-
-        <div class="kpi-card blue">
-          <div class="kpi-card-label">Projected Runway</div>
-          <div class="kpi-val">18mo</div>
-          <div class="kpi-sub">Post-raise projection · Q3 2027</div>
-        </div>
-
-        <div class="kpi-card orange">
-          <div class="kpi-card-label">Contracts Pending</div>
-          <div class="kpi-val">1</div>
-          <div class="kpi-sub">LOI · Lesley Harris · Signature</div>
-        </div>
-
-        <div class="kpi-card violet">
-          <div class="kpi-card-label">IP Filings Active</div>
-          <div class="kpi-val">4</div>
-          <div class="kpi-sub">2 pending · 1 protected · 1 draft</div>
-        </div>
-
-        <div class="kpi-card gold">
-          <div class="kpi-card-label">CAC / LTV</div>
-          <div class="kpi-val">13×</div>
-          <div class="kpi-sub">$24 CAC · $312 LTV · 2.3mo payback</div>
-        </div>
-
-        <!-- Deadlines -->
+        <div class="kpi-card gold"><div class="kpi-card-label">Series A Progress</div><div class="kpi-val">$500K</div><div class="kpi-sub">of $2.5M · 20%</div><div class="kpi-bar-wrap"><div class="kpi-bar-track"><div class="kpi-bar-fill" style="width:20%"></div></div></div></div>
+        <div class="kpi-card green"><div class="kpi-card-label">Compliance Score</div><div class="kpi-val">100%</div><div class="kpi-sub">All entities current</div><div class="kpi-bar-wrap"><div class="kpi-bar-track"><div class="kpi-bar-fill" style="width:100%"></div></div></div></div>
+        <div class="kpi-card teal"><div class="kpi-card-label">Active Entities</div><div class="kpi-val">3</div><div class="kpi-sub">Delaware · All current</div></div>
+        <div class="kpi-card blue"><div class="kpi-card-label">Projected Runway</div><div class="kpi-val">18mo</div><div class="kpi-sub">Post-raise · Q3 2027</div></div>
+        <div class="kpi-card orange"><div class="kpi-card-label">Contracts Pending</div><div class="kpi-val">1</div><div class="kpi-sub">LOI · Awaiting signature</div></div>
+        <div class="kpi-card violet"><div class="kpi-card-label">IP Filings Active</div><div class="kpi-val">4</div><div class="kpi-sub">2 pending · 1 protected · 1 draft</div></div>
+        <div class="kpi-card gold"><div class="kpi-card-label">LTV / CAC Ratio</div><div class="kpi-val">13×</div><div class="kpi-sub">$24 CAC · $312 LTV</div></div>
         <div style="margin-top:4px">
           <div style="font-size:9.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px">Deadlines</div>
           <div class="deadline-list">
-            <div class="dl-item">
-              <div class="dl-dot" style="background:var(--red)"></div>
-              <div class="dl-name">Berlin Close</div>
-              <div class="dl-date">Jun 12</div>
-            </div>
-            <div class="dl-item">
-              <div class="dl-dot" style="background:var(--orange)"></div>
-              <div class="dl-name">LOI Signature</div>
-              <div class="dl-date">ASAP</div>
-            </div>
-            <div class="dl-item">
-              <div class="dl-dot" style="background:var(--blue)"></div>
-              <div class="dl-name">Security Audit</div>
-              <div class="dl-date">Wk 5–7</div>
-            </div>
-            <div class="dl-item">
-              <div class="dl-dot" style="background:var(--violet)"></div>
-              <div class="dl-name">Helix™ Filing</div>
-              <div class="dl-date">Pre-Berlin</div>
-            </div>
+            <div class="dl-item"><div class="dl-dot" style="background:var(--red)"></div><div class="dl-name">Berlin Close</div><div class="dl-date">Jun 12</div></div>
+            <div class="dl-item"><div class="dl-dot" style="background:var(--orange)"></div><div class="dl-name">LOI Signature</div><div class="dl-date">ASAP</div></div>
+            <div class="dl-item"><div class="dl-dot" style="background:var(--blue)"></div><div class="dl-name">Security Audit</div><div class="dl-date">Wk 5–7</div></div>
+            <div class="dl-item"><div class="dl-dot" style="background:var(--violet)"></div><div class="dl-name">Helix™ Filing</div><div class="dl-date">Pre-Berlin</div></div>
           </div>
         </div>
-
-        <!-- Activity feed -->
         <div style="margin-top:12px">
           <div style="font-size:9.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px">Activity</div>
           <div class="feed-list">
-            <div class="feed-item">
-              <div class="feed-ico" style="background:rgba(232,130,10,.1);color:var(--orange)">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-              </div>
-              <div>
-                <div class="feed-text">LOI drafted · Awaiting signature</div>
-                <div class="feed-time">Today · Priority</div>
-              </div>
-            </div>
-            <div class="feed-item">
-              <div class="feed-ico" style="background:rgba(26,191,106,.1);color:var(--green)">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
-              </div>
-              <div>
-                <div class="feed-text">$500K commitment confirmed</div>
-                <div class="feed-time">May 30 · Lesley Harris</div>
-              </div>
-            </div>
-            <div class="feed-item">
-              <div class="feed-ico" style="background:rgba(74,158,255,.1);color:var(--blue)">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9z"/></svg>
-              </div>
-              <div>
-                <div class="feed-text">Berlin Brief finalized</div>
-                <div class="feed-time">May 30 · Jun 12 deadline</div>
-              </div>
-            </div>
-            <div class="feed-item">
-              <div class="feed-ico" style="background:rgba(201,168,76,.1);color:var(--gold)">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-              </div>
-              <div>
-                <div class="feed-text">Entity registry verified · 3/3</div>
-                <div class="feed-time">May 28 · All compliant</div>
-              </div>
-            </div>
+            <div class="feed-item"><div class="feed-ico" style="background:rgba(232,130,10,.1);color:var(--orange)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div><div><div class="feed-text">LOI drafted · Awaiting signature</div><div class="feed-time">Today · Priority</div></div></div>
+            <div class="feed-item"><div class="feed-ico" style="background:rgba(26,191,106,.1);color:var(--green)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg></div><div><div class="feed-text">$500K commitment confirmed</div><div class="feed-time">May 30 · Lesley Harris</div></div></div>
+            <div class="feed-item"><div class="feed-ico" style="background:rgba(74,158,255,.1);color:var(--blue)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9z"/></svg></div><div><div class="feed-text">Berlin Brief finalized</div><div class="feed-time">May 30 · Jun 12 close</div></div></div>
           </div>
         </div>
-
       </div>
-    </div><!-- /kpi-panel -->
+    </div>
 
   </div><!-- /suite-body -->
+
+  <!-- ── MOBILE TAB NAV ─────────────────────────── -->
+  <nav class="mobile-tab-nav" id="mobileTabNav" aria-label="Department sections">
+    <div class="tab-nav-inner">
+      <button class="tab-btn active" id="tab-atlas" onclick="switchTab('atlas')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.46 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.46 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/></svg>
+        ATLAS
+      </button>
+      <button class="tab-btn" id="tab-ops" onclick="switchTab('ops')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        Operations
+      </button>
+      <button class="tab-btn" id="tab-kpi" onclick="switchTab('kpi')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        KPIs
+      </button>
+    </div>
+  </nav>
+
+  <!-- ── DESKTOP LAUNCH BUTTON ─────────────────── -->
+  <button class="desktop-launch" onclick="launchDesktop()" aria-label="Open full desktop view">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+    Full Desktop
+  </button>
+
 </div><!-- /suite -->
 
 <script>
-/* ── ATLAS KNOWLEDGE BASE ────────────────────────────────── */
+/* ── KNOWLEDGE BASE ─────────────────────────────────────── */
 var KB = {
-  greeting: [
-    "Good to see you. All executive systems nominal. Series A stands at 20%—Lesley's $500K is committed and the LOI is awaiting her signature. The Berlin brief deadline is June 12. Three entities active, all compliant. How can I support you today?",
-    "Welcome back. I'm tracking three priority items: the Lesley Harris LOI signature, the Berlin brief close on June 12, and the Helix Suite trademark filing before that date. What's your focus?"
-  ],
-  series_a: [
-    "Series A status: $500,000 committed of a $2.5 million target—20% complete. Lead investor is Lesley Harris, committed May 30, 2026. Active prospects: Bernice King, Ashley Bell, and the Berlin VC cohort. The June 12 Berlin close is the next hard milestone. At current velocity, full close is projected Q3 2026. The LOI signature is the immediate unlock—everything downstream depends on it.",
-    "The raise is at 20%. Lesley Harris is committed at $500K. Berlin closes June 12. I'd recommend getting the LOI signed this week so the security audit funding is secured for Weeks 5 through 7. Want me to draft the DocuSign follow-up?"
-  ],
-  entities: [
-    "Genesis Reserve operates three active Delaware entities. AMB Trust Fund LLC is the parent holding structure. Genesis Banking LLC holds the financial services and payment processing operations. Genesis Reserve Corp is the primary technology and B2B licensing vehicle. All three entities have current filings with no outstanding compliance items. Franchise taxes are current through 2026.",
-    "Three entities, all clean. AMB Trust Fund LLC as the parent. Genesis Banking LLC for financial operations. Genesis Reserve Corp for tech and licensing. Delaware filings are current. No SEC notices. Compliance score is 100 percent."
-  ],
-  berlin: [
-    "Berlin brief deadline is June 12, 2026—12 days from today. The document is finalized and deployed. My recommendation: schedule a call with the Berlin VC cohort before June 10 to address any structural questions before the close window. Filing the Helix Suite trademark before that date would also strengthen the B2B licensing position heading into that meeting.",
-    "June 12 is 12 days away. The brief is ready. I'd prioritize two things before that date: the Lesley LOI signature to show momentum, and filing the Helix Suite trademark. Those two moves materially change the conversation in that room."
-  ],
-  loi: [
-    "The Lesley Harris LOI is drafted and ready for signature via DocuSign. Committed amount is $500,000. This is the highest-priority action item on the executive desk right now. Signing unlocks the Weeks 5 through 7 security audit funding that Lesley's team requires before formal investment. I can initiate a DocuSign reminder or draft a follow-up message. Which do you prefer?",
-    "LOI status: drafted, pending signature. Lesley Harris, $500K. DocuSign envelope is ready. The longer this sits unsigned, the more it compresses the security audit timeline. Priority one. Want me to send the follow-up?"
-  ],
-  compliance: [
-    "Compliance status is clean across all three entities. Delaware franchise taxes are current. No outstanding SEC notices. All entity filings are up to date. The Weeks 5 through 7 security audit is the next major compliance milestone—it will be funded post-LOI signature. I'd also recommend initiating NDA templates for Bernice King and Ashley Bell before any network introductions proceed.",
-    "Compliance score is 100 percent. All entities current. No flags. The security audit is scheduled for Weeks 5 through 7 pending LOI close. NDAs for the investor network contacts should be prepared this week."
-  ],
-  contracts: [
-    "Contract vault status: the Lesley Harris LOI is pending signature—priority one. The GR Debit Card Agreement is active. Revenue Share Protocol is in draft. The Helix Suite License Template is in draft—this one needs attention before Berlin, as it establishes the B2B licensing terms that would apply to any VC-backed product expansion. NDA standard template is active and ready to deploy.",
-    "Five contracts in the vault. One needs immediate action: the Lesley LOI. DocuSign envelope is ready. The Helix Suite License Template draft is also strategic priority before June 12."
-  ],
-  ip: [
-    "IP portfolio: Genesis Reserve trademark is pending USPTO review. The Helix Suite trademark is in draft—I recommend filing before June 12 to protect the B2B licensing position before the Berlin meeting. The GR Sacred Emblem has active design protection. YFLPP trademark is pending USPTO review. Two filings require action this quarter. The Helix Suite mark is the most time-sensitive given the Berlin timeline.",
-    "Four IP assets. Genesis Reserve mark: pending. Helix Suite: draft—file before Berlin. GR Emblem: protected. YFLPP: pending. The Helix Suite filing is the strategic priority. Filing before the Berlin close frames the licensing story properly for that investor cohort."
-  ],
-  kpis: [
-    "Executive KPI snapshot: Series A at 20 percent of $2.5M. Compliance at 100 percent across three entities. Projected runway 18 months post-raise. One contract pending signature. Four IP filings active. CAC $24, LTV $312, payback 2.3 months. No critical alerts. The LOI signature is the single unlock that moves the most downstream metrics.",
-    "KPIs are clean. Compliance perfect. Runway solid post-raise. The only open item driving risk right now is the LOI signature—it gates the security audit, which gates Lesley's formal investment close."
-  ],
-  default: [
-    "I'm scoped to executive operations—governance, entities, compliance, IP, contracts, and strategic KPIs. What would you like to address?",
-    "That sits outside my executive jurisdiction. I can escalate to the appropriate department CoPilot—Finance, Legal, Product, or Marketing. Which department should I route this to?",
-    "Noted. For that, I'd recommend looping in the appropriate department CoPilot. My scope covers governance, entities, compliance, IP, contracts, and executive KPIs. What else can I help you drive today?"
-  ]
+  greeting: ["Good to see you. All executive systems nominal. Series A at 20%—Lesley's $500K committed and the LOI is awaiting signature. Berlin deadline is June 12. Three entities active, all compliant. How can I support you today?", "Welcome back. Three priorities: the Lesley Harris LOI signature, Berlin close June 12, and filing the Helix Suite trademark before that date. What's your focus?"],
+  series_a: ["Series A: $500K committed of $2.5M target—20% complete. Lead investor Lesley Harris, committed May 30. Active prospects: Bernice King, Ashley Bell, Berlin VC cohort. June 12 is the next hard milestone. The LOI signature is the immediate unlock—everything downstream depends on it.", "Raise at 20%. Lesley is in at $500K. Berlin closes June 12. Sign the LOI this week to secure the security audit funding for Weeks 5 through 7."],
+  entities: ["Three active Delaware entities: AMB Trust Fund LLC as parent holding, Genesis Banking LLC for financial operations, Genesis Reserve Corp as the technology and B2B licensing vehicle. All three are in good standing with current filings.", "Three entities, all clean. Delaware filings current. Compliance score 100 percent. No outstanding items."],
+  berlin: ["Berlin brief deadline is June 12—12 days away. Document is finalized and deployed. Recommendation: schedule a call with the Berlin cohort before June 10, and file the Helix Suite trademark before that date to strengthen the B2B licensing position heading into that room.", "June 12 is 12 days away. Two moves before that date: LOI signature to show momentum, and file the Helix Suite trademark. Those two changes the conversation materially."],
+  loi: ["Lesley Harris LOI is drafted and ready via DocuSign. Committed amount $500K. This is priority one on the executive desk. Signing unlocks the Weeks 5 through 7 security audit funding Lesley's team requires before formal close. Ready to initiate a DocuSign reminder on your command.", "LOI status: drafted, pending signature. Lesley Harris, $500K. The longer this sits, the more it compresses the audit timeline. Priority one."],
+  compliance: ["Compliance status is clean across all three entities. Delaware taxes current. No outstanding SEC notices. Security audit scheduled for Weeks 5 through 7, pending LOI close. Recommend initiating NDA templates for Bernice King and Ashley Bell before any network introductions.", "Compliance score 100 percent. All entities current. No flags. Security audit gates Lesley's formal close—LOI signature is the critical path."],
+  contracts: ["Contract vault: LOI pending signature—priority one. GR Debit Card Agreement active. Revenue Share Protocol in draft. Helix Suite License Template in draft—strategic priority before Berlin. NDA standard template active and ready to deploy.", "Five contracts in vault. One immediate action: the Lesley LOI. DocuSign envelope ready. The Helix Suite License draft is also strategic before June 12."],
+  ip: ["IP portfolio: Genesis Reserve trademark pending USPTO. Helix Suite trademark in draft—file before June 12 to protect the B2B licensing position. GR Sacred Emblem has active design protection. YFLPP trademark pending. The Helix Suite mark is the most time-sensitive given the Berlin timeline.", "Four IP assets. Helix Suite filing is strategic priority—file before Berlin. Genesis Reserve and YFLPP marks are pending. GR Emblem is protected."],
+  kpis: ["Executive KPI snapshot: Series A 20%, compliance 100%, three entities current, runway 18 months post-raise, one contract pending signature, four IP filings active, LTV-to-CAC ratio 13x. No critical alerts. LOI signature is the single unlock that moves the most downstream metrics.", "KPIs are clean. The only open risk item is the LOI signature—it gates the audit, which gates Lesley's formal close."],
+  default: ["That sits outside my executive jurisdiction. I can escalate to the appropriate department CoPilot—Finance, Legal, Product, or Marketing. Which should I route this to?", "I'm scoped to executive operations: governance, entities, compliance, IP, contracts, and strategic KPIs. What would you like to address?"],
 };
 
-function pickResponse(category) {
-  var arr = KB[category] || KB.default;
-  return arr[Math.floor(Math.random() * arr.length)];
-}
+function pickKB(cat) { var a = KB[cat]||KB.default; return a[Math.floor(Math.random()*a.length)]; }
 
-function detectIntent(text) {
-  var t = text.toLowerCase();
-  if (/hello|hi |hey |good morning|good afternoon|good evening|wake up|start/.test(t)) return 'greeting';
-  if (/series a|raise|funding|capital|investor|$2\.5|2\.5m/.test(t)) return 'series_a';
-  if (/entit|corp|llc|company|corporate|amb trust|genesis banking/.test(t)) return 'entities';
+function detectIntent(t) {
+  t = t.toLowerCase();
+  if (/hello|hi |hey |good morning|start|wake/.test(t)) return 'greeting';
+  if (/series a|raise|funding|capital|2\.5m/.test(t)) return 'series_a';
+  if (/entit|corp|llc|company|amb trust|genesis banking/.test(t)) return 'entities';
   if (/berlin|june 12|jun 12|deadline|close/.test(t)) return 'berlin';
   if (/lesley|harris|loi|letter of intent|sign/.test(t)) return 'loi';
-  if (/compli|legal|filing|audit|sec |nda/.test(t)) return 'compliance';
+  if (/compli|legal|audit|sec |nda|filing/.test(t)) return 'compliance';
   if (/contract|docusign|vault|agreement/.test(t)) return 'contracts';
-  if (/ip |trademark|patent|license|licensing|intellectual/.test(t)) return 'ip';
+  if (/ip |trademark|patent|licens|intellect/.test(t)) return 'ip';
   if (/kpi|metric|performance|status|dashboard|report/.test(t)) return 'kpis';
   return 'default';
 }
 
 /* ── ATLAS STATE ─────────────────────────────────────────── */
-var atlasState = 'idle';
-var suite = document.getElementById('suite');
+var suite  = document.getElementById('suite');
+var states = { idle:'Idle · Ready', listening:'Listening…', thinking:'Processing…', speaking:'Speaking…' };
 
-function setAtlasState(state) {
-  atlasState = state;
-  suite.className = suite.className.replace(/atlas-state-\S+/g, '').trim();
-  suite.classList.add('atlas-state-' + state);
-  var labels = { idle: 'Idle · Ready', listening: 'Listening…', thinking: 'Processing…', speaking: 'Speaking…' };
+function setAtlasState(s) {
+  suite.className = suite.className.replace(/atlas-state-\S+/g,'').trim();
+  suite.classList.add('atlas-state-'+s);
   var el = document.getElementById('atlasStateLabel');
-  if (el) el.textContent = labels[state] || 'Idle';
+  if (el) el.textContent = states[s] || 'Idle';
 }
 
 /* ── CONVERSATION ────────────────────────────────────────── */
-var convo = document.getElementById('atlasConvo');
-
 function addMsg(role, text) {
+  var convo = document.getElementById('atlasConvo');
   var msg = document.createElement('div');
   msg.className = 'msg ' + role;
   var sender = document.createElement('div');
@@ -1326,149 +775,289 @@ function addMsg(role, text) {
   msg.appendChild(bubble);
   convo.appendChild(msg);
   convo.scrollTop = convo.scrollHeight;
-  return msg;
+}
+
+/* ── VOICE: ALWAYS-ON ENGINE ─────────────────────────────── */
+var wakeRecog    = null;
+var isSpeaking   = false;
+var awaitCmd     = false;
+var voiceReady   = false;
+var pushActive   = false;
+
+function setVoicePill(state, text) {
+  var pill = document.getElementById('voicePill');
+  var span = document.getElementById('voicePillText');
+  if (!pill) return;
+  pill.className = 'voice-on-pill ' + state;
+  if (span) span.textContent = text;
+}
+
+function initAlwaysOn() {
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { setVoicePill('off','Voice not supported in this browser'); return; }
+
+  wakeRecog = new SR();
+  wakeRecog.continuous = true;
+  wakeRecog.interimResults = false;
+  wakeRecog.lang = 'en-US';
+  wakeRecog.maxAlternatives = 1;
+
+  wakeRecog.onstart = function() {
+    voiceReady = true;
+    if (!isSpeaking && !pushActive) setVoicePill('active','Say "Hey ATLAS"');
+    document.getElementById('wakePrompt') && document.getElementById('wakePrompt').classList.remove('show');
+  };
+
+  wakeRecog.onresult = function(e) {
+    if (isSpeaking) return;
+    var res = e.results[e.results.length - 1];
+    if (!res.isFinal) return;
+    var text = res[0].transcript.toLowerCase().trim();
+
+    /* Wake word match: "hey atlas ..." or "atlas ..." */
+    var wm = text.match(/(?:hey\s+)?atlas[,.\s]*(.*)/i);
+    if (wm) {
+      var cmd = (wm[1] || '').trim();
+      awaitCmd = !cmd;
+      setAtlasState('listening');
+      setVoicePill('active', awaitCmd ? 'Listening for command…' : 'Processing…');
+      if (cmd) processCmd(cmd);
+    } else if (awaitCmd) {
+      awaitCmd = false;
+      processCmd(text);
+    }
+  };
+
+  wakeRecog.onend = function() {
+    voiceReady = false;
+    /* Auto-restart unless we are currently speaking */
+    if (!isSpeaking) {
+      setTimeout(function() { safeStart(); }, 250);
+    }
+  };
+
+  wakeRecog.onerror = function(e) {
+    voiceReady = false;
+    if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
+      setVoicePill('pending', 'Tap to enable voice');
+      var p = document.getElementById('wakePrompt');
+      if (p) p.classList.add('show');
+      return;
+    }
+    /* Restart on transient errors */
+    setTimeout(function() { safeStart(); }, 1000);
+  };
+
+  safeStart();
+}
+
+function safeStart() {
+  if (!wakeRecog || isSpeaking) return;
+  try { wakeRecog.start(); } catch(e) { /* already running */ }
+}
+
+function safeStop() {
+  if (!wakeRecog) return;
+  try { wakeRecog.stop(); } catch(e) {}
+  voiceReady = false;
+}
+
+/* Called when user taps the voice pill or wake prompt banner */
+function activateVoiceManually() {
+  if (wakeRecog) safeStart();
+  else initAlwaysOn();
+}
+
+/* Push-to-talk: mic button activates command mode directly */
+function pushToTalk() {
+  if (isSpeaking) { window.speechSynthesis && window.speechSynthesis.cancel(); isSpeaking = false; setAtlasState('idle'); return; }
+  var btn = document.getElementById('micBtn');
+  var input = document.getElementById('atlasInput');
+  if (!wakeRecog) { initAlwaysOn(); return; }
+
+  if (pushActive) {
+    /* Second tap: cancel push-to-talk */
+    pushActive = false;
+    btn && btn.classList.remove('push-active');
+    awaitCmd = false;
+    setAtlasState('idle');
+    setVoicePill('active', 'Say "Hey ATLAS"');
+  } else {
+    /* First tap: enter push-to-talk listen mode */
+    pushActive = true;
+    awaitCmd  = true;
+    btn && btn.classList.add('push-active');
+    setAtlasState('listening');
+    setVoicePill('active', 'Speak now…');
+    if (!voiceReady) safeStart();
+  }
 }
 
 /* ── TTS ─────────────────────────────────────────────────── */
-var voices = [];
-window.speechSynthesis && speechSynthesis.addEventListener && speechSynthesis.addEventListener('voiceschanged', function() {
-  voices = speechSynthesis.getVoices();
-});
+var ttsVoices = [];
+window.speechSynthesis && typeof window.speechSynthesis.addEventListener === 'function' &&
+  window.speechSynthesis.addEventListener('voiceschanged', function() { ttsVoices = window.speechSynthesis.getVoices(); });
 
-function speak(text, onEnd) {
-  if (!window.speechSynthesis) { onEnd && onEnd(); return; }
+function speak(text, cb) {
+  if (!window.speechSynthesis) { cb && cb(); return; }
   speechSynthesis.cancel();
+  isSpeaking = true;
+  safeStop(); /* pause mic while speaking */
+  setVoicePill('off', 'ATLAS speaking…');
+
   var utt = new SpeechSynthesisUtterance(text);
-  utt.rate = 0.92;
-  utt.pitch = 0.88;
-  utt.volume = 1;
-  if (!voices.length) voices = speechSynthesis.getVoices();
-  var pref = voices.find(function(v) {
-    return /daniel|google uk english male|alex|david/i.test(v.name);
-  }) || voices.find(function(v) { return v.lang === 'en-US' && v.localService; }) || voices[0];
-  if (pref) utt.voice = pref;
-  utt.onend = function() { onEnd && onEnd(); };
-  speechSynthesis.speak(utt);
+  utt.rate = 0.92; utt.pitch = 0.88; utt.volume = 1;
+  if (!ttsVoices.length) ttsVoices = window.speechSynthesis.getVoices();
+  var v = ttsVoices.find(function(v){ return /daniel|google uk english male|alex|david/i.test(v.name); })
+       || ttsVoices.find(function(v){ return v.lang==='en-US' && v.localService; })
+       || ttsVoices[0];
+  if (v) utt.voice = v;
+
+  utt.onend = function() {
+    isSpeaking = false;
+    pushActive = false;
+    var btn = document.getElementById('micBtn');
+    if (btn) btn.classList.remove('push-active');
+    setAtlasState('idle');
+    setTimeout(function() { safeStart(); }, 350);
+    cb && cb();
+  };
+  utt.onerror = function() {
+    isSpeaking = false;
+    setAtlasState('idle');
+    setTimeout(function() { safeStart(); }, 350);
+  };
+  window.speechSynthesis.speak(utt);
 }
 
-/* ── RESPONSE FLOW ───────────────────────────────────────── */
-function atlasRespond(intentOverride) {
+/* ── COMMAND PROCESSING ─────────────────────────────────── */
+function processCmd(text) {
+  pushActive = false;
+  var btn = document.getElementById('micBtn');
+  if (btn) btn.classList.remove('push-active');
   var input = document.getElementById('atlasInput');
-  var userText = (input && input.value.trim()) || '';
-  var intent = intentOverride || detectIntent(userText);
-  var response = pickResponse(intent);
-
-  if (userText) {
-    addMsg('user', userText);
-    if (input) input.value = '';
-  }
+  if (input) input.value = '';
 
   setAtlasState('thinking');
-  var thinkTime = 800 + Math.random() * 600;
+  setVoicePill('active', 'Thinking…');
+  var response = pickKB(detectIntent(text));
 
   setTimeout(function() {
     setAtlasState('speaking');
     addMsg('atlas', response);
-    speak(response, function() { setAtlasState('idle'); });
-  }, thinkTime);
+    speak(response, function() { setVoicePill('active', 'Say "Hey ATLAS"'); });
+  }, 700 + Math.random() * 500);
 }
 
-/* ── TEXT INPUT ──────────────────────────────────────────── */
+/* ── TEXT & QUICK-ACTION RESPONSE ───────────────────────── */
 function submitText() {
   var input = document.getElementById('atlasInput');
-  if (!input || !input.value.trim()) return;
-  atlasRespond();
+  var text  = input && input.value.trim();
+  if (!text) return;
+  addMsg('user', text);
+  input.value = '';
+  processCmd(text);
+}
+
+function atlasRespond(intentKey) {
+  processCmd(intentKey); /* pass key directly — detectIntent won't match, falls to default, but we pass KB key */
+  /* Override: call processCmd with intent directly */
+}
+/* Better version — direct intent */
+function atlasRespond(intentKey) {
+  setAtlasState('thinking');
+  var response = pickKB(intentKey);
+  setTimeout(function() {
+    setAtlasState('speaking');
+    addMsg('atlas', response);
+    speak(response, function() { setVoicePill('active', 'Say "Hey ATLAS"'); });
+  }, 600 + Math.random()*400);
 }
 
 document.getElementById('atlasInput') && document.getElementById('atlasInput').addEventListener('keydown', function(e) {
   if (e.key === 'Enter') submitText();
 });
 
-/* ── SPEECH RECOGNITION ──────────────────────────────────── */
-var recognition = null;
-var micActive = false;
+/* ── MOBILE TAB SWITCHING ────────────────────────────────── */
+var currentTab = 'atlas';
+var panels = { atlas: 'panelAtlas', ops: 'panelOps', kpi: 'panelKpi' };
 
-function initSpeech() {
-  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SR) return;
-  recognition = new SR();
-  recognition.continuous = false;
-  recognition.interimResults = true;
-  recognition.lang = 'en-US';
-
-  recognition.onstart = function() {
-    micActive = true;
-    setAtlasState('listening');
-    var btn = document.getElementById('micBtn');
-    if (btn) btn.classList.add('active');
-  };
-
-  recognition.onresult = function(e) {
-    var transcript = '';
-    for (var i = e.resultIndex; i < e.results.length; i++) {
-      transcript += e.results[i][0].transcript;
-    }
-    var input = document.getElementById('atlasInput');
-    if (input) input.value = transcript;
-  };
-
-  recognition.onend = function() {
-    micActive = false;
-    setAtlasState('idle');
-    var btn = document.getElementById('micBtn');
-    if (btn) btn.classList.remove('active');
-    var input = document.getElementById('atlasInput');
-    if (input && input.value.trim()) atlasRespond();
-  };
-
-  recognition.onerror = function() {
-    micActive = false;
-    setAtlasState('idle');
-    var btn = document.getElementById('micBtn');
-    if (btn) btn.classList.remove('active');
-  };
+function switchTab(tab) {
+  if (tab === currentTab) return;
+  /* Deactivate old */
+  var oldPanel = document.getElementById(panels[currentTab]);
+  var oldBtn   = document.getElementById('tab-' + currentTab);
+  if (oldPanel) oldPanel.classList.remove('tab-active');
+  if (oldBtn)   oldBtn.classList.remove('active');
+  /* Activate new */
+  currentTab = tab;
+  var newPanel = document.getElementById(panels[tab]);
+  var newBtn   = document.getElementById('tab-' + tab);
+  if (newPanel) newPanel.classList.add('tab-active');
+  if (newBtn)   newBtn.classList.add('active');
 }
 
-function toggleMic() {
-  if (!recognition) { initSpeech(); }
-  if (!recognition) {
-    var input = document.getElementById('atlasInput');
-    if (input) input.focus();
+/* ── DESKTOP LAUNCH ──────────────────────────────────────── */
+function launchDesktop() {
+  var url = window.location.href.split('?')[0];
+  /* If inside dashboard iframe, tell parent to enter desktop mode */
+  if (window !== window.top) {
+    window.parent.postMessage({ action: 'genesisDesktopMode', url: url, title: 'Executive Suite · ATLAS' }, '*');
     return;
   }
-  if (micActive) {
-    recognition.stop();
-  } else {
-    speechSynthesis && speechSynthesis.cancel();
-    try { recognition.start(); } catch(e) {}
+  /* If on mobile and not iframe, open fullscreen / new tab */
+  if (window.DEVICE && window.DEVICE.isMobile) {
+    window.open(url + '?desktop=1', '_blank', 'noopener,noreferrer');
+    return;
   }
+  /* Desktop standalone: request fullscreen */
+  var el = document.documentElement;
+  if (el.requestFullscreen) el.requestFullscreen();
+  else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
 }
 
 /* ── KPI TIMESTAMP ───────────────────────────────────────── */
 function updateKpiTime() {
-  var now = new Date();
-  var h = now.getHours(), m = now.getMinutes();
-  var ap = h >= 12 ? 'PM' : 'AM';
-  h = h % 12 || 12;
+  var now = new Date(), h = now.getHours(), m = now.getMinutes();
+  var ap = h >= 12 ? 'PM' : 'AM'; h = h % 12 || 12;
   var el = document.getElementById('kpiTime');
-  if (el) el.textContent = 'Updated ' + h + ':' + (m < 10 ? '0' + m : m) + ' ' + ap;
+  if (el) el.textContent = 'Updated ' + h + ':' + (m<10?'0'+m:m) + ' ' + ap;
 }
 
 /* ── INIT ────────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', function() {
   setAtlasState('idle');
-  suite.classList.add('atlas-state-idle');
+  setVoicePill('pending', 'Initializing voice…');
   updateKpiTime();
   setInterval(updateKpiTime, 60000);
-  initSpeech();
 
-  /* Seed greeting after brief delay */
+  /* On desktop, all 3 panels show (no tabs needed — handled by CSS) */
+  /* On mobile, only atlas tab is active by default */
+  if (window.DEVICE && !window.DEVICE.isMobile) {
+    /* Make sure all panels are visible on desktop */
+    ['panelAtlas','panelOps','panelKpi'].forEach(function(id){
+      var el = document.getElementById(id);
+      if (el) { el.classList.add('tab-active'); el.style.position=''; el.style.opacity=''; el.style.pointerEvents=''; }
+    });
+  }
+
+  /* Start always-on voice (will ask permission once) */
+  setTimeout(function() { initAlwaysOn(); }, 600);
+
+  /* Greeting after brief delay */
   setTimeout(function() {
     setAtlasState('speaking');
-    var greeting = pickResponse('greeting');
+    var greeting = pickKB('greeting');
     addMsg('atlas', greeting);
-    speak(greeting, function() { setAtlasState('idle'); });
-  }, 800);
+    speak(greeting, function() { setVoicePill('active', 'Say "Hey ATLAS"'); });
+  }, 900);
+});
+
+/* ── postMessage listener (desktop mode from dashboard) ── */
+window.addEventListener('message', function(e) {
+  if (e.data && e.data.action === 'atlasQuery') {
+    processCmd(e.data.text || '');
+  }
 });
 </script>
 </body>

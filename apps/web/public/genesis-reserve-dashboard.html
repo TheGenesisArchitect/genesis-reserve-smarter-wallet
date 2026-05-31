@@ -541,6 +541,86 @@ body {
   background: #fff;
 }
 
+/* ── DESKTOP MODE OVERLAY ────────────────────────────────── */
+.desktop-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(1.03);
+  transition: opacity .45s var(--ease), transform .45s var(--ease);
+}
+.desktop-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+  transform: scale(1);
+}
+.desktop-bar {
+  flex-shrink: 0;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  border-bottom: 1px solid rgba(201,168,76,.18);
+  background: rgba(4,6,8,.96);
+  backdrop-filter: blur(24px);
+}
+.desktop-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.desktop-bar-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--gold);
+  letter-spacing: .04em;
+}
+.desktop-bar-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  border-left: 1px solid rgba(255,255,255,.1);
+  padding-left: 12px;
+}
+.desktop-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.desktop-bar-btn {
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background .15s, color .15s;
+}
+.desktop-bar-btn.ext {
+  color: var(--muted);
+  border: 1px solid rgba(255,255,255,.08);
+}
+.desktop-bar-btn.ext:hover { background: rgba(255,255,255,.06); color: var(--text); }
+.desktop-bar-btn.close-dm {
+  color: var(--bg);
+  background: var(--gold);
+}
+.desktop-bar-btn.close-dm:hover { background: var(--gold2); }
+.desktop-frame {
+  flex: 1;
+  width: 100%;
+  border: none;
+}
+
 /* ── DRAWER HANDLES ──────────────────────────────────────── */
 .drawer-handle {
   position: absolute;
@@ -955,6 +1035,33 @@ body {
   </div><!-- /phone-outer -->
 
   <!-- ════════════════════════════════════════
+       DESKTOP MODE OVERLAY
+  ════════════════════════════════════════ -->
+  <div class="desktop-overlay" id="desktopOverlay" role="dialog" aria-modal="true" aria-label="Desktop Mode">
+    <div class="desktop-bar">
+      <div class="desktop-bar-left">
+        <span class="desktop-bar-logo">Genesis Reserve</span>
+        <span class="desktop-bar-title" id="desktopBarTitle">Helix Suite</span>
+      </div>
+      <div class="desktop-bar-right">
+        <button class="desktop-bar-btn ext" id="desktopExtBtn" onclick="desktopOpenExternal()" aria-label="Open in new tab">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          New Tab
+        </button>
+        <button class="desktop-bar-btn close-dm" onclick="exitDesktopMode()" aria-label="Exit desktop mode">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+          Back to Phone
+        </button>
+      </div>
+    </div>
+    <iframe id="desktopFrame" class="desktop-frame"
+      sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-top-navigation-by-user-activation allow-microphone"
+      src="about:blank"
+      title="Desktop Suite View"
+      allow="microphone; camera"></iframe>
+  </div>
+
+  <!-- ════════════════════════════════════════
        RIGHT DRAWER · Quick Tools
   ════════════════════════════════════════ -->
   <div class="drawer drawer-right" id="drawerRight">
@@ -1236,8 +1343,80 @@ function initTouch() {
   },{passive:true});
 }
 
+/* ── DESKTOP MODE ────────────────────────────────────────── */
+var _desktopUrl = '';
+
+function enterDesktopMode(url, title) {
+  _desktopUrl = url || '';
+  var overlay = document.getElementById('desktopOverlay');
+  var frame   = document.getElementById('desktopFrame');
+  var titleEl = document.getElementById('desktopBarTitle');
+  if (!overlay || !frame) return;
+
+  if (titleEl) titleEl.textContent = title || 'Helix Suite';
+  frame.src = url || 'about:blank';
+
+  /* Fade phone out */
+  var phoneOuter = document.querySelector('.phone-outer');
+  if (phoneOuter) {
+    phoneOuter.style.transition = 'transform .45s var(--ease), opacity .4s var(--ease)';
+    phoneOuter.style.transform  = 'scale(.6) translateY(80px)';
+    phoneOuter.style.opacity    = '0';
+    phoneOuter.style.pointerEvents = 'none';
+  }
+
+  /* Fade overlay in (after a tick so transition fires) */
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      overlay.classList.add('active');
+    });
+  });
+
+  document.body.setAttribute('data-desktop-mode', '1');
+}
+
+function exitDesktopMode() {
+  var overlay = document.getElementById('desktopOverlay');
+  var frame   = document.getElementById('desktopFrame');
+  if (!overlay) return;
+
+  overlay.classList.remove('active');
+
+  /* Restore phone after overlay fades */
+  setTimeout(function() {
+    var phoneOuter = document.querySelector('.phone-outer');
+    if (phoneOuter) {
+      phoneOuter.style.transition = 'transform .45s var(--spring), opacity .4s var(--ease)';
+      phoneOuter.style.transform  = '';
+      phoneOuter.style.opacity    = '';
+      phoneOuter.style.pointerEvents = '';
+    }
+    /* Clear iframe src after animation to stop mic/media */
+    if (frame) frame.src = 'about:blank';
+    _desktopUrl = '';
+  }, 480);
+
+  document.body.removeAttribute('data-desktop-mode');
+}
+
+function desktopOpenExternal() {
+  if (_desktopUrl) window.open(_desktopUrl, '_blank', 'noopener,noreferrer');
+}
+
+/* postMessage receiver — suites send {action:'genesisDesktopMode', url, title} */
+window.addEventListener('message', function(e) {
+  if (!e.data || typeof e.data !== 'object') return;
+  if (e.data.action === 'genesisDesktopMode') {
+    enterDesktopMode(e.data.url, e.data.title);
+  }
+  if (e.data.action === 'genesisExitDesktopMode') {
+    exitDesktopMode();
+  }
+});
+
 /* ── KEYBOARD ────────────────────────────────────────────── */
 document.addEventListener('keydown', function(e){
+  if(document.getElementById('desktopOverlay').classList.contains('active')){ if(e.key==='Escape') exitDesktopMode(); return; }
   if(document.getElementById('appOverlay').classList.contains('open')){ if(e.key==='Escape') closeApp(); return; }
   if(e.key==='ArrowRight') goToPage(currentPage+1);
   if(e.key==='ArrowLeft')  goToPage(currentPage-1);
