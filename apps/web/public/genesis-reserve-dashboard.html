@@ -2,1485 +2,1256 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Genesis Reserve — Command OS</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Genesis Reserve · Command OS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Tenor+Sans&family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{
-  --gold:#C9A84C;--gold2:#E8CB6E;--teal:#00D4AA;
-  --bg:#06080d;--bg2:#0d1018;--bg3:#141b22;
-  --glass:rgba(255,255,255,0.04);--glass2:rgba(255,255,255,0.07);
-  --border:rgba(201,168,76,0.25);--border2:rgba(201,168,76,0.12);
-  --red:#FF4B6E;--purple:#9B6BFF;--blue:#3B9EFF;--orange:#FF8C42;
-  --green:#00D4AA;
-}
-*{margin:0;padding:0;box-sizing:border-box}
-body{
-  background:var(--bg);
-  min-height:100vh;display:flex;align-items:center;justify-content:center;
-  font-family:'Tenor Sans',sans-serif;overflow:hidden;
-  background-image:
-    radial-gradient(ellipse 60% 40% at 50% 0%,rgba(201,168,76,0.06) 0%,transparent 70%),
-    radial-gradient(ellipse 40% 60% at 80% 80%,rgba(0,212,170,0.04) 0%,transparent 60%);
+/* ── TOKENS ─────────────────────────────────────────────── */
+:root {
+  --bg:     #020305;
+  --bg2:    #040608;
+  --bg3:    #080B10;
+  --panel:  #0C1018;
+  --text:   #E8E5DF;
+  --muted:  #7A7670;
+  --gold:   #C9A84C;
+  --gold2:  #E8CB6E;
+  --teal:   #00D4AA;
+  --green:  #1ABF6A;
+  --blue:   #4A9EFF;
+  --red:    #E84040;
+  --orange: #E8820A;
+  --violet: #9B6DFF;
+  --ease:   cubic-bezier(.4,0,.2,1);
+  --spring: cubic-bezier(.34,1.56,.64,1);
 }
 
-/* ── DESKTOP ORBIT ── */
-.orbit{
-  position:relative;display:flex;align-items:center;justify-content:center;
-  gap:40px;padding:40px;
-}
-.sidebar{
-  display:flex;flex-direction:column;gap:16px;width:220px;
-}
-.sidebar-card{
-  background:var(--bg2);border:1px solid var(--border2);border-radius:16px;
-  padding:16px;
-}
-.sidebar-card h4{
-  font-family:'Cormorant Garamond',serif;color:var(--gold);font-size:11px;
-  letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px;
-}
-.sidebar-kpi{
-  display:flex;flex-direction:column;gap:8px;
-}
-.skpi{
-  display:flex;justify-content:space-between;align-items:center;
-}
-.skpi-label{font-size:10px;color:rgba(255,255,255,0.4);letter-spacing:.06em}
-.skpi-val{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold2)}
-.series-bar{
-  height:4px;border-radius:2px;background:rgba(255,255,255,0.08);margin-top:8px;overflow:hidden;
-}
-.series-fill{
-  height:100%;border-radius:2px;
-  background:linear-gradient(90deg,var(--teal),var(--gold));
-  transition:width 1s ease;
-}
-.sidebar-quick{display:flex;flex-direction:column;gap:8px}
-.quick-btn{
-  display:flex;align-items:center;gap:10px;
-  background:var(--glass);border:1px solid var(--border2);border-radius:10px;
-  padding:8px 12px;cursor:pointer;transition:.2s;
-  font-size:11px;color:rgba(255,255,255,0.6);letter-spacing:.04em;
-}
-.quick-btn:hover{background:var(--glass2);border-color:var(--border);color:var(--gold2)}
-.quick-btn .qi{font-size:14px;width:20px;text-align:center}
+/* ── RESET ───────────────────────────────────────────────── */
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+button { background: none; border: none; cursor: pointer; color: inherit; font: inherit; }
+html, body { height: 100%; overflow: hidden; }
 
-/* ── PHONE FRAME ── */
-.phone-wrap{position:relative}
-.phone-shadow{
-  position:absolute;inset:-20px;
-  background:radial-gradient(ellipse 70% 50% at 50% 100%,rgba(201,168,76,0.15) 0%,transparent 70%);
-  pointer-events:none;z-index:-1;
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Sora', sans-serif;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.phone{
-  width:390px;height:844px;
-  background:linear-gradient(170deg,#0f1219 0%,#070a0e 60%,#0a0d13 100%);
-  border-radius:54px;
-  border:1.5px solid rgba(201,168,76,0.35);
-  position:relative;overflow:hidden;
+
+/* ── ORBIT ───────────────────────────────────────────────── */
+.orbit {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+/* ── PHONE OUTER ─────────────────────────────────────────── */
+.phone-outer {
+  position: relative;
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+/* ── PHONE CHASSIS ───────────────────────────────────────── */
+.phone {
+  width: 390px;
+  height: 844px;
+  border-radius: 52px;
+  background: var(--bg);
+  position: relative;
+  overflow: hidden;
   box-shadow:
-    0 0 0 1px rgba(0,0,0,0.8),
-    0 0 60px rgba(0,0,0,0.8),
-    inset 0 1px 0 rgba(255,255,255,0.08),
-    inset 0 -1px 0 rgba(0,0,0,0.5);
+    0 0 0 1px rgba(201,168,76,.38),
+    0 0 0 3px rgba(8,10,14,.95),
+    0 0 0 5px rgba(255,255,255,.09),
+    0 0 0 7px rgba(0,0,0,.7),
+    0 70px 140px rgba(0,0,0,.9),
+    0 30px 60px rgba(0,0,0,.6);
 }
-/* side buttons */
-.phone::before{
-  content:'';
-  position:absolute;left:-3px;top:140px;width:3px;height:36px;
-  background:linear-gradient(180deg,#1a2030,#0d1018);
-  border-radius:2px 0 0 2px;
-  box-shadow:-1px 0 3px rgba(0,0,0,0.5);
-}
-.phone::after{
-  content:'';
-  position:absolute;right:-3px;top:180px;width:3px;height:70px;
-  background:linear-gradient(180deg,#1a2030,#0d1018);
-  border-radius:0 2px 2px 0;
-}
-.vol-btn{
-  position:absolute;left:-3px;width:3px;border-radius:2px 0 0 2px;
-  background:linear-gradient(180deg,#1a2030,#0d1018);
-}
-.vol-up{top:190px;height:36px}
-.vol-dn{top:240px;height:36px}
-
-/* screen */
-.screen{
-  position:absolute;inset:0;border-radius:54px;overflow:hidden;
-  display:flex;flex-direction:column;
+.phone::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg,
+    rgba(255,255,255,.045) 0%,
+    transparent 35%,
+    transparent 65%,
+    rgba(255,255,255,.018) 100%);
+  pointer-events: none;
+  z-index: 200;
 }
 
-/* status bar */
-.status-bar{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:14px 24px 6px;
-  position:relative;z-index:10;flex-shrink:0;
+/* ── DYNAMIC ISLAND ──────────────────────────────────────── */
+.dynamic-island {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 122px;
+  height: 36px;
+  background: #000;
+  border-radius: 20px;
+  z-index: 150;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 12px;
+  box-shadow: 0 0 0 1px rgba(255,255,255,.07);
 }
-.status-time{
-  font-family:'JetBrains Mono',monospace;font-size:15px;
-  font-weight:600;color:#fff;letter-spacing:-.02em;
-}
-.status-right{display:flex;align-items:center;gap:6px}
-.status-icon{font-size:12px;color:rgba(255,255,255,0.8)}
-.status-carrier{
-  font-family:'Tenor Sans',sans-serif;font-size:11px;
-  color:var(--gold);letter-spacing:.04em;
-}
-
-/* dynamic island */
-.island{
-  position:absolute;top:12px;left:50%;transform:translateX(-50%);
-  width:120px;height:34px;background:#000;border-radius:20px;
-  z-index:20;display:flex;align-items:center;justify-content:center;
-  overflow:hidden;
-}
-.island-inner{
-  display:flex;align-items:center;gap:6px;
-}
-.island-dot{
-  width:10px;height:10px;border-radius:50%;
-  background:radial-gradient(circle,rgba(201,168,76,0.6),transparent);
-  animation:island-pulse 2s ease infinite;
-}
-@keyframes island-pulse{
-  0%,100%{opacity:.4;transform:scale(1)}
-  50%{opacity:1;transform:scale(1.2)}
-}
-.island-text{
-  font-family:'JetBrains Mono',monospace;font-size:9px;
-  color:var(--gold);letter-spacing:.08em;
+.dynamic-island::after {
+  content: '';
+  width: 10px;
+  height: 10px;
+  background: #111;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.08);
+  flex-shrink: 0;
 }
 
-/* wallpaper */
-.wallpaper{
-  position:absolute;inset:0;
+/* ── SCREEN ──────────────────────────────────────────────── */
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  border-radius: inherit;
+  overflow: hidden;
+}
+
+/* ── STATUS BAR ──────────────────────────────────────────── */
+.status-bar {
+  flex-shrink: 0;
+  height: 54px;
+  padding: 0 28px 8px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+.status-time {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text);
+  letter-spacing: -.3px;
+}
+.status-icons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text);
+}
+
+/* ── PAGE HEADER ─────────────────────────────────────────── */
+.page-header {
+  flex-shrink: 0;
+  padding: 2px 24px 8px;
+}
+.page-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 300;
+  color: var(--muted);
+  letter-spacing: .03em;
+  transition: color .3s, opacity .3s;
+}
+.page-title.home { opacity: 0; }
+
+/* ── PAGES VIEWPORT ──────────────────────────────────────── */
+.pages-viewport {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+.pages-track {
+  display: flex;
+  width: calc(5 * 390px);
+  height: 100%;
+  will-change: transform;
+}
+
+/* ── PAGE ────────────────────────────────────────────────── */
+.page {
+  width: 390px;
+  height: 100%;
+  flex-shrink: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0 16px 8px;
+  scrollbar-width: none;
+}
+.page::-webkit-scrollbar { display: none; }
+
+/* ── HOME PAGE ───────────────────────────────────────────── */
+.page-home {
+  padding: 0;
   background:
-    radial-gradient(ellipse 80% 60% at 50% -10%,rgba(201,168,76,0.08) 0%,transparent 60%),
-    radial-gradient(ellipse 60% 80% at 100% 100%,rgba(0,212,170,0.04) 0%,transparent 60%),
-    linear-gradient(180deg,#06080d 0%,#080b11 100%);
-  pointer-events:none;
-}
-/* grid overlay */
-.wallpaper::after{
-  content:'';position:absolute;inset:0;
-  background-image:
-    linear-gradient(rgba(201,168,76,0.03) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(201,168,76,0.03) 1px,transparent 1px);
-  background-size:40px 40px;
+    radial-gradient(ellipse 130% 55% at 50% 8%,  rgba(201,168,76,.09)  0%, transparent 65%),
+    radial-gradient(ellipse 70%  70% at 15% 80%, rgba(0,212,170,.05)   0%, transparent 55%),
+    radial-gradient(ellipse 60%  50% at 85% 70%, rgba(74,158,255,.04)  0%, transparent 50%);
 }
 
-/* pages container */
-.pages-wrap{
-  flex:1;overflow:hidden;position:relative;
-  perspective:1200px;perspective-origin:50% 50%;
+.home-hero {
+  padding: 22px 24px 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
-.pages{
-  display:flex;height:100%;
-  transform-style:preserve-3d;
-  will-change:transform;
+.emblem {
+  width: 88px;
+  height: 88px;
+  object-fit: contain;
+  animation: glowPulse 4s ease-in-out infinite;
+  margin-bottom: 14px;
 }
-.page{
-  min-width:390px;height:100%;overflow:hidden;
-  padding:8px 16px 8px;
-  display:flex;flex-direction:column;
+@keyframes glowPulse {
+  0%,100% { filter: drop-shadow(0 0 10px rgba(201,168,76,.45)) drop-shadow(0 0 28px rgba(201,168,76,.18)); }
+  50%      { filter: drop-shadow(0 0 22px rgba(201,168,76,.75)) drop-shadow(0 0 56px rgba(201,168,76,.32)); }
 }
-
-/* page header */
-.page-header{
-  text-align:center;padding:4px 0 10px;flex-shrink:0;
+.home-brand-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px;
+  font-weight: 300;
+  letter-spacing: .06em;
+  color: var(--text);
+  line-height: 1;
 }
-.page-title{
-  font-family:'Cormorant Garamond',serif;font-size:13px;
-  color:rgba(255,255,255,0.35);letter-spacing:.14em;text-transform:uppercase;
-}
-
-/* app grid */
-.app-grid{
-  display:grid;grid-template-columns:repeat(4,1fr);
-  gap:12px 8px;flex:1;align-content:start;
-}
-.app{
-  display:flex;flex-direction:column;align-items:center;gap:5px;
-  cursor:pointer;
-}
-.app-icon{
-  width:60px;height:60px;border-radius:14px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:22px;position:relative;
-  box-shadow:0 4px 20px rgba(0,0,0,0.4);
-  transition:transform .15s,box-shadow .15s;
-  border:1px solid rgba(255,255,255,0.07);
-  flex-shrink:0;
-}
-.app:hover .app-icon{
-  transform:scale(1.1);
-  box-shadow:0 8px 30px rgba(0,0,0,0.6);
-}
-.app:active .app-icon{transform:scale(0.95)}
-.app-label{
-  font-size:9.5px;color:rgba(255,255,255,0.75);
-  text-align:center;line-height:1.2;letter-spacing:.01em;
-  max-width:70px;
+.home-brand-os {
+  font-family: 'Sora', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .22em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-top: 5px;
 }
 
-/* folder */
-.folder-icon{
-  display:grid;grid-template-columns:1fr 1fr;
-  grid-template-rows:1fr 1fr;gap:3px;padding:8px;
+.kpi-row {
+  display: flex;
+  gap: 8px;
+  padding: 8px 24px;
 }
-.folder-mini{
-  width:100%;aspect-ratio:1;border-radius:4px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:10px;
+.kpi-chip {
+  flex: 1;
+  padding: 7px 10px;
+  border-radius: 10px;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: .03em;
+  text-align: center;
+  border: 1px solid rgba(255,255,255,.07);
+}
+.kpi-chip.gold  { background: rgba(201,168,76,.1);  border-color: rgba(201,168,76,.25);  color: var(--gold2); }
+.kpi-chip.warn  { background: rgba(232,130,10,.08); border-color: rgba(232,130,10,.22); color: var(--orange); }
+
+.series-bar-wrap {
+  margin: 2px 24px 12px;
+  padding: 12px 14px;
+  background: rgba(255,255,255,.024);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 14px;
+}
+.series-bar-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 8px;
+}
+.series-bar-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.series-bar-pct {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--gold2);
+}
+.series-track {
+  height: 4px;
+  background: rgba(255,255,255,.07);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 7px;
+}
+.series-fill {
+  height: 100%;
+  width: 20%;
+  background: linear-gradient(90deg, var(--gold) 0%, var(--gold2) 100%);
+  border-radius: 2px;
+  box-shadow: 0 0 8px rgba(201,168,76,.5);
+}
+.series-sub {
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: .01em;
 }
 
-/* dock */
-.dock{
-  display:flex;align-items:center;justify-content:center;
-  gap:20px;padding:10px 24px 18px;
-  flex-shrink:0;position:relative;z-index:10;
+.home-apps-label {
+  padding: 0 24px 8px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
 }
-.dock-bg{
-  position:absolute;inset:4px 16px;
-  background:rgba(255,255,255,0.06);
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  border-radius:28px;border:1px solid rgba(255,255,255,0.09);
-}
-.dock-app{
-  display:flex;flex-direction:column;align-items:center;gap:4px;
-  cursor:pointer;position:relative;z-index:1;
-}
-.dock-icon{
-  width:54px;height:54px;border-radius:14px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:22px;
-  box-shadow:0 4px 16px rgba(0,0,0,0.5);
-  transition:transform .15s;
-  border:1px solid rgba(255,255,255,0.07);
-}
-.dock-app:hover .dock-icon{transform:scale(1.1) translateY(-4px)}
-.dock-label{font-size:9px;color:rgba(255,255,255,0.55);letter-spacing:.02em}
-
-/* page dots */
-.page-dots{
-  display:flex;align-items:center;justify-content:center;gap:6px;
-  padding:6px 0 2px;flex-shrink:0;
-}
-.dot{
-  width:6px;height:6px;border-radius:50%;
-  background:rgba(255,255,255,0.2);transition:.3s;cursor:pointer;
-}
-.dot.active{
-  width:18px;border-radius:3px;background:var(--gold);
+.app-grid-home {
+  padding: 0 20px 16px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px 8px;
 }
 
-/* ── HOME PAGE ── */
-.home-header{
-  display:flex;flex-direction:column;align-items:center;padding:12px 0 6px;flex-shrink:0;
-}
-.home-greeting{
-  font-family:'Tenor Sans',sans-serif;font-size:10px;
-  color:rgba(255,255,255,0.35);letter-spacing:.14em;text-transform:uppercase;
-}
-.home-date{
-  font-family:'Cormorant Garamond',serif;font-size:18px;
-  color:rgba(255,255,255,0.7);font-weight:300;margin-top:1px;
-}
-.emblem{
-  width:48px;height:48px;border-radius:50%;
-  background:radial-gradient(circle,rgba(201,168,76,0.15),transparent);
-  border:1px solid rgba(201,168,76,0.3);
-  display:flex;align-items:center;justify-content:center;
-  font-size:22px;margin-bottom:4px;
+/* ── SECTION HEADER ──────────────────────────────────────── */
+.section-hdr {
+  padding: 10px 0 14px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
 }
 
-/* KPI widgets */
-.kpi-row{display:flex;gap:8px;margin-bottom:10px;flex-shrink:0}
-.kpi-w{
-  flex:1;background:rgba(255,255,255,0.04);
-  border:1px solid var(--border2);border-radius:16px;padding:10px 12px;
-}
-.kpi-w2{
-  background:rgba(255,255,255,0.04);
-  border:1px solid var(--border2);border-radius:16px;padding:10px 12px;
-  margin-bottom:10px;flex-shrink:0;
-}
-.kpi-label{font-size:9px;color:rgba(255,255,255,0.35);letter-spacing:.1em;text-transform:uppercase}
-.kpi-val{
-  font-family:'JetBrains Mono',monospace;font-size:16px;
-  color:var(--gold2);font-weight:600;margin-top:2px;
-}
-.kpi-sub{font-size:9px;color:rgba(255,255,255,0.3);margin-top:1px}
-.kpi-trend{
-  font-family:'JetBrains Mono',monospace;font-size:9px;
-  color:var(--teal);
+/* ── APP GRID ────────────────────────────────────────────── */
+.app-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px 8px;
+  padding: 0 4px;
 }
 
-/* series a progress */
-.series-a-bar{margin-bottom:10px;flex-shrink:0}
-.sa-header{display:flex;justify-content:space-between;margin-bottom:6px}
-.sa-title{font-size:9px;color:rgba(255,255,255,0.35);letter-spacing:.1em;text-transform:uppercase}
-.sa-pct{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gold)}
-.sa-track{height:5px;background:rgba(255,255,255,0.07);border-radius:3px;overflow:hidden}
-.sa-fill{
-  height:100%;border-radius:3px;
-  background:linear-gradient(90deg,var(--teal) 0%,var(--gold) 100%);
-  width:0%;transition:width 1.5s ease;
+/* ── APP ICON ────────────────────────────────────────────── */
+.app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 2px;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: transform .15s var(--spring), opacity .15s;
+  -webkit-tap-highlight-color: transparent;
+  position: relative;
+}
+.app:active { transform: scale(.88); opacity: .8; }
+
+.app-icon-box {
+  width: 72px;
+  height: 72px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  flex-shrink: 0;
+  overflow: hidden;
+  transition: box-shadow .2s;
+}
+.app-icon-box::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 42%;
+  background: linear-gradient(180deg, rgba(255,255,255,.07) 0%, transparent 100%);
+  pointer-events: none;
+}
+.app:hover .app-icon-box { box-shadow: 0 8px 24px rgba(0,0,0,.5); }
+
+.app-label {
+  font-size: 9.5px;
+  font-weight: 500;
+  text-align: center;
+  color: var(--text);
+  line-height: 1.3;
+  max-width: 74px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* ── OVERLAY ── */
-.overlay{
-  position:absolute;inset:0;background:rgba(6,8,13,0.85);
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  z-index:100;display:none;flex-direction:column;
-  border-radius:54px;overflow:hidden;
-}
-.overlay.open{display:flex}
-.overlay-header{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:56px 24px 16px;flex-shrink:0;
-}
-.overlay-title{
-  font-family:'Cormorant Garamond',serif;font-size:18px;
-  color:var(--gold);letter-spacing:.08em;
-}
-.overlay-close{
-  width:30px;height:30px;border-radius:50%;
-  background:rgba(255,255,255,0.08);border:none;
-  color:rgba(255,255,255,0.6);cursor:pointer;font-size:16px;
-  display:flex;align-items:center;justify-content:center;
-  transition:.2s;
-}
-.overlay-close:hover{background:rgba(255,255,255,0.15);color:#fff}
-.overlay-iframe{
-  flex:1;width:100%;border:none;background:#06080d;
-}
-.overlay-footer{
-  padding:8px 16px 20px;display:flex;gap:8px;flex-shrink:0;
-}
-.overlay-btn{
-  flex:1;padding:10px;border-radius:10px;border:1px solid var(--border2);
-  background:var(--glass);color:rgba(255,255,255,0.6);
-  font-size:11px;cursor:pointer;letter-spacing:.04em;transition:.2s;
-}
-.overlay-btn:hover{background:var(--glass2);color:var(--gold2);border-color:var(--border)}
+/* Icon category colors */
+.icon-finance { background: linear-gradient(145deg,#1c1506,#2a1c05); color: var(--gold);   border: 1px solid rgba(201,168,76,.2); }
+.icon-violet  { background: linear-gradient(145deg,#0e0818,#180a3c); color: var(--violet); border: 1px solid rgba(155,109,255,.15); }
+.icon-teal    { background: linear-gradient(145deg,#041412,#062820); color: var(--teal);   border: 1px solid rgba(0,212,170,.15); }
+.icon-green   { background: linear-gradient(145deg,#051409,#0b2412); color: var(--green);  border: 1px solid rgba(26,191,106,.15); }
+.icon-blue    { background: linear-gradient(145deg,#04101e,#08192e); color: var(--blue);   border: 1px solid rgba(74,158,255,.15); }
+.icon-red     { background: linear-gradient(145deg,#1c0404,#2c0606); color: var(--red);    border: 1px solid rgba(232,64,64,.15); }
+.icon-orange  { background: linear-gradient(145deg,#1c0b04,#2c1206); color: var(--orange); border: 1px solid rgba(232,130,10,.15); }
+.icon-dark    { background: rgba(255,255,255,.05); color: var(--muted); border: 1px solid rgba(255,255,255,.07); }
 
-/* ── FOLDER OVERLAY ── */
-.folder-overlay{
-  position:absolute;inset:0;background:rgba(6,8,13,0.92);
-  backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);
-  z-index:90;display:none;flex-direction:column;
-  align-items:center;justify-content:center;
-  border-radius:54px;overflow:hidden;
+/* ── NOTIFICATION BADGE ──────────────────────────────────── */
+.notif {
+  position: absolute;
+  top: -4px; right: -4px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 9px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--bg);
+  animation: badge-pop .22s var(--spring) both;
+  z-index: 10;
 }
-.folder-overlay.open{display:flex}
-.folder-overlay-title{
-  font-family:'Cormorant Garamond',serif;font-size:20px;
-  color:var(--gold);letter-spacing:.1em;margin-bottom:24px;
+@keyframes badge-pop {
+  0%   { transform: scale(0); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
 }
-.folder-grid{
-  display:grid;grid-template-columns:repeat(3,1fr);
-  gap:16px 20px;padding:0 30px;
+.notif-urgent  { background: var(--red); }
+.notif-warn    { background: var(--orange); }
+.notif-success { background: var(--teal); }
+.notif-info    { background: var(--blue); }
+
+/* ── PAGE DOTS ───────────────────────────────────────────── */
+.page-dots {
+  flex-shrink: 0;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
 }
-.folder-close{
-  position:absolute;top:60px;right:24px;
-  width:32px;height:32px;border-radius:50%;
-  background:rgba(255,255,255,0.1);border:none;
-  color:rgba(255,255,255,0.6);cursor:pointer;font-size:18px;
-  display:flex;align-items:center;justify-content:center;
+.dot {
+  width: 6px; height: 6px;
+  border-radius: 3px;
+  background: rgba(255,255,255,.2);
+  transition: all .3s var(--ease);
+  cursor: pointer;
+}
+.dot.active {
+  width: 20px;
+  background: var(--gold);
+  box-shadow: 0 0 8px rgba(201,168,76,.5);
 }
 
-/* ── KPI PAGE ── */
-.kpi-page{
-  display:flex;flex-direction:column;gap:8px;
-  padding:8px 0;overflow-y:auto;flex:1;
+/* ── DOCK ────────────────────────────────────────────────── */
+.dock {
+  flex-shrink: 0;
+  padding: 6px 20px 20px;
 }
-.kpi-page::-webkit-scrollbar{display:none}
-.kpi-card{
-  background:rgba(255,255,255,0.03);
-  border:1px solid var(--border2);border-radius:16px;padding:14px 16px;
+.dock-inner {
+  background: rgba(255,255,255,.06);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 28px;
+  padding: 10px 10px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
 }
-.kpi-card-header{
-  display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;
+.dock-app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: transform .15s var(--spring);
+  -webkit-tap-highlight-color: transparent;
+  position: relative;
 }
-.kpi-card-title{
-  font-family:'Cormorant Garamond',serif;font-size:12px;
-  color:var(--gold);letter-spacing:.1em;text-transform:uppercase;
+.dock-app:active { transform: scale(.86); }
+.dock-icon-box {
+  width: 54px;
+  height: 54px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
 }
-.kpi-badge{
-  font-family:'JetBrains Mono',monospace;font-size:9px;
-  padding:2px 8px;border-radius:4px;letter-spacing:.06em;
+.dock-icon-box::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 42%;
+  background: linear-gradient(180deg, rgba(255,255,255,.07) 0%, transparent 100%);
+  pointer-events: none;
 }
-.badge-green{background:rgba(0,212,170,0.15);color:var(--teal)}
-.badge-gold{background:rgba(201,168,76,0.15);color:var(--gold)}
-.badge-red{background:rgba(255,75,110,0.15);color:var(--red)}
-.kpi-metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.km{display:flex;flex-direction:column;gap:2px}
-.km-label{font-size:9px;color:rgba(255,255,255,0.3);letter-spacing:.08em}
-.km-val{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--gold2)}
-.km-sub{font-size:8px;color:rgba(255,255,255,0.25)}
-.kpi-divider{height:1px;background:var(--border2);margin:8px 0}
-.stream-list{display:flex;flex-direction:column;gap:6px}
-.stream-row{
-  display:flex;justify-content:space-between;align-items:center;
-}
-.stream-label{font-size:9.5px;color:rgba(255,255,255,0.5)}
-.stream-val{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gold2)}
-.stream-bar-track{
-  height:3px;background:rgba(255,255,255,0.06);
-  border-radius:2px;margin-top:3px;overflow:hidden;
-}
-.stream-bar-fill{height:100%;border-radius:2px}
-
-/* ── ICON COLORS ── */
-.ic-gold{background:linear-gradient(135deg,#2a1f00,#1a1200);border-color:rgba(201,168,76,0.3)}
-.ic-teal{background:linear-gradient(135deg,#002a24,#001a16);border-color:rgba(0,212,170,0.25)}
-.ic-purple{background:linear-gradient(135deg,#1a0e2e,#100820);border-color:rgba(155,107,255,0.25)}
-.ic-blue{background:linear-gradient(135deg,#0a1a2e,#060e1e);border-color:rgba(59,158,255,0.25)}
-.ic-red{background:linear-gradient(135deg,#2a0a12,#1a060c);border-color:rgba(255,75,110,0.25)}
-.ic-orange{background:linear-gradient(135deg,#2a1400,#1a0c00);border-color:rgba(255,140,66,0.25)}
-.ic-dark{background:linear-gradient(135deg,#141b22,#0d1018);border-color:rgba(255,255,255,0.08)}
-.ic-moss{background:linear-gradient(135deg,#0e1e0a,#081208);border-color:rgba(120,200,80,0.2)}
-
-/* scrollable page content */
-.page-scroll{flex:1;overflow-y:auto}
-.page-scroll::-webkit-scrollbar{display:none}
-
-/* notification badge */
-.notif{
-  position:absolute;top:-4px;right:-4px;
-  width:16px;height:16px;border-radius:50%;
-  background:var(--red);
-  font-size:8px;color:#fff;
-  display:flex;align-items:center;justify-content:center;
-  font-family:'JetBrains Mono',monospace;font-weight:600;
-  border:1.5px solid #06080d;
-  pointer-events:none;
-  animation:badge-pop .3s cubic-bezier(.34,1.56,.64,1) both;
-}
-.notif-urgent{background:var(--red)}
-.notif-info{background:var(--blue)}
-.notif-success{background:var(--teal)}
-.notif-warn{background:var(--orange)}
-@keyframes badge-pop{
-  0%{transform:scale(0);opacity:0}
-  100%{transform:scale(1);opacity:1}
+.dock-label {
+  font-size: 9px;
+  font-weight: 500;
+  color: var(--text);
+  letter-spacing: .02em;
 }
 
-/* runway indicator */
-.runway-ring{
-  width:60px;height:60px;position:relative;display:flex;
-  align-items:center;justify-content:center;
+/* ── APP OVERLAY ─────────────────────────────────────────── */
+.app-overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--bg);
+  z-index: 180;
+  display: flex;
+  flex-direction: column;
+  border-radius: inherit;
+  transform: translateY(100%);
+  transition: transform .35s var(--ease);
 }
-.runway-svg{transform:rotate(-90deg)}
-.runway-text{
-  position:absolute;text-align:center;
-}
-.runway-months{
-  font-family:'JetBrains Mono',monospace;font-size:14px;
-  color:var(--gold2);line-height:1;
-}
-.runway-label{font-size:7px;color:rgba(255,255,255,0.3);letter-spacing:.06em}
+.app-overlay.open { transform: translateY(0); }
 
-/* activity feed */
-.activity{display:flex;flex-direction:column;gap:6px}
-.activity-item{
-  display:flex;gap:10px;align-items:center;
+.overlay-bar {
+  flex-shrink: 0;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px;
+  border-bottom: 1px solid rgba(255,255,255,.07);
+  background: rgba(12,16,24,.92);
+  backdrop-filter: blur(20px);
 }
-.activity-dot{
-  width:7px;height:7px;border-radius:50%;flex-shrink:0;
+.overlay-back, .overlay-ext {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text);
+  transition: background .15s;
 }
-.activity-text{font-size:10px;color:rgba(255,255,255,0.45);line-height:1.3}
-.activity-time{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:rgba(255,255,255,0.2);margin-left:auto;white-space:nowrap}
-
-/* exec card */
-.exec-card{
-  background:var(--glass);border:1px solid var(--border2);border-radius:14px;
-  padding:12px;display:flex;align-items:center;gap:12px;cursor:pointer;
-  transition:.2s;margin-bottom:8px;
+.overlay-back:hover, .overlay-ext:hover { background: rgba(255,255,255,.08); }
+.overlay-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  letter-spacing: .01em;
 }
-.exec-card:hover{background:var(--glass2);border-color:var(--border)}
-.exec-avatar{
-  width:38px;height:38px;border-radius:50%;
-  object-fit:cover;border:1.5px solid rgba(201,168,76,0.3);
-  flex-shrink:0;
-}
-.exec-avatar-placeholder{
-  width:38px;height:38px;border-radius:50%;
-  background:linear-gradient(135deg,var(--bg3),var(--bg2));
-  border:1.5px solid rgba(201,168,76,0.3);
-  display:flex;align-items:center;justify-content:center;
-  font-size:16px;flex-shrink:0;
-}
-.exec-info{flex:1}
-.exec-name{font-size:12px;color:rgba(255,255,255,0.8);letter-spacing:.02em}
-.exec-title{font-size:9px;color:rgba(255,255,255,0.35);margin-top:1px;letter-spacing:.04em}
-.exec-status{
-  font-family:'JetBrains Mono',monospace;font-size:8px;
-  padding:2px 7px;border-radius:4px;background:rgba(0,212,170,0.1);color:var(--teal);
+.overlay-frame {
+  flex: 1;
+  width: 100%;
+  border: none;
+  background: #fff;
 }
 
-/* section label */
-.sec-label{
-  font-family:'Cormorant Garamond',serif;font-size:12px;
-  color:rgba(255,255,255,0.3);letter-spacing:.12em;text-transform:uppercase;
-  margin:8px 0 6px;flex-shrink:0;
+/* ── DRAWER HANDLES ──────────────────────────────────────── */
+.drawer-handle {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 64px;
+  background: rgba(201,168,76,.1);
+  border: 1px solid rgba(201,168,76,.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 30;
+  transition: background .2s, border-color .2s;
+  color: var(--gold);
+}
+.drawer-handle:hover { background: rgba(201,168,76,.2); border-color: rgba(201,168,76,.35); }
+.handle-left  { left: 0;  border-radius: 0 10px 10px 0; border-left: none; }
+.handle-right { right: 0; border-radius: 10px 0 0 10px; border-right: none; }
+
+/* ── DRAWERS ─────────────────────────────────────────────── */
+.drawer {
+  position: absolute;
+  top: 0;
+  width: 300px;
+  height: 844px;
+  background: rgba(8,11,16,.97);
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: transform .38s var(--ease);
+}
+.drawer::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+.drawer-left  {
+  right: 100%;
+  border-radius: 20px 0 0 20px;
+  border: 1px solid rgba(255,255,255,.07);
+  border-right: none;
+  transform: translateX(100%);
+}
+.drawer-left.open { transform: translateX(0); }
+.drawer-right {
+  left: 100%;
+  border-radius: 0 20px 20px 0;
+  border: 1px solid rgba(255,255,255,.07);
+  border-left: none;
+  transform: translateX(-100%);
+}
+.drawer-right.open { transform: translateX(0); }
+
+.drawer-header {
+  padding: 28px 20px 16px;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.drawer-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  font-weight: 300;
+  color: var(--text);
+  letter-spacing: .04em;
+}
+.drawer-sub {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-top: 4px;
+}
+.drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 16px 20px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(201,168,76,.2) transparent;
 }
 
-/* search bar */
-.search-bar{
-  display:flex;align-items:center;gap:8px;
-  background:rgba(255,255,255,0.05);border:1px solid var(--border2);
-  border-radius:12px;padding:8px 14px;margin-bottom:12px;flex-shrink:0;
+/* Drawer card */
+.d-card {
+  background: rgba(255,255,255,.028);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 12px;
+  position: relative;
+  overflow: hidden;
 }
-.search-icon{font-size:12px;color:rgba(255,255,255,0.25)}
-.search-text{font-size:11px;color:rgba(255,255,255,0.25);letter-spacing:.04em}
-
-/* settings rows */
-.settings-section{margin-bottom:14px}
-.settings-title{
-  font-size:10px;color:rgba(255,255,255,0.25);letter-spacing:.12em;
-  text-transform:uppercase;margin-bottom:6px;padding:0 2px;
+.d-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201,168,76,.3), transparent);
 }
-.setting-row{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:11px 14px;background:rgba(255,255,255,0.03);
-  border-radius:10px;margin-bottom:4px;cursor:pointer;transition:.15s;
-  border:1px solid transparent;
+.d-card-label {
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 10px;
 }
-.setting-row:hover{background:rgba(255,255,255,0.06);border-color:var(--border2)}
-.setting-row-left{display:flex;align-items:center;gap:10px}
-.setting-ico{
-  width:28px;height:28px;border-radius:8px;
-  display:flex;align-items:center;justify-content:center;font-size:13px;
+.d-card-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--gold2);
+  letter-spacing: -.5px;
 }
-.setting-name{font-size:11px;color:rgba(255,255,255,0.7);letter-spacing:.02em}
-.setting-chev{font-size:10px;color:rgba(255,255,255,0.2)}
-.toggle{
-  width:32px;height:18px;border-radius:9px;
-  background:var(--teal);position:relative;cursor:pointer;
-  transition:.2s;flex-shrink:0;
-}
-.toggle::after{
-  content:'';position:absolute;top:2px;right:2px;
-  width:14px;height:14px;border-radius:50%;background:#fff;
-  transition:.2s;
+.d-card-sub {
+  font-size: 10.5px;
+  color: var(--muted);
+  margin-top: 4px;
 }
 
-/* ── RESPONSIVE ── */
-@media(max-width:1100px){
-  .sidebar{display:none}
-  .orbit{padding:20px;gap:0}
-  body{overflow:auto}
+.rev-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.rev-label { font-size: 10.5px; color: var(--text); width: 100px; flex-shrink: 0; }
+.rev-track { flex: 1; height: 5px; background: rgba(255,255,255,.07); border-radius: 2.5px; overflow: hidden; }
+.rev-fill  { height: 100%; border-radius: 2.5px; }
+.rev-pct   { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted); width: 32px; text-align: right; flex-shrink: 0; }
+
+.inv-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,.05); }
+.inv-row:last-child { border-bottom: none; }
+.inv-name { font-size: 12px; font-weight: 500; color: var(--text); }
+.inv-tag  { font-size: 9.5px; font-weight: 600; padding: 3px 8px; border-radius: 6px; }
+
+.ql-grid  { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 2px; }
+.ql-btn   { padding: 10px 12px; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.07); border-radius: 10px; display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 500; color: var(--text); cursor: pointer; transition: background .15s; -webkit-tap-highlight-color: transparent; }
+.ql-btn:hover { background: rgba(255,255,255,.08); }
+
+.dl-row   { display: flex; align-items: flex-start; gap: 10px; padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,.05); }
+.dl-row:last-child { border-bottom: none; }
+.dl-dot   { width: 7px; height: 7px; border-radius: 50%; margin-top: 4px; flex-shrink: 0; }
+.dl-title { font-size: 12px; font-weight: 500; color: var(--text); }
+.dl-date  { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+.act-row  { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,.05); }
+.act-row:last-child { border-bottom: none; }
+.act-ico  { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.act-text { font-size: 11px; color: var(--text); line-height: 1.4; }
+.act-time { font-size: 9.5px; color: var(--muted); margin-top: 2px; }
+
+.drawer-close {
+  position: absolute;
+  top: 20px; right: 16px;
+  width: 28px; height: 28px;
+  border-radius: 8px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  cursor: pointer;
 }
-@media(max-width:420px){
-  .phone{width:100vw;height:100svh;border-radius:0;border:none}
-  .phone-shadow{display:none}
-  body{overflow:hidden}
+
+/* ── RESPONSIVE ──────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .drawer { display: none; }
+  .drawer-handle { display: none; }
+}
+
+@media (max-width: 420px) {
+  .phone {
+    width: 100vw;
+    height: 100svh;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .phone::before { display: none; }
+  body { overflow: hidden; }
+  .drawer {
+    display: flex;
+    position: fixed;
+    top: 0;
+    height: 100svh;
+    z-index: 200;
+  }
+  .drawer-left  { right: auto; left: 0; border-radius: 0; transform: translateX(-100%); }
+  .drawer-right { left: auto; right: 0; border-radius: 0; transform: translateX(100%); }
+  .drawer-close { display: flex; }
+  .drawer-handle { display: flex; position: fixed; z-index: 100; top: 50%; }
+  .handle-left  { left: 0; }
+  .handle-right { right: 0; }
 }
 </style>
 </head>
 <body>
-
 <div class="orbit">
-  <!-- LEFT SIDEBAR -->
-  <div class="sidebar" id="leftSidebar">
-    <div class="sidebar-card">
-      <h4>Series A Readiness</h4>
-      <div style="margin-bottom:10px">
-        <div style="display:flex;justify-content:space-between;margin-bottom:5px">
-          <span style="font-size:10px;color:rgba(255,255,255,0.4)">Capital Raise</span>
-          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gold2)" id="raiseLabel">$500K / $3M</span>
-        </div>
-        <div class="series-bar"><div class="series-fill" id="raiseFill" style="width:17%"></div></div>
-      </div>
-      <div class="sidebar-kpi">
-        <div class="skpi"><span class="skpi-label">Target ARR M12</span><span class="skpi-val">$880K–$2.4M</span></div>
-        <div class="skpi"><span class="skpi-label">Series A Trigger</span><span class="skpi-val">$20M–$40M</span></div>
-        <div class="skpi"><span class="skpi-label">Berlin Close</span><span class="skpi-val">Jun 15 2026</span></div>
-        <div class="skpi"><span class="skpi-label">Lesley Status</span><span class="skpi-val" style="color:var(--teal)">▲ Committed</span></div>
-      </div>
+
+  <!-- ════════════════════════════════════════
+       LEFT DRAWER · Finance Dashboard
+  ════════════════════════════════════════ -->
+  <div class="drawer drawer-left" id="drawerLeft">
+    <button class="drawer-close" onclick="closeDrawers()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="drawer-header">
+      <div class="drawer-title">Finance</div>
+      <div class="drawer-sub">Command Dashboard</div>
     </div>
-    <div class="sidebar-card">
-      <h4>Quick Launch</h4>
-      <div class="sidebar-quick">
-        <div class="quick-btn" onclick="openApp('growth-model')"><span class="qi">📈</span>Growth Model</div>
-        <div class="quick-btn" onclick="openApp('investor-deck')"><span class="qi">🎯</span>Investor Deck</div>
-        <div class="quick-btn" onclick="openApp('loi-lesley')"><span class="qi">✍️</span>LOI — Lesley</div>
-        <div class="quick-btn" onclick="openApp('berlin-brief')"><span class="qi">✈️</span>Berlin Brief</div>
-        <div class="quick-btn" onclick="openApp('whitepaper')"><span class="qi">📋</span>Whitepaper v2</div>
-        <div class="quick-btn" onclick="openApp('ppm')"><span class="qi">📁</span>PPM 2026</div>
+    <div class="drawer-body">
+
+      <div class="d-card">
+        <div class="d-card-label">Series A Raise</div>
+        <div class="d-card-value">$500K</div>
+        <div class="d-card-sub">of $2.5M target &middot; 20% complete</div>
+        <div style="margin-top:10px"><div class="series-track"><div class="series-fill"></div></div></div>
       </div>
-    </div>
-    <div class="sidebar-card">
-      <h4>Activity</h4>
-      <div class="activity">
-        <div class="activity-item">
-          <div class="activity-dot" style="background:var(--teal)"></div>
-          <div class="activity-text">Growth Model v2.1 deployed</div>
-          <div class="activity-time">Today</div>
-        </div>
-        <div class="activity-item">
-          <div class="activity-dot" style="background:var(--gold)"></div>
-          <div class="activity-text">LOI — Lesley Harris issued</div>
-          <div class="activity-time">Today</div>
-        </div>
-        <div class="activity-item">
-          <div class="activity-dot" style="background:var(--purple)"></div>
-          <div class="activity-text">NDA executed May 12</div>
-          <div class="activity-time">May 12</div>
-        </div>
-        <div class="activity-item">
-          <div class="activity-dot" style="background:var(--blue)"></div>
-          <div class="activity-text">Berlin Brief published</div>
-          <div class="activity-time">May 31</div>
-        </div>
-        <div class="activity-item">
-          <div class="activity-dot" style="background:var(--orange)"></div>
-          <div class="activity-text">gstack skills installed</div>
-          <div class="activity-time">May 31</div>
+
+      <div class="d-card">
+        <div class="d-card-label">Revenue Streams</div>
+        <div class="rev-row"><div class="rev-label">Transaction Fees</div><div class="rev-track"><div class="rev-fill" style="width:72%;background:var(--gold)"></div></div><div class="rev-pct">72%</div></div>
+        <div class="rev-row"><div class="rev-label">Yield Spread</div><div class="rev-track"><div class="rev-fill" style="width:50%;background:var(--teal)"></div></div><div class="rev-pct">50%</div></div>
+        <div class="rev-row"><div class="rev-label">Gold Rope</div><div class="rev-track"><div class="rev-fill" style="width:35%;background:var(--violet)"></div></div><div class="rev-pct">35%</div></div>
+        <div class="rev-row"><div class="rev-label">YFLPP Referral</div><div class="rev-track"><div class="rev-fill" style="width:28%;background:var(--blue)"></div></div><div class="rev-pct">28%</div></div>
+        <div class="rev-row"><div class="rev-label">B2B API</div><div class="rev-track"><div class="rev-fill" style="width:18%;background:var(--green)"></div></div><div class="rev-pct">18%</div></div>
+        <div class="rev-row" style="margin-bottom:0"><div class="rev-label">Premium Data</div><div class="rev-track"><div class="rev-fill" style="width:12%;background:var(--orange)"></div></div><div class="rev-pct">12%</div></div>
+      </div>
+
+      <div class="d-card">
+        <div class="d-card-label">Unit Economics</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center;margin-top:4px">
+          <div><div style="font-family:'JetBrains Mono',monospace;font-size:17px;color:var(--green);font-weight:500">$24</div><div style="font-size:9px;color:var(--muted);margin-top:3px;letter-spacing:.06em;text-transform:uppercase">CAC</div></div>
+          <div><div style="font-family:'JetBrains Mono',monospace;font-size:17px;color:var(--gold2);font-weight:500">$312</div><div style="font-size:9px;color:var(--muted);margin-top:3px;letter-spacing:.06em;text-transform:uppercase">LTV</div></div>
+          <div><div style="font-family:'JetBrains Mono',monospace;font-size:17px;color:var(--teal);font-weight:500">2.3mo</div><div style="font-size:9px;color:var(--muted);margin-top:3px;letter-spacing:.06em;text-transform:uppercase">Payback</div></div>
         </div>
       </div>
+
+      <div class="d-card">
+        <div class="d-card-label">Investor Pipeline</div>
+        <div class="inv-row"><div><div class="inv-name">Lesley Harris</div><div style="font-size:10px;color:var(--muted)">Seed &middot; $500K</div></div><span class="inv-tag" style="color:var(--green);background:rgba(26,191,106,.1)">COMMITTED</span></div>
+        <div class="inv-row"><div><div class="inv-name">Bernice King</div><div style="font-size:10px;color:var(--muted)">Network &middot; TBD</div></div><span class="inv-tag" style="color:var(--orange);background:rgba(232,130,10,.1)">PROSPECT</span></div>
+        <div class="inv-row"><div><div class="inv-name">Ashley Bell</div><div style="font-size:10px;color:var(--muted)">Network &middot; TBD</div></div><span class="inv-tag" style="color:var(--orange);background:rgba(232,130,10,.1)">PROSPECT</span></div>
+        <div class="inv-row"><div><div class="inv-name">Berlin VC</div><div style="font-size:10px;color:var(--muted)">Jun 12 deadline</div></div><span class="inv-tag" style="color:var(--blue);background:rgba(74,158,255,.1)">MEETING</span></div>
+      </div>
+
     </div>
   </div>
 
-  <!-- PHONE -->
-  <div class="phone-wrap">
-    <div class="phone-shadow"></div>
-    <div class="vol-btn vol-up"></div>
-    <div class="vol-btn vol-dn"></div>
-    <div class="phone" id="phone">
-      <div class="wallpaper"></div>
+  <!-- ════════════════════════════════════════
+       PHONE OUTER
+  ════════════════════════════════════════ -->
+  <div class="phone-outer">
 
-      <!-- DYNAMIC ISLAND -->
-      <div class="island">
-        <div class="island-inner">
-          <div class="island-dot"></div>
-          <div class="island-text">GENESIS RESERVE</div>
-          <div class="island-dot"></div>
-        </div>
-      </div>
+    <button class="drawer-handle handle-left" onclick="toggleDrawer('left')" aria-label="Finance Dashboard">
+      <svg width="8" height="14" viewBox="0 0 8 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 1 1 7 5 13"/></svg>
+    </button>
+    <button class="drawer-handle handle-right" onclick="toggleDrawer('right')" aria-label="Quick Tools">
+      <svg width="8" height="14" viewBox="0 0 8 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 1 7 7 3 13"/></svg>
+    </button>
+
+    <!-- ═══════════════════════════════════
+         PHONE CHASSIS
+    ═══════════════════════════════════ -->
+    <div class="phone">
+      <div class="dynamic-island"></div>
 
       <div class="screen">
-        <!-- STATUS BAR -->
+
+        <!-- Status Bar -->
         <div class="status-bar">
-          <div class="status-time" id="statusTime">9:41</div>
-          <div class="status-right">
-            <span class="status-carrier">GR</span>
-            <span class="status-icon">▲▲▲</span>
-            <span class="status-icon">📶</span>
-            <span class="status-icon">🔋</span>
+          <span class="status-time" id="clock">9:41 AM</span>
+          <div class="status-icons">
+            <svg width="17" height="12" viewBox="0 0 17 12" fill="currentColor" aria-hidden="true">
+              <rect x="0"    y="7"   width="3"   height="5"  rx=".6" opacity=".4"/>
+              <rect x="4.5"  y="4.5" width="3"   height="7.5" rx=".6" opacity=".6"/>
+              <rect x="9"    y="2"   width="3"   height="10" rx=".6" opacity=".8"/>
+              <rect x="13.5" y="0"   width="3"   height="12" rx=".6"/>
+            </svg>
+            <svg width="16" height="12" viewBox="0 0 24 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+              <path d="M1.5 7.5C6.4 2.6 17.6 2.6 22.5 7.5"/>
+              <path d="M5 11C8.3 7.7 15.7 7.7 19 11"/>
+              <path d="M8.5 14.5C10.3 12.7 13.7 12.7 15.5 14.5"/>
+              <circle cx="12" cy="17" r="1" fill="currentColor"/>
+            </svg>
+            <svg width="26" height="13" viewBox="0 0 26 13" aria-hidden="true">
+              <rect x=".5" y=".5" width="22" height="12" rx="2.5" stroke="currentColor" stroke-opacity=".4"/>
+              <rect x="1.5" y="1.5" width="17" height="10" rx="2" fill="currentColor"/>
+              <path d="M24 4.5v4c1-.4 1.7-1.1 1.7-2s-.7-1.6-1.7-2z" fill="currentColor" opacity=".5"/>
+            </svg>
           </div>
         </div>
 
-        <!-- PAGES -->
-        <div class="pages-wrap" id="pagesWrap">
-          <div class="pages" id="pages">
+        <!-- Page Header -->
+        <div class="page-header">
+          <span class="page-title home" id="pageTitle">Home</span>
+        </div>
 
-            <!-- PAGE 0: HOME -->
-            <div class="page" id="page0">
-              <div class="home-header">
-                <div class="home-greeting">Genesis Reserve · Command OS</div>
-                <div class="home-date" id="homeDate">Sunday, May 31</div>
+        <!-- Pages Viewport -->
+        <div class="pages-viewport" id="pagesViewport">
+          <div class="pages-track" id="pagesTrack">
+
+            <!-- PAGE 0 · HOME -->
+            <div class="page page-home" id="page-0">
+              <div class="home-hero">
+                <img src="genesis-emblem.png" class="emblem" alt="Genesis Reserve Emblem">
+                <div class="home-brand-name">Genesis Reserve</div>
+                <div class="home-brand-os">Command OS</div>
               </div>
-              <!-- KPI row -->
               <div class="kpi-row">
-                <div class="kpi-w">
-                  <div class="kpi-label">Wallets (M1)</div>
-                  <div class="kpi-val">—</div>
-                  <div class="kpi-sub">Launch Q3 2026</div>
-                </div>
-                <div class="kpi-w">
-                  <div class="kpi-label">ARR Target</div>
-                  <div class="kpi-val">$880K</div>
-                  <div class="kpi-sub">Conservative M12</div>
-                </div>
-                <div class="kpi-w">
-                  <div class="kpi-label">Seed Raise</div>
-                  <div class="kpi-val">$500K</div>
-                  <div class="kpi-sub kpi-trend">▲ Committed</div>
-                </div>
+                <div class="kpi-chip gold">Series A &middot; $2.5M</div>
+                <div class="kpi-chip warn">Berlin &middot; Jun 12</div>
               </div>
-              <!-- Series A bar -->
-              <div class="series-a-bar">
-                <div class="sa-header">
-                  <span class="sa-title">Series A Progress</span>
-                  <span class="sa-pct" id="saLabel">17% · $500K secured</span>
+              <div class="series-bar-wrap">
+                <div class="series-bar-row">
+                  <span class="series-bar-label">Fundraise Progress</span>
+                  <span class="series-bar-pct">20%</span>
                 </div>
-                <div class="sa-track"><div class="sa-fill" id="saFill" style="width:17%"></div></div>
+                <div class="series-track"><div class="series-fill"></div></div>
+                <div class="series-sub">$500K committed &middot; Lesley Harris &middot; Jun 12 Berlin close</div>
               </div>
-              <!-- App grid -->
-              <div class="sec-label">Featured</div>
-              <div class="app-grid" style="grid-template-columns:repeat(4,1fr)">
-                <div class="app" onclick="openApp('growth-model')">
-                  <div class="app-icon ic-gold">📈</div>
-                  <div class="app-label">Growth Model</div>
-                </div>
-                <div class="app" onclick="openApp('investor-deck')">
-                  <div class="app-icon ic-purple">🎯</div>
-                  <div class="app-label">Investor Deck</div>
-                </div>
-                <div class="app" onclick="openApp('whitepaper')">
-                  <div class="app-icon ic-teal">📋</div>
-                  <div class="app-label">Whitepaper</div>
-                </div>
-                <div class="app" onclick="openApp('wallet-demo')">
-                  <div class="app-icon ic-blue">💳</div>
-                  <div class="app-label">Wallet Demo</div>
-                </div>
-                <div class="app" onclick="openApp('loi-lesley')">
-                  <div class="app-icon ic-orange">✍️</div>
-                  <div class="app-label">LOI · Lesley</div>
-                </div>
-                <div class="app" onclick="openApp('berlin-brief')">
-                  <div class="app-icon ic-red">✈️</div>
-                  <div class="app-label">Berlin Brief</div>
-                </div>
-                <div class="app" onclick="openApp('ppm')">
-                  <div class="app-icon ic-dark">📁</div>
-                  <div class="app-label">PPM 2026</div>
-                </div>
-                <div class="app" onclick="openFolder('kpi')">
-                  <div class="app-icon ic-moss">📊</div>
-                  <div class="app-label">KPI Center</div>
-                </div>
-              </div>
+              <div class="home-apps-label">Quick Access</div>
+              <div class="app-grid-home" id="page-grid-0"></div>
             </div>
 
-            <!-- PAGE 1: INVESTOR RELATIONS -->
-            <div class="page" id="page1">
-              <div class="page-header"><div class="page-title">Investor Relations</div></div>
-              <div class="app-grid">
-                <div class="app" onclick="openApp('investor-deck')">
-                  <div class="app-icon ic-purple">🎯</div>
-                  <div class="app-label">Investor Deck</div>
-                </div>
-                <div class="app" onclick="openApp('loi-lesley')">
-                  <div class="app-icon ic-orange">✍️</div>
-                  <div class="app-label">LOI · Lesley</div>
-                </div>
-                <div class="app" onclick="openApp('ppm')">
-                  <div class="app-icon ic-dark">📁</div>
-                  <div class="app-label">PPM 2026</div>
-                </div>
-                <div class="app" onclick="openApp('berlin-brief')">
-                  <div class="app-icon ic-red">✈️</div>
-                  <div class="app-label">Berlin Brief</div>
-                </div>
-                <div class="app" onclick="openApp('share-cert')">
-                  <div class="app-icon ic-gold">🏅</div>
-                  <div class="app-label">Share Cert</div>
-                </div>
-                <div class="app" onclick="openApp('investor-brief')">
-                  <div class="app-icon ic-teal">📄</div>
-                  <div class="app-label">Investor Brief</div>
-                </div>
-                <div class="app" onclick="openApp('growth-model')">
-                  <div class="app-icon ic-moss">📈</div>
-                  <div class="app-label">Growth Model</div>
-                </div>
-                <div class="app" onclick="openApp('whitepaper')">
-                  <div class="app-icon ic-blue">📋</div>
-                  <div class="app-label">Whitepaper v2</div>
-                </div>
-                <div class="app" onclick="openApp('pitch-seed')">
-                  <div class="app-icon ic-purple">🌱</div>
-                  <div class="app-label">Seed Pitch</div>
-                </div>
-                <div class="app" onclick="openApp('pitch-institutional')">
-                  <div class="app-icon ic-blue">🏦</div>
-                  <div class="app-label">Institutional</div>
-                </div>
-                <div class="app" onclick="openApp('pitch-retail')">
-                  <div class="app-icon ic-teal">👤</div>
-                  <div class="app-label">Retail Pitch</div>
-                </div>
-                <div class="app" onclick="openApp('pitch-deck')">
-                  <div class="app-icon ic-gold">🎪</div>
-                  <div class="app-label">Pitch Deck</div>
-                </div>
-              </div>
+            <!-- PAGE 1 · INVESTOR RELATIONS -->
+            <div class="page" id="page-1" style="padding-top:4px">
+              <div class="section-hdr">Investor Relations</div>
+              <div class="app-grid" id="page-grid-1"></div>
             </div>
 
-            <!-- PAGE 2: PRODUCT -->
-            <div class="page" id="page2">
-              <div class="page-header"><div class="page-title">Product</div></div>
-              <div class="app-grid">
-                <div class="app" onclick="openApp('wallet-demo')">
-                  <div class="app-icon ic-blue">💳</div>
-                  <div class="app-label">Wallet Demo</div>
-                </div>
-                <div class="app" onclick="openApp('wallet-demo2')">
-                  <div class="app-icon ic-teal">🏦</div>
-                  <div class="app-label">Wallet Demo 2</div>
-                </div>
-                <div class="app" onclick="openApp('treasury-demo')">
-                  <div class="app-icon ic-gold">💰</div>
-                  <div class="app-label">Treasury Demo</div>
-                </div>
-                <div class="app" onclick="openApp('whitepaper')">
-                  <div class="app-icon ic-purple">📋</div>
-                  <div class="app-label">Whitepaper v2</div>
-                </div>
-                <div class="app" onclick="openApp('whitepaper-v1')">
-                  <div class="app-icon ic-dark">📄</div>
-                  <div class="app-label">Whitepaper v1</div>
-                </div>
-                <div class="app" onclick="openApp('reel-ad')">
-                  <div class="app-icon ic-red">🎬</div>
-                  <div class="app-label">Reel Ad</div>
-                </div>
-                <div class="app" onclick="openApp('growth-model')">
-                  <div class="app-icon ic-moss">📈</div>
-                  <div class="app-label">Growth Model</div>
-                </div>
-                <div class="app" onclick="openApp('logo-export')">
-                  <div class="app-icon ic-gold">🖼️</div>
-                  <div class="app-label">Logo Export</div>
-                </div>
-              </div>
+            <!-- PAGE 2 · AI & TOOLS -->
+            <div class="page" id="page-2" style="padding-top:4px">
+              <div class="section-hdr">AI &amp; Agentic Tools</div>
+              <div class="app-grid" id="page-grid-2"></div>
             </div>
 
-            <!-- PAGE 3: PRESENTATIONS -->
-            <div class="page" id="page3">
-              <div class="page-header"><div class="page-title">Presentations</div></div>
-              <div class="app-grid">
-                <div class="app" onclick="openApp('keynote')">
-                  <div class="app-icon ic-gold">🎤</div>
-                  <div class="app-label">Keynote</div>
-                </div>
-                <div class="app" onclick="openApp('keynote-script')">
-                  <div class="app-icon ic-dark">📜</div>
-                  <div class="app-label">Keynote Script</div>
-                </div>
-                <div class="app" onclick="openApp('pitch-deck')">
-                  <div class="app-icon ic-purple">🎪</div>
-                  <div class="app-label">Pitch Deck</div>
-                </div>
-                <div class="app" onclick="openApp('pitch-seed')">
-                  <div class="app-icon ic-moss">🌱</div>
-                  <div class="app-label">Seed Pitch</div>
-                </div>
-                <div class="app" onclick="openApp('pitch-institutional')">
-                  <div class="app-icon ic-blue">🏦</div>
-                  <div class="app-label">Institutional</div>
-                </div>
-                <div class="app" onclick="openApp('pitch-retail')">
-                  <div class="app-icon ic-teal">👤</div>
-                  <div class="app-label">Retail Pitch</div>
-                </div>
-                <div class="app" onclick="openApp('investor-deck')">
-                  <div class="app-icon ic-orange">🎯</div>
-                  <div class="app-label">Investor Deck</div>
-                </div>
-                <div class="app" onclick="openApp('investor-brief')">
-                  <div class="app-icon ic-red">📄</div>
-                  <div class="app-label">Investor Brief</div>
-                </div>
-              </div>
+            <!-- PAGE 3 · PRODUCT -->
+            <div class="page" id="page-3" style="padding-top:4px">
+              <div class="section-hdr">Product</div>
+              <div class="app-grid" id="page-grid-3"></div>
             </div>
 
-            <!-- PAGE 4: TEAM & COMMAND -->
-            <div class="page" id="page4">
-              <div class="page-header"><div class="page-title">Command</div></div>
-              <div class="page-scroll">
-                <div class="sec-label">Leadership</div>
-                <div class="exec-card">
-                  <div class="exec-avatar-placeholder">👑</div>
-                  <div class="exec-info">
-                    <div class="exec-name">Anthony M. Buford</div>
-                    <div class="exec-title">Founder & Chief Architect</div>
-                  </div>
-                  <div class="exec-status">Active</div>
-                </div>
-                <div class="exec-card">
-                  <img src="team-whitney.jpg" class="exec-avatar" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                  <div class="exec-avatar-placeholder" style="display:none">⚖️</div>
-                  <div class="exec-info">
-                    <div class="exec-name">Whitney Buford</div>
-                    <div class="exec-title">Chief Operating Officer</div>
-                  </div>
-                  <div class="exec-status">Active</div>
-                </div>
-                <div class="exec-card">
-                  <div class="exec-avatar-placeholder">💼</div>
-                  <div class="exec-info">
-                    <div class="exec-name">Lesley Harris</div>
-                    <div class="exec-title">Lead Seed Investor</div>
-                  </div>
-                  <div class="exec-status" style="background:rgba(201,168,76,0.1);color:var(--gold)">Committed</div>
-                </div>
-                <div class="sec-label">Operations</div>
-                <div class="app-grid" style="grid-template-columns:repeat(4,1fr);margin-top:4px">
-                  <div class="app" onclick="openApp('investor-deck')">
-                    <div class="app-icon ic-gold">📊</div>
-                    <div class="app-label">Board Deck</div>
-                  </div>
-                  <div class="app" onclick="openApp('growth-model')">
-                    <div class="app-icon ic-teal">💹</div>
-                    <div class="app-label">Financials</div>
-                  </div>
-                  <div class="app" onclick="goToPage(5)">
-                    <div class="app-icon ic-dark">⚙️</div>
-                    <div class="app-label">Settings</div>
-                  </div>
-                  <div class="app" onclick="openFolder('legal')">
-                    <div class="app-icon ic-red">⚖️</div>
-                    <div class="app-label">Legal Docs</div>
-                  </div>
-                </div>
-              </div>
+            <!-- PAGE 4 · PRESENTATIONS -->
+            <div class="page" id="page-4" style="padding-top:4px">
+              <div class="section-hdr">Presentations</div>
+              <div class="app-grid" id="page-grid-4"></div>
             </div>
 
-            <!-- PAGE 5: SETTINGS -->
-            <div class="page" id="page5">
-              <div class="page-header"><div class="page-title">Settings</div></div>
-              <div class="page-scroll">
-                <div class="search-bar">
-                  <span class="search-icon">🔍</span>
-                  <span class="search-text">Search settings...</span>
-                </div>
-                <div class="settings-section">
-                  <div class="settings-title">Platform</div>
-                  <div class="setting-row">
-                    <div class="setting-row-left">
-                      <div class="setting-ico ic-gold" style="border-radius:8px">🌐</div>
-                      <span class="setting-name">Vercel Deployments</span>
-                    </div>
-                    <span class="setting-chev">›</span>
-                  </div>
-                  <div class="setting-row">
-                    <div class="setting-row-left">
-                      <div class="setting-ico ic-dark" style="border-radius:8px">🔗</div>
-                      <span class="setting-name">GitHub · TheGenesisArchitect</span>
-                    </div>
-                    <span class="setting-chev">›</span>
-                  </div>
-                  <div class="setting-row">
-                    <div class="setting-row-left">
-                      <div class="setting-ico ic-purple" style="border-radius:8px">🤖</div>
-                      <span class="setting-name">gstack Skills (52)</span>
-                    </div>
-                    <div class="toggle"></div>
-                  </div>
-                </div>
-                <div class="settings-section">
-                  <div class="settings-title">Finance</div>
-                  <div class="setting-row">
-                    <div class="setting-row-left">
-                      <div class="setting-ico ic-teal" style="border-radius:8px">💰</div>
-                      <span class="setting-name">Seed Round · $3M Cap</span>
-                    </div>
-                    <span class="setting-chev">›</span>
-                  </div>
-                  <div class="setting-row">
-                    <div class="setting-row-left">
-                      <div class="setting-ico ic-gold" style="border-radius:8px">📈</div>
-                      <span class="setting-name">Revenue Streams (6)</span>
-                    </div>
-                    <span class="setting-chev">›</span>
-                  </div>
-                  <div class="setting-row">
-                    <div class="setting-row-left">
-                      <div class="setting-ico ic-moss" style="border-radius:8px">🛡️</div>
-                      <span class="setting-name">YFLPP Program</span>
-                    </div>
-                    <div class="toggle"></div>
-                  </div>
-                </div>
-                <div class="settings-section">
-                  <div class="settings-title">Security</div>
-                  <div class="setting-row">
-                    <div class="setting-row-left">
-                      <div class="setting-ico ic-red" style="border-radius:8px">🔒</div>
-                      <span class="setting-name">Run /gstack-cso Audit</span>
-                    </div>
-                    <span class="setting-chev">›</span>
-                  </div>
-                  <div class="setting-row">
-                    <div class="setting-row-left">
-                      <div class="setting-ico ic-orange" style="border-radius:8px">🔑</div>
-                      <span class="setting-name">NDA · All Investors</span>
-                    </div>
-                    <span class="setting-chev">›</span>
-                  </div>
-                </div>
-                <div class="settings-section">
-                  <div class="settings-title">Branding</div>
-                  <div class="setting-row">
-                    <div class="setting-row-left">
-                      <div class="setting-ico ic-gold" style="border-radius:8px">✨</div>
-                      <span class="setting-name">Genesis Emblem</span>
-                    </div>
-                    <span class="setting-chev">›</span>
-                  </div>
-                  <div class="setting-row">
-                    <div class="setting-row-left">
-                      <div class="setting-ico ic-dark" style="border-radius:8px">🎨</div>
-                      <span class="setting-name">Brand Colors</span>
-                    </div>
-                    <span class="setting-chev">›</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+          </div>
+        </div>
 
-          </div><!-- /pages -->
-        </div><!-- /pages-wrap -->
-
-        <!-- PAGE DOTS -->
+        <!-- Page Dots -->
         <div class="page-dots" id="pageDots">
           <div class="dot active" onclick="goToPage(0)"></div>
           <div class="dot" onclick="goToPage(1)"></div>
           <div class="dot" onclick="goToPage(2)"></div>
           <div class="dot" onclick="goToPage(3)"></div>
           <div class="dot" onclick="goToPage(4)"></div>
-          <div class="dot" onclick="goToPage(5)"></div>
         </div>
 
-        <!-- DOCK -->
+        <!-- Dock -->
         <div class="dock">
-          <div class="dock-bg"></div>
-          <div class="dock-app" onclick="goToPage(0)">
-            <div class="dock-icon ic-gold">🏠</div>
-            <div class="dock-label">Home</div>
-          </div>
-          <div class="dock-app" onclick="openFolder('kpi')">
-            <div class="dock-icon ic-teal">📊</div>
-            <div class="dock-label">KPI</div>
-          </div>
-          <div class="dock-app" onclick="openFolder('all-apps')">
-            <div class="dock-icon ic-purple">🚀</div>
-            <div class="dock-label">Launchpad</div>
-          </div>
-          <div class="dock-app" onclick="goToPage(5)">
-            <div class="dock-icon ic-dark">⚙️</div>
-            <div class="dock-label">Settings</div>
+          <div class="dock-inner">
+            <button class="dock-app" onclick="goToPage(0)" aria-label="Home">
+              <div class="dock-icon-box icon-dark">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              </div>
+              <div class="dock-label">Home</div>
+            </button>
+            <button class="dock-app" data-app="growth-model" onclick="openApp('growth-model')" aria-label="Growth Model">
+              <div class="dock-icon-box icon-finance">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+              </div>
+              <div class="dock-label">Finance</div>
+            </button>
+            <button class="dock-app" onclick="openApp('claude')" aria-label="Claude AI">
+              <div class="dock-icon-box icon-violet">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.46 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.46 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/></svg>
+              </div>
+              <div class="dock-label">Claude</div>
+            </button>
+            <button class="dock-app" onclick="goToPage(1)" aria-label="Investors">
+              <div class="dock-icon-box icon-teal">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              </div>
+              <div class="dock-label">Investors</div>
+            </button>
           </div>
         </div>
+
       </div><!-- /screen -->
 
-      <!-- APP OVERLAY -->
-      <div class="overlay" id="appOverlay">
-        <div class="overlay-header">
-          <div class="overlay-title" id="overlayTitle">App</div>
-          <button class="overlay-close" onclick="closeOverlay()">✕</button>
+      <!-- App Overlay -->
+      <div class="app-overlay" id="appOverlay">
+        <div class="overlay-bar">
+          <button class="overlay-back" onclick="closeApp()" aria-label="Close">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <span class="overlay-title" id="overlayTitle"></span>
+          <button class="overlay-ext" onclick="openExternal()" aria-label="Open in browser">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </button>
         </div>
-        <iframe class="overlay-iframe" id="overlayFrame" src="" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-top-navigation-by-user-activation"></iframe>
-        <div class="overlay-footer">
-          <button class="overlay-btn" onclick="closeOverlay()">← Back</button>
-          <button class="overlay-btn" onclick="openExternal()">↗ Open Full</button>
-        </div>
-      </div>
-
-      <!-- FOLDER OVERLAY -->
-      <div class="folder-overlay" id="folderOverlay">
-        <button class="folder-close" onclick="closeFolder()">✕</button>
-        <div class="folder-overlay-title" id="folderTitle">Folder</div>
-        <div class="folder-grid" id="folderGrid"></div>
+        <iframe id="overlayFrame" class="overlay-frame"
+          sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-top-navigation-by-user-activation"
+          src="about:blank"
+          title="App View"></iframe>
       </div>
 
     </div><!-- /phone -->
-  </div><!-- /phone-wrap -->
+  </div><!-- /phone-outer -->
 
-  <!-- RIGHT SIDEBAR -->
-  <div class="sidebar" id="rightSidebar">
-    <div class="sidebar-card">
-      <h4>Revenue Streams</h4>
-      <div class="stream-list">
-        <div>
-          <div class="stream-row">
-            <span class="stream-label">1 · Transaction Fees</span>
-            <span class="stream-val">$8–12/user</span>
-          </div>
-          <div class="stream-bar-track"><div class="stream-bar-fill" style="width:100%;background:var(--gold)"></div></div>
-        </div>
-        <div>
-          <div class="stream-row">
-            <span class="stream-label">2 · Yield Spread</span>
-            <span class="stream-val">1.5% APY</span>
-          </div>
-          <div class="stream-bar-track"><div class="stream-bar-fill" style="width:70%;background:var(--teal)"></div></div>
-        </div>
-        <div>
-          <div class="stream-row">
-            <span class="stream-label">3 · YFLPP Mgmt Fee</span>
-            <span class="stream-val">5% of premium</span>
-          </div>
-          <div class="stream-bar-track"><div class="stream-bar-fill" style="width:55%;background:var(--purple)"></div></div>
-        </div>
-        <div>
-          <div class="stream-row">
-            <span class="stream-label">4 · Gold Rope Sub</span>
-            <span class="stream-val">$25/mo opt-in</span>
-          </div>
-          <div class="stream-bar-track"><div class="stream-bar-fill" style="width:40%;background:var(--gold2)"></div></div>
-        </div>
-        <div>
-          <div class="stream-row">
-            <span class="stream-label">5 · Gold Rope CC</span>
-            <span class="stream-val">20% of profits</span>
-          </div>
-          <div class="stream-bar-track"><div class="stream-bar-fill" style="width:30%;background:var(--orange)"></div></div>
-        </div>
-        <div>
-          <div class="stream-row">
-            <span class="stream-label">6 · Agent Override</span>
-            <span class="stream-val">3% IUL premium</span>
-          </div>
-          <div class="stream-bar-track"><div class="stream-bar-fill" style="width:20%;background:var(--blue)"></div></div>
-        </div>
-      </div>
+  <!-- ════════════════════════════════════════
+       RIGHT DRAWER · Quick Tools
+  ════════════════════════════════════════ -->
+  <div class="drawer drawer-right" id="drawerRight">
+    <button class="drawer-close" onclick="closeDrawers()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="drawer-header">
+      <div class="drawer-title">Quick Tools</div>
+      <div class="drawer-sub">Launch &middot; Track &middot; Act</div>
     </div>
-    <div class="sidebar-card">
-      <h4>Unit Economics</h4>
-      <div class="sidebar-kpi">
-        <div class="skpi"><span class="skpi-label">Standard Wallet</span><span class="skpi-val">~$11/mo</span></div>
-        <div class="skpi"><span class="skpi-label">+ YFLPP</span><span class="skpi-val">~$15/mo</span></div>
-        <div class="skpi"><span class="skpi-label">Gold Rope</span><span class="skpi-val" style="color:var(--gold2)">~$55/mo</span></div>
-        <div class="skpi"><span class="skpi-label">Gold Rope Multiplier</span><span class="skpi-val" style="color:var(--teal)">5×</span></div>
-        <div style="height:1px;background:var(--border2);margin:6px 0"></div>
-        <div class="skpi"><span class="skpi-label">Breakeven (Cons.)</span><span class="skpi-val">M10–11</span></div>
-        <div class="skpi"><span class="skpi-label">Breakeven (Agr.)</span><span class="skpi-val">M6–7</span></div>
-        <div class="skpi"><span class="skpi-label">Seed Remaining M12</span><span class="skpi-val">$346K</span></div>
+    <div class="drawer-body">
+
+      <div class="d-card">
+        <div class="d-card-label">Quick Launch</div>
+        <div class="ql-grid" id="quickLaunchGrid"></div>
       </div>
-    </div>
-    <div class="sidebar-card">
-      <h4>Investor Pipeline</h4>
-      <div class="sidebar-kpi">
-        <div class="skpi">
-          <span class="skpi-label">Lesley Harris</span>
-          <span class="skpi-val" style="color:var(--teal)">Committed</span>
-        </div>
-        <div class="skpi">
-          <span class="skpi-label">Bernice King</span>
-          <span class="skpi-val" style="color:rgba(255,255,255,0.3)">Outreach</span>
-        </div>
-        <div class="skpi">
-          <span class="skpi-label">Ashley Bell</span>
-          <span class="skpi-val" style="color:rgba(255,255,255,0.3)">Outreach</span>
-        </div>
-        <div class="skpi">
-          <span class="skpi-label">VC Friend</span>
-          <span class="skpi-val" style="color:rgba(255,255,255,0.3)">TBD</span>
-        </div>
-        <div class="skpi">
-          <span class="skpi-label">Ambassador</span>
-          <span class="skpi-val" style="color:rgba(255,255,255,0.3)">TBD</span>
-        </div>
-        <div style="height:1px;background:var(--border2);margin:6px 0"></div>
-        <div class="skpi">
-          <span class="skpi-label">LOI Expiry</span>
-          <span class="skpi-val" style="color:var(--orange)">Jun 10 2026</span>
-        </div>
-        <div class="skpi">
-          <span class="skpi-label">Target Close</span>
-          <span class="skpi-val">Jun 15 2026</span>
-        </div>
+
+      <div class="d-card">
+        <div class="d-card-label">Upcoming Deadlines</div>
+        <div class="dl-row"><div class="dl-dot" style="background:var(--red)"></div><div><div class="dl-title">Berlin Brief &middot; Final Review</div><div class="dl-date">Jun 12, 2026 &middot; 12 days</div></div></div>
+        <div class="dl-row"><div class="dl-dot" style="background:var(--orange)"></div><div><div class="dl-title">LOI &middot; Lesley Harris Signature</div><div class="dl-date">ASAP &middot; Signature Required</div></div></div>
+        <div class="dl-row"><div class="dl-dot" style="background:var(--blue)"></div><div><div class="dl-title">Security Audit</div><div class="dl-date">Weeks 5&ndash;7 &middot; Pre-Investment</div></div></div>
+        <div class="dl-row"><div class="dl-dot" style="background:var(--violet)"></div><div><div class="dl-title">NDA Templates</div><div class="dl-date">King &middot; Bell &middot; Ambassador</div></div></div>
       </div>
+
+      <div class="d-card">
+        <div class="d-card-label">Activity Feed</div>
+        <div class="act-row"><div class="act-ico" style="background:rgba(0,212,170,.1);color:var(--teal)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg></div><div><div class="act-text">Growth Model v2.1 published</div><div class="act-time">Today &middot; Deployed to Vercel</div></div></div>
+        <div class="act-row"><div class="act-ico" style="background:rgba(232,130,10,.1);color:var(--orange)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div><div><div class="act-text">LOI drafted &middot; Lesley Harris</div><div class="act-time">Today &middot; Awaiting signature</div></div></div>
+        <div class="act-row"><div class="act-ico" style="background:rgba(74,158,255,.1);color:var(--blue)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div><div><div class="act-text">Berlin Brief updated</div><div class="act-time">May 30 &middot; Jun 12 deadline</div></div></div>
+        <div class="act-row"><div class="act-ico" style="background:rgba(155,109,255,.1);color:var(--violet)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 3h20"/><path d="M21 3v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V3"/><path d="m7 21 5-5 5 5"/></svg></div><div><div class="act-text">Investor Deck v3 ready</div><div class="act-time">May 29 &middot; Review complete</div></div></div>
+        <div class="act-row"><div class="act-ico" style="background:rgba(201,168,76,.1);color:var(--gold)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div><div><div class="act-text">PPM 2026 filed</div><div class="act-time">May 28 &middot; Legal complete</div></div></div>
+      </div>
+
     </div>
   </div>
+
 </div><!-- /orbit -->
 
 <script>
-// ── NOTIFICATION REGISTRY ──
-// type: 'urgent' (red) | 'info' (blue) | 'success' (teal) | 'warn' (orange)
-var NOTIFICATIONS = {
-  'loi-lesley':    { count: 1, type: 'urgent',  label: 'Signature Required' },
-  'berlin-brief':  { count: 1, type: 'warn',    label: 'Jun 12 Deadline' },
-  'growth-model':  { count: 1, type: 'success', label: 'v2.1 Live' },
-  'investor-deck': { count: 1, type: 'info',    label: 'Review Ready' },
+/* ── SVG ICON PATHS ──────────────────────────────────────── */
+var ICONS = {
+  home:         '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>',
+  trendUp:      '<polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>',
+  target:       '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+  document:     '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>',
+  card:         '<rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/>',
+  pen:          '<path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>',
+  plane:        '<path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9z"/>',
+  folder:       '<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>',
+  brain:        '<path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.46 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.46 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/>',
+  zap:          '<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',
+  hash:         '<line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/><line x1="10" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="14" y2="21"/>',
+  mail:         '<path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>',
+  calendar:     '<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>',
+  github:       '<path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>',
+  triangle:     '<polygon points="12 2 22 20 2 20"/>',
+  linkedin:     '<path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>',
+  vault:        '<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><circle cx="12" cy="15" r="2"/>',
+  film:         '<rect x="2" y="2" width="20" height="20" rx="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/>',
+  mic:          '<path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/>',
+  chart:        '<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>',
+  layers:       '<polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>',
+  medal:        '<circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/>',
+  presentation: '<path d="M2 3h20"/><path d="M21 3v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V3"/><path d="m7 21 5-5 5 5"/>',
+  briefcase:    '<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
+  users:        '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+  scroll:       '<path d="M8 21h12a2 2 0 0 0 2-2v-2H10v2a2 2 0 0 1-2 2zm0 0a2 2 0 0 1-2-2v-14a2 2 0 0 1 2-2h12v14"/>',
+  notion:       '<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h4"/>',
+  image:        '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>',
 };
 
-// ── APP REGISTRY ──
+function mkIcon(name, sz) {
+  sz = sz || 22;
+  return '<svg width="'+sz+'" height="'+sz+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(ICONS[name]||'')+'</svg>';
+}
+
+/* ── APP REGISTRY ────────────────────────────────────────── */
 var APPS = {
-  'growth-model':        {title:'Growth Model v2.1',  url:'genesis-reserve-growth-model.html'},
-  'investor-deck':       {title:'Investor Deck',       url:'genesis-reserve-investor-deck.html'},
-  'loi-lesley':          {title:'LOI · Lesley Harris', url:'genesis-loi-lesley-harris.html'},
-  'berlin-brief':        {title:'Berlin Brief',        url:'berlin-brief.html'},
-  'whitepaper':          {title:'Whitepaper v2',       url:'genesis-whitepaper-v2.html'},
-  'whitepaper-v1':       {title:'Whitepaper v1',       url:'genesis-whitepaper.html'},
-  'ppm':                 {title:'PPM 2026',            url:'genesis-ppm-2026.html'},
-  'wallet-demo':         {title:'Wallet Demo',         url:'genesis-wallet-demo.html'},
-  'wallet-demo2':        {title:'Wallet Demo 2',       url:'wallet-demo.html'},
-  'treasury-demo':       {title:'Treasury Demo',       url:'genesis-treasury-demo.html'},
-  'reel-ad':             {title:'Reel Ad',             url:'genesis-reel-ad.html'},
-  'share-cert':          {title:'Share Certificate',   url:'genesis-share-certificate.html'},
-  'investor-brief':      {title:'Investor Brief',      url:'investor-brief-2026.html'},
-  'keynote':             {title:'Keynote',             url:'genesis-keynote.html'},
-  'keynote-script':      {title:'Keynote Script',      url:'genesis-keynote-script.html'},
-  'pitch-deck':          {title:'Pitch Deck',          url:'pitch-deck.html'},
-  'pitch-seed':          {title:'Seed Pitch',          url:'pitch-seed.html'},
-  'pitch-institutional': {title:'Institutional Pitch', url:'pitch-institutional.html'},
-  'pitch-retail':        {title:'Retail Pitch',        url:'pitch-retail.html'},
-  'logo-export':         {title:'Logo Export',         url:'logo-export.html'},
+  'growth-model':        {title:'Growth Model',   url:'genesis-reserve-growth-model.html',    icon:'trendUp',      cat:'icon-finance'},
+  'investor-deck':       {title:'Investor Deck',  url:'genesis-reserve-investor-deck.html',   icon:'presentation', cat:'icon-violet'},
+  'loi-lesley':          {title:'LOI · Lesley',   url:'genesis-loi-lesley-harris.html',       icon:'pen',          cat:'icon-orange'},
+  'berlin-brief':        {title:'Berlin Brief',   url:'berlin-brief.html',                    icon:'plane',        cat:'icon-red'},
+  'ppm':                 {title:'PPM 2026',        url:'genesis-ppm-2026.html',                icon:'folder',       cat:'icon-dark'},
+  'share-cert':          {title:'Share Cert',      url:'genesis-share-certificate.html',       icon:'medal',        cat:'icon-finance'},
+  'investor-brief':      {title:'Investor Brief',  url:'investor-brief-2026.html',             icon:'document',     cat:'icon-teal'},
+  'whitepaper':          {title:'Whitepaper v2',   url:'genesis-whitepaper-v2.html',           icon:'layers',       cat:'icon-blue'},
+  'whitepaper-v1':       {title:'Whitepaper v1',   url:'genesis-whitepaper.html',              icon:'document',     cat:'icon-dark'},
+  'wallet-demo':         {title:'Wallet Demo',     url:'genesis-wallet-demo.html',             icon:'card',         cat:'icon-blue'},
+  'wallet-demo2':        {title:'Wallet Demo 2',   url:'wallet-demo.html',                     icon:'card',         cat:'icon-teal'},
+  'treasury-demo':       {title:'Treasury',         url:'genesis-treasury-demo.html',           icon:'vault',        cat:'icon-finance'},
+  'reel-ad':             {title:'Reel Ad',          url:'genesis-reel-ad.html',                 icon:'film',         cat:'icon-red'},
+  'logo-export':         {title:'Logo Export',      url:'logo-export.html',                     icon:'image',        cat:'icon-finance'},
+  'keynote':             {title:'Keynote',           url:'genesis-keynote.html',                 icon:'mic',          cat:'icon-finance'},
+  'keynote-script':      {title:'Script',            url:'genesis-keynote-script.html',          icon:'scroll',       cat:'icon-dark'},
+  'pitch-deck':          {title:'Pitch Deck',        url:'pitch-deck.html',                      icon:'target',       cat:'icon-violet'},
+  'pitch-seed':          {title:'Seed Pitch',        url:'pitch-seed.html',                      icon:'chart',        cat:'icon-green'},
+  'pitch-institutional': {title:'Institutional',     url:'pitch-institutional.html',             icon:'briefcase',    cat:'icon-blue'},
+  'pitch-retail':        {title:'Retail Pitch',      url:'pitch-retail.html',                    icon:'users',        cat:'icon-teal'},
+  'claude':    {title:'Claude AI', url:'https://claude.ai',                     icon:'brain',    cat:'icon-violet', external:true},
+  'grok':      {title:'Grok',      url:'https://grok.com',                      icon:'zap',      cat:'icon-dark',   external:true},
+  'slack':     {title:'Slack',     url:'https://slack.com',                     icon:'hash',     cat:'icon-green',  external:true},
+  'gmail':     {title:'Gmail',     url:'https://mail.google.com',               icon:'mail',     cat:'icon-red',    external:true},
+  'gcal':      {title:'Calendar',  url:'https://calendar.google.com',           icon:'calendar', cat:'icon-blue',   external:true},
+  'github':    {title:'GitHub',    url:'https://github.com/TheGenesisArchitect', icon:'github',  cat:'icon-dark',   external:true},
+  'vercel':    {title:'Vercel',    url:'https://vercel.com',                    icon:'triangle', cat:'icon-dark',   external:true},
+  'docusign':  {title:'DocuSign',  url:'https://www.docusign.com',              icon:'pen',      cat:'icon-orange', external:true},
+  'notion':    {title:'Notion',    url:'https://notion.so',                     icon:'notion',   cat:'icon-dark',   external:true},
+  'linkedin':  {title:'LinkedIn',  url:'https://linkedin.com',                  icon:'linkedin', cat:'icon-blue',   external:true},
 };
 
-var FOLDERS = {
-  'kpi': {
-    title:'KPI Center',
-    apps:[
-      {key:'growth-model',   label:'Growth Model',  icon:'📈', cls:'ic-gold'},
-      {key:'investor-deck',  label:'Investor Deck', icon:'🎯', cls:'ic-purple'},
-      {key:'ppm',            label:'PPM 2026',      icon:'📁', cls:'ic-dark'},
-      {key:'investor-brief', label:'Inv Brief',     icon:'📄', cls:'ic-teal'},
-      {key:'wallet-demo',    label:'Wallet Demo',   icon:'💳', cls:'ic-blue'},
-      {key:'whitepaper',     label:'Whitepaper',    icon:'📋', cls:'ic-moss'},
-    ]
-  },
-  'legal': {
-    title:'Legal Docs',
-    apps:[
-      {key:'loi-lesley',  label:'LOI · Lesley', icon:'✍️', cls:'ic-orange'},
-      {key:'share-cert',  label:'Share Cert',   icon:'🏅', cls:'ic-gold'},
-      {key:'ppm',         label:'PPM 2026',     icon:'📁', cls:'ic-dark'},
-      {key:'whitepaper',  label:'Whitepaper',   icon:'📋', cls:'ic-teal'},
-      {key:'berlin-brief',label:'Berlin Brief', icon:'✈️', cls:'ic-red'},
-    ]
-  },
-  'all-apps': {
-    title:'All Apps',
-    apps: Object.keys(APPS).map(function(k){
-      var icons = {'growth-model':'📈','investor-deck':'🎯','loi-lesley':'✍️','berlin-brief':'✈️','whitepaper':'📋','whitepaper-v1':'📄','ppm':'📁','wallet-demo':'💳','wallet-demo2':'🏦','treasury-demo':'💰','reel-ad':'🎬','share-cert':'🏅','investor-brief':'📄','keynote':'🎤','keynote-script':'📜','pitch-deck':'🎪','pitch-seed':'🌱','pitch-institutional':'🏦','pitch-retail':'👤','logo-export':'🖼️'};
-      var clss  = {'growth-model':'ic-gold','investor-deck':'ic-purple','loi-lesley':'ic-orange','berlin-brief':'ic-red','whitepaper':'ic-teal','whitepaper-v1':'ic-dark','ppm':'ic-dark','wallet-demo':'ic-blue','wallet-demo2':'ic-teal','treasury-demo':'ic-gold','reel-ad':'ic-red','share-cert':'ic-gold','investor-brief':'ic-teal','keynote':'ic-gold','keynote-script':'ic-dark','pitch-deck':'ic-purple','pitch-seed':'ic-moss','pitch-institutional':'ic-blue','pitch-retail':'ic-teal','logo-export':'ic-gold'};
-      return {key:k, label:APPS[k].title.split(' ').slice(0,2).join(' '), icon:icons[k]||'📄', cls:clss[k]||'ic-dark'};
-    })
-  }
+/* ── PAGE CONFIG ─────────────────────────────────────────── */
+var PAGES = [
+  ['growth-model','investor-deck','loi-lesley','berlin-brief','claude','notion'],
+  ['growth-model','investor-deck','loi-lesley','berlin-brief','ppm','share-cert','investor-brief','whitepaper'],
+  ['claude','grok','slack','gmail','gcal','github','vercel','docusign','notion','linkedin'],
+  ['wallet-demo','wallet-demo2','treasury-demo','reel-ad','logo-export','whitepaper-v1','keynote','keynote-script'],
+  ['pitch-deck','pitch-seed','pitch-institutional','pitch-retail','keynote','whitepaper','investor-brief'],
+];
+var PAGE_TITLES = ['Home','Investor Relations','AI & Tools','Product','Presentations'];
+
+/* ── NOTIFICATIONS ───────────────────────────────────────── */
+var NOTIFICATIONS = {
+  'loi-lesley':    {count:1, type:'urgent',  label:'Signature Required'},
+  'berlin-brief':  {count:1, type:'warn',    label:'Jun 12 Deadline'},
+  'growth-model':  {count:1, type:'success', label:'v2.1 Live'},
+  'investor-deck': {count:1, type:'info',    label:'Review Ready'},
 };
 
-// ── STATE ──
-var currentPage = 0;
-var currentAppKey = null;
-var totalPages = 6;
-var touchStartX = 0;
-var tiltTimer = null;
+/* ── NAVIGATION ──────────────────────────────────────────── */
+var currentPage = 0, totalPages = 5, phoneW = 390, tiltTimer;
 
-// ── CLOCK ──
-function updateClock(){
-  var now = new Date();
-  var h = now.getHours(), m = now.getMinutes();
-  var ampm = h >= 12 ? 'PM' : 'AM';
-  h = h % 12 || 12;
-  document.getElementById('statusTime').textContent = h + ':' + (m < 10 ? '0'+m : m) + ' ' + ampm;
-  var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-  var d = document.getElementById('homeDate');
-  if(d) d.textContent = days[now.getDay()] + ', ' + months[now.getMonth()] + ' ' + now.getDate();
-}
-updateClock();
-setInterval(updateClock, 1000);
-
-// ── PAGE NAV (with depth animation) ──
-function setTransform(tx, ry, duration, easing){
-  var pages = document.getElementById('pages');
-  pages.style.transition = duration ? ('transform ' + duration + 'ms ' + (easing||'cubic-bezier(.25,.8,.25,1)')) : 'none';
-  pages.style.transform = 'perspective(1200px) translateX(' + tx + 'px) rotateY(' + ry + 'deg)';
+function setTransform(tx, ry, dur, ease) {
+  var t = document.getElementById('pagesTrack');
+  t.style.transition = dur ? ('transform '+dur+'ms '+(ease||'cubic-bezier(.4,0,.2,1)')) : 'none';
+  t.style.transform  = 'perspective(1200px) translateX('+tx+'px) rotateY('+ry+'deg)';
 }
 
-function goToPage(n){
+function goToPage(n) {
   var prev = currentPage;
   currentPage = Math.max(0, Math.min(totalPages-1, n));
-  if(prev === currentPage) return;
-  var dir = currentPage > prev ? -1 : 1; // -1 = swiped left, 1 = swiped right
-  var tx = -(currentPage * 390);
-
-  // Phase 1: slide + tilt (260ms)
+  if (prev === currentPage) return;
+  var dir = currentPage > prev ? -1 : 1;
+  var tx  = -(currentPage * phoneW);
   clearTimeout(tiltTimer);
-  setTransform(tx, dir * 5, 260, 'cubic-bezier(.4,0,.2,1)');
-
-  // Phase 2: settle back to flat (220ms ease-out)
-  tiltTimer = setTimeout(function(){
-    setTransform(tx, 0, 220, 'ease-out');
-  }, 260);
-
-  document.querySelectorAll('.dot').forEach(function(d,i){
-    d.classList.toggle('active', i === currentPage);
-  });
-}
-
-// ── SWIPE — touch (live drag with tilt) ──
-var pagesWrap = document.getElementById('pagesWrap');
-var touchLive = false;
-
-pagesWrap.addEventListener('touchstart', function(e){
-  touchStartX = e.touches[0].clientX;
-  touchLive = true;
-  clearTimeout(tiltTimer);
-  setTransform(-(currentPage * 390), 0, 0, '');
-}, {passive:true});
-
-pagesWrap.addEventListener('touchmove', function(e){
-  if(!touchLive) return;
-  var dx = e.touches[0].clientX - touchStartX;
-  var maxDrag = 390;
-  dx = Math.max(-maxDrag, Math.min(maxDrag, dx));
-  var tilt = (dx / maxDrag) * -6; // max ±6° as you drag
-  setTransform(-(currentPage * 390) + dx, tilt, 0, '');
-}, {passive:true});
-
-pagesWrap.addEventListener('touchend', function(e){
-  if(!touchLive) return;
-  touchLive = false;
-  var dx = e.changedTouches[0].clientX - touchStartX;
-  if(dx < -40)      goToPage(currentPage + 1);
-  else if(dx > 40)  goToPage(currentPage - 1);
-  else {
-    // snap back to current page
-    setTransform(-(currentPage * 390), 0, 300, 'cubic-bezier(.25,.8,.25,1)');
+  setTransform(tx, dir*5, 260, 'cubic-bezier(.4,0,.2,1)');
+  tiltTimer = setTimeout(function(){ setTransform(tx, 0, 220, 'ease-out'); }, 260);
+  document.querySelectorAll('.dot').forEach(function(d,i){ d.classList.toggle('active', i===currentPage); });
+  var el = document.getElementById('pageTitle');
+  if (el) {
+    el.textContent = PAGE_TITLES[currentPage]||'';
+    el.className   = 'page-title'+(currentPage===0?' home':'');
   }
-});
-
-// ── SWIPE — mouse (live drag with tilt) ──
-var mouseStartX = 0, isDragging = false;
-
-pagesWrap.addEventListener('mousedown', function(e){
-  mouseStartX = e.clientX;
-  isDragging = true;
-  clearTimeout(tiltTimer);
-  setTransform(-(currentPage * 390), 0, 0, '');
-});
-
-pagesWrap.addEventListener('mousemove', function(e){
-  if(!isDragging) return;
-  var dx = e.clientX - mouseStartX;
-  var maxDrag = 390;
-  dx = Math.max(-maxDrag, Math.min(maxDrag, dx));
-  var tilt = (dx / maxDrag) * -6;
-  setTransform(-(currentPage * 390) + dx, tilt, 0, '');
-});
-
-pagesWrap.addEventListener('mouseup', function(e){
-  if(!isDragging) return;
-  isDragging = false;
-  var dx = e.clientX - mouseStartX;
-  if(dx < -50)      goToPage(currentPage + 1);
-  else if(dx > 50)  goToPage(currentPage - 1);
-  else {
-    setTransform(-(currentPage * 390), 0, 300, 'cubic-bezier(.25,.8,.25,1)');
-  }
-});
-
-pagesWrap.addEventListener('mouseleave', function(){
-  if(!isDragging) return;
-  isDragging = false;
-  setTransform(-(currentPage * 390), 0, 300, 'cubic-bezier(.25,.8,.25,1)');
-});
-
-// ── NOTIFICATIONS ──
-function injectBadge(iconEl, key){
-  var notif = NOTIFICATIONS[key];
-  if(!notif) return;
-  var existing = iconEl.querySelector('.notif');
-  if(existing) existing.remove();
-  iconEl.style.position = 'relative';
-  var badge = document.createElement('div');
-  badge.className = 'notif notif-' + notif.type;
-  badge.textContent = notif.count > 9 ? '9+' : String(notif.count);
-  badge.title = notif.label;
-  iconEl.appendChild(badge);
 }
 
-function renderNotifications(){
-  document.querySelectorAll('.app[onclick], .dock-app[onclick]').forEach(function(el){
-    var attr = el.getAttribute('onclick') || '';
-    var m = attr.match(/openApp\('([^']+)'\)/);
-    if(!m) return;
-    var iconEl = el.querySelector('.app-icon') || el.querySelector('.dock-icon');
-    if(iconEl) injectBadge(iconEl, m[1]);
-  });
+/* ── DRAWERS ─────────────────────────────────────────────── */
+var activeDrawer = null;
+
+function toggleDrawer(side) {
+  var id = side==='left'?'drawerLeft':'drawerRight';
+  var other = side==='left'?'drawerRight':'drawerLeft';
+  document.getElementById(other).classList.remove('open');
+  document.getElementById(id).classList.toggle('open');
 }
 
-function clearNotification(key){
-  if(!NOTIFICATIONS[key]) return;
-  NOTIFICATIONS[key].count = 0;
-  // Remove all visible badges for this key
-  document.querySelectorAll('.app[onclick], .dock-app[onclick]').forEach(function(el){
-    var attr = el.getAttribute('onclick') || '';
-    if(attr.indexOf("'" + key + "'") === -1) return;
-    var b = el.querySelector('.notif');
-    if(b) b.remove();
-  });
+function closeDrawers() {
+  document.getElementById('drawerLeft').classList.remove('open');
+  document.getElementById('drawerRight').classList.remove('open');
 }
 
-// ── APP OPEN ──
-function openApp(key){
+/* ── APP OPEN / CLOSE ────────────────────────────────────── */
+var currentAppKey = null;
+
+function openApp(key) {
   var app = APPS[key];
-  if(!app) return;
+  if (!app) return;
+  closeDrawers();
+  if (app.external) { window.open(app.url,'_blank','noopener,noreferrer'); return; }
   currentAppKey = key;
   document.getElementById('overlayTitle').textContent = app.title;
   document.getElementById('overlayFrame').src = app.url;
   document.getElementById('appOverlay').classList.add('open');
-  clearNotification(key); // mark as read on open
+  clearNotification(key);
 }
-function closeOverlay(){
+
+function closeApp() {
   document.getElementById('appOverlay').classList.remove('open');
-  document.getElementById('overlayFrame').src = '';
-  currentAppKey = null;
-}
-function openExternal(){
-  if(currentAppKey && APPS[currentAppKey]){
-    window.open(APPS[currentAppKey].url, '_blank', 'noopener,noreferrer');
-  }
+  setTimeout(function(){
+    document.getElementById('overlayFrame').src = 'about:blank';
+    currentAppKey = null;
+  }, 360);
 }
 
-// ── FOLDER OPEN ──
-function openFolder(key){
-  var folder = FOLDERS[key];
-  if(!folder) return;
-  document.getElementById('folderTitle').textContent = folder.title;
-  var grid = document.getElementById('folderGrid');
-  grid.innerHTML = '';
-  folder.apps.forEach(function(a){
-    var el = document.createElement('div');
-    el.className = 'app';
-    el.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer';
-    var iconDiv = document.createElement('div');
-    iconDiv.className = 'app-icon ' + a.cls;
-    iconDiv.style.cssText = 'width:56px;height:56px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:22px;position:relative';
-    iconDiv.textContent = a.icon;
-    injectBadge(iconDiv, a.key);
-    var labelDiv = document.createElement('div');
-    labelDiv.className = 'app-label';
-    labelDiv.style.cssText = 'font-size:9px;color:rgba(255,255,255,0.7);text-align:center';
-    labelDiv.textContent = a.label;
-    el.appendChild(iconDiv);
-    el.appendChild(labelDiv);
-    el.addEventListener('click', function(){
-      closeFolder();
-      setTimeout(function(){ openApp(a.key); }, 200);
-    });
-    grid.appendChild(el);
+function openExternal() {
+  if (currentAppKey && APPS[currentAppKey]) window.open(APPS[currentAppKey].url,'_blank','noopener,noreferrer');
+}
+
+/* ── NOTIFICATIONS ───────────────────────────────────────── */
+function injectBadge(box, key) {
+  var n = NOTIFICATIONS[key];
+  if (!n || !n.count) return;
+  var old = box.querySelector('.notif');
+  if (old) old.remove();
+  box.style.position = 'relative';
+  var b = document.createElement('div');
+  b.className = 'notif notif-'+n.type;
+  b.textContent = n.count>9?'9+':String(n.count);
+  b.title = n.label;
+  box.appendChild(b);
+}
+
+function renderNotifications() {
+  document.querySelectorAll('[data-app]').forEach(function(el){
+    var key = el.getAttribute('data-app');
+    var box = el.querySelector('.app-icon-box')||el.querySelector('.dock-icon-box');
+    if (box) injectBadge(box, key);
   });
-  document.getElementById('folderOverlay').classList.add('open');
-}
-function closeFolder(){
-  document.getElementById('folderOverlay').classList.remove('open');
 }
 
-// ── SERIES A BAR ANIMATE ──
-setTimeout(function(){
-  var fill = document.getElementById('saFill');
-  if(fill) fill.style.width = '17%';
-  var rfill = document.getElementById('raiseFill');
-  if(rfill) rfill.style.width = '17%';
-}, 300);
+function clearNotification(key) {
+  if (!NOTIFICATIONS[key]) return;
+  NOTIFICATIONS[key].count = 0;
+  document.querySelectorAll('[data-app="'+key+'"]').forEach(function(el){
+    var b = el.querySelector('.notif');
+    if (b) b.remove();
+  });
+}
 
-// ── KEYBOARD NAV ──
+/* ── CLOCK ───────────────────────────────────────────────── */
+function updateClock() {
+  var now=new Date(), h=now.getHours(), m=now.getMinutes();
+  var ap=h>=12?'PM':'AM'; h=h%12||12;
+  var el=document.getElementById('clock');
+  if(el) el.textContent=h+':'+(m<10?'0'+m:m)+' '+ap;
+}
+
+/* ── RENDER APPS ─────────────────────────────────────────── */
+function renderPage(gridId, keys) {
+  var grid = document.getElementById(gridId);
+  if (!grid) return;
+  keys.forEach(function(key){
+    var app = APPS[key];
+    if (!app) return;
+    var btn = document.createElement('button');
+    btn.className = 'app';
+    btn.setAttribute('data-app', key);
+    btn.setAttribute('aria-label', app.title);
+    btn.innerHTML = '<div class="app-icon-box '+app.cat+'">'+mkIcon(app.icon)+'</div><div class="app-label">'+app.title+'</div>';
+    btn.addEventListener('click', function(){ openApp(key); });
+    grid.appendChild(btn);
+  });
+}
+
+function renderQuickLaunch() {
+  var grid = document.getElementById('quickLaunchGrid');
+  if (!grid) return;
+  ['loi-lesley','investor-deck','growth-model','berlin-brief','claude','github'].forEach(function(key){
+    var app = APPS[key];
+    if (!app) return;
+    var btn = document.createElement('button');
+    btn.className = 'ql-btn';
+    btn.innerHTML = mkIcon(app.icon, 14)+app.title;
+    btn.addEventListener('click', function(){ openApp(key); closeDrawers(); });
+    grid.appendChild(btn);
+  });
+}
+
+/* ── TOUCH / SWIPE ───────────────────────────────────────── */
+var tsX=0, tsY=0;
+function initTouch() {
+  var vp = document.getElementById('pagesViewport');
+  if (!vp) return;
+  vp.addEventListener('touchstart', function(e){ tsX=e.touches[0].clientX; tsY=e.touches[0].clientY; },{passive:true});
+  vp.addEventListener('touchend', function(e){
+    var dx=e.changedTouches[0].clientX-tsX, dy=e.changedTouches[0].clientY-tsY;
+    if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>44) goToPage(currentPage+(dx<0?1:-1));
+  },{passive:true});
+}
+
+/* ── KEYBOARD ────────────────────────────────────────────── */
 document.addEventListener('keydown', function(e){
-  if(e.key === 'ArrowRight') goToPage(currentPage + 1);
-  if(e.key === 'ArrowLeft') goToPage(currentPage - 1);
-  if(e.key === 'Escape'){ closeOverlay(); closeFolder(); }
+  if(document.getElementById('appOverlay').classList.contains('open')){ if(e.key==='Escape') closeApp(); return; }
+  if(e.key==='ArrowRight') goToPage(currentPage+1);
+  if(e.key==='ArrowLeft')  goToPage(currentPage-1);
+  if(e.key==='Escape')     closeDrawers();
 });
 
-// ── INIT ──
-// Set initial page transform so perspective is applied from frame 0
-setTransform(0, 0, 0, '');
-// Render all dynamic notification badges
-renderNotifications();
+/* ── INIT ────────────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', function(){
+  PAGES.forEach(function(keys, i){ renderPage('page-grid-'+i, keys); });
+  renderQuickLaunch();
+  renderNotifications();
+  updateClock();
+  setInterval(updateClock, 30000);
+  setTransform(0, 0, 0, '');
+  initTouch();
+});
 </script>
 </body>
 </html>
