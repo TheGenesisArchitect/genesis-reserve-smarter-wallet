@@ -114,7 +114,7 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
 
 /* ── ATLAS PANEL ─────────────────────────────────────────── */
 .atlas-panel {
-  width: 300px;
+  width: clamp(220px, 20vw, 300px);
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
@@ -302,7 +302,7 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
 .tool-chip:hover { background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.14); }
 
 /* ── KPI PANEL ───────────────────────────────────────────── */
-.kpi-panel { width:260px;flex-shrink:0;border-left:1px solid rgba(255,255,255,.06);display:flex;flex-direction:column;overflow:hidden; }
+.kpi-panel { width:clamp(200px,18vw,260px);flex-shrink:0;border-left:1px solid rgba(255,255,255,.06);display:flex;flex-direction:column;overflow:hidden; }
 .kpi-header { flex-shrink:0;padding:16px 16px 12px;border-bottom:1px solid rgba(255,255,255,.06); }
 .kpi-title { font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:300;color:var(--text);letter-spacing:.04em; }
 .kpi-updated { font-size:9.5px;color:var(--muted);margin-top:2px;font-family:'JetBrains Mono',monospace; }
@@ -476,9 +476,7 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
 
 /* ── TABLET ───────────────────────────────────────────────── */
 @media (min-width: 768px) and (max-width: 1099px) {
-  .atlas-panel { width: 260px; }
-  .kpi-panel   { width: 220px; }
-  .entity-grid { grid-template-columns: repeat(2,1fr); }
+  .entity-grid  { grid-template-columns: repeat(2,1fr); }
   .actions-grid { grid-template-columns: repeat(2,1fr); }
 }
 </style>
@@ -1060,6 +1058,15 @@ function handleLiveMsg(event) {
     return;
   }
 
+  /* API error (e.g. invalid model, quota exceeded) */
+  if (msg.error) {
+    console.error('[ATLAS Live] API error:', msg.error.code, msg.error.message);
+    setVoicePill('off', 'Voice error — ' + (msg.error.message || 'check console'));
+    setAtlasState('idle');
+    liveReady = false;
+    return;
+  }
+
   var sc = msg.serverContent;
   if (!sc) return;
 
@@ -1109,7 +1116,7 @@ function initLive() {
       liveWS.onopen = function() {
         liveWS.send(JSON.stringify({
           setup: {
-            model: 'models/gemini-3.1-flash-live-preview',
+            model: 'models/gemini-2.0-flash-live-001',
             systemInstruction: { parts: [{ text: ATLAS_SYSTEM_PROMPT }] },
             generationConfig: {
               responseModalities: ['AUDIO'],
