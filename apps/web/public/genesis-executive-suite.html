@@ -933,323 +933,293 @@ function addMsg(role, text) {
   convo.scrollTop = convo.scrollHeight;
 }
 
-/* ── VOICE: ALWAYS-ON ENGINE ─────────────────────────────── */
-var wakeRecog      = null;
-var isSpeaking     = false;
-var awaitCmd       = false;
-var awaitCmdTimer  = null; /* auto-cancel awaitCmd after 8s if no follow-up heard */
-var voiceReady     = false;
-var pushActive     = false;
-var permBlocked    = false; /* set on not-allowed; prevents onend restart loop */
-var micStream      = null;  /* holds getUserMedia stream to keep permission alive */
+/* ── GEMINI LIVE — END-TO-END VOICE ENGINE ─────────────── */
+var liveWS        = null;   /* WebSocket to Gemini Live                    */
+var liveReady     = false;  /* setup complete; mic streaming to Gemini     */
+var captureCtx    = null;   /* AudioContext for mic input                  */
+var captureProc   = null;   /* ScriptProcessor node                        */
+var captureStream = null;   /* MediaStream from getUserMedia               */
+var playbackCtx   = null;   /* AudioContext for 24kHz output               */
+var nextPlayTime  = 0;      /* scheduled end of last audio chunk           */
+var atlasSpeaking = false;  /* ATLAS is playing audio                      */
+var permBlocked   = false;  /* mic permission denied                       */
+var reconnTimer   = null;   /* auto-reconnect handle                       */
+var pendingIn     = '';     /* accumulated input transcription              */
+var pendingOut    = '';     /* accumulated output transcription             */
 
-function setAwaitCmd(val) {
-  awaitCmd = val;
-  clearTimeout(awaitCmdTimer);
-  awaitCmdTimer = null;
-  if (val) {
-    /* Auto-expire: if nothing heard in 8s, drop back to wake-word mode */
-    awaitCmdTimer = setTimeout(function() {
-      awaitCmd = false;
-      awaitCmdTimer = null;
-      if (!isSpeaking) setVoicePill('active', 'Say "Hey ATLAS"');
-      setAtlasState('idle');
-    }, 8000);
-  }
-}
+/* setAwaitCmd kept as no-op for any legacy call sites */
+function setAwaitCmd() {}
 
 function setVoicePill(state, text) {
   var pill = document.getElementById('voicePill');
   var span = document.getElementById('voicePillText');
   if (!pill) return;
   pill.className = 'voice-on-pill ' + state;
-  if (span) span.textContent = text;
+  if (span && text !== undefined) span.textContent = text;
 }
 
-function initAlwaysOn() {
-  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SR) { setVoicePill('off', 'Voice not supported in this browser'); return; }
+/* ── PCM helpers ─────────────────────────────────────────── */
+function float32ToPCM16B64(f32) {
+  var buf = new Int16Array(f32.length);
+  for (var i = 0; i < f32.length; i++) buf[i] = Math.max(-32768, Math.min(32767, Math.round(f32[i] * 32768)));
+  var bytes = new Uint8Array(buf.buffer), bin = '';
+  for (var j = 0; j < bytes.length; j++) bin += String.fromCharCode(bytes[j]);
+  return btoa(bin);
+}
 
-  /* Pre-warm mic permission via getUserMedia so the browser records it as
-     "granted" before SpeechRecognition ever calls start(). This prevents
-     Chrome from re-prompting on every restart after safeStop/safeStart. */
-  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-    buildRecognition(SR); /* fallback for older browsers */
+/* ── Mic capture → PCM 16kHz → WebSocket ────────────────── */
+function startCapture() {
+  if (captureStream) return;
+  navigator.mediaDevices.getUserMedia({
+    audio: { echoCancellation: true, noiseSuppression: true, channelCount: 1 }
+  }).then(function(stream) {
+    captureStream = stream;
+    captureCtx    = new AudioContext();
+    var src       = captureCtx.createMediaStreamSource(stream);
+    captureProc   = captureCtx.createScriptProcessor(4096, 1, 1);
+
+    captureProc.onaudioprocess = function(e) {
+      if (!liveWS || liveWS.readyState !== WebSocket.OPEN || !liveReady) return;
+      var f32    = e.inputBuffer.getChannelData(0);
+      var ratio  = captureCtx.sampleRate / 16000;
+      var outLen = Math.floor(f32.length / ratio);
+      var out    = new Float32Array(outLen);
+      for (var i = 0; i < outLen; i++) out[i] = f32[Math.floor(i * ratio)];
+      liveWS.send(JSON.stringify({
+        realtimeInput: { audio: { data: float32ToPCM16B64(out), mimeType: 'audio/pcm;rate=16000' } }
+      }));
+    };
+
+    src.connect(captureProc);
+    captureProc.connect(captureCtx.destination);
+    setVoicePill('active', 'Listening…');
+  }).catch(function() {
+    permBlocked = true;
+    setVoicePill('pending', 'Tap mic to enable voice');
+    var p = document.getElementById('wakePrompt');
+    if (p) p.classList.add('show');
+  });
+}
+
+function stopCapture() {
+  if (captureProc)   { try { captureProc.disconnect(); } catch(_) {} captureProc = null; }
+  if (captureCtx)    { captureCtx.close().catch(function(){}); captureCtx = null; }
+  if (captureStream) { captureStream.getTracks().forEach(function(t){ t.stop(); }); captureStream = null; }
+}
+
+/* ── PCM 24kHz playback — gapless chunk queue ───────────── */
+function ensurePlayback() {
+  if (!playbackCtx || playbackCtx.state === 'closed') {
+    playbackCtx  = new AudioContext({ sampleRate: 24000 });
+    nextPlayTime = 0;
+  }
+}
+
+function playPCMChunk(b64) {
+  ensurePlayback();
+  var bin    = atob(b64), bytes = new Uint8Array(bin.length);
+  for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  var int16  = new Int16Array(bytes.buffer);
+  var f32    = new Float32Array(int16.length);
+  for (var i = 0; i < int16.length; i++) f32[i] = int16[i] / 32768;
+  var buf    = playbackCtx.createBuffer(1, f32.length, 24000);
+  buf.copyToChannel(f32, 0);
+  var src    = playbackCtx.createBufferSource();
+  src.buffer = buf;
+  src.connect(playbackCtx.destination);
+  var at     = Math.max(playbackCtx.currentTime + 0.01, nextPlayTime);
+  src.start(at);
+  nextPlayTime = at + buf.duration;
+}
+
+function stopPlayback() {
+  if (playbackCtx) { playbackCtx.close().catch(function(){}); playbackCtx = null; nextPlayTime = 0; }
+  atlasSpeaking = false;
+}
+
+/* ── WebSocket message handler ───────────────────────────── */
+function handleLiveMsg(event) {
+  var msg;
+  try { msg = JSON.parse(event.data); } catch(_) { return; }
+
+  /* Setup acknowledged — start mic and trigger greeting */
+  if (msg.setupComplete) {
+    liveReady = true;
+    startCapture();
+    setAtlasState('idle');
+    setTimeout(function() {
+      if (liveWS && liveWS.readyState === WebSocket.OPEN) {
+        liveWS.send(JSON.stringify({
+          clientContent: {
+            turns: [{ role: 'user', parts: [{ text: 'You are online. Give Anthony a brief two-sentence executive status briefing.' }] }],
+            turnComplete: true
+          }
+        }));
+      }
+    }, 400);
     return;
   }
-  navigator.mediaDevices.getUserMedia({ audio: true, video: false })
-    .then(function(stream) {
-      micStream    = stream;
-      permBlocked  = false;
-      buildRecognition(SR);
+
+  var sc = msg.serverContent;
+  if (!sc) return;
+
+  /* Stream audio chunks — schedule for gapless playback */
+  if (sc.modelTurn && sc.modelTurn.parts) {
+    sc.modelTurn.parts.forEach(function(part) {
+      if (part.inlineData && part.inlineData.data) {
+        if (!atlasSpeaking) { atlasSpeaking = true; setAtlasState('speaking'); setVoicePill('off', 'ATLAS speaking…'); }
+        playPCMChunk(part.inlineData.data);
+      }
+    });
+  }
+
+  /* Accumulate transcriptions */
+  if (sc.inputTranscription)  pendingIn  += sc.inputTranscription  + ' ';
+  if (sc.outputTranscription) pendingOut += sc.outputTranscription + ' ';
+
+  /* User barged in — stop playback immediately */
+  if (sc.interrupted) {
+    stopPlayback();
+    if (pendingOut.trim()) { addMsg('atlas', pendingOut.trim() + '…'); addToHistory('model', pendingOut.trim()); }
+    pendingOut = '';
+    setAtlasState('idle'); setVoicePill('active', 'Listening…');
+  }
+
+  /* Turn complete — flush transcriptions to chat */
+  if (sc.turnComplete) {
+    if (pendingIn.trim())  { addMsg('user',  pendingIn.trim());  addToHistory('user',  pendingIn.trim());  pendingIn  = ''; }
+    if (pendingOut.trim()) { addMsg('atlas', pendingOut.trim()); addToHistory('model', pendingOut.trim()); pendingOut = ''; }
+    atlasSpeaking = false;
+    setTimeout(function() { if (!atlasSpeaking) { setAtlasState('idle'); setVoicePill('active', 'Listening…'); } }, 600);
+  }
+}
+
+/* ── Connect to Gemini Live ──────────────────────────────── */
+function initLive() {
+  clearTimeout(reconnTimer);
+  if (liveWS && liveWS.readyState === WebSocket.OPEN) return;
+  setVoicePill('pending', 'Connecting…'); setAtlasState('thinking');
+
+  fetch('/api/atlas/session')
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (!d.wsUrl) throw new Error('No wsUrl');
+      liveWS = new WebSocket(d.wsUrl);
+
+      liveWS.onopen = function() {
+        liveWS.send(JSON.stringify({
+          setup: {
+            model: 'models/gemini-3.1-flash-live-preview',
+            systemInstruction: { parts: [{ text: ATLAS_SYSTEM_PROMPT }] },
+            generationConfig: {
+              responseModalities: ['AUDIO'],
+              speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Charon' } } }
+            }
+          }
+        }));
+      };
+      liveWS.onmessage = handleLiveMsg;
+      liveWS.onerror   = function() { liveWS.close(); };
+      liveWS.onclose   = function(ev) {
+        liveReady = false; atlasSpeaking = false; stopPlayback();
+        if (!permBlocked && ev.code !== 1000) {
+          setVoicePill('pending', 'Reconnecting…');
+          reconnTimer = setTimeout(initLive, 3500);
+        }
+      };
     })
-    .catch(function() {
-      permBlocked = true;
-      setVoicePill('pending', 'Tap to enable voice');
-      var p = document.getElementById('wakePrompt');
-      if (p) p.classList.add('show');
+    .catch(function(err) {
+      console.warn('[ATLAS Live]', err.message);
+      setVoicePill('off', 'Live unavailable — use text input');
+      setAtlasState('idle');
     });
 }
 
-function buildRecognition(SR) {
-  wakeRecog = new SR();
-  wakeRecog.continuous      = true;
-  wakeRecog.interimResults  = false;
-  wakeRecog.lang            = 'en-US';
-  wakeRecog.maxAlternatives = 1;
-
-  wakeRecog.onstart = function() {
-    voiceReady  = true;
-    permBlocked = false;
-    if (!isSpeaking && !pushActive) {
-      /* Preserve "Listening…" state if we're mid-command-await */
-      setVoicePill('active', awaitCmd ? 'Listening…' : 'Say "Hey ATLAS"');
-      if (awaitCmd) setAtlasState('listening');
-    }
-    var p = document.getElementById('wakePrompt');
-    if (p) p.classList.remove('show');
-  };
-
-  wakeRecog.onresult = function(e) {
-    /* Ignore everything while ATLAS is speaking — avoids echo triggers */
-    if (isSpeaking) return;
-    var res = e.results[e.results.length - 1];
-    if (!res.isFinal) return;
-    var text = res[0].transcript.toLowerCase().trim();
-
-    var wm = text.match(/(?:hey\s+)?atlas[,.\s]*(.*)/i);
-    if (wm) {
-      var cmd = (wm[1] || '').trim();
-      setAwaitCmd(!cmd); /* start 8s timer if no inline command */
-      setAtlasState('listening');
-      setVoicePill('active', awaitCmd ? 'Listening…' : 'Processing…');
-      if (cmd) processCmd(cmd, true); /* show transcribed command in chat */
-    } else if (awaitCmd) {
-      setAwaitCmd(false);
-      processCmd(text, true); /* show transcribed command in chat */
-    }
-  };
-
-  wakeRecog.onend = function() {
-    voiceReady = false;
-    /* Only restart if permission is still good and ATLAS isn't speaking.
-       permBlocked prevents the restart loop that follows a not-allowed error. */
-    if (!isSpeaking && !permBlocked) {
-      setTimeout(safeStart, 300);
-    }
-  };
-
-  wakeRecog.onerror = function(e) {
-    voiceReady = false;
-    if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
-      permBlocked = true; /* onend will fire next — this stops the loop */
-      setVoicePill('pending', 'Tap to enable voice');
-      var p = document.getElementById('wakePrompt');
-      if (p) p.classList.add('show');
-      return;
-    }
-    if (e.error === 'aborted') return; /* intentional abort, onend handles restart */
-    setTimeout(safeStart, 1500);
-  };
-
-  safeStart();
+function closeLive() {
+  clearTimeout(reconnTimer); liveReady = false;
+  stopCapture(); stopPlayback();
+  if (liveWS) { liveWS.close(1000, 'closed'); liveWS = null; }
 }
 
-function safeStart() {
-  if (!wakeRecog || isSpeaking || permBlocked) return;
-  try { wakeRecog.start(); } catch(ignored) { /* already running */ }
-}
-
-/* activateVoiceManually — called by voice pill tap or wake prompt banner */
+/* ── activateVoiceManually — wake prompt / pill tap ─────── */
 function activateVoiceManually() {
   permBlocked = false;
-  if (wakeRecog) safeStart();
-  else initAlwaysOn();
+  var p = document.getElementById('wakePrompt');
+  if (p) p.classList.remove('show');
+  if (!liveWS || liveWS.readyState !== WebSocket.OPEN) initLive();
+  else if (!captureStream) startCapture();
 }
 
-/* pushToTalk — mic button; interrupt TTS on tap when speaking */
+/* ── pushToTalk — interrupt ATLAS or re-connect ─────────── */
 function pushToTalk() {
-  if (isSpeaking) {
-    window.speechSynthesis && window.speechSynthesis.cancel();
-    stopTtsKeepAlive();
-    isSpeaking = false;
-    setAtlasState('idle');
-    setVoicePill('active', 'Say "Hey ATLAS"');
-    return;
+  if (atlasSpeaking) {
+    stopPlayback(); setAtlasState('idle'); setVoicePill('active', 'Listening…'); return;
   }
-  if (!wakeRecog) { initAlwaysOn(); return; }
-  var btn = document.getElementById('micBtn');
-
-  if (pushActive) {
-    pushActive = false;
-    setAwaitCmd(false);
-    btn && btn.classList.remove('push-active');
-    setAtlasState('idle');
-    setVoicePill('active', 'Say "Hey ATLAS"');
-  } else {
-    pushActive = true;
-    setAwaitCmd(true);
-    btn && btn.classList.add('push-active');
-    setAtlasState('listening');
-    setVoicePill('active', 'Speak now…');
-    if (!voiceReady) safeStart();
-  }
+  if (!liveWS || liveWS.readyState !== WebSocket.OPEN) { initLive(); return; }
 }
 
-/* ── TTS — NATURAL SENTENCE-CHUNKED SPEECH ───────────────── */
-var ttsVoices    = [];
-var ttsKeepalive = null;
-
+/* ── Minimal Web Speech TTS — REST-mode fallback only ───── */
+var _ttsVoices = [];
 if (window.speechSynthesis) {
-  window.speechSynthesis.getVoices(); /* prime on load */
+  window.speechSynthesis.getVoices();
   if (typeof window.speechSynthesis.addEventListener === 'function') {
-    window.speechSynthesis.addEventListener('voiceschanged', function() {
-      ttsVoices = window.speechSynthesis.getVoices();
-    });
+    window.speechSynthesis.addEventListener('voiceschanged', function() { _ttsVoices = window.speechSynthesis.getVoices(); });
   }
 }
-
-/* Chrome silently pauses TTS after ~14s — this keepalive prevents that */
-function startTtsKeepalive() {
-  stopTtsKeepAlive();
-  ttsKeepalive = setInterval(function() {
-    if (window.speechSynthesis && window.speechSynthesis.speaking) {
-      window.speechSynthesis.pause();
-      window.speechSynthesis.resume();
-    }
-  }, 10000);
-}
-function stopTtsKeepAlive() {
-  if (ttsKeepalive) { clearInterval(ttsKeepalive); ttsKeepalive = null; }
-}
-
-function pickVoice() {
-  if (!ttsVoices.length) ttsVoices = window.speechSynthesis.getVoices();
-  /* Priority: Google US English (Chrome) → Samantha (macOS) → Daniel (UK) →
-               any local en-US → any en-* → first available */
-  return ttsVoices.find(function(v){ return /google us english/i.test(v.name); })
-      || ttsVoices.find(function(v){ return /samantha/i.test(v.name); })
-      || ttsVoices.find(function(v){ return /daniel/i.test(v.name); })
-      || ttsVoices.find(function(v){ return /google uk english male/i.test(v.name); })
-      || ttsVoices.find(function(v){ return v.lang === 'en-US' && v.localService; })
-      || ttsVoices.find(function(v){ return /^en/i.test(v.lang); })
-      || ttsVoices[0]
-      || null;
+function speakFallback(text, cb) {
+  if (!window.speechSynthesis) { cb && cb(); return; }
+  window.speechSynthesis.cancel();
+  if (!_ttsVoices.length) _ttsVoices = window.speechSynthesis.getVoices();
+  var voice = _ttsVoices.find(function(v){ return /google us english/i.test(v.name); })
+           || _ttsVoices.find(function(v){ return /samantha|daniel/i.test(v.name); })
+           || _ttsVoices[0];
+  var sentences = text.replace(/([.!?])\s+/g, '$1\n').split('\n').filter(Boolean);
+  if (!sentences.length) sentences = [text];
+  (function next(i) {
+    if (i >= sentences.length) { cb && cb(); return; }
+    var u = new SpeechSynthesisUtterance(sentences[i]);
+    u.rate = 0.87; u.pitch = 0.90; if (voice) u.voice = voice;
+    u.onend   = function() { setTimeout(function(){ next(i+1); }, 140); };
+    u.onerror = function() { cb && cb(); };
+    window.speechSynthesis.speak(u);
+  })(0);
 }
 
-/* Split text at sentence boundaries for natural pacing.
-   Each chunk is spoken as its own utterance with a small gap between. */
-function splitSentences(text) {
-  var chunks = text.replace(/([.!?])\s+/g, '$1\n').split('\n');
-  return chunks.map(function(s){ return s.trim(); }).filter(Boolean);
-}
+/* ── processCmd — text input → Live (or REST fallback) ──── */
+async function processCmd(text, showUserMsg) {
+  if (!text) return;
+  if (showUserMsg) addMsg('user', text);
+  addToHistory('user', text);
 
-function speakChain(chunks, idx, voice, cb) {
-  if (idx >= chunks.length) {
-    /* All chunks done */
-    stopTtsKeepAlive();
-    isSpeaking = false;
-    pushActive = false;
-    var btn = document.getElementById('micBtn');
-    if (btn) btn.classList.remove('push-active');
-    setAtlasState('idle');
-    /* Brief buffer before restarting recognition to avoid echo pickup */
-    setTimeout(safeStart, 600);
-    cb && cb();
+  /* Route through Live when connected — response arrives as audio */
+  if (liveWS && liveWS.readyState === WebSocket.OPEN && liveReady) {
+    setAtlasState('thinking'); setVoicePill('active', 'Thinking…');
+    liveWS.send(JSON.stringify({
+      clientContent: {
+        turns: [{ role: 'user', parts: [{ text: text }] }],
+        turnComplete: true
+      }
+    }));
     return;
   }
 
-  var utt   = new SpeechSynthesisUtterance(chunks[idx]);
-  utt.rate  = 0.87;  /* slightly measured — sounds authoritative, not robotic */
-  utt.pitch = 0.90;  /* slight bass without sounding synthetic */
-  utt.volume = 1;
-  if (voice) utt.voice = voice;
-
-  utt.onend = function() {
-    /* Natural inter-sentence pause: comma phrases 80ms, sentences 140ms */
-    var pause = chunks[idx].slice(-1) === ',' ? 80 : 140;
-    setTimeout(function() { speakChain(chunks, idx + 1, voice, cb); }, pause);
-  };
-  utt.onerror = function() {
-    stopTtsKeepAlive();
-    isSpeaking = false;
-    setAtlasState('idle');
-    setTimeout(safeStart, 600);
-  };
-
-  window.speechSynthesis.speak(utt);
-}
-
-function speak(text, cb) {
-  if (!window.speechSynthesis) { cb && cb(); return; }
-
-  /* Cancel any in-flight speech and mark speaking BEFORE any recognition
-     restart can happen — do NOT call safeStop() here. Recognition keeps
-     running; onresult silently drops results while isSpeaking is true. */
-  window.speechSynthesis.cancel();
-  isSpeaking = true;
-  setAtlasState('speaking');
-  setVoicePill('off', 'ATLAS speaking…');
-  startTtsKeepalive();
-
-  var voice  = pickVoice();
-  var chunks = splitSentences(text);
-  if (!chunks.length) chunks = [text];
-
-  /* Small lead-in delay so state change renders before first utterance */
-  setTimeout(function() { speakChain(chunks, 0, voice, cb); }, 80);
-}
-
-/* ── COMMAND PROCESSING ─────────────────────────────────── */
-/* showUserMsg: true when called from voice/PTT (text input already shows it) */
-async function processCmd(text, showUserMsg) {
-  setAwaitCmd(false);
-  pushActive = false;
-  var btn = document.getElementById('micBtn');
-  if (btn) btn.classList.remove('push-active');
-  var input = document.getElementById('atlasInput');
-  if (input) input.value = '';
-
-  if (showUserMsg && text) addMsg('user', text);
-
-  setAtlasState('thinking');
-  setVoicePill('active', 'Thinking…');
-
+  /* REST fallback when Live is not connected */
+  setAtlasState('thinking'); setVoicePill('active', 'Thinking…');
   var response;
   try {
     response = await callGemini(text);
-
-    /* [DEEP ANALYSIS] prefix signals Gemini wants Claude to synthesize */
     if (response.startsWith('[DEEP ANALYSIS]')) {
-      var geminiIntro = response.replace('[DEEP ANALYSIS]', '').trim();
+      var intro = response.replace('[DEEP ANALYSIS]', '').trim();
       setVoicePill('active', 'Deep analysis…');
-      try {
-        var deepResponse = await callClaude(text, geminiIntro);
-        if (deepResponse) {
-          response = deepResponse;
-          /* Replace last history entry with Claude's fuller response */
-          if (conversationHistory.length && conversationHistory[conversationHistory.length-1].role === 'model') {
-            conversationHistory[conversationHistory.length-1].parts[0].text = response;
-          }
-        } else {
-          response = geminiIntro;
-        }
-      } catch(_) {
-        response = geminiIntro; /* Claude unavailable — use Gemini intro */
-      }
+      try { var deep = await callClaude(text, intro); if (deep) response = deep; } catch(_) { response = intro; }
     }
-  } catch (err) {
+  } catch(e) {
     AI_FAIL_COUNT++;
-    /* Graceful fallback to local KB after repeated failures */
-    response = AI_FAIL_COUNT > 3
-      ? pickKB(detectIntent(text))
-      : 'I\'m having trouble reaching my AI systems right now. ' + pickKB(detectIntent(text));
-    if (AI_FAIL_COUNT <= 1) console.warn('[ATLAS] AI error:', err.message);
+    response = pickKB(detectIntent(text));
   }
-
   setAtlasState('speaking');
   addMsg('atlas', response);
-  speak(response, function() { setVoicePill('active', 'Say "Hey ATLAS"'); });
+  speakFallback(response, function() { setVoicePill('active', 'Listening…'); setAtlasState('idle'); });
 }
 
 /* ── TEXT & QUICK-ACTION RESPONSE ───────────────────────── */
@@ -1262,18 +1232,16 @@ function submitText() {
 }
 
 function atlasRespond(intentKey) {
-  processCmd(intentKey); /* pass key directly — detectIntent won't match, falls to default, but we pass KB key */
-  /* Override: call processCmd with intent directly */
-}
-/* Better version — direct intent */
-function atlasRespond(intentKey) {
-  setAtlasState('thinking');
-  var response = pickKB(intentKey);
-  setTimeout(function() {
-    setAtlasState('speaking');
-    addMsg('atlas', response);
-    speak(response, function() { setVoicePill('active', 'Say "Hey ATLAS"'); });
-  }, 600 + Math.random()*400);
+  var prompt = intentKey;
+  /* Map quick-action keys to natural-language prompts for Live */
+  var intentMap = {
+    loi:        'Give me a status update on the LOI with Lesley Harris and what needs to happen today.',
+    berlin:     'Brief me on the Berlin deadline — June 12. What do we need to have ready?',
+    compliance: 'What is the current compliance status and any outstanding items?',
+    ip:         'Give me an IP and trademark protection report for Genesis Reserve and Helix Suite.',
+    series_a:   'What is our Series A readiness? Summarize investor pipeline and milestones.'
+  };
+  processCmd(intentMap[intentKey] || intentKey, false);
 }
 
 document.getElementById('atlasInput') && document.getElementById('atlasInput').addEventListener('keydown', function(e) {
@@ -1343,22 +1311,14 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  /* Start always-on voice (will ask permission once) */
-  setTimeout(function() { initAlwaysOn(); }, 600);
-
-  /* Greeting after brief delay */
-  setTimeout(function() {
-    setAtlasState('speaking');
-    var greeting = pickKB('greeting');
-    addMsg('atlas', greeting);
-    speak(greeting, function() { setVoicePill('active', 'Say "Hey ATLAS"'); });
-  }, 900);
+  /* Start Gemini Live voice engine — greeting sent via setupComplete handler */
+  setTimeout(initLive, 600);
 });
 
 /* ── postMessage listener (desktop mode from dashboard) ── */
 window.addEventListener('message', function(e) {
   if (e.data && e.data.action === 'atlasQuery') {
-    processCmd(e.data.text || '');
+    processCmd(e.data.text || '', true);
   }
 });
 </script>
