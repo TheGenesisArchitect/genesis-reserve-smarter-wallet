@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Genesis Reserve — Month-Over-Month Growth Model · Seed → Series A</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Tenor+Sans&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --gold:#C9A84C;--gold2:#E8CB6E;--gold-d:#8A6E2A;
+  --gold-dim:rgba(201,168,76,.10);--gold-border:rgba(201,168,76,.25);
+  --teal:#00D4AA;--teal-dim:rgba(0,212,170,.08);--teal-border:rgba(0,212,170,.25);
+  --red:#e84040;--red-dim:rgba(232,64,64,.08);--red-border:rgba(232,64,64,.25);
+  --amber:#F5A623;--amber-dim:rgba(245,166,35,.08);--amber-border:rgba(245,166,35,.25);
+  --bg:#06080d;--bg2:#0d1018;--bg3:#141b22;--bg4:#1a2230;
+  --text:#f5f0e8;--sub:rgba(245,240,232,.88);--muted:rgba(245,240,232,.55);
+  --border:rgba(255,255,255,.07);
+}
+
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--gold-d);border-radius:99px}
+
+body{background:var(--bg);color:var(--text);font-family:'Tenor Sans',sans-serif;min-height:100vh}
+
+/* ── Layout ── */
+.page{max-width:1400px;margin:0 auto;padding:40px 36px 80px}
+
+/* ── Toolbar ── */
+.toolbar{
+  position:fixed;top:16px;right:20px;z-index:200;
+  display:flex;gap:8px;
+}
+.tb-btn{
+  background:rgba(13,16,24,.85);border:1px solid var(--border);
+  color:var(--muted);padding:6px 14px;border-radius:20px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;
+  cursor:pointer;backdrop-filter:blur(8px);text-transform:uppercase;transition:all .2s;
+}
+.tb-btn:hover,.tb-btn.active{border-color:var(--gold);color:var(--gold)}
+
+/* ── Print ── */
+@media print{
+  .toolbar,.scenario-toggle,.no-print{display:none!important}
+  body{background:#fff;color:#1a1a1a}
+  .page{padding:20px}
+  .tbl-wrap{overflow:visible}
+}
+
+/* ── Header ── */
+.hdr{display:flex;align-items:center;gap:18px;margin-bottom:32px;padding-bottom:24px;border-bottom:1px solid var(--border)}
+.hdr-emblem{width:44px;height:44px;object-fit:contain;opacity:.9}
+.hdr-text{}
+.hdr-eyebrow{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+.hdr-title{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:600;color:var(--text)}
+.hdr-sub{font-family:'Cormorant Garamond',serif;font-size:14px;color:var(--sub);margin-top:3px}
+
+/* ── Scenario toggle ── */
+.scenario-toggle{display:flex;gap:0;margin-bottom:28px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;width:fit-content}
+.sc-btn{
+  padding:10px 28px;font-family:'JetBrains Mono',monospace;font-size:10px;
+  letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:all .25s;
+  color:var(--muted);background:transparent;border:none;
+}
+.sc-btn.active{background:var(--gold-dim);color:var(--gold);border-color:var(--gold-border)}
+.sc-btn:first-child{border-right:1px solid var(--border)}
+
+/* ── Summary cards ── */
+.summary-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:28px}
+.sum-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:18px 16px}
+.sum-card.gold{border-color:var(--gold-border);background:var(--gold-dim)}
+.sum-card.teal{border-color:var(--teal-border);background:var(--teal-dim)}
+.sum-label{font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.sum-card.gold .sum-label{color:var(--gold)}
+.sum-card.teal .sum-label{color:var(--teal)}
+.sum-val{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;color:var(--text);line-height:1}
+.sum-card.gold .sum-val{color:var(--gold2)}
+.sum-card.teal .sum-val{color:var(--teal)}
+.sum-note{font-family:'Cormorant Garamond',serif;font-size:12px;color:var(--sub);margin-top:5px;line-height:1.35}
+
+/* ── Assumptions ── */
+.assump-wrap{margin-bottom:28px}
+.assump-toggle-btn{
+  display:flex;align-items:center;gap:8px;
+  font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--muted);cursor:pointer;margin-bottom:0;
+  background:none;border:none;padding:10px 0;
+}
+.assump-toggle-btn:hover{color:var(--gold)}
+.assump-toggle-btn span{font-size:14px;transition:transform .2s}
+.assump-toggle-btn.open span{transform:rotate(90deg)}
+.assump-grid{
+  display:none;grid-template-columns:repeat(4,1fr);gap:12px;
+  padding:16px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;margin-top:8px;
+}
+.assump-grid.visible{display:grid}
+.assump-group{}
+.assump-head{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.assump-item{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;font-size:11.5px}
+.assump-key{font-family:'Cormorant Garamond',serif;color:var(--sub)}
+.assump-val{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text)}
+
+/* ── Phase legend ── */
+.phase-legend{display:flex;gap:20px;margin-bottom:16px;flex-wrap:wrap}
+.phase-item{display:flex;align-items:center;gap:7px;font-family:'Cormorant Garamond',serif;font-size:13px;color:var(--sub)}
+.phase-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.ph-build{background:rgba(232,64,64,.4)}
+.ph-activate{background:rgba(245,166,35,.4)}
+.ph-outreach{background:rgba(0,212,170,.4)}
+.ph-close{background:rgba(201,168,76,.4)}
+
+/* ── Table ── */
+.tbl-section{margin-bottom:36px}
+.tbl-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.tbl-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:var(--text)}
+.tbl-sub{font-family:'Cormorant Garamond',serif;font-size:13px;color:var(--muted);margin-top:2px}
+.tbl-wrap{overflow-x:auto;border-radius:12px;border:1px solid var(--border)}
+
+table{width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap}
+thead th{
+  font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted);
+  padding:10px 12px;text-align:right;background:var(--bg3);
+  border-bottom:1px solid var(--border);position:sticky;top:0;
+}
+thead th:first-child,thead th:nth-child(2),thead th:nth-child(3){text-align:left}
+thead th:first-child{position:sticky;left:0;z-index:3;background:var(--bg3)}
+
+tbody td{
+  padding:10px 12px;border-bottom:1px solid var(--border);
+  font-family:'JetBrains Mono',monospace;font-size:10.5px;
+  text-align:right;color:var(--sub);
+}
+tbody td:first-child{
+  text-align:left;position:sticky;left:0;z-index:2;
+  background:var(--bg2);font-weight:600;color:var(--text);
+  border-right:1px solid var(--border);
+}
+tbody td:nth-child(2){text-align:left}
+tbody td:nth-child(3){text-align:left}
+tbody tr:hover td{background:rgba(201,168,76,.04)}
+tbody tr:hover td:first-child{background:var(--bg3)}
+
+/* Phase row colors */
+tr.ph-build td{background:rgba(232,64,64,.03)}
+tr.ph-build td:first-child{background:rgba(232,64,64,.07)}
+tr.ph-activate td{background:rgba(245,166,35,.03)}
+tr.ph-activate td:first-child{background:rgba(245,166,35,.07)}
+tr.ph-outreach td{background:rgba(0,212,170,.03)}
+tr.ph-outreach td:first-child{background:rgba(0,212,170,.07)}
+tr.ph-close td{background:rgba(201,168,76,.04)}
+tr.ph-close td:first-child{background:rgba(201,168,76,.10)}
+
+/* Milestone row */
+tr.milestone td{border-top:2px solid var(--teal) !important}
+tr.milestone-gold td{border-top:2px solid var(--gold) !important}
+
+.milestone-badge{
+  display:inline-block;font-family:'JetBrains Mono',monospace;
+  font-size:8px;letter-spacing:.1em;text-transform:uppercase;
+  background:var(--teal-dim);border:1px solid var(--teal-border);
+  color:var(--teal);border-radius:4px;padding:2px 6px;margin-left:4px;
+}
+.milestone-badge.gold{background:var(--gold-dim);border-color:var(--gold-border);color:var(--gold)}
+
+.val-gold{color:var(--gold2)!important;font-weight:600}
+.val-teal{color:var(--teal)!important;font-weight:600}
+.val-red{color:var(--red)!important}
+.val-muted{color:var(--muted)!important}
+.val-big{font-size:12px!important;font-weight:600}
+
+/* ── Series A readiness ── */
+.seriesA-section{margin-top:36px}
+.seriesA-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--text);margin-bottom:6px}
+.seriesA-sub{font-family:'Cormorant Garamond',serif;font-size:14px;color:var(--sub);margin-bottom:20px}
+.seriesA-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.sa-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:22px 20px}
+.sa-card.target{border-color:var(--gold-border);background:var(--gold-dim)}
+.sa-val{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:700;color:var(--gold);margin-bottom:4px}
+.sa-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+.sa-card.target .sa-label{color:var(--gold)}
+.sa-reqs{display:flex;flex-direction:column;gap:7px}
+.sa-req{
+  display:flex;justify-content:space-between;align-items:center;
+  font-family:'Cormorant Garamond',serif;font-size:13px;
+  padding:6px 10px;background:var(--bg3);border-radius:6px;
+}
+.sa-req-key{color:var(--sub)}
+.sa-req-val{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text);font-weight:600}
+.sa-card.target .sa-req-val{color:var(--gold)}
+.sa-month{
+  margin-top:12px;padding-top:10px;border-top:1px solid var(--border);
+  font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--teal);
+}
+.sa-card.target .sa-month{color:var(--gold2)}
+
+/* ── Key Insight box ── */
+.insight-box{
+  background:linear-gradient(135deg,rgba(0,212,170,.06),rgba(201,168,76,.04));
+  border:1px solid var(--teal-border);border-radius:12px;
+  padding:20px 24px;margin-top:28px;
+}
+.insight-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--teal);margin-bottom:10px}
+.insight-text{font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--text);line-height:1.6}
+.insight-text strong{color:var(--gold)}
+
+/* ── Reverse engineer section ── */
+.rev-eng{margin-top:36px}
+.rev-eng-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--text);margin-bottom:6px}
+.rev-eng-sub{font-family:'Cormorant Garamond',serif;font-size:14px;color:var(--sub);margin-bottom:20px}
+.rev-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.rev-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:22px 20px}
+.rev-head{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+.rev-list{display:flex;flex-direction:column;gap:8px}
+.rev-item{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:9px 12px;background:var(--bg3);border-radius:8px;border:1px solid var(--border);
+}
+.rev-num{
+  font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--teal);
+  background:var(--teal-dim);border:1px solid var(--teal-border);
+  border-radius:50%;width:22px;height:22px;display:flex;align-items:center;
+  justify-content:center;flex-shrink:0;font-weight:600;
+}
+.rev-body{}
+.rev-item-head{font-family:'Cormorant Garamond',serif;font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px}
+.rev-item-body{font-family:'Cormorant Garamond',serif;font-size:12.5px;color:var(--sub);line-height:1.4}
+.rev-item-val{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gold);margin-top:3px}
+
+/* ── Footer ── */
+.doc-footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--border);text-align:center;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+</style>
+</head>
+<body>
+
+<div class="toolbar no-print">
+  <button class="tb-btn" onclick="window.print()">&#128438; PDF</button>
+</div>
+
+<div class="page">
+
+  <!-- Header -->
+  <div class="hdr">
+    <img src="/genesis-emblem.png" class="hdr-emblem" alt="Genesis Reserve">
+    <div class="hdr-text">
+      <div class="hdr-eyebrow">Genesis Reserve · Financial Model · Confidential</div>
+      <div class="hdr-title">Month-Over-Month Growth Model</div>
+      <div class="hdr-sub">Seed Close (June 2026) → Series A Ready (Q1 2027) · Reverse-Engineered from Series A Targets</div>
+    </div>
+  </div>
+
+  <!-- Scenario Toggle -->
+  <div class="scenario-toggle no-print">
+    <button class="sc-btn active" id="btn-con" onclick="setScenario('conservative')">Conservative · $1M ARR</button>
+    <button class="sc-btn" id="btn-agg" onclick="setScenario('aggressive')">Aggressive · $3M ARR</button>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="summary-grid" id="summaryCards"></div>
+
+  <!-- Assumptions -->
+  <div class="assump-wrap">
+    <button class="assump-toggle-btn" id="assumpBtn" onclick="toggleAssump()">
+      <span>▶</span> Model Assumptions — click to expand
+    </button>
+    <div class="assump-grid" id="assumpGrid">
+      <div class="assump-group">
+        <div class="assump-head">Wallet Growth</div>
+        <div class="assump-item"><span class="assump-key">Launch month</span><span class="assump-val">July 2026</span></div>
+        <div class="assump-item"><span class="assump-key">Avg starting balance</span><span class="assump-val">$1,500</span></div>
+        <div class="assump-item"><span class="assump-key">Balance growth/mo</span><span class="assump-val">~5%</span></div>
+        <div class="assump-item"><span class="assump-key">Monthly retention</span><span class="assump-val">95%</span></div>
+        <div class="assump-item"><span class="assump-key">Redemption activates</span><span class="assump-val">Month 4 (Oct)</span></div>
+      </div>
+      <div class="assump-group">
+        <div class="assump-head">Yield & Fees</div>
+        <div class="assump-item"><span class="assump-key">Gross protocol yield</span><span class="assump-val">6% APY</span></div>
+        <div class="assump-item"><span class="assump-key">Member net yield</span><span class="assump-val">4.5% APY</span></div>
+        <div class="assump-item"><span class="assump-key">GR yield spread</span><span class="assump-val">1.5% APY</span></div>
+        <div class="assump-item"><span class="assump-key">Membership fee</span><span class="assump-val">$25/mo</span></div>
+        <div class="assump-item"><span class="assump-key">YFLPP activation rate</span><span class="assump-val">20% of wallets</span></div>
+      </div>
+      <div class="assump-group">
+        <div class="assump-head">YFLPP / Insurance</div>
+        <div class="assump-item"><span class="assump-key">Avg premium funded</span><span class="assump-val">$80/member/mo</span></div>
+        <div class="assump-item"><span class="assump-key">YFLPP mgmt fee</span><span class="assump-val">5% of vol</span></div>
+        <div class="assump-item"><span class="assump-key">Anchor product</span><span class="assump-val">IUL</span></div>
+        <div class="assump-item"><span class="assump-key">IMO partnership</span><span class="assump-val">Phase 1 (Mo 4)</span></div>
+        <div class="assump-item"><span class="assump-key">FMO in-house</span><span class="assump-val">Year 2</span></div>
+      </div>
+      <div class="assump-group">
+        <div class="assump-head">Agent Network</div>
+        <div class="assump-item"><span class="assump-key">Agent ramp start</span><span class="assump-val">Month 4</span></div>
+        <div class="assump-item"><span class="assump-key">Avg policies/agent/mo</span><span class="assump-val">2</span></div>
+        <div class="assump-item"><span class="assump-key">Avg annual premium</span><span class="assump-val">$2,400/policy</span></div>
+        <div class="assump-item"><span class="assump-key">IMO override rate</span><span class="assump-val">3% first-yr prem</span></div>
+        <div class="assump-item"><span class="assump-key">New agents/month</span><span class="assump-val">5 (con) / 10 (agg)</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase legend -->
+  <div class="phase-legend">
+    <div class="phase-item"><div class="phase-dot ph-build"></div> Phase 1: Building (M1–M3)</div>
+    <div class="phase-item"><div class="phase-dot ph-activate"></div> Phase 2: Activation — Redemption + IMO (M4–M6)</div>
+    <div class="phase-item"><div class="phase-dot ph-outreach"></div> Phase 3: Series A Outreach (M7–M9)</div>
+    <div class="phase-item"><div class="phase-dot ph-close"></div> Phase 4: Series A Close &amp; Scale (M10–M12)</div>
+  </div>
+
+  <!-- Growth Metrics Table -->
+  <div class="tbl-section">
+    <div class="tbl-head">
+      <div>
+        <div class="tbl-title">Growth Metrics — Month Over Month</div>
+        <div class="tbl-sub">Wallets · AUM · Yield Harvested · YFLPP · Agents</div>
+      </div>
+    </div>
+    <div class="tbl-wrap">
+      <table id="growthTable">
+        <thead>
+          <tr>
+            <th>Month</th>
+            <th>Date</th>
+            <th>Phase</th>
+            <th>New Wallets</th>
+            <th>Total Wallets</th>
+            <th>Avg Balance</th>
+            <th>Total AUM</th>
+            <th>Yield Harvested<br>(Members, Monthly)</th>
+            <th>Yield Harvested<br>(Annual Run Rate)</th>
+            <th>YFLPP<br>Members</th>
+            <th>YFLPP Premium<br>Vol / Month</th>
+            <th>Policies<br>In Force</th>
+            <th>Active<br>Agents</th>
+            <th>New Policies<br>Written</th>
+            <th>MoM<br>Growth %</th>
+          </tr>
+        </thead>
+        <tbody id="growthBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Revenue Table -->
+  <div class="tbl-section">
+    <div class="tbl-head">
+      <div>
+        <div class="tbl-title">Revenue Breakdown — All Streams</div>
+        <div class="tbl-sub">Yield Fee · YFLPP Fee · Membership · Agent Override · MRR · ARR</div>
+      </div>
+    </div>
+    <div class="tbl-wrap">
+      <table id="revenueTable">
+        <thead>
+          <tr>
+            <th>Month</th>
+            <th>Date</th>
+            <th>Phase</th>
+            <th>Yield Spread<br>Revenue</th>
+            <th>YFLPP Mgmt<br>Fee</th>
+            <th>Membership<br>Revenue</th>
+            <th>Agent<br>Override</th>
+            <th>Total MRR</th>
+            <th>MoM<br>Rev Growth</th>
+            <th>ARR<br>Run Rate</th>
+            <th>ARR<br>Milestone</th>
+            <th>Cumulative<br>Revenue</th>
+          </tr>
+        </thead>
+        <tbody id="revenueBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Series A Readiness -->
+  <div class="seriesA-section">
+    <div class="seriesA-title">Series A Readiness Thresholds</div>
+    <div class="seriesA-sub">What investors need to see — and which month you hit each threshold in each scenario.</div>
+    <div class="seriesA-grid" id="seriesAGrid"></div>
+  </div>
+
+  <!-- Key Insight -->
+  <div class="insight-box">
+    <div class="insight-label">The Metric That Wins the Room</div>
+    <div class="insight-text" id="insightText"></div>
+  </div>
+
+  <!-- Reverse Engineer Section -->
+  <div class="rev-eng">
+    <div class="rev-eng-title">How to Reverse-Engineer These Targets</div>
+    <div class="rev-eng-sub">The weekly and monthly operational actions that compound into Series A readiness.</div>
+    <div class="rev-grid">
+      <div class="rev-card">
+        <div class="rev-head">Phase 1 · Building (Month 1–3) · Priority Actions</div>
+        <div class="rev-list">
+          <div class="rev-item">
+            <div class="rev-num">1</div>
+            <div class="rev-body">
+              <div class="rev-item-head">Onboard 50–100 founding members</div>
+              <div class="rev-item-body">These are your proof-of-concept cohort. Personal outreach. White-glove experience. Every single one gets a direct call from Anthony. Their testimonials fund the next 1,000.</div>
+              <div class="rev-item-val">Target: 225 total wallets by end of Month 3</div>
+            </div>
+          </div>
+          <div class="rev-item">
+            <div class="rev-num">2</div>
+            <div class="rev-body">
+              <div class="rev-item-head">Activate YFLPP for 20% of members immediately</div>
+              <div class="rev-item-body">Don't wait for scale. Connect existing policies first — it's a single form. 45 YFLPP members in Month 3 is the baseline. Each one is a recurring premium funded by yield. That metric is the story.</div>
+              <div class="rev-item-val">Target: 45 YFLPP members by Month 3 · $3,600 premium vol</div>
+            </div>
+          </div>
+          <div class="rev-item">
+            <div class="rev-num">3</div>
+            <div class="rev-body">
+              <div class="rev-item-head">Sign first IMO partner by Month 3</div>
+              <div class="rev-item-body">Agent pipeline needs to be live when Redemption activates in Month 4. IMO partner brings the appointments. Genesis Reserve brings the members. Don't let these happen sequentially.</div>
+              <div class="rev-item-val">Target: IMO signed by September 2026</div>
+            </div>
+          </div>
+          <div class="rev-item">
+            <div class="rev-num">4</div>
+            <div class="rev-body">
+              <div class="rev-item-head">Document every metric from Day 1</div>
+              <div class="rev-item-body">Week 1 wallet count. Week 2. Every number. Series A investors ask for "historical cohort data." If you don't track from launch, you can't reconstruct it. MRR, AUM, YFLPP volume — all of it, weekly.</div>
+              <div class="rev-item-val">Target: Live dashboard by end of Week 2 post-launch</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="rev-card">
+        <div class="rev-head">Phase 2 · Activation (Month 4–6) · Redemption + Agents</div>
+        <div class="rev-list">
+          <div class="rev-item">
+            <div class="rev-num">5</div>
+            <div class="rev-body">
+              <div class="rev-item-head">Redemption network formal launch</div>
+              <div class="rev-item-body">This is where wallet growth 5×. Ashley Bell or Bernice King does a co-branded announcement. Every Redemption loan vehicle member gets an invite. The conversion pitch: "Your money earns yield AND funds your life insurance. Free."</div>
+              <div class="rev-item-val">Target: +250 wallets in Month 4 alone from Redemption</div>
+            </div>
+          </div>
+          <div class="rev-item">
+            <div class="rev-num">6</div>
+            <div class="rev-body">
+              <div class="rev-item-head">First 5 agents writing policies</div>
+              <div class="rev-item-body">Larry Timberlake owns this. 5 agents × 2 policies/month = 10 new IUL policies. Each policy is both a commission event and a YFLPP enrollment. The agent revenue and YFLPP volume compound together.</div>
+              <div class="rev-item-val">Target: 10 new policies in Month 4 · $720 override revenue</div>
+            </div>
+          </div>
+          <div class="rev-item">
+            <div class="rev-num">7</div>
+            <div class="rev-body">
+              <div class="rev-item-head">$1M AUM milestone — press release</div>
+              <div class="rev-item-body">When you cross $1M in member deposits, you send a press release. Not because the number is large — because it triggers the "real usage" narrative that the $100M+ companies all used. $1M AUM is the first credibility threshold.</div>
+              <div class="rev-item-val">Target: $1M AUM by Month 4 · $3M AUM by Month 6</div>
+            </div>
+          </div>
+          <div class="rev-item">
+            <div class="rev-num">8</div>
+            <div class="rev-body">
+              <div class="rev-item-head">Security audit complete by Month 7</div>
+              <div class="rev-item-body">Lesley's engagement. Smart contract audit. SOC posture. This is not optional for institutional investors. Series A VCs will ask for it in diligence. Having it done — and showing the clean report — is the difference between a term sheet and a pass.</div>
+              <div class="rev-item-val">Target: Clean audit report delivered by start of Phase 3</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="rev-card">
+        <div class="rev-head">Phase 3 · Series A Outreach (Month 7–9) · The Pitch Window</div>
+        <div class="rev-list">
+          <div class="rev-item">
+            <div class="rev-num">9</div>
+            <div class="rev-body">
+              <div class="rev-item-head">Start investor outreach at Month 7, not Month 9</div>
+              <div class="rev-item-body">Series A takes 60–90 days minimum from first meeting to term sheet. If you start in January 2027 and want a March close, you needed to be in conversations in October 2026. The Berlin LP network is your warm intro list.</div>
+              <div class="rev-item-val">Start outreach: October 2026 · Term sheet: January 2027</div>
+            </div>
+          </div>
+          <div class="rev-item">
+            <div class="rev-num">10</div>
+            <div class="rev-body">
+              <div class="rev-item-head">Lead with the YFLPP metric — nothing else like it</div>
+              <div class="rev-item-body">The opening number in every Series A conversation: "We have X members whose life insurance premiums are being paid entirely by yield — $Y in total premiums funded — without any of them paying out of pocket." That sentence has never been said before. That's your hook.</div>
+              <div class="rev-item-val">Target: $50K+ cumulative YFLPP premium funded by Month 9</div>
+            </div>
+          </div>
+          <div class="rev-item">
+            <div class="rev-num">11</div>
+            <div class="rev-body">
+              <div class="rev-item-head">Lesley's VC + Harvard network = warm Series A pipeline</div>
+              <div class="rev-item-body">The former Chief of Policy at Meta. Harvard blockchain contacts. El Salvador Bitcoin developer. These aren't cold outreach — they're Lesley's people. Each intro meeting already has credibility baked in from the relationship.</div>
+              <div class="rev-item-val">Target: 8–12 first meetings scheduled by Month 7</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="rev-card">
+        <div class="rev-head">Phase 4 · Series A Close (Month 10–12) · Scale the Win</div>
+        <div class="rev-list">
+          <div class="rev-item">
+            <div class="rev-num">12</div>
+            <div class="rev-body">
+              <div class="rev-item-head">Series A closes · $20M–$40M valuation</div>
+              <div class="rev-item-body">Seed investors at $3M cap see 6.7×–13× conversion advantage. Use that as a closing argument with any seed holdouts in parallel. The Series A news also restarts the PR cycle — new press = new wallet growth spike.</div>
+              <div class="rev-item-val">Target close: Q1 2027 · Seed conversion: 6.7×–13×</div>
+            </div>
+          </div>
+          <div class="rev-item">
+            <div class="rev-num">13</div>
+            <div class="rev-body">
+              <div class="rev-item-head">FMO application filing</div>
+              <div class="rev-item-body">By Month 10–12, if the agent network is at 35–50 agents with documented production, the FMO application is justified. Series A capital funds the compliance build-out. This is the moat that becomes permanent — no Web3 company can replicate it in under 2 years.</div>
+              <div class="rev-item-val">Target: FMO application filed Q2 2027 post-Series A</div>
+            </div>
+          </div>
+          <div class="rev-item">
+            <div class="rev-num">14</div>
+            <div class="rev-body">
+              <div class="rev-item-head">Series B positioning starts at Series A close</div>
+              <div class="rev-item-body">Parallel went from $740M to $2B in 5 months. The window between Series A and Series B is the fastest growth period for companies at this stage. Series A capital should be deployed with Series B metrics in mind from Day 1.</div>
+              <div class="rev-item-val">Series B target: Q3–Q4 2027 · $100M+ valuation range</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="doc-footer">
+    Genesis App, Inc. · Delaware C Corporation · Doing Business As Genesis Reserve · Confidential &amp; Proprietary · Seed Round 2026
+  </div>
+
+</div><!-- /page -->
+
+<script>
+// ── Data ──────────────────────────────────────────────────────────────────────
+
+var scenarios = {
+  conservative: {
+    label: 'Conservative · $1M ARR Path',
+    months: [
+      // [newW, avgBal, agents, agentPoliciesPerAgent]
+      [50,   1500, 0, 2],
+      [75,   1800, 0, 2],
+      [100,  2000, 0, 2],
+      [250,  2200, 5, 2],
+      [350,  2500,10, 2],
+      [450,  2800,15, 2],
+      [550,  3000,20, 2],
+      [650,  3200,25, 2],
+      [750,  3500,30, 2],
+      [850,  3800,35, 2],
+      [1000, 4000,40, 2],
+      [1200, 4200,50, 2],
+    ],
+    phases:['build','build','build','activate','activate','activate','outreach','outreach','outreach','close','close','close'],
+    dates:['Jul 2026','Aug 2026','Sep 2026','Oct 2026','Nov 2026','Dec 2026','Jan 2027','Feb 2027','Mar 2027','Apr 2027','May 2027','Jun 2027'],
+    seriesA:[
+      {val:'$20M',label:'Conservative Series A',month:'Month 9 (Mar 2027)',reqs:[['Wallets','3,000+'],['AUM','$10M+'],['YFLPP Members','600+'],['ARR','$1M+'],['Agents','25+']]},
+      {val:'$30M',label:'Target Series A',month:'Month 11 (May 2027)',reqs:[['Wallets','5,000+'],['AUM','$20M+'],['YFLPP Members','1,000+'],['ARR','$2M+'],['Agents','40+']],target:true},
+      {val:'$40M',label:'Strong Series A',month:'Month 12 (Jun 2027)',reqs:[['Wallets','6,000+'],['AUM','$25M+'],['YFLPP Members','1,200+'],['ARR','$2.4M+'],['Agents','50+']]},
+    ],
+    insight: 'On the conservative path, Genesis Reserve crosses <strong>$1M ARR in Month 9 (March 2027)</strong> with 3,225 wallets, $11.3M in member AUM, and 645 members whose life insurance premiums are funded entirely by yield — a cumulative <strong>$465,000 in YFLPP premium volume</strong> that no competitor can match. That is the number that wins the Series A room.'
+  },
+  aggressive: {
+    label: 'Aggressive · $3M ARR Path',
+    months: [
+      [100,  1800, 0,  2.5],
+      [200,  2000, 5,  2.5],
+      [400,  2200,10,  2.5],
+      [700,  2500,20,  2.5],
+      [900,  2800,30,  2.5],
+      [1100, 3000,40,  2.5],
+      [1300, 3200,50,  2.5],
+      [1500, 3500,60,  2.5],
+      [1700, 3800,75,  2.5],
+      [2000, 4000,90,  2.5],
+      [2300, 4200,100, 2.5],
+      [2800, 4500,120, 2.5],
+    ],
+    phases:['build','build','build','activate','activate','activate','outreach','outreach','outreach','close','close','close'],
+    dates:['Jul 2026','Aug 2026','Sep 2026','Oct 2026','Nov 2026','Dec 2026','Jan 2027','Feb 2027','Mar 2027','Apr 2027','May 2027','Jun 2027'],
+    seriesA:[
+      {val:'$20M',label:'Conservative Series A',month:'Month 5 (Nov 2026)',reqs:[['Wallets','2,300+'],['AUM','$6.4M+'],['YFLPP Members','460+'],['ARR','$873K+'],['Agents','30+']]},
+      {val:'$30M',label:'Target Series A',month:'Month 7 (Jan 2027)',reqs:[['Wallets','4,700+'],['AUM','$15M+'],['YFLPP Members','940+'],['ARR','$1.8M+'],['Agents','50+']],target:true},
+      {val:'$40M',label:'Strong Series A',month:'Month 9 (Mar 2027)',reqs:[['Wallets','7,900+'],['AUM','$30M+'],['YFLPP Members','1,580+'],['ARR','$3M+'],['Agents','75+']],target:true},
+    ],
+    insight: 'On the aggressive path, Genesis Reserve crosses <strong>$3M ARR in Month 9 (March 2027)</strong> — 9 months after launch — with nearly 8,000 wallets, $30M in member AUM, and 1,580 YFLPP members. <strong>Cumulative YFLPP premium volume exceeds $1.1M.</strong> That\'s the Parallel playbook: prove category leadership inside 9 months, close Series A at $40M, run at Series B by Q4 2027.'
+  }
+};
+
+var currentScenario = 'conservative';
+
+function fmt$(n){ return n>=1000000?'$'+(n/1000000).toFixed(2)+'M':n>=1000?'$'+(n/1000).toFixed(1)+'K':'$'+Math.round(n).toLocaleString(); }
+function fmtN(n){ return n>=1000000?(n/1000000).toFixed(2)+'M':n>=1000?(n/1000).toFixed(0)+'K':Math.round(n).toLocaleString(); }
+function fmtPct(n){ return (n>0?'+':'')+n.toFixed(0)+'%'; }
+function phaseLabel(p){ return {build:'Phase 1',activate:'Phase 2',outreach:'Phase 3',close:'Phase 4'}[p]; }
+function phaseClass(p){ return 'ph-'+p; }
+
+function buildTables(sc){
+  var d = scenarios[sc];
+  var totalW = 0, cumRev = 0, prevMRR = 0, policiesInForce = 0;
+  var gBody = document.getElementById('growthBody');
+  var rBody = document.getElementById('revenueBody');
+  gBody.innerHTML = ''; rBody.innerHTML = '';
+
+  for(var i=0;i<12;i++){
+    var m = d.months[i];
+    var newW = m[0], avgBal = m[1], agents = m[2], polPerAgent = m[3];
+    totalW += newW;
+    var aum = totalW * avgBal;
+    var memberYield = aum * (0.045/12);
+    var grYieldRev = aum * (0.015/12);
+    var yflppMembers = Math.round(totalW * 0.20);
+    var yflppVol = yflppMembers * 80;
+    var yflppFee = yflppVol * 0.05;
+    var newPolicies = Math.round(agents * polPerAgent);
+    policiesInForce += newPolicies;
+    var agentRev = newPolicies * 2400 * 0.03;
+    var membership = totalW * 25;
+    var mrr = grYieldRev + yflppFee + membership + agentRev;
+    var arr = mrr * 12;
+    cumRev += mrr;
+    var momG = prevMRR > 0 ? ((mrr - prevMRR)/prevMRR)*100 : 0;
+    var phClass = phaseClass(d.phases[i]);
+
+    // ARR milestone
+    var arrMilestone = '';
+    if(arr>=3000000 && (i===0 || scenarios[sc].months[i-1] && ((i===0?0:scenarios[sc]._prevArr||0)<3000000))){ arrMilestone='$3M ARR'; }
+    else if(arr>=2000000 && (i===0 || (prevMRR*12)<2000000)){ arrMilestone='$2M ARR'; }
+    else if(arr>=1000000 && (i===0 || (prevMRR*12)<1000000)){ arrMilestone='$1M ARR'; }
+    else if(arr>=500000 && (i===0 || (prevMRR*12)<500000)){ arrMilestone='$500K ARR'; }
+
+    var milestoneTrClass = arrMilestone ? (arrMilestone.includes('3M')||arrMilestone.includes('2M')?'milestone-gold':'milestone') : '';
+
+    // Growth row
+    var gr = document.createElement('tr');
+    gr.className = phClass + (milestoneTrClass?' '+milestoneTrClass:'');
+    gr.innerHTML =
+      '<td>M'+(i+1)+'</td>'+
+      '<td>'+d.dates[i]+'</td>'+
+      '<td>'+phaseLabel(d.phases[i])+'</td>'+
+      '<td class="val-gold">+'+fmtN(newW)+'</td>'+
+      '<td class="val-big">'+fmtN(totalW)+'</td>'+
+      '<td>'+fmt$(avgBal)+'</td>'+
+      '<td class="val-gold">'+fmt$(aum)+'</td>'+
+      '<td class="val-teal">'+fmt$(memberYield)+'</td>'+
+      '<td>'+fmt$(memberYield*12)+'</td>'+
+      '<td>'+fmtN(yflppMembers)+'</td>'+
+      '<td class="val-teal">'+fmt$(yflppVol)+'</td>'+
+      '<td>'+fmtN(policiesInForce)+'</td>'+
+      '<td>'+fmtN(agents)+'</td>'+
+      '<td>+'+fmtN(newPolicies)+'</td>'+
+      '<td class="'+(momG>100?'val-teal':momG>0?'val-gold':'val-muted')+'">'+(i===0?'—':fmtPct(momG))+'</td>';
+    gBody.appendChild(gr);
+
+    // Revenue row
+    var rr = document.createElement('tr');
+    rr.className = phClass + (milestoneTrClass?' '+milestoneTrClass:'');
+    rr.innerHTML =
+      '<td>M'+(i+1)+'</td>'+
+      '<td>'+d.dates[i]+'</td>'+
+      '<td>'+phaseLabel(d.phases[i])+'</td>'+
+      '<td>'+fmt$(grYieldRev)+'</td>'+
+      '<td>'+fmt$(yflppFee)+'</td>'+
+      '<td>'+fmt$(membership)+'</td>'+
+      '<td>'+(agentRev>0?fmt$(agentRev):'—')+'</td>'+
+      '<td class="val-gold val-big">'+fmt$(mrr)+'</td>'+
+      '<td class="'+(momG>100?'val-teal':momG>0?'val-gold':'val-muted')+'">'+(i===0?'—':fmtPct(momG))+'</td>'+
+      '<td class="'+(arr>=3000000?'val-teal':arr>=1000000?'val-gold':'')+' val-big">'+fmt$(arr)+'</td>'+
+      '<td>'+(arrMilestone?'<span class="milestone-badge'+(arrMilestone.includes('3M')||arrMilestone.includes('2M')?' gold':'')+'" >'+arrMilestone+'</span>':'')+'</td>'+
+      '<td>'+fmt$(cumRev)+'</td>';
+    rBody.appendChild(rr);
+
+    prevMRR = mrr;
+  }
+}
+
+function buildSummary(sc){
+  var d = scenarios[sc];
+  // compute month 12 stats
+  var totalW=0, aum=0, yflppMembers=0, yflppVol=0, policiesInForce=0;
+  var mrr=0, prevMRR=0, cumRev=0, arrHitMonth='—';
+  for(var i=0;i<12;i++){
+    var m=d.months[i]; totalW+=m[0]; aum=totalW*m[1];
+    yflppMembers=Math.round(totalW*0.20); yflppVol=yflppMembers*80;
+    var grY=aum*(0.015/12),yflppF=yflppVol*0.05,memb=totalW*25,agR=Math.round(m[2]*m[3])*2400*0.03;
+    mrr=grY+yflppF+memb+agR; cumRev+=mrr;
+    var arr=mrr*12;
+    if(arrHitMonth==='—'&&arr>=(sc==='aggressive'?3000000:1000000)) arrHitMonth='Month '+(i+1)+' ('+d.dates[i]+')';
+    policiesInForce+=Math.round(m[2]*m[3]);
+    prevMRR=mrr;
+  }
+  var finalARR=mrr*12;
+  var el=document.getElementById('summaryCards');
+  el.innerHTML=
+    '<div class="sum-card gold"><div class="sum-label">Month 12 ARR</div><div class="sum-val">'+fmt$(finalARR)+'</div><div class="sum-note">Annual recurring revenue run rate at end of Year 1</div></div>'+
+    '<div class="sum-card teal"><div class="sum-label">$1M ARR Achieved</div><div class="sum-val">'+arrHitMonth+'</div><div class="sum-note">Month when ARR first crosses target threshold</div></div>'+
+    '<div class="sum-card"><div class="sum-label">Month 12 Wallets</div><div class="sum-val">'+fmtN(totalW)+'</div><div class="sum-note">Total active member wallets at end of Year 1</div></div>'+
+    '<div class="sum-card"><div class="sum-label">Month 12 AUM</div><div class="sum-val">'+fmt$(aum)+'</div><div class="sum-note">Total member deposits under management</div></div>'+
+    '<div class="sum-card"><div class="sum-label">Year 1 Revenue</div><div class="sum-val">'+fmt$(cumRev)+'</div><div class="sum-note">Cumulative cash collected across all streams</div></div>';
+}
+
+function buildSeriesA(sc){
+  var d=scenarios[sc];
+  var el=document.getElementById('seriesAGrid');
+  el.innerHTML='';
+  d.seriesA.forEach(function(s){
+    var div=document.createElement('div');
+    div.className='sa-card'+(s.target?' target':'');
+    var reqs=s.reqs.map(function(r){return '<div class="sa-req"><span class="sa-req-key">'+r[0]+'</span><span class="sa-req-val">'+r[1]+'</span></div>';}).join('');
+    div.innerHTML='<div class="sa-val">'+s.val+'</div><div class="sa-label">'+s.label+'</div><div class="sa-reqs">'+reqs+'</div><div class="sa-month">✓ Achievable: '+s.month+'</div>';
+    el.appendChild(div);
+  });
+}
+
+function buildInsight(sc){
+  document.getElementById('insightText').innerHTML = scenarios[sc].insight;
+}
+
+function setScenario(sc){
+  currentScenario=sc;
+  document.getElementById('btn-con').classList.toggle('active',sc==='conservative');
+  document.getElementById('btn-agg').classList.toggle('active',sc==='aggressive');
+  buildSummary(sc);
+  buildTables(sc);
+  buildSeriesA(sc);
+  buildInsight(sc);
+}
+
+function toggleAssump(){
+  var grid=document.getElementById('assumpGrid');
+  var btn=document.getElementById('assumpBtn');
+  grid.classList.toggle('visible');
+  btn.classList.toggle('open');
+}
+
+// Init
+setScenario('conservative');
+</script>
+</body>
+</html>
