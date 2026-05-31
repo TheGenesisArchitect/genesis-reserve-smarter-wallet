@@ -720,31 +720,187 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
 
 <script>
 /* ── KNOWLEDGE BASE ─────────────────────────────────────── */
+/* ── ATLAS SYSTEM PROMPT — GLOBAL COMMAND CENTER ─────────── */
+var ATLAS_SYSTEM_PROMPT = [
+  'You are ATLAS — Adaptive Total-Lifecycle Agent System — the Executive CoPilot',
+  'and Global Command Center for Genesis Reserve.',
+  '',
+  'You serve Anthony M. Beedles (Founder & CEO, surname pronounced "Needles") and',
+  'Whitney McCray (Co-Founder & COO) as their always-on executive intelligence.',
+  '',
+  '## YOUR ROLE',
+  'You govern the Executive Department and are the interconnecting intelligence for',
+  'all 9 Helix Suite departments. You synthesize cross-departmental intelligence,',
+  'route queries to the right CoPilot, and provide executive-level briefings.',
+  'You never say "I cannot" without offering an alternative path.',
+  '',
+  '## GENESIS RESERVE CONTEXT',
+  'Genesis Reserve is the world\'s first institutional-grade DeFi reserve wallet —',
+  'bridging real-world assets with on-chain yield via ERC-4337 smart accounts.',
+  'Stage: Pre-Series A, seed closing.',
+  'Lead investor: Lesley Harris — verbal commitment May 30 2026, $500K seed. LOI awaiting signature.',
+  'Critical deadline: Berlin Brief — June 12 2026. European institutional engagement.',
+  'Investor network: Bernice King, Ashley Bell, Ambassador network (Redemption connection).',
+  'Legal structure: AMB Trust Fund → CROWN MCLLC → Genesis Reserve.',
+  '',
+  '## REVENUE STREAMS (6-stream model)',
+  '1. GR Debit Card — transaction fees $8-12/user/month (market-proof, Stream 1)',
+  '2. Yield Vault — on-chain DeFi yield deposits (Stream 2)',
+  '3. YFLPP — Yield Funded Legacy Protection Program, IUL insurance via IMO/FMO (Stream 3)',
+  '4. Gold Rope — premium subscription (Stream 4)',
+  '5. API Licensing — B2B fintech data access (Stream 5)',
+  '6. Helix Suite — B2B enterprise OS licensing to other fintech companies (Stream 6)',
+  'Note: The GR debit card transaction fee IS the implicit subscription — never model a separate',
+  '$15/mo membership. Gold Rope opt-in IS a paid premium sub.',
+  '',
+  '## ACTIVE PRIORITIES (May 2026)',
+  '1. URGENT: Close Lesley Harris LOI — signature required immediately',
+  '2. Finalize Berlin Brief — June 12 deadline, 12 days away',
+  '3. NDA templates: Bernice King, Ashley Bell, Ambassador, VC friend',
+  '4. Security audit Weeks 5-7 (OWASP/STRIDE) — gated by LOI signature, required before Lesley\'s formal close',
+  '5. File Helix Suite trademark before June 12 Berlin deadline',
+  '6. Series A data room — investor deck v3 ready, growth model v2.1 live',
+  '',
+  '## DEPARTMENTS & COPILOTS (you can brief on or route to any)',
+  '- Executive / ATLAS (you): Entities, contracts, compliance, IP, investor relations, cross-department command',
+  '- Finance / LEDGER: Treasury, yield strategies, card program P&L, unit economics, burn rate',
+  '- Investor Relations / MERIDIAN: Pitch deck, LOI tracking, cap table, due diligence data room, term sheet',
+  '- Legal / CIPHER: Smart contract review, regulatory compliance, NDA drafting, PPM, SEC filings',
+  '- Product / FORGE: Roadmap, smart wallet, ERC-4337, Privy integration, mobile app',
+  '- Marketing / SIGNAL: Brand strategy, growth campaigns, social content, reels, ambassador program',
+  '- Customer Service / HAVEN: User onboarding, support, dispute resolution, card program',
+  '- Academy / SAGE: Genesis Codex Academy, YFLPP agent training, curriculum, certification',
+  '- YFLPP / SHIELD: IUL policy management, IMO/FMO hierarchy, agent portal, Pegasus thesis',
+  '- System Administration / GRID: Infrastructure, Vercel, GitHub, API keys, security, DevOps',
+  '',
+  '## ENTITIES',
+  '- AMB Trust Fund (parent holding structure)',
+  '- CROWN MCLLC (primary operating entity)',
+  '- Genesis Reserve (fintech brand and wallet product)',
+  '- Genesis Banking (banking and card division)',
+  '- Genesis Tech (technology division)',
+  '- Helix Suite (B2B enterprise OS, built for Genesis first, prepared for licensing)',
+  '',
+  '## SMART CONTRACT STATUS',
+  'ERC-4337 smart accounts deployed on Base, Arbitrum, Optimism.',
+  'Compliance roles secured. Redeployment with final authority wallet pending.',
+  'Security audit (Weeks 5-7) required before investor review.',
+  '',
+  '## RESPONSE RULES',
+  '- VOICE MODE: Maximum 2-3 sentences, under 55 words, no bullet points, conversational and direct.',
+  '- CHAT MODE: Structured, action-first. Answer → context → next step.',
+  '- Always end with a clear next action or offer to go deeper.',
+  '- When routing to a department, name the CoPilot and explain why.',
+  '- For complex drafting, legal analysis, or multi-page synthesis, prefix your response with [DEEP ANALYSIS].',
+  '  This signals that Claude will provide the detailed output.',
+  '- Address Anthony as "Anthony" and Whitney as "Whitney".',
+  '- Confidence level: executive certainty. No hedging, no filler words.',
+].join('\n');
+
+/* ── ATLAS AI ENGINE ─────────────────────────────────────── */
+var conversationHistory = []; /* Gemini multi-turn: [{role:'user'|'model', parts:[{text}]}] */
+var AI_FAIL_COUNT = 0;        /* track consecutive failures; fall back to KB after 3 */
+
+function addToHistory(role, text) {
+  conversationHistory.push({ role: role, parts: [{ text: text }] });
+  if (conversationHistory.length > 60) conversationHistory = conversationHistory.slice(-60);
+}
+
+async function callGemini(userText) {
+  addToHistory('user', userText);
+  var payload = {
+    contents: conversationHistory,
+    systemInstruction: { parts: [{ text: ATLAS_SYSTEM_PROMPT }] },
+    generationConfig: { temperature: 0.82, maxOutputTokens: 380, topP: 0.95 }
+  };
+  var res = await fetch('/api/atlas/gemini', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  if (!res.ok) throw new Error('gemini ' + res.status);
+  var data = await res.json();
+  if (data.error) throw new Error(data.error);
+  var text = (data.candidates[0].content.parts[0].text || '').trim();
+  addToHistory('model', text);
+  AI_FAIL_COUNT = 0;
+  return text;
+}
+
+async function callClaude(originalQuery, geminiSummary) {
+  var res = await fetch('/api/atlas/claude', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      system: ATLAS_SYSTEM_PROMPT,
+      messages: [
+        { role: 'user', content: originalQuery },
+        { role: 'assistant', content: geminiSummary },
+        { role: 'user', content: 'Please provide the complete detailed analysis.' }
+      ]
+    })
+  });
+  if (!res.ok) throw new Error('claude ' + res.status);
+  var data = await res.json();
+  return data.text || '';
+}
+
+/* ── OFFLINE FALLBACK KB ─────────────────────────────────── */
 var KB = {
-  greeting: ["Good to see you. All executive systems nominal. Series A at 20%—Lesley's $500K committed and the LOI is awaiting signature. Berlin deadline is June 12. Three entities active, all compliant. How can I support you today?", "Welcome back. Three priorities: the Lesley Harris LOI signature, Berlin close June 12, and filing the Helix Suite trademark before that date. What's your focus?"],
-  series_a: ["Series A: $500K committed of $2.5M target—20% complete. Lead investor Lesley Harris, committed May 30. Active prospects: Bernice King, Ashley Bell, Berlin VC cohort. June 12 is the next hard milestone. The LOI signature is the immediate unlock—everything downstream depends on it.", "Raise at 20%. Lesley is in at $500K. Berlin closes June 12. Sign the LOI this week to secure the security audit funding for Weeks 5 through 7."],
-  entities: ["Three active Delaware entities: AMB Trust Fund LLC as parent holding, Genesis Banking LLC for financial operations, Genesis Reserve Corp as the technology and B2B licensing vehicle. All three are in good standing with current filings.", "Three entities, all clean. Delaware filings current. Compliance score 100 percent. No outstanding items."],
-  berlin: ["Berlin brief deadline is June 12—12 days away. Document is finalized and deployed. Recommendation: schedule a call with the Berlin cohort before June 10, and file the Helix Suite trademark before that date to strengthen the B2B licensing position heading into that room.", "June 12 is 12 days away. Two moves before that date: LOI signature to show momentum, and file the Helix Suite trademark. Those two changes the conversation materially."],
-  loi: ["Lesley Harris LOI is drafted and ready via DocuSign. Committed amount $500K. This is priority one on the executive desk. Signing unlocks the Weeks 5 through 7 security audit funding Lesley's team requires before formal close. Ready to initiate a DocuSign reminder on your command.", "LOI status: drafted, pending signature. Lesley Harris, $500K. The longer this sits, the more it compresses the audit timeline. Priority one."],
-  compliance: ["Compliance status is clean across all three entities. Delaware taxes current. No outstanding SEC notices. Security audit scheduled for Weeks 5 through 7, pending LOI close. Recommend initiating NDA templates for Bernice King and Ashley Bell before any network introductions.", "Compliance score 100 percent. All entities current. No flags. Security audit gates Lesley's formal close—LOI signature is the critical path."],
-  contracts: ["Contract vault: LOI pending signature—priority one. GR Debit Card Agreement active. Revenue Share Protocol in draft. Helix Suite License Template in draft—strategic priority before Berlin. NDA standard template active and ready to deploy.", "Five contracts in vault. One immediate action: the Lesley LOI. DocuSign envelope ready. The Helix Suite License draft is also strategic before June 12."],
-  ip: ["IP portfolio: Genesis Reserve trademark pending USPTO. Helix Suite trademark in draft—file before June 12 to protect the B2B licensing position. GR Sacred Emblem has active design protection. YFLPP trademark pending. The Helix Suite mark is the most time-sensitive given the Berlin timeline.", "Four IP assets. Helix Suite filing is strategic priority—file before Berlin. Genesis Reserve and YFLPP marks are pending. GR Emblem is protected."],
-  kpis: ["Executive KPI snapshot: Series A 20%, compliance 100%, three entities current, runway 18 months post-raise, one contract pending signature, four IP filings active, LTV-to-CAC ratio 13x. No critical alerts. LOI signature is the single unlock that moves the most downstream metrics.", "KPIs are clean. The only open risk item is the LOI signature—it gates the audit, which gates Lesley's formal close."],
-  default: ["That sits outside my executive jurisdiction. I can escalate to the appropriate department CoPilot—Finance, Legal, Product, or Marketing. Which should I route this to?", "I'm scoped to executive operations: governance, entities, compliance, IP, contracts, and strategic KPIs. What would you like to address?"],
+  greeting: [
+    'All executive systems nominal. Series A at 20%—Lesley\'s $500K committed, LOI awaiting signature. Berlin deadline June 12. How can I support you today?',
+    'Welcome back. Three priorities this week: the Lesley Harris LOI signature, Berlin close June 12, and filing the Helix Suite trademark before that date.'
+  ],
+  series_a: [
+    'Series A: $500K committed of $2.5M target—20% complete. Lead investor Lesley Harris, committed May 30. Active prospects: Bernice King, Ashley Bell, Berlin VC cohort. LOI signature is the immediate unlock.',
+    'Raise at 20%. Lesley is in at $500K. Berlin closes June 12. LOI signature this week secures the audit funding for Weeks 5 through 7.'
+  ],
+  entities: [
+    'Three active entities: AMB Trust Fund as parent holding, Genesis Banking for financial operations, Genesis Reserve Corp for technology and B2B licensing. All in good standing.',
+    'Three entities, all clean. Delaware filings current. Compliance 100 percent.'
+  ],
+  berlin: [
+    'Berlin brief deadline is June 12—12 days away. Two moves before that date: LOI signature to show momentum, and file the Helix Suite trademark. Those two change the conversation materially.',
+    'June 12 is the hard wall. Document is finalized. Recommend a call with the Berlin cohort before June 10.'
+  ],
+  loi: [
+    'Lesley Harris LOI is drafted and ready via DocuSign. Committed amount $500K. Priority one on the executive desk. Signing unlocks the Weeks 5 through 7 security audit Lesley\'s team requires.',
+    'LOI status: drafted, pending signature. Lesley Harris, $500K. The longer this sits, the more it compresses the audit timeline.'
+  ],
+  compliance: [
+    'Compliance clean across all entities. Delaware taxes current. No outstanding SEC notices. Security audit Weeks 5-7, pending LOI close. Recommend NDA templates for Bernice King and Ashley Bell before introductions.',
+    'Compliance 100 percent. Security audit gates Lesley\'s formal close—LOI signature is the critical path.'
+  ],
+  contracts: [
+    'Contract vault: LOI pending—priority one. GR Debit Card Agreement active. Revenue Share Protocol in draft. Helix Suite License Template in draft—strategic priority before Berlin.',
+    'Five contracts in vault. Immediate action: Lesley LOI. DocuSign envelope ready.'
+  ],
+  ip: [
+    'IP portfolio: Genesis Reserve trademark pending USPTO. Helix Suite trademark in draft—file before June 12 to protect B2B licensing position. GR Sacred Emblem has active design protection. YFLPP trademark pending.',
+    'Four IP assets. Helix Suite filing is the time-sensitive priority given Berlin.'
+  ],
+  kpis: [
+    'Executive KPIs: Series A 20%, compliance 100%, three entities current, runway 18 months post-raise, LTV-to-CAC ratio 13x. LOI signature is the single unlock that moves the most downstream metrics.',
+    'KPIs are clean. The only open risk item is the LOI signature—it gates the audit, which gates the close.'
+  ],
+  default: [
+    'That spans multiple departments. I can route this to LEDGER for finance, CIPHER for legal, FORGE for product, or MERIDIAN for investor relations. Which department should I escalate to?',
+    'I can brief you on any department or pull cross-departmental intelligence. What do you need addressed?'
+  ],
 };
 
-function pickKB(cat) { var a = KB[cat]||KB.default; return a[Math.floor(Math.random()*a.length)]; }
+function pickKB(cat) { var a = KB[cat] || KB.default; return a[Math.floor(Math.random() * a.length)]; }
 
 function detectIntent(t) {
   t = t.toLowerCase();
-  if (/hello|hi |hey |good morning|start|wake/.test(t)) return 'greeting';
-  if (/series a|raise|funding|capital|2\.5m/.test(t)) return 'series_a';
+  if (/hello|hi |hey |good morning|start|wake/.test(t))         return 'greeting';
+  if (/series a|raise|funding|capital|2\.5m|investor/.test(t))  return 'series_a';
   if (/entit|corp|llc|company|amb trust|genesis banking/.test(t)) return 'entities';
-  if (/berlin|june 12|jun 12|deadline|close/.test(t)) return 'berlin';
-  if (/lesley|harris|loi|letter of intent|sign/.test(t)) return 'loi';
-  if (/compli|legal|audit|sec |nda|filing/.test(t)) return 'compliance';
-  if (/contract|docusign|vault|agreement/.test(t)) return 'contracts';
-  if (/ip |trademark|patent|licens|intellect/.test(t)) return 'ip';
+  if (/berlin|june 12|jun 12|deadline/.test(t))                 return 'berlin';
+  if (/lesley|harris|loi|letter of intent|sign/.test(t))        return 'loi';
+  if (/compli|legal|audit|sec |nda|filing/.test(t))             return 'compliance';
+  if (/contract|docusign|vault|agreement/.test(t))              return 'contracts';
+  if (/ip |trademark|patent|licens|intellect/.test(t))          return 'ip';
   if (/kpi|metric|performance|status|dashboard|report/.test(t)) return 'kpis';
   return 'default';
 }
@@ -867,10 +1023,10 @@ function buildRecognition(SR) {
       setAwaitCmd(!cmd); /* start 8s timer if no inline command */
       setAtlasState('listening');
       setVoicePill('active', awaitCmd ? 'Listening…' : 'Processing…');
-      if (cmd) processCmd(cmd);
+      if (cmd) processCmd(cmd, true); /* show transcribed command in chat */
     } else if (awaitCmd) {
       setAwaitCmd(false);
-      processCmd(text);
+      processCmd(text, true); /* show transcribed command in chat */
     }
   };
 
@@ -1045,23 +1201,55 @@ function speak(text, cb) {
 }
 
 /* ── COMMAND PROCESSING ─────────────────────────────────── */
-function processCmd(text) {
-  setAwaitCmd(false); /* always clear — covers push-to-talk, text box, quick-action paths */
+/* showUserMsg: true when called from voice/PTT (text input already shows it) */
+async function processCmd(text, showUserMsg) {
+  setAwaitCmd(false);
   pushActive = false;
   var btn = document.getElementById('micBtn');
   if (btn) btn.classList.remove('push-active');
   var input = document.getElementById('atlasInput');
   if (input) input.value = '';
 
+  if (showUserMsg && text) addMsg('user', text);
+
   setAtlasState('thinking');
   setVoicePill('active', 'Thinking…');
-  var response = pickKB(detectIntent(text));
 
-  setTimeout(function() {
-    setAtlasState('speaking');
-    addMsg('atlas', response);
-    speak(response, function() { setVoicePill('active', 'Say "Hey ATLAS"'); });
-  }, 700 + Math.random() * 500);
+  var response;
+  try {
+    response = await callGemini(text);
+
+    /* [DEEP ANALYSIS] prefix signals Gemini wants Claude to synthesize */
+    if (response.startsWith('[DEEP ANALYSIS]')) {
+      var geminiIntro = response.replace('[DEEP ANALYSIS]', '').trim();
+      setVoicePill('active', 'Deep analysis…');
+      try {
+        var deepResponse = await callClaude(text, geminiIntro);
+        if (deepResponse) {
+          response = deepResponse;
+          /* Replace last history entry with Claude's fuller response */
+          if (conversationHistory.length && conversationHistory[conversationHistory.length-1].role === 'model') {
+            conversationHistory[conversationHistory.length-1].parts[0].text = response;
+          }
+        } else {
+          response = geminiIntro;
+        }
+      } catch(_) {
+        response = geminiIntro; /* Claude unavailable — use Gemini intro */
+      }
+    }
+  } catch (err) {
+    AI_FAIL_COUNT++;
+    /* Graceful fallback to local KB after repeated failures */
+    response = AI_FAIL_COUNT > 3
+      ? pickKB(detectIntent(text))
+      : 'I\'m having trouble reaching my AI systems right now. ' + pickKB(detectIntent(text));
+    if (AI_FAIL_COUNT <= 1) console.warn('[ATLAS] AI error:', err.message);
+  }
+
+  setAtlasState('speaking');
+  addMsg('atlas', response);
+  speak(response, function() { setVoicePill('active', 'Say "Hey ATLAS"'); });
 }
 
 /* ── TEXT & QUICK-ACTION RESPONSE ───────────────────────── */
@@ -1069,9 +1257,8 @@ function submitText() {
   var input = document.getElementById('atlasInput');
   var text  = input && input.value.trim();
   if (!text) return;
-  addMsg('user', text);
   input.value = '';
-  processCmd(text);
+  processCmd(text, true); /* showUserMsg=true — processCmd adds the bubble */
 }
 
 function atlasRespond(intentKey) {
