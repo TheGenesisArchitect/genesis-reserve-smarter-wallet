@@ -1054,6 +1054,7 @@ var APPS = {
   'pitch-seed':          {title:'Seed Pitch',        url:'pitch-seed.html',                      icon:'chart',        cat:'icon-green'},
   'pitch-institutional': {title:'Institutional',     url:'pitch-institutional.html',             icon:'briefcase',    cat:'icon-blue'},
   'pitch-retail':        {title:'Retail Pitch',      url:'pitch-retail.html',                    icon:'users',        cat:'icon-teal'},
+  'executive-suite': {title:'Executive Suite', url:'genesis-executive-suite.html', icon:'briefcase', cat:'icon-finance'},
   'claude':    {title:'Claude AI', url:'https://claude.ai',                     icon:'brain',    cat:'icon-violet', external:true},
   'grok':      {title:'Grok',      url:'https://grok.com',                      icon:'zap',      cat:'icon-dark',   external:true},
   'slack':     {title:'Slack',     url:'https://slack.com',                     icon:'hash',     cat:'icon-green',  external:true},
@@ -1068,7 +1069,7 @@ var APPS = {
 
 /* ── PAGE CONFIG ─────────────────────────────────────────── */
 var PAGES = [
-  ['growth-model','investor-deck','loi-lesley','berlin-brief','claude','notion'],
+  ['executive-suite','growth-model','investor-deck','loi-lesley','berlin-brief','claude'],
   ['growth-model','investor-deck','loi-lesley','berlin-brief','ppm','share-cert','investor-brief','whitepaper'],
   ['claude','grok','slack','gmail','gcal','github','vercel','docusign','notion','linkedin'],
   ['wallet-demo','wallet-demo2','treasury-demo','reel-ad','logo-export','whitepaper-v1','keynote','keynote-script'],
@@ -1078,10 +1079,11 @@ var PAGE_TITLES = ['Home','Investor Relations','AI & Tools','Product','Presentat
 
 /* ── NOTIFICATIONS ───────────────────────────────────────── */
 var NOTIFICATIONS = {
-  'loi-lesley':    {count:1, type:'urgent',  label:'Signature Required'},
-  'berlin-brief':  {count:1, type:'warn',    label:'Jun 12 Deadline'},
-  'growth-model':  {count:1, type:'success', label:'v2.1 Live'},
-  'investor-deck': {count:1, type:'info',    label:'Review Ready'},
+  'executive-suite': {count:2, type:'urgent',  label:'2 Actions Required · ATLAS'},
+  'loi-lesley':      {count:1, type:'urgent',  label:'Signature Required'},
+  'berlin-brief':    {count:1, type:'warn',    label:'Jun 12 Deadline'},
+  'growth-model':    {count:1, type:'success', label:'v2.1 Live'},
+  'investor-deck':   {count:1, type:'info',    label:'Review Ready'},
 };
 
 /* ── NAVIGATION ──────────────────────────────────────────── */
