@@ -475,6 +475,32 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 .seat.filled .seat-name,.seat.lead .seat-name{color:var(--text)}
 .seat-amt{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-top:3px}
 
+/* ── Conversion math box ── */
+.conv-box{
+  width:100%;background:linear-gradient(135deg,rgba(0,212,170,.07),rgba(201,168,76,.05));
+  border:1px solid var(--teal-border);border-radius:14px;padding:20px 24px;
+}
+.conv-box-label{
+  font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--teal);margin-bottom:14px;text-align:center;
+}
+.conv-scenarios{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.conv-scenario{
+  background:var(--bg3);border:1px solid var(--border);border-radius:10px;
+  padding:14px 14px;text-align:center;
+}
+.conv-scenario.featured{border-color:var(--gold-border);background:var(--gold-dim)}
+.conv-s-label{font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.conv-scenario.featured .conv-s-label{color:var(--gold)}
+.conv-s-val{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;color:var(--teal);line-height:1}
+.conv-scenario.featured .conv-s-val{color:var(--gold2);font-size:30px}
+.conv-s-sub{font-family:'Cormorant Garamond',serif;font-size:12px;color:var(--sub);margin-top:4px;line-height:1.3}
+.conv-note{
+  font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;
+  color:var(--muted);text-align:center;margin-top:12px;line-height:1.5;
+}
+.conv-note strong{color:var(--text);font-style:normal}
+
 /* S16: Close */
 .s16{background:linear-gradient(160deg,#06080d 50%,#0c1520 100%)}
 .close-emblem{width:80px;height:80px;object-fit:contain;margin-bottom:20px;filter:drop-shadow(0 0 24px rgba(201,168,76,.3))}
@@ -1069,7 +1095,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
   <div class="slide" data-slide="13">
     <div class="slide-logo-corner"><img src="/genesis-emblem.png" alt="GR"><span>Genesis Reserve</span></div>
     <div class="slide-eyebrow">Milestones &amp; Roadmap</div>
-    <div class="slide-title">Executed today. <span>Scaled by Q4.</span></div>
+    <div class="slide-title">Seed closes June 2026. <span>Series A — Q1 2027.</span></div>
     <div class="roadmap">
       <div class="rm-item done">
         <div class="rm-date"><span class="rm-check">✓</span> May 12, 2026</div>
@@ -1107,10 +1133,17 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
         </div>
       </div>
       <div class="rm-item">
-        <div class="rm-date">Q4 2026</div>
+        <div class="rm-date">Q3–Q4 2026</div>
         <div class="rm-body">
-          <div class="rm-title">Redemption Network Onboarding + Series A Preparation</div>
-          <div class="rm-desc">Formal Redemption partnership. Agent network at scale. YFLPP premium volume metric established. Series A deck and outreach with Berlin narrative + live product metrics.</div>
+          <div class="rm-title">Redemption Network Live · YFLPP Metrics Established</div>
+          <div class="rm-desc">Formal Redemption partnership. Agent network scaling. YFLPP premium volume — the metric no competitor can replicate — documented and growing. Series A deck live.</div>
+        </div>
+      </div>
+      <div class="rm-item" style="border-color:var(--gold-border);background:linear-gradient(90deg,rgba(201,168,76,.06),transparent)">
+        <div class="rm-date" style="color:var(--gold2);font-size:12px;font-weight:700">Q1 2027 — 6–8 Months</div>
+        <div class="rm-body">
+          <div class="rm-title" style="color:var(--gold)">Series A Close · Target $20M–$40M Valuation</div>
+          <div class="rm-desc">Parallel went from Series A to Series B in 5 months at 2.7× the valuation. With live YFLPP metrics, Redemption distribution, and Berlin credentialing — Genesis Reserve runs the same playbook. Seed investors convert at $3M cap against a $20M–$40M Series A — a 6.7×–13× conversion advantage for getting in now.</div>
         </div>
       </div>
     </div>
@@ -1155,23 +1188,39 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
         <div class="rev-model">Model: Project-based · Advisory</div>
       </div>
       <div class="rev-card" style="background:var(--gold-dim);border-color:var(--gold-border)">
-        <div class="rev-stream" style="color:var(--gold2)">Projections</div>
-        <div class="rev-name" style="color:var(--gold2)">Revenue Trajectory</div>
+        <div class="rev-stream" style="color:var(--gold2)">Trajectory</div>
+        <div class="rev-name" style="color:var(--gold2)">Revenue + Round Timeline</div>
         <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
           <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--gold-border);padding-bottom:6px">
-            <span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Year 1</span>
-            <span style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--gold)">$500K</span>
+            <div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Year 1 · Launch</div>
+              <div style="font-family:'Cormorant Garamond',serif;font-size:10px;color:var(--muted)">Smarter Wallet + YFLPP live</div>
+            </div>
+            <span style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--gold)">$1M–$2M</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--gold-border);padding-bottom:6px;background:rgba(201,168,76,.06);margin:0 -4px;padding:6px 4px;border-radius:6px">
+            <div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)">Month 8–10 · Series A</div>
+              <div style="font-family:'Cormorant Garamond',serif;font-size:10px;color:var(--gold)">$20M–$40M target valuation</div>
+            </div>
+            <span style="font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:700;color:var(--gold2)">Q1 2027</span>
           </div>
           <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--gold-border);padding-bottom:6px">
-            <span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Year 2</span>
-            <span style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--gold)">$3M</span>
+            <div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Year 2 · Scale</div>
+              <div style="font-family:'Cormorant Garamond',serif;font-size:10px;color:var(--muted)">Redemption + agent network</div>
+            </div>
+            <span style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--gold)">$8M–$12M</span>
           </div>
           <div style="display:flex;justify-content:space-between;align-items:center">
-            <span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Year 3</span>
-            <span style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--gold2)">$15M</span>
+            <div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Year 3 · FMO + Series B</div>
+              <div style="font-family:'Cormorant Garamond',serif;font-size:10px;color:var(--muted)">FMO status · national scale</div>
+            </div>
+            <span style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--gold2)">$30M–$50M</span>
           </div>
         </div>
-        <div class="rev-model" style="margin-top:10px">Target: Series A at $50M+ ARR run rate</div>
+        <div class="rev-model" style="margin-top:10px">Parallel: $740M → $2B in 5 months. Same playbook.</div>
       </div>
     </div>
     <div class="slide-num">14 / 16</div>
@@ -1244,8 +1293,26 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
           </div>
         </div>
       </div>
-      <div style="font-family:'Cormorant Garamond',serif;font-size:14px;color:var(--sub);text-align:center;max-width:700px;line-height:1.6">
-        Lead investor receives: Board observer seat · 0.75% advisory equity (4yr vest) · Paid security audit engagement (Weeks 5–7) · Seat referral priority · Quarterly information rights · 30-day Series A advance notice
+      <div class="conv-box">
+        <div class="conv-box-label">What the $3M SAFE Cap Means for Seed Investors · Series A in 6–8 Months</div>
+        <div class="conv-scenarios">
+          <div class="conv-scenario">
+            <div class="conv-s-label">Conservative · $20M Series A</div>
+            <div class="conv-s-val">6.7×</div>
+            <div class="conv-s-sub">$50K seed converts as if invested at $3M against a $20M round</div>
+          </div>
+          <div class="conv-scenario featured">
+            <div class="conv-s-label">Target · $30M Series A</div>
+            <div class="conv-s-val">10×</div>
+            <div class="conv-s-sub">$50K seed converts as if invested at $3M against a $30M round — in under a year</div>
+          </div>
+          <div class="conv-scenario">
+            <div class="conv-s-label">Strong · $40M Series A</div>
+            <div class="conv-s-val">13×</div>
+            <div class="conv-s-sub">$50K seed converts as if invested at $3M against a $40M round</div>
+          </div>
+        </div>
+        <div class="conv-note">The $3M cap is not what Genesis Reserve is worth — it is the early believers' entry price. <strong>The Series A valuation is where the company's true market value gets priced.</strong> Seed investors hold a conversion advantage that compounds with every dollar of growth between now and Q1 2027.</div>
       </div>
     </div>
     <div class="slide-num">15 / 16</div>
