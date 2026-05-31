@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Genesis Reserve — Command OS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Tenor+Sans&family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gold:#C9A84C;--gold2:#E8CB6E;--teal:#00D4AA;
+  --bg:#06080d;--bg2:#0d1018;--bg3:#141b22;
+  --glass:rgba(255,255,255,0.04);--glass2:rgba(255,255,255,0.07);
+  --border:rgba(201,168,76,0.25);--border2:rgba(201,168,76,0.12);
+  --red:#FF4B6E;--purple:#9B6BFF;--blue:#3B9EFF;--orange:#FF8C42;
+  --green:#00D4AA;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  background:var(--bg);
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  font-family:'Tenor Sans',sans-serif;overflow:hidden;
+  background-image:
+    radial-gradient(ellipse 60% 40% at 50% 0%,rgba(201,168,76,0.06) 0%,transparent 70%),
+    radial-gradient(ellipse 40% 60% at 80% 80%,rgba(0,212,170,0.04) 0%,transparent 60%);
+}
+
+/* ── DESKTOP ORBIT ── */
+.orbit{
+  position:relative;display:flex;align-items:center;justify-content:center;
+  gap:40px;padding:40px;
+}
+.sidebar{
+  display:flex;flex-direction:column;gap:16px;width:220px;
+}
+.sidebar-card{
+  background:var(--bg2);border:1px solid var(--border2);border-radius:16px;
+  padding:16px;
+}
+.sidebar-card h4{
+  font-family:'Cormorant Garamond',serif;color:var(--gold);font-size:11px;
+  letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px;
+}
+.sidebar-kpi{
+  display:flex;flex-direction:column;gap:8px;
+}
+.skpi{
+  display:flex;justify-content:space-between;align-items:center;
+}
+.skpi-label{font-size:10px;color:rgba(255,255,255,0.4);letter-spacing:.06em}
+.skpi-val{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold2)}
+.series-bar{
+  height:4px;border-radius:2px;background:rgba(255,255,255,0.08);margin-top:8px;overflow:hidden;
+}
+.series-fill{
+  height:100%;border-radius:2px;
+  background:linear-gradient(90deg,var(--teal),var(--gold));
+  transition:width 1s ease;
+}
+.sidebar-quick{display:flex;flex-direction:column;gap:8px}
+.quick-btn{
+  display:flex;align-items:center;gap:10px;
+  background:var(--glass);border:1px solid var(--border2);border-radius:10px;
+  padding:8px 12px;cursor:pointer;transition:.2s;
+  font-size:11px;color:rgba(255,255,255,0.6);letter-spacing:.04em;
+}
+.quick-btn:hover{background:var(--glass2);border-color:var(--border);color:var(--gold2)}
+.quick-btn .qi{font-size:14px;width:20px;text-align:center}
+
+/* ── PHONE FRAME ── */
+.phone-wrap{position:relative}
+.phone-shadow{
+  position:absolute;inset:-20px;
+  background:radial-gradient(ellipse 70% 50% at 50% 100%,rgba(201,168,76,0.15) 0%,transparent 70%);
+  pointer-events:none;z-index:-1;
+}
+.phone{
+  width:390px;height:844px;
+  background:linear-gradient(170deg,#0f1219 0%,#070a0e 60%,#0a0d13 100%);
+  border-radius:54px;
+  border:1.5px solid rgba(201,168,76,0.35);
+  position:relative;overflow:hidden;
+  box-shadow:
+    0 0 0 1px rgba(0,0,0,0.8),
+    0 0 60px rgba(0,0,0,0.8),
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    inset 0 -1px 0 rgba(0,0,0,0.5);
+}
+/* side buttons */
+.phone::before{
+  content:'';
+  position:absolute;left:-3px;top:140px;width:3px;height:36px;
+  background:linear-gradient(180deg,#1a2030,#0d1018);
+  border-radius:2px 0 0 2px;
+  box-shadow:-1px 0 3px rgba(0,0,0,0.5);
+}
+.phone::after{
+  content:'';
+  position:absolute;right:-3px;top:180px;width:3px;height:70px;
+  background:linear-gradient(180deg,#1a2030,#0d1018);
+  border-radius:0 2px 2px 0;
+}
+.vol-btn{
+  position:absolute;left:-3px;width:3px;border-radius:2px 0 0 2px;
+  background:linear-gradient(180deg,#1a2030,#0d1018);
+}
+.vol-up{top:190px;height:36px}
+.vol-dn{top:240px;height:36px}
+
+/* screen */
+.screen{
+  position:absolute;inset:0;border-radius:54px;overflow:hidden;
+  display:flex;flex-direction:column;
+}
+
+/* status bar */
+.status-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 24px 6px;
+  position:relative;z-index:10;flex-shrink:0;
+}
+.status-time{
+  font-family:'JetBrains Mono',monospace;font-size:15px;
+  font-weight:600;color:#fff;letter-spacing:-.02em;
+}
+.status-right{display:flex;align-items:center;gap:6px}
+.status-icon{font-size:12px;color:rgba(255,255,255,0.8)}
+.status-carrier{
+  font-family:'Tenor Sans',sans-serif;font-size:11px;
+  color:var(--gold);letter-spacing:.04em;
+}
+
+/* dynamic island */
+.island{
+  position:absolute;top:12px;left:50%;transform:translateX(-50%);
+  width:120px;height:34px;background:#000;border-radius:20px;
+  z-index:20;display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+}
+.island-inner{
+  display:flex;align-items:center;gap:6px;
+}
+.island-dot{
+  width:10px;height:10px;border-radius:50%;
+  background:radial-gradient(circle,rgba(201,168,76,0.6),transparent);
+  animation:island-pulse 2s ease infinite;
+}
+@keyframes island-pulse{
+  0%,100%{opacity:.4;transform:scale(1)}
+  50%{opacity:1;transform:scale(1.2)}
+}
+.island-text{
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  color:var(--gold);letter-spacing:.08em;
+}
+
+/* wallpaper */
+.wallpaper{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% -10%,rgba(201,168,76,0.08) 0%,transparent 60%),
+    radial-gradient(ellipse 60% 80% at 100% 100%,rgba(0,212,170,0.04) 0%,transparent 60%),
+    linear-gradient(180deg,#06080d 0%,#080b11 100%);
+  pointer-events:none;
+}
+/* grid overlay */
+.wallpaper::after{
+  content:'';position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(201,168,76,0.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(201,168,76,0.03) 1px,transparent 1px);
+  background-size:40px 40px;
+}
+
+/* pages container */
+.pages-wrap{
+  flex:1;overflow:hidden;position:relative;
+}
+.pages{
+  display:flex;height:100%;
+  transition:transform .4s cubic-bezier(.25,.8,.25,1);
+}
+.page{
+  min-width:390px;height:100%;overflow:hidden;
+  padding:8px 16px 8px;
+  display:flex;flex-direction:column;
+}
+
+/* page header */
+.page-header{
+  text-align:center;padding:4px 0 10px;flex-shrink:0;
+}
+.page-title{
+  font-family:'Cormorant Garamond',serif;font-size:13px;
+  color:rgba(255,255,255,0.35);letter-spacing:.14em;text-transform:uppercase;
+}
+
+/* app grid */
+.app-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:12px 8px;flex:1;align-content:start;
+}
+.app{
+  display:flex;flex-direction:column;align-items:center;gap:5px;
+  cursor:pointer;
+}
+.app-icon{
+  width:60px;height:60px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;position:relative;
+  box-shadow:0 4px 20px rgba(0,0,0,0.4);
+  transition:transform .15s,box-shadow .15s;
+  border:1px solid rgba(255,255,255,0.07);
+  flex-shrink:0;
+}
+.app:hover .app-icon{
+  transform:scale(1.1);
+  box-shadow:0 8px 30px rgba(0,0,0,0.6);
+}
+.app:active .app-icon{transform:scale(0.95)}
+.app-label{
+  font-size:9.5px;color:rgba(255,255,255,0.75);
+  text-align:center;line-height:1.2;letter-spacing:.01em;
+  max-width:70px;
+}
+
+/* folder */
+.folder-icon{
+  display:grid;grid-template-columns:1fr 1fr;
+  grid-template-rows:1fr 1fr;gap:3px;padding:8px;
+}
+.folder-mini{
+  width:100%;aspect-ratio:1;border-radius:4px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;
+}
+
+/* dock */
+.dock{
+  display:flex;align-items:center;justify-content:center;
+  gap:20px;padding:10px 24px 18px;
+  flex-shrink:0;position:relative;z-index:10;
+}
+.dock-bg{
+  position:absolute;inset:4px 16px;
+  background:rgba(255,255,255,0.06);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-radius:28px;border:1px solid rgba(255,255,255,0.09);
+}
+.dock-app{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  cursor:pointer;position:relative;z-index:1;
+}
+.dock-icon{
+  width:54px;height:54px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;
+  box-shadow:0 4px 16px rgba(0,0,0,0.5);
+  transition:transform .15s;
+  border:1px solid rgba(255,255,255,0.07);
+}
+.dock-app:hover .dock-icon{transform:scale(1.1) translateY(-4px)}
+.dock-label{font-size:9px;color:rgba(255,255,255,0.55);letter-spacing:.02em}
+
+/* page dots */
+.page-dots{
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  padding:6px 0 2px;flex-shrink:0;
+}
+.dot{
+  width:6px;height:6px;border-radius:50%;
+  background:rgba(255,255,255,0.2);transition:.3s;cursor:pointer;
+}
+.dot.active{
+  width:18px;border-radius:3px;background:var(--gold);
+}
+
+/* ── HOME PAGE ── */
+.home-header{
+  display:flex;flex-direction:column;align-items:center;padding:12px 0 6px;flex-shrink:0;
+}
+.home-greeting{
+  font-family:'Tenor Sans',sans-serif;font-size:10px;
+  color:rgba(255,255,255,0.35);letter-spacing:.14em;text-transform:uppercase;
+}
+.home-date{
+  font-family:'Cormorant Garamond',serif;font-size:18px;
+  color:rgba(255,255,255,0.7);font-weight:300;margin-top:1px;
+}
+.emblem{
+  width:48px;height:48px;border-radius:50%;
+  background:radial-gradient(circle,rgba(201,168,76,0.15),transparent);
+  border:1px solid rgba(201,168,76,0.3);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;margin-bottom:4px;
+}
+
+/* KPI widgets */
+.kpi-row{display:flex;gap:8px;margin-bottom:10px;flex-shrink:0}
+.kpi-w{
+  flex:1;background:rgba(255,255,255,0.04);
+  border:1px solid var(--border2);border-radius:16px;padding:10px 12px;
+}
+.kpi-w2{
+  background:rgba(255,255,255,0.04);
+  border:1px solid var(--border2);border-radius:16px;padding:10px 12px;
+  margin-bottom:10px;flex-shrink:0;
+}
+.kpi-label{font-size:9px;color:rgba(255,255,255,0.35);letter-spacing:.1em;text-transform:uppercase}
+.kpi-val{
+  font-family:'JetBrains Mono',monospace;font-size:16px;
+  color:var(--gold2);font-weight:600;margin-top:2px;
+}
+.kpi-sub{font-size:9px;color:rgba(255,255,255,0.3);margin-top:1px}
+.kpi-trend{
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  color:var(--teal);
+}
+
+/* series a progress */
+.series-a-bar{margin-bottom:10px;flex-shrink:0}
+.sa-header{display:flex;justify-content:space-between;margin-bottom:6px}
+.sa-title{font-size:9px;color:rgba(255,255,255,0.35);letter-spacing:.1em;text-transform:uppercase}
+.sa-pct{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gold)}
+.sa-track{height:5px;background:rgba(255,255,255,0.07);border-radius:3px;overflow:hidden}
+.sa-fill{
+  height:100%;border-radius:3px;
+  background:linear-gradient(90deg,var(--teal) 0%,var(--gold) 100%);
+  width:0%;transition:width 1.5s ease;
+}
+
+/* ── OVERLAY ── */
+.overlay{
+  position:absolute;inset:0;background:rgba(6,8,13,0.85);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  z-index:100;display:none;flex-direction:column;
+  border-radius:54px;overflow:hidden;
+}
+.overlay.open{display:flex}
+.overlay-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:56px 24px 16px;flex-shrink:0;
+}
+.overlay-title{
+  font-family:'Cormorant Garamond',serif;font-size:18px;
+  color:var(--gold);letter-spacing:.08em;
+}
+.overlay-close{
+  width:30px;height:30px;border-radius:50%;
+  background:rgba(255,255,255,0.08);border:none;
+  color:rgba(255,255,255,0.6);cursor:pointer;font-size:16px;
+  display:flex;align-items:center;justify-content:center;
+  transition:.2s;
+}
+.overlay-close:hover{background:rgba(255,255,255,0.15);color:#fff}
+.overlay-iframe{
+  flex:1;width:100%;border:none;background:#06080d;
+}
+.overlay-footer{
+  padding:8px 16px 20px;display:flex;gap:8px;flex-shrink:0;
+}
+.overlay-btn{
+  flex:1;padding:10px;border-radius:10px;border:1px solid var(--border2);
+  background:var(--glass);color:rgba(255,255,255,0.6);
+  font-size:11px;cursor:pointer;letter-spacing:.04em;transition:.2s;
+}
+.overlay-btn:hover{background:var(--glass2);color:var(--gold2);border-color:var(--border)}
+
+/* ── FOLDER OVERLAY ── */
+.folder-overlay{
+  position:absolute;inset:0;background:rgba(6,8,13,0.92);
+  backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);
+  z-index:90;display:none;flex-direction:column;
+  align-items:center;justify-content:center;
+  border-radius:54px;overflow:hidden;
+}
+.folder-overlay.open{display:flex}
+.folder-overlay-title{
+  font-family:'Cormorant Garamond',serif;font-size:20px;
+  color:var(--gold);letter-spacing:.1em;margin-bottom:24px;
+}
+.folder-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:16px 20px;padding:0 30px;
+}
+.folder-close{
+  position:absolute;top:60px;right:24px;
+  width:32px;height:32px;border-radius:50%;
+  background:rgba(255,255,255,0.1);border:none;
+  color:rgba(255,255,255,0.6);cursor:pointer;font-size:18px;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* ── KPI PAGE ── */
+.kpi-page{
+  display:flex;flex-direction:column;gap:8px;
+  padding:8px 0;overflow-y:auto;flex:1;
+}
+.kpi-page::-webkit-scrollbar{display:none}
+.kpi-card{
+  background:rgba(255,255,255,0.03);
+  border:1px solid var(--border2);border-radius:16px;padding:14px 16px;
+}
+.kpi-card-header{
+  display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;
+}
+.kpi-card-title{
+  font-family:'Cormorant Garamond',serif;font-size:12px;
+  color:var(--gold);letter-spacing:.1em;text-transform:uppercase;
+}
+.kpi-badge{
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  padding:2px 8px;border-radius:4px;letter-spacing:.06em;
+}
+.badge-green{background:rgba(0,212,170,0.15);color:var(--teal)}
+.badge-gold{background:rgba(201,168,76,0.15);color:var(--gold)}
+.badge-red{background:rgba(255,75,110,0.15);color:var(--red)}
+.kpi-metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.km{display:flex;flex-direction:column;gap:2px}
+.km-label{font-size:9px;color:rgba(255,255,255,0.3);letter-spacing:.08em}
+.km-val{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--gold2)}
+.km-sub{font-size:8px;color:rgba(255,255,255,0.25)}
+.kpi-divider{height:1px;background:var(--border2);margin:8px 0}
+.stream-list{display:flex;flex-direction:column;gap:6px}
+.stream-row{
+  display:flex;justify-content:space-between;align-items:center;
+}
+.stream-label{font-size:9.5px;color:rgba(255,255,255,0.5)}
+.stream-val{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gold2)}
+.stream-bar-track{
+  height:3px;background:rgba(255,255,255,0.06);
+  border-radius:2px;margin-top:3px;overflow:hidden;
+}
+.stream-bar-fill{height:100%;border-radius:2px}
+
+/* ── ICON COLORS ── */
+.ic-gold{background:linear-gradient(135deg,#2a1f00,#1a1200);border-color:rgba(201,168,76,0.3)}
+.ic-teal{background:linear-gradient(135deg,#002a24,#001a16);border-color:rgba(0,212,170,0.25)}
+.ic-purple{background:linear-gradient(135deg,#1a0e2e,#100820);border-color:rgba(155,107,255,0.25)}
+.ic-blue{background:linear-gradient(135deg,#0a1a2e,#060e1e);border-color:rgba(59,158,255,0.25)}
+.ic-red{background:linear-gradient(135deg,#2a0a12,#1a060c);border-color:rgba(255,75,110,0.25)}
+.ic-orange{background:linear-gradient(135deg,#2a1400,#1a0c00);border-color:rgba(255,140,66,0.25)}
+.ic-dark{background:linear-gradient(135deg,#141b22,#0d1018);border-color:rgba(255,255,255,0.08)}
+.ic-moss{background:linear-gradient(135deg,#0e1e0a,#081208);border-color:rgba(120,200,80,0.2)}
+
+/* scrollable page content */
+.page-scroll{flex:1;overflow-y:auto}
+.page-scroll::-webkit-scrollbar{display:none}
+
+/* notification badge */
+.notif{
+  position:absolute;top:-4px;right:-4px;
+  width:16px;height:16px;border-radius:50%;
+  background:var(--red);
+  font-size:8px;color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-weight:600;
+  border:1.5px solid #06080d;
+}
+
+/* runway indicator */
+.runway-ring{
+  width:60px;height:60px;position:relative;display:flex;
+  align-items:center;justify-content:center;
+}
+.runway-svg{transform:rotate(-90deg)}
+.runway-text{
+  position:absolute;text-align:center;
+}
+.runway-months{
+  font-family:'JetBrains Mono',monospace;font-size:14px;
+  color:var(--gold2);line-height:1;
+}
+.runway-label{font-size:7px;color:rgba(255,255,255,0.3);letter-spacing:.06em}
+
+/* activity feed */
+.activity{display:flex;flex-direction:column;gap:6px}
+.activity-item{
+  display:flex;gap:10px;align-items:center;
+}
+.activity-dot{
+  width:7px;height:7px;border-radius:50%;flex-shrink:0;
+}
+.activity-text{font-size:10px;color:rgba(255,255,255,0.45);line-height:1.3}
+.activity-time{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:rgba(255,255,255,0.2);margin-left:auto;white-space:nowrap}
+
+/* exec card */
+.exec-card{
+  background:var(--glass);border:1px solid var(--border2);border-radius:14px;
+  padding:12px;display:flex;align-items:center;gap:12px;cursor:pointer;
+  transition:.2s;margin-bottom:8px;
+}
+.exec-card:hover{background:var(--glass2);border-color:var(--border)}
+.exec-avatar{
+  width:38px;height:38px;border-radius:50%;
+  object-fit:cover;border:1.5px solid rgba(201,168,76,0.3);
+  flex-shrink:0;
+}
+.exec-avatar-placeholder{
+  width:38px;height:38px;border-radius:50%;
+  background:linear-gradient(135deg,var(--bg3),var(--bg2));
+  border:1.5px solid rgba(201,168,76,0.3);
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;flex-shrink:0;
+}
+.exec-info{flex:1}
+.exec-name{font-size:12px;color:rgba(255,255,255,0.8);letter-spacing:.02em}
+.exec-title{font-size:9px;color:rgba(255,255,255,0.35);margin-top:1px;letter-spacing:.04em}
+.exec-status{
+  font-family:'JetBrains Mono',monospace;font-size:8px;
+  padding:2px 7px;border-radius:4px;background:rgba(0,212,170,0.1);color:var(--teal);
+}
+
+/* section label */
+.sec-label{
+  font-family:'Cormorant Garamond',serif;font-size:12px;
+  color:rgba(255,255,255,0.3);letter-spacing:.12em;text-transform:uppercase;
+  margin:8px 0 6px;flex-shrink:0;
+}
+
+/* search bar */
+.search-bar{
+  display:flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,0.05);border:1px solid var(--border2);
+  border-radius:12px;padding:8px 14px;margin-bottom:12px;flex-shrink:0;
+}
+.search-icon{font-size:12px;color:rgba(255,255,255,0.25)}
+.search-text{font-size:11px;color:rgba(255,255,255,0.25);letter-spacing:.04em}
+
+/* settings rows */
+.settings-section{margin-bottom:14px}
+.settings-title{
+  font-size:10px;color:rgba(255,255,255,0.25);letter-spacing:.12em;
+  text-transform:uppercase;margin-bottom:6px;padding:0 2px;
+}
+.setting-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:11px 14px;background:rgba(255,255,255,0.03);
+  border-radius:10px;margin-bottom:4px;cursor:pointer;transition:.15s;
+  border:1px solid transparent;
+}
+.setting-row:hover{background:rgba(255,255,255,0.06);border-color:var(--border2)}
+.setting-row-left{display:flex;align-items:center;gap:10px}
+.setting-ico{
+  width:28px;height:28px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;font-size:13px;
+}
+.setting-name{font-size:11px;color:rgba(255,255,255,0.7);letter-spacing:.02em}
+.setting-chev{font-size:10px;color:rgba(255,255,255,0.2)}
+.toggle{
+  width:32px;height:18px;border-radius:9px;
+  background:var(--teal);position:relative;cursor:pointer;
+  transition:.2s;flex-shrink:0;
+}
+.toggle::after{
+  content:'';position:absolute;top:2px;right:2px;
+  width:14px;height:14px;border-radius:50%;background:#fff;
+  transition:.2s;
+}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1100px){
+  .sidebar{display:none}
+  .orbit{padding:20px;gap:0}
+  body{overflow:auto}
+}
+@media(max-width:420px){
+  .phone{width:100vw;height:100svh;border-radius:0;border:none}
+  .phone-shadow{display:none}
+  body{overflow:hidden}
+}
+</style>
+</head>
+<body>
+
+<div class="orbit">
+  <!-- LEFT SIDEBAR -->
+  <div class="sidebar" id="leftSidebar">
+    <div class="sidebar-card">
+      <h4>Series A Readiness</h4>
+      <div style="margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+          <span style="font-size:10px;color:rgba(255,255,255,0.4)">Capital Raise</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gold2)" id="raiseLabel">$500K / $3M</span>
+        </div>
+        <div class="series-bar"><div class="series-fill" id="raiseFill" style="width:17%"></div></div>
+      </div>
+      <div class="sidebar-kpi">
+        <div class="skpi"><span class="skpi-label">Target ARR M12</span><span class="skpi-val">$880K–$2.4M</span></div>
+        <div class="skpi"><span class="skpi-label">Series A Trigger</span><span class="skpi-val">$20M–$40M</span></div>
+        <div class="skpi"><span class="skpi-label">Berlin Close</span><span class="skpi-val">Jun 15 2026</span></div>
+        <div class="skpi"><span class="skpi-label">Lesley Status</span><span class="skpi-val" style="color:var(--teal)">▲ Committed</span></div>
+      </div>
+    </div>
+    <div class="sidebar-card">
+      <h4>Quick Launch</h4>
+      <div class="sidebar-quick">
+        <div class="quick-btn" onclick="openApp('growth-model')"><span class="qi">📈</span>Growth Model</div>
+        <div class="quick-btn" onclick="openApp('investor-deck')"><span class="qi">🎯</span>Investor Deck</div>
+        <div class="quick-btn" onclick="openApp('loi-lesley')"><span class="qi">✍️</span>LOI — Lesley</div>
+        <div class="quick-btn" onclick="openApp('berlin-brief')"><span class="qi">✈️</span>Berlin Brief</div>
+        <div class="quick-btn" onclick="openApp('whitepaper')"><span class="qi">📋</span>Whitepaper v2</div>
+        <div class="quick-btn" onclick="openApp('ppm')"><span class="qi">📁</span>PPM 2026</div>
+      </div>
+    </div>
+    <div class="sidebar-card">
+      <h4>Activity</h4>
+      <div class="activity">
+        <div class="activity-item">
+          <div class="activity-dot" style="background:var(--teal)"></div>
+          <div class="activity-text">Growth Model v2.1 deployed</div>
+          <div class="activity-time">Today</div>
+        </div>
+        <div class="activity-item">
+          <div class="activity-dot" style="background:var(--gold)"></div>
+          <div class="activity-text">LOI — Lesley Harris issued</div>
+          <div class="activity-time">Today</div>
+        </div>
+        <div class="activity-item">
+          <div class="activity-dot" style="background:var(--purple)"></div>
+          <div class="activity-text">NDA executed May 12</div>
+          <div class="activity-time">May 12</div>
+        </div>
+        <div class="activity-item">
+          <div class="activity-dot" style="background:var(--blue)"></div>
+          <div class="activity-text">Berlin Brief published</div>
+          <div class="activity-time">May 31</div>
+        </div>
+        <div class="activity-item">
+          <div class="activity-dot" style="background:var(--orange)"></div>
+          <div class="activity-text">gstack skills installed</div>
+          <div class="activity-time">May 31</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHONE -->
+  <div class="phone-wrap">
+    <div class="phone-shadow"></div>
+    <div class="vol-btn vol-up"></div>
+    <div class="vol-btn vol-dn"></div>
+    <div class="phone" id="phone">
+      <div class="wallpaper"></div>
+
+      <!-- DYNAMIC ISLAND -->
+      <div class="island">
+        <div class="island-inner">
+          <div class="island-dot"></div>
+          <div class="island-text">GENESIS RESERVE</div>
+          <div class="island-dot"></div>
+        </div>
+      </div>
+
+      <div class="screen">
+        <!-- STATUS BAR -->
+        <div class="status-bar">
+          <div class="status-time" id="statusTime">9:41</div>
+          <div class="status-right">
+            <span class="status-carrier">GR</span>
+            <span class="status-icon">▲▲▲</span>
+            <span class="status-icon">📶</span>
+            <span class="status-icon">🔋</span>
+          </div>
+        </div>
+
+        <!-- PAGES -->
+        <div class="pages-wrap" id="pagesWrap">
+          <div class="pages" id="pages">
+
+            <!-- PAGE 0: HOME -->
+            <div class="page" id="page0">
+              <div class="home-header">
+                <div class="home-greeting">Genesis Reserve · Command OS</div>
+                <div class="home-date" id="homeDate">Sunday, May 31</div>
+              </div>
+              <!-- KPI row -->
+              <div class="kpi-row">
+                <div class="kpi-w">
+                  <div class="kpi-label">Wallets (M1)</div>
+                  <div class="kpi-val">—</div>
+                  <div class="kpi-sub">Launch Q3 2026</div>
+                </div>
+                <div class="kpi-w">
+                  <div class="kpi-label">ARR Target</div>
+                  <div class="kpi-val">$880K</div>
+                  <div class="kpi-sub">Conservative M12</div>
+                </div>
+                <div class="kpi-w">
+                  <div class="kpi-label">Seed Raise</div>
+                  <div class="kpi-val">$500K</div>
+                  <div class="kpi-sub kpi-trend">▲ Committed</div>
+                </div>
+              </div>
+              <!-- Series A bar -->
+              <div class="series-a-bar">
+                <div class="sa-header">
+                  <span class="sa-title">Series A Progress</span>
+                  <span class="sa-pct" id="saLabel">17% · $500K secured</span>
+                </div>
+                <div class="sa-track"><div class="sa-fill" id="saFill" style="width:17%"></div></div>
+              </div>
+              <!-- App grid -->
+              <div class="sec-label">Featured</div>
+              <div class="app-grid" style="grid-template-columns:repeat(4,1fr)">
+                <div class="app" onclick="openApp('growth-model')">
+                  <div class="app-icon ic-gold">📈</div>
+                  <div class="app-label">Growth Model</div>
+                </div>
+                <div class="app" onclick="openApp('investor-deck')">
+                  <div class="app-icon ic-purple">🎯</div>
+                  <div class="app-label">Investor Deck</div>
+                </div>
+                <div class="app" onclick="openApp('whitepaper')">
+                  <div class="app-icon ic-teal">📋</div>
+                  <div class="app-label">Whitepaper</div>
+                </div>
+                <div class="app" onclick="openApp('wallet-demo')">
+                  <div class="app-icon ic-blue">💳</div>
+                  <div class="app-label">Wallet Demo</div>
+                </div>
+                <div class="app" onclick="openApp('loi-lesley')">
+                  <div class="app-icon ic-orange" style="position:relative">
+                    <span>✍️</span>
+                    <div class="notif">1</div>
+                  </div>
+                  <div class="app-label">LOI · Lesley</div>
+                </div>
+                <div class="app" onclick="openApp('berlin-brief')">
+                  <div class="app-icon ic-red">✈️</div>
+                  <div class="app-label">Berlin Brief</div>
+                </div>
+                <div class="app" onclick="openApp('ppm')">
+                  <div class="app-icon ic-dark">📁</div>
+                  <div class="app-label">PPM 2026</div>
+                </div>
+                <div class="app" onclick="openFolder('kpi')">
+                  <div class="app-icon ic-moss">📊</div>
+                  <div class="app-label">KPI Center</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- PAGE 1: INVESTOR RELATIONS -->
+            <div class="page" id="page1">
+              <div class="page-header"><div class="page-title">Investor Relations</div></div>
+              <div class="app-grid">
+                <div class="app" onclick="openApp('investor-deck')">
+                  <div class="app-icon ic-purple">🎯</div>
+                  <div class="app-label">Investor Deck</div>
+                </div>
+                <div class="app" onclick="openApp('loi-lesley')">
+                  <div class="app-icon ic-orange" style="position:relative">
+                    <span>✍️</span><div class="notif">1</div>
+                  </div>
+                  <div class="app-label">LOI · Lesley</div>
+                </div>
+                <div class="app" onclick="openApp('ppm')">
+                  <div class="app-icon ic-dark">📁</div>
+                  <div class="app-label">PPM 2026</div>
+                </div>
+                <div class="app" onclick="openApp('berlin-brief')">
+                  <div class="app-icon ic-red">✈️</div>
+                  <div class="app-label">Berlin Brief</div>
+                </div>
+                <div class="app" onclick="openApp('share-cert')">
+                  <div class="app-icon ic-gold">🏅</div>
+                  <div class="app-label">Share Cert</div>
+                </div>
+                <div class="app" onclick="openApp('investor-brief')">
+                  <div class="app-icon ic-teal">📄</div>
+                  <div class="app-label">Investor Brief</div>
+                </div>
+                <div class="app" onclick="openApp('growth-model')">
+                  <div class="app-icon ic-moss">📈</div>
+                  <div class="app-label">Growth Model</div>
+                </div>
+                <div class="app" onclick="openApp('whitepaper')">
+                  <div class="app-icon ic-blue">📋</div>
+                  <div class="app-label">Whitepaper v2</div>
+                </div>
+                <div class="app" onclick="openApp('pitch-seed')">
+                  <div class="app-icon ic-purple">🌱</div>
+                  <div class="app-label">Seed Pitch</div>
+                </div>
+                <div class="app" onclick="openApp('pitch-institutional')">
+                  <div class="app-icon ic-blue">🏦</div>
+                  <div class="app-label">Institutional</div>
+                </div>
+                <div class="app" onclick="openApp('pitch-retail')">
+                  <div class="app-icon ic-teal">👤</div>
+                  <div class="app-label">Retail Pitch</div>
+                </div>
+                <div class="app" onclick="openApp('pitch-deck')">
+                  <div class="app-icon ic-gold">🎪</div>
+                  <div class="app-label">Pitch Deck</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- PAGE 2: PRODUCT -->
+            <div class="page" id="page2">
+              <div class="page-header"><div class="page-title">Product</div></div>
+              <div class="app-grid">
+                <div class="app" onclick="openApp('wallet-demo')">
+                  <div class="app-icon ic-blue">💳</div>
+                  <div class="app-label">Wallet Demo</div>
+                </div>
+                <div class="app" onclick="openApp('wallet-demo2')">
+                  <div class="app-icon ic-teal">🏦</div>
+                  <div class="app-label">Wallet Demo 2</div>
+                </div>
+                <div class="app" onclick="openApp('treasury-demo')">
+                  <div class="app-icon ic-gold">💰</div>
+                  <div class="app-label">Treasury Demo</div>
+                </div>
+                <div class="app" onclick="openApp('whitepaper')">
+                  <div class="app-icon ic-purple">📋</div>
+                  <div class="app-label">Whitepaper v2</div>
+                </div>
+                <div class="app" onclick="openApp('whitepaper-v1')">
+                  <div class="app-icon ic-dark">📄</div>
+                  <div class="app-label">Whitepaper v1</div>
+                </div>
+                <div class="app" onclick="openApp('reel-ad')">
+                  <div class="app-icon ic-red">🎬</div>
+                  <div class="app-label">Reel Ad</div>
+                </div>
+                <div class="app" onclick="openApp('growth-model')">
+                  <div class="app-icon ic-moss">📈</div>
+                  <div class="app-label">Growth Model</div>
+                </div>
+                <div class="app" onclick="openApp('logo-export')">
+                  <div class="app-icon ic-gold">🖼️</div>
+                  <div class="app-label">Logo Export</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- PAGE 3: PRESENTATIONS -->
+            <div class="page" id="page3">
+              <div class="page-header"><div class="page-title">Presentations</div></div>
+              <div class="app-grid">
+                <div class="app" onclick="openApp('keynote')">
+                  <div class="app-icon ic-gold">🎤</div>
+                  <div class="app-label">Keynote</div>
+                </div>
+                <div class="app" onclick="openApp('keynote-script')">
+                  <div class="app-icon ic-dark">📜</div>
+                  <div class="app-label">Keynote Script</div>
+                </div>
+                <div class="app" onclick="openApp('pitch-deck')">
+                  <div class="app-icon ic-purple">🎪</div>
+                  <div class="app-label">Pitch Deck</div>
+                </div>
+                <div class="app" onclick="openApp('pitch-seed')">
+                  <div class="app-icon ic-moss">🌱</div>
+                  <div class="app-label">Seed Pitch</div>
+                </div>
+                <div class="app" onclick="openApp('pitch-institutional')">
+                  <div class="app-icon ic-blue">🏦</div>
+                  <div class="app-label">Institutional</div>
+                </div>
+                <div class="app" onclick="openApp('pitch-retail')">
+                  <div class="app-icon ic-teal">👤</div>
+                  <div class="app-label">Retail Pitch</div>
+                </div>
+                <div class="app" onclick="openApp('investor-deck')">
+                  <div class="app-icon ic-orange">🎯</div>
+                  <div class="app-label">Investor Deck</div>
+                </div>
+                <div class="app" onclick="openApp('investor-brief')">
+                  <div class="app-icon ic-red">📄</div>
+                  <div class="app-label">Investor Brief</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- PAGE 4: TEAM & COMMAND -->
+            <div class="page" id="page4">
+              <div class="page-header"><div class="page-title">Command</div></div>
+              <div class="page-scroll">
+                <div class="sec-label">Leadership</div>
+                <div class="exec-card">
+                  <div class="exec-avatar-placeholder">👑</div>
+                  <div class="exec-info">
+                    <div class="exec-name">Anthony M. Buford</div>
+                    <div class="exec-title">Founder & Chief Architect</div>
+                  </div>
+                  <div class="exec-status">Active</div>
+                </div>
+                <div class="exec-card">
+                  <img src="team-whitney.jpg" class="exec-avatar" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                  <div class="exec-avatar-placeholder" style="display:none">⚖️</div>
+                  <div class="exec-info">
+                    <div class="exec-name">Whitney Buford</div>
+                    <div class="exec-title">Chief Operating Officer</div>
+                  </div>
+                  <div class="exec-status">Active</div>
+                </div>
+                <div class="exec-card">
+                  <div class="exec-avatar-placeholder">💼</div>
+                  <div class="exec-info">
+                    <div class="exec-name">Lesley Harris</div>
+                    <div class="exec-title">Lead Seed Investor</div>
+                  </div>
+                  <div class="exec-status" style="background:rgba(201,168,76,0.1);color:var(--gold)">Committed</div>
+                </div>
+                <div class="sec-label">Operations</div>
+                <div class="app-grid" style="grid-template-columns:repeat(4,1fr);margin-top:4px">
+                  <div class="app" onclick="openApp('investor-deck')">
+                    <div class="app-icon ic-gold">📊</div>
+                    <div class="app-label">Board Deck</div>
+                  </div>
+                  <div class="app" onclick="openApp('growth-model')">
+                    <div class="app-icon ic-teal">💹</div>
+                    <div class="app-label">Financials</div>
+                  </div>
+                  <div class="app" onclick="goToPage(5)">
+                    <div class="app-icon ic-dark">⚙️</div>
+                    <div class="app-label">Settings</div>
+                  </div>
+                  <div class="app" onclick="openFolder('legal')">
+                    <div class="app-icon ic-red">⚖️</div>
+                    <div class="app-label">Legal Docs</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- PAGE 5: SETTINGS -->
+            <div class="page" id="page5">
+              <div class="page-header"><div class="page-title">Settings</div></div>
+              <div class="page-scroll">
+                <div class="search-bar">
+                  <span class="search-icon">🔍</span>
+                  <span class="search-text">Search settings...</span>
+                </div>
+                <div class="settings-section">
+                  <div class="settings-title">Platform</div>
+                  <div class="setting-row">
+                    <div class="setting-row-left">
+                      <div class="setting-ico ic-gold" style="border-radius:8px">🌐</div>
+                      <span class="setting-name">Vercel Deployments</span>
+                    </div>
+                    <span class="setting-chev">›</span>
+                  </div>
+                  <div class="setting-row">
+                    <div class="setting-row-left">
+                      <div class="setting-ico ic-dark" style="border-radius:8px">🔗</div>
+                      <span class="setting-name">GitHub · TheGenesisArchitect</span>
+                    </div>
+                    <span class="setting-chev">›</span>
+                  </div>
+                  <div class="setting-row">
+                    <div class="setting-row-left">
+                      <div class="setting-ico ic-purple" style="border-radius:8px">🤖</div>
+                      <span class="setting-name">gstack Skills (52)</span>
+                    </div>
+                    <div class="toggle"></div>
+                  </div>
+                </div>
+                <div class="settings-section">
+                  <div class="settings-title">Finance</div>
+                  <div class="setting-row">
+                    <div class="setting-row-left">
+                      <div class="setting-ico ic-teal" style="border-radius:8px">💰</div>
+                      <span class="setting-name">Seed Round · $3M Cap</span>
+                    </div>
+                    <span class="setting-chev">›</span>
+                  </div>
+                  <div class="setting-row">
+                    <div class="setting-row-left">
+                      <div class="setting-ico ic-gold" style="border-radius:8px">📈</div>
+                      <span class="setting-name">Revenue Streams (6)</span>
+                    </div>
+                    <span class="setting-chev">›</span>
+                  </div>
+                  <div class="setting-row">
+                    <div class="setting-row-left">
+                      <div class="setting-ico ic-moss" style="border-radius:8px">🛡️</div>
+                      <span class="setting-name">YFLPP Program</span>
+                    </div>
+                    <div class="toggle"></div>
+                  </div>
+                </div>
+                <div class="settings-section">
+                  <div class="settings-title">Security</div>
+                  <div class="setting-row">
+                    <div class="setting-row-left">
+                      <div class="setting-ico ic-red" style="border-radius:8px">🔒</div>
+                      <span class="setting-name">Run /gstack-cso Audit</span>
+                    </div>
+                    <span class="setting-chev">›</span>
+                  </div>
+                  <div class="setting-row">
+                    <div class="setting-row-left">
+                      <div class="setting-ico ic-orange" style="border-radius:8px">🔑</div>
+                      <span class="setting-name">NDA · All Investors</span>
+                    </div>
+                    <span class="setting-chev">›</span>
+                  </div>
+                </div>
+                <div class="settings-section">
+                  <div class="settings-title">Branding</div>
+                  <div class="setting-row">
+                    <div class="setting-row-left">
+                      <div class="setting-ico ic-gold" style="border-radius:8px">✨</div>
+                      <span class="setting-name">Genesis Emblem</span>
+                    </div>
+                    <span class="setting-chev">›</span>
+                  </div>
+                  <div class="setting-row">
+                    <div class="setting-row-left">
+                      <div class="setting-ico ic-dark" style="border-radius:8px">🎨</div>
+                      <span class="setting-name">Brand Colors</span>
+                    </div>
+                    <span class="setting-chev">›</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /pages -->
+        </div><!-- /pages-wrap -->
+
+        <!-- PAGE DOTS -->
+        <div class="page-dots" id="pageDots">
+          <div class="dot active" onclick="goToPage(0)"></div>
+          <div class="dot" onclick="goToPage(1)"></div>
+          <div class="dot" onclick="goToPage(2)"></div>
+          <div class="dot" onclick="goToPage(3)"></div>
+          <div class="dot" onclick="goToPage(4)"></div>
+          <div class="dot" onclick="goToPage(5)"></div>
+        </div>
+
+        <!-- DOCK -->
+        <div class="dock">
+          <div class="dock-bg"></div>
+          <div class="dock-app" onclick="goToPage(0)">
+            <div class="dock-icon ic-gold">🏠</div>
+            <div class="dock-label">Home</div>
+          </div>
+          <div class="dock-app" onclick="openFolder('kpi')">
+            <div class="dock-icon ic-teal">📊</div>
+            <div class="dock-label">KPI</div>
+          </div>
+          <div class="dock-app" onclick="openFolder('all-apps')">
+            <div class="dock-icon ic-purple">🚀</div>
+            <div class="dock-label">Launchpad</div>
+          </div>
+          <div class="dock-app" onclick="goToPage(5)">
+            <div class="dock-icon ic-dark">⚙️</div>
+            <div class="dock-label">Settings</div>
+          </div>
+        </div>
+      </div><!-- /screen -->
+
+      <!-- APP OVERLAY -->
+      <div class="overlay" id="appOverlay">
+        <div class="overlay-header">
+          <div class="overlay-title" id="overlayTitle">App</div>
+          <button class="overlay-close" onclick="closeOverlay()">✕</button>
+        </div>
+        <iframe class="overlay-iframe" id="overlayFrame" src="" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-top-navigation-by-user-activation"></iframe>
+        <div class="overlay-footer">
+          <button class="overlay-btn" onclick="closeOverlay()">← Back</button>
+          <button class="overlay-btn" onclick="openExternal()">↗ Open Full</button>
+        </div>
+      </div>
+
+      <!-- FOLDER OVERLAY -->
+      <div class="folder-overlay" id="folderOverlay">
+        <button class="folder-close" onclick="closeFolder()">✕</button>
+        <div class="folder-overlay-title" id="folderTitle">Folder</div>
+        <div class="folder-grid" id="folderGrid"></div>
+      </div>
+
+    </div><!-- /phone -->
+  </div><!-- /phone-wrap -->
+
+  <!-- RIGHT SIDEBAR -->
+  <div class="sidebar" id="rightSidebar">
+    <div class="sidebar-card">
+      <h4>Revenue Streams</h4>
+      <div class="stream-list">
+        <div>
+          <div class="stream-row">
+            <span class="stream-label">1 · Transaction Fees</span>
+            <span class="stream-val">$8–12/user</span>
+          </div>
+          <div class="stream-bar-track"><div class="stream-bar-fill" style="width:100%;background:var(--gold)"></div></div>
+        </div>
+        <div>
+          <div class="stream-row">
+            <span class="stream-label">2 · Yield Spread</span>
+            <span class="stream-val">1.5% APY</span>
+          </div>
+          <div class="stream-bar-track"><div class="stream-bar-fill" style="width:70%;background:var(--teal)"></div></div>
+        </div>
+        <div>
+          <div class="stream-row">
+            <span class="stream-label">3 · YFLPP Mgmt Fee</span>
+            <span class="stream-val">5% of premium</span>
+          </div>
+          <div class="stream-bar-track"><div class="stream-bar-fill" style="width:55%;background:var(--purple)"></div></div>
+        </div>
+        <div>
+          <div class="stream-row">
+            <span class="stream-label">4 · Gold Rope Sub</span>
+            <span class="stream-val">$25/mo opt-in</span>
+          </div>
+          <div class="stream-bar-track"><div class="stream-bar-fill" style="width:40%;background:var(--gold2)"></div></div>
+        </div>
+        <div>
+          <div class="stream-row">
+            <span class="stream-label">5 · Gold Rope CC</span>
+            <span class="stream-val">20% of profits</span>
+          </div>
+          <div class="stream-bar-track"><div class="stream-bar-fill" style="width:30%;background:var(--orange)"></div></div>
+        </div>
+        <div>
+          <div class="stream-row">
+            <span class="stream-label">6 · Agent Override</span>
+            <span class="stream-val">3% IUL premium</span>
+          </div>
+          <div class="stream-bar-track"><div class="stream-bar-fill" style="width:20%;background:var(--blue)"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="sidebar-card">
+      <h4>Unit Economics</h4>
+      <div class="sidebar-kpi">
+        <div class="skpi"><span class="skpi-label">Standard Wallet</span><span class="skpi-val">~$11/mo</span></div>
+        <div class="skpi"><span class="skpi-label">+ YFLPP</span><span class="skpi-val">~$15/mo</span></div>
+        <div class="skpi"><span class="skpi-label">Gold Rope</span><span class="skpi-val" style="color:var(--gold2)">~$55/mo</span></div>
+        <div class="skpi"><span class="skpi-label">Gold Rope Multiplier</span><span class="skpi-val" style="color:var(--teal)">5×</span></div>
+        <div style="height:1px;background:var(--border2);margin:6px 0"></div>
+        <div class="skpi"><span class="skpi-label">Breakeven (Cons.)</span><span class="skpi-val">M10–11</span></div>
+        <div class="skpi"><span class="skpi-label">Breakeven (Agr.)</span><span class="skpi-val">M6–7</span></div>
+        <div class="skpi"><span class="skpi-label">Seed Remaining M12</span><span class="skpi-val">$346K</span></div>
+      </div>
+    </div>
+    <div class="sidebar-card">
+      <h4>Investor Pipeline</h4>
+      <div class="sidebar-kpi">
+        <div class="skpi">
+          <span class="skpi-label">Lesley Harris</span>
+          <span class="skpi-val" style="color:var(--teal)">Committed</span>
+        </div>
+        <div class="skpi">
+          <span class="skpi-label">Bernice King</span>
+          <span class="skpi-val" style="color:rgba(255,255,255,0.3)">Outreach</span>
+        </div>
+        <div class="skpi">
+          <span class="skpi-label">Ashley Bell</span>
+          <span class="skpi-val" style="color:rgba(255,255,255,0.3)">Outreach</span>
+        </div>
+        <div class="skpi">
+          <span class="skpi-label">VC Friend</span>
+          <span class="skpi-val" style="color:rgba(255,255,255,0.3)">TBD</span>
+        </div>
+        <div class="skpi">
+          <span class="skpi-label">Ambassador</span>
+          <span class="skpi-val" style="color:rgba(255,255,255,0.3)">TBD</span>
+        </div>
+        <div style="height:1px;background:var(--border2);margin:6px 0"></div>
+        <div class="skpi">
+          <span class="skpi-label">LOI Expiry</span>
+          <span class="skpi-val" style="color:var(--orange)">Jun 10 2026</span>
+        </div>
+        <div class="skpi">
+          <span class="skpi-label">Target Close</span>
+          <span class="skpi-val">Jun 15 2026</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div><!-- /orbit -->
+
+<script>
+// ── APP REGISTRY ──
+var APPS = {
+  'growth-model':        {title:'Growth Model v2.1',  url:'genesis-reserve-growth-model.html'},
+  'investor-deck':       {title:'Investor Deck',       url:'genesis-reserve-investor-deck.html'},
+  'loi-lesley':          {title:'LOI · Lesley Harris', url:'genesis-loi-lesley-harris.html'},
+  'berlin-brief':        {title:'Berlin Brief',        url:'berlin-brief.html'},
+  'whitepaper':          {title:'Whitepaper v2',       url:'genesis-whitepaper-v2.html'},
+  'whitepaper-v1':       {title:'Whitepaper v1',       url:'genesis-whitepaper.html'},
+  'ppm':                 {title:'PPM 2026',            url:'genesis-ppm-2026.html'},
+  'wallet-demo':         {title:'Wallet Demo',         url:'genesis-wallet-demo.html'},
+  'wallet-demo2':        {title:'Wallet Demo 2',       url:'wallet-demo.html'},
+  'treasury-demo':       {title:'Treasury Demo',       url:'genesis-treasury-demo.html'},
+  'reel-ad':             {title:'Reel Ad',             url:'genesis-reel-ad.html'},
+  'share-cert':          {title:'Share Certificate',   url:'genesis-share-certificate.html'},
+  'investor-brief':      {title:'Investor Brief',      url:'investor-brief-2026.html'},
+  'keynote':             {title:'Keynote',             url:'genesis-keynote.html'},
+  'keynote-script':      {title:'Keynote Script',      url:'genesis-keynote-script.html'},
+  'pitch-deck':          {title:'Pitch Deck',          url:'pitch-deck.html'},
+  'pitch-seed':          {title:'Seed Pitch',          url:'pitch-seed.html'},
+  'pitch-institutional': {title:'Institutional Pitch', url:'pitch-institutional.html'},
+  'pitch-retail':        {title:'Retail Pitch',        url:'pitch-retail.html'},
+  'logo-export':         {title:'Logo Export',         url:'logo-export.html'},
+};
+
+var FOLDERS = {
+  'kpi': {
+    title:'KPI Center',
+    apps:[
+      {key:'growth-model',   label:'Growth Model',  icon:'📈', cls:'ic-gold'},
+      {key:'investor-deck',  label:'Investor Deck', icon:'🎯', cls:'ic-purple'},
+      {key:'ppm',            label:'PPM 2026',      icon:'📁', cls:'ic-dark'},
+      {key:'investor-brief', label:'Inv Brief',     icon:'📄', cls:'ic-teal'},
+      {key:'wallet-demo',    label:'Wallet Demo',   icon:'💳', cls:'ic-blue'},
+      {key:'whitepaper',     label:'Whitepaper',    icon:'📋', cls:'ic-moss'},
+    ]
+  },
+  'legal': {
+    title:'Legal Docs',
+    apps:[
+      {key:'loi-lesley',  label:'LOI · Lesley', icon:'✍️', cls:'ic-orange'},
+      {key:'share-cert',  label:'Share Cert',   icon:'🏅', cls:'ic-gold'},
+      {key:'ppm',         label:'PPM 2026',     icon:'📁', cls:'ic-dark'},
+      {key:'whitepaper',  label:'Whitepaper',   icon:'📋', cls:'ic-teal'},
+      {key:'berlin-brief',label:'Berlin Brief', icon:'✈️', cls:'ic-red'},
+    ]
+  },
+  'all-apps': {
+    title:'All Apps',
+    apps: Object.keys(APPS).map(function(k){
+      var icons = {'growth-model':'📈','investor-deck':'🎯','loi-lesley':'✍️','berlin-brief':'✈️','whitepaper':'📋','whitepaper-v1':'📄','ppm':'📁','wallet-demo':'💳','wallet-demo2':'🏦','treasury-demo':'💰','reel-ad':'🎬','share-cert':'🏅','investor-brief':'📄','keynote':'🎤','keynote-script':'📜','pitch-deck':'🎪','pitch-seed':'🌱','pitch-institutional':'🏦','pitch-retail':'👤','logo-export':'🖼️'};
+      var clss  = {'growth-model':'ic-gold','investor-deck':'ic-purple','loi-lesley':'ic-orange','berlin-brief':'ic-red','whitepaper':'ic-teal','whitepaper-v1':'ic-dark','ppm':'ic-dark','wallet-demo':'ic-blue','wallet-demo2':'ic-teal','treasury-demo':'ic-gold','reel-ad':'ic-red','share-cert':'ic-gold','investor-brief':'ic-teal','keynote':'ic-gold','keynote-script':'ic-dark','pitch-deck':'ic-purple','pitch-seed':'ic-moss','pitch-institutional':'ic-blue','pitch-retail':'ic-teal','logo-export':'ic-gold'};
+      return {key:k, label:APPS[k].title.split(' ').slice(0,2).join(' '), icon:icons[k]||'📄', cls:clss[k]||'ic-dark'};
+    })
+  }
+};
+
+// ── STATE ──
+var currentPage = 0;
+var currentAppKey = null;
+var totalPages = 6;
+var touchStartX = 0;
+
+// ── CLOCK ──
+function updateClock(){
+  var now = new Date();
+  var h = now.getHours(), m = now.getMinutes();
+  var ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  document.getElementById('statusTime').textContent = h + ':' + (m < 10 ? '0'+m : m) + ' ' + ampm;
+  var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var d = document.getElementById('homeDate');
+  if(d) d.textContent = days[now.getDay()] + ', ' + months[now.getMonth()] + ' ' + now.getDate();
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+// ── PAGE NAV ──
+function goToPage(n){
+  currentPage = Math.max(0, Math.min(totalPages-1, n));
+  document.getElementById('pages').style.transform = 'translateX(-' + (currentPage * 390) + 'px)';
+  var dots = document.querySelectorAll('.dot');
+  dots.forEach(function(d,i){ d.classList.toggle('active', i === currentPage); });
+}
+
+// ── SWIPE ──
+var pagesWrap = document.getElementById('pagesWrap');
+pagesWrap.addEventListener('touchstart', function(e){ touchStartX = e.touches[0].clientX; });
+pagesWrap.addEventListener('touchend', function(e){
+  var dx = e.changedTouches[0].clientX - touchStartX;
+  if(dx < -40) goToPage(currentPage + 1);
+  else if(dx > 40) goToPage(currentPage - 1);
+});
+// mouse swipe for desktop testing
+var mouseStartX = 0, isDragging = false;
+pagesWrap.addEventListener('mousedown', function(e){ mouseStartX = e.clientX; isDragging = true; });
+pagesWrap.addEventListener('mouseup', function(e){
+  if(!isDragging) return; isDragging = false;
+  var dx = e.clientX - mouseStartX;
+  if(dx < -50) goToPage(currentPage + 1);
+  else if(dx > 50) goToPage(currentPage - 1);
+});
+
+// ── APP OPEN ──
+function openApp(key){
+  var app = APPS[key];
+  if(!app) return;
+  currentAppKey = key;
+  document.getElementById('overlayTitle').textContent = app.title;
+  document.getElementById('overlayFrame').src = app.url;
+  document.getElementById('appOverlay').classList.add('open');
+}
+function closeOverlay(){
+  document.getElementById('appOverlay').classList.remove('open');
+  document.getElementById('overlayFrame').src = '';
+  currentAppKey = null;
+}
+function openExternal(){
+  if(currentAppKey && APPS[currentAppKey]){
+    window.open(APPS[currentAppKey].url, '_blank', 'noopener,noreferrer');
+  }
+}
+
+// ── FOLDER OPEN ──
+function openFolder(key){
+  var folder = FOLDERS[key];
+  if(!folder) return;
+  document.getElementById('folderTitle').textContent = folder.title;
+  var grid = document.getElementById('folderGrid');
+  grid.innerHTML = '';
+  folder.apps.forEach(function(a){
+    var el = document.createElement('div');
+    el.className = 'app';
+    el.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer';
+    el.innerHTML = '<div class="app-icon '+a.cls+'" style="width:56px;height:56px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:22px">'+a.icon+'</div><div class="app-label" style="font-size:9px;color:rgba(255,255,255,0.7);text-align:center">'+a.label+'</div>';
+    el.addEventListener('click', function(){
+      closeFolder();
+      setTimeout(function(){ openApp(a.key); }, 200);
+    });
+    grid.appendChild(el);
+  });
+  document.getElementById('folderOverlay').classList.add('open');
+}
+function closeFolder(){
+  document.getElementById('folderOverlay').classList.remove('open');
+}
+
+// ── SERIES A BAR ANIMATE ──
+setTimeout(function(){
+  var fill = document.getElementById('saFill');
+  if(fill) fill.style.width = '17%';
+  var rfill = document.getElementById('raiseFill');
+  if(rfill) rfill.style.width = '17%';
+}, 300);
+
+// ── KEYBOARD NAV ──
+document.addEventListener('keydown', function(e){
+  if(e.key === 'ArrowRight') goToPage(currentPage + 1);
+  if(e.key === 'ArrowLeft') goToPage(currentPage - 1);
+  if(e.key === 'Escape'){ closeOverlay(); closeFolder(); }
+});
+</script>
+</body>
+</html>
