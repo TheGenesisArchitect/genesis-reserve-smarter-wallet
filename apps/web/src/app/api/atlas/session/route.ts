@@ -19,7 +19,7 @@ export async function GET(_req: NextRequest) {
 
   const wsUrl =
     'wss://generativelanguage.googleapis.com/ws/' +
-    'google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContent' +
+    'google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent' +
     `?key=${apiKey}`
 
   return NextResponse.json({ wsUrl })

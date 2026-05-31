@@ -1116,7 +1116,7 @@ function initLive() {
       liveWS.onopen = function() {
         liveWS.send(JSON.stringify({
           setup: {
-            model: 'models/gemini-2.0-flash-live-001',
+            model: 'models/gemini-live-2.5-flash-preview',
             system_instruction: { parts: [{ text: ATLAS_SYSTEM_PROMPT }] },
             generation_config: {
               response_modalities: ['AUDIO'],
