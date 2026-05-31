@@ -1116,22 +1116,25 @@ function initLive() {
       liveWS.onopen = function() {
         liveWS.send(JSON.stringify({
           setup: {
-            model: 'models/gemini-2.0-flash-live-001',
-            systemInstruction: { parts: [{ text: ATLAS_SYSTEM_PROMPT }] },
-            generationConfig: {
-              responseModalities: ['AUDIO'],
-              speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Charon' } } }
+            model: 'models/gemini-2.0-flash-exp',
+            system_instruction: { parts: [{ text: ATLAS_SYSTEM_PROMPT }] },
+            generation_config: {
+              response_modalities: ['AUDIO'],
+              speech_config: { voice_config: { prebuilt_voice_config: { voice_name: 'Charon' } } }
             }
           }
         }));
       };
       liveWS.onmessage = handleLiveMsg;
-      liveWS.onerror   = function() { liveWS.close(); };
-      liveWS.onclose   = function(ev) {
+      liveWS.onerror = function(e) {
+        console.error('[ATLAS Live] WS error:', e);
+      };
+      liveWS.onclose = function(ev) {
+        console.warn('[ATLAS Live] WS closed — code:', ev.code, '| reason:', ev.reason || '(none)');
         liveReady = false; atlasSpeaking = false; stopPlayback();
         if (!permBlocked && ev.code !== 1000) {
-          setVoicePill('pending', 'Reconnecting…');
-          reconnTimer = setTimeout(initLive, 3500);
+          setVoicePill('pending', 'Reconnecting… (code ' + ev.code + ')');
+          reconnTimer = setTimeout(initLive, 8000);
         }
       };
     })
