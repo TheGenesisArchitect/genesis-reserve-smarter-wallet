@@ -302,7 +302,7 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
 .tool-chip:hover { background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.14); }
 
 /* ── KPI PANEL ───────────────────────────────────────────── */
-.kpi-panel { width:clamp(230px,21vw,295px);flex-shrink:0;border-left:1px solid rgba(255,255,255,.06);display:flex;flex-direction:column;overflow:hidden; }
+.kpi-panel { width:clamp(270px,24vw,390px);flex-shrink:0;border-left:1px solid rgba(255,255,255,.06);display:flex;flex-direction:column;overflow:hidden; }
 .kpi-header { flex-shrink:0;padding:14px 16px 10px;border-bottom:1px solid rgba(255,255,255,.06); }
 .kpi-title { font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:300;color:var(--text);letter-spacing:.04em; }
 .kpi-updated { font-size:9px;color:var(--muted);margin-top:2px;font-family:'JetBrains Mono',monospace; }
@@ -494,16 +494,16 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
 @media (min-width: 768px) and (max-width: 1099px) {
   .entity-grid  { grid-template-columns: repeat(2,1fr); }
   .actions-grid { grid-template-columns: repeat(2,1fr); }
-  .atlas-panel  { width: clamp(180px, 21vw, 225px); }
-  .kpi-panel    { width: clamp(195px, 23vw, 245px); }
+  .atlas-panel  { width: clamp(175px, 19vw, 215px); }
+  .kpi-panel    { width: clamp(230px, 25vw, 290px); }
   .avatar-ring-wrap { width: 100px; height: 100px; }
   .atlas-avatar-wrap { padding: 14px 14px 10px; }
 }
 
 /* ── MEDIUM DESKTOP (1100-1400px) ────────────────────────── */
 @media (min-width: 1100px) and (max-width: 1400px) {
-  .atlas-panel { width: clamp(195px, 16vw, 238px); }
-  .kpi-panel   { width: clamp(225px, 20vw, 272px); }
+  .atlas-panel { width: clamp(185px, 15vw, 225px); }
+  .kpi-panel   { width: clamp(255px, 22vw, 330px); }
 }
 </style>
 </head>
