@@ -98,10 +98,10 @@ function GenesisPrivyPage() {
     if (!authenticated) setSelectedAccountId(undefined)
   }, [authenticated])
 
-  // Bail out to preview mode if Privy doesn't initialize within 10s
+  // Bail out to error screen if Privy doesn't initialize within 5s
   useEffect(() => {
     if (ready) return
-    const t = setTimeout(() => setTimedOut(true), 10_000)
+    const t = setTimeout(() => setTimedOut(true), 5_000)
     return () => clearTimeout(t)
   }, [ready])
 
@@ -392,52 +392,53 @@ function PrivyErrorScreen() {
       <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 26, fontWeight: 300, color: '#f5f0e8', letterSpacing: '0.22em', marginBottom: 4 }}>GENESIS</div>
       <div style={{ fontFamily: "'Tenor Sans', sans-serif", fontSize: 9, letterSpacing: '0.6em', color: '#c9a84c', textTransform: 'uppercase', marginBottom: 32 }}>RESERVE</div>
 
+      <button
+        onClick={() => {
+          sessionStorage.setItem('gr_force_preview', '1')
+          window.location.reload()
+        }}
+        style={{
+          padding: '14px 32px', borderRadius: 24,
+          background: '#c9a84c', color: '#1a1400',
+          border: 'none', cursor: 'pointer',
+          fontSize: 13, letterSpacing: '0.12em',
+          fontFamily: "'Tenor Sans', sans-serif",
+          marginBottom: 16,
+        }}
+      >
+        Open Wallet — Preview Mode
+      </button>
+
       <div style={{
-        maxWidth: 360, textAlign: 'center',
-        padding: '20px 24px', borderRadius: 16,
+        maxWidth: 340, textAlign: 'center',
+        padding: '16px 20px', borderRadius: 14,
         background: 'rgba(255,255,255,0.03)',
-        border: '1px solid rgba(255,80,80,0.2)',
-        marginBottom: 24,
+        border: '1px solid rgba(201,168,76,0.15)',
+        marginBottom: 16,
       }}>
-        <div style={{ fontSize: 13, color: 'rgba(245,240,232,0.7)', lineHeight: 1.7, fontFamily: "'Tenor Sans', sans-serif" }}>
-          Wallet connection is taking longer than expected.
+        <div style={{ fontSize: 10, letterSpacing: '0.14em', color: '#c9a84c', textTransform: 'uppercase', marginBottom: 8, fontFamily: "'Tenor Sans', sans-serif" }}>
+          To activate live wallet
         </div>
-        <div style={{ fontSize: 11, color: 'rgba(245,240,232,0.35)', marginTop: 10, lineHeight: 1.6 }}>
-          Check that <code style={{ color: '#c9a84c' }}>localhost:3200</code> is in your Privy dashboard allowed origins, then refresh.
+        <div style={{ fontSize: 11, color: 'rgba(245,240,232,0.5)', lineHeight: 1.75, fontFamily: "'Tenor Sans', sans-serif" }}>
+          Go to <strong style={{ color: 'rgba(245,240,232,0.75)' }}>dashboard.privy.io</strong> → your app →{' '}
+          <strong style={{ color: 'rgba(245,240,232,0.75)' }}>Settings → Allowed Origins</strong><br />
+          Add: <code style={{ color: '#c9a84c' }}>https://genesis-privy.vercel.app</code>
         </div>
       </div>
 
       <button
         onClick={() => window.location.reload()}
         style={{
-          padding: '11px 28px', borderRadius: 24,
-          background: '#c9a84c', color: '#1a1400',
-          border: 'none', cursor: 'pointer',
-          fontSize: 12, letterSpacing: '0.12em',
-          fontFamily: "'Tenor Sans', sans-serif",
-          marginBottom: 12,
-        }}
-      >
-        Retry Connection
-      </button>
-
-      <button
-        onClick={() => {
-          // Strip Privy ID from URL to force preview mode on reload
-          sessionStorage.setItem('gr_force_preview', '1')
-          window.location.reload()
-        }}
-        style={{
           padding: '9px 24px', borderRadius: 24,
           background: 'transparent',
-          border: '1px solid rgba(255,255,255,0.12)',
-          color: 'rgba(245,240,232,0.45)',
+          border: '1px solid rgba(255,255,255,0.1)',
+          color: 'rgba(245,240,232,0.35)',
           cursor: 'pointer', fontSize: 11,
           letterSpacing: '0.08em',
           fontFamily: "'Tenor Sans', sans-serif",
         }}
       >
-        Continue in Preview Mode
+        Retry
       </button>
     </div>
   )
