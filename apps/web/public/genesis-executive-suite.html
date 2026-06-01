@@ -1042,7 +1042,7 @@ function handleLiveMsg(event) {
   console.log('[ATLAS Live] msg keys:', Object.keys(msg).join(', '), '| raw:', JSON.stringify(msg).slice(0, 200));
 
   /* Setup acknowledged — start mic and trigger greeting */
-  if (msg.setupComplete) {
+  if (msg.setupComplete !== undefined) {
     console.log('[ATLAS Live] setupComplete received — starting capture');
     liveReady = true;
     startCapture();
@@ -1117,16 +1117,20 @@ function initLive() {
 
       liveWS.onopen = function() {
         console.log('[ATLAS Live] WS open — sending setup');
-        liveWS.send(JSON.stringify({
+        var setupMsg = {
           setup: {
-            model: 'models/gemini-2.5-flash-native-audio-latest',
+            model: 'models/gemini-3.1-flash-live-preview',
             system_instruction: { parts: [{ text: ATLAS_SYSTEM_PROMPT }] },
             generation_config: {
-              response_modalities: ['AUDIO'],
-              speech_config: { voice_config: { prebuilt_voice_config: { voice_name: 'Charon' } } }
+              response_modalities: ['AUDIO']
             }
           }
-        }));
+        };
+        console.log('[ATLAS Live] setup payload:', JSON.stringify(setupMsg).slice(0, 300));
+        liveWS.send(JSON.stringify(setupMsg));
+        setTimeout(function() {
+          if (!liveReady) console.warn('[ATLAS Live] 15s elapsed — setupComplete never received');
+        }, 15000);
       };
       liveWS.onmessage = handleLiveMsg;
       liveWS.onerror = function(e) {
