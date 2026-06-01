@@ -917,6 +917,8 @@ function setAtlasState(s) {
 /* ── CONVERSATION ────────────────────────────────────────── */
 function addMsg(role, text) {
   var convo = document.getElementById('atlasConvo');
+  var safe = typeof text === 'string' ? text : (text && typeof text.text === 'string' ? text.text : '');
+  if (!safe.trim()) return;
   var msg = document.createElement('div');
   msg.className = 'msg ' + role;
   var sender = document.createElement('div');
@@ -924,7 +926,7 @@ function addMsg(role, text) {
   sender.textContent = role === 'atlas' ? 'ATLAS' : 'You';
   var bubble = document.createElement('div');
   bubble.className = 'msg-bubble';
-  bubble.textContent = text;
+  bubble.textContent = safe;
   msg.appendChild(sender);
   msg.appendChild(bubble);
   convo.appendChild(msg);
@@ -947,6 +949,15 @@ var pendingOut    = '';     /* accumulated output transcription             */
 
 /* setAwaitCmd kept as no-op for any legacy call sites */
 function setAwaitCmd() {}
+
+/* Extract plain text from a Gemini transcription field.
+   Gemini may send {text:"..."} or a plain string — handle both. */
+function extractTranscript(val) {
+  if (!val) return '';
+  if (typeof val === 'string') return val;
+  if (typeof val.text === 'string') return val.text;
+  return '';
+}
 
 function setVoicePill(state, text) {
   var pill = document.getElementById('voicePill');
@@ -1093,8 +1104,10 @@ function processLiveMsg(rawData) {
   }
 
   /* Accumulate transcriptions */
-  if (sc.inputTranscription && sc.inputTranscription.text)   pendingIn  += sc.inputTranscription.text  + ' ';
-  if (sc.outputTranscription && sc.outputTranscription.text) pendingOut += sc.outputTranscription.text + ' ';
+  var inText  = extractTranscript(sc.inputTranscription);
+  var outText = extractTranscript(sc.outputTranscription);
+  if (inText)  pendingIn  += inText  + ' ';
+  if (outText) pendingOut += outText + ' ';
 
   /* User barged in — stop playback immediately */
   if (sc.interrupted) {
