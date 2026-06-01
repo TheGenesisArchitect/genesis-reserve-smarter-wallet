@@ -762,7 +762,13 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('kpiUpdated').textContent =
     'Updated: ' + now.toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
   setTimeout(function() {
-    addMsg('dept', 'Good morning. One urgent action requires your attention: the Helix Suite™ trademark application must be filed with the USPTO before the Berlin meeting on June 12. Filing this week ensures pending status is confirmed before the investor meeting. The Lesley Harris LOI has been reviewed — one non-standard clause noted for your consideration. YFLPP agent agreement template is ready for your review.');
+    var name = localStorage.getItem('gr_copilot_user');
+    if (!name) {
+      awaitingName = true;
+      addMsg('dept', 'Welcome to CIPHER — your Legal CoPilot for Genesis Reserve. I have your full contract queue and compliance calendar ready. One urgent item needs your attention. What\'s your name?');
+    } else {
+      addMsg('dept', 'Good morning, ' + name + '. One urgent action: the Helix Suite™ trademark must be filed with USPTO before Berlin on June 12. The Lesley Harris LOI is reviewed — one non-standard clause noted. The YFLPP agent agreement template is ready for your review.');
+    }
   }, 800);
 
   initLive();
@@ -826,6 +832,14 @@ function sendMsg() {
   var input = document.getElementById('copilotInput');
   var text = input.value.trim();
   if (!text) return;
+  if (awaitingName) {
+    awaitingName = false;
+    setUserName(text);
+    addMsg('user', text);
+    input.value = '';
+    addMsg('dept', 'Great to meet you, ' + USER_NAME + '! Here\'s your legal snapshot — one urgent action: the Helix Suite™ trademark must be filed before Berlin June 12. LOI reviewed, YFLPP agreement ready. I\'m CIPHER. What would you like to address first?');
+    return;
+  }
   addMsg('user', text);
   input.value = '';
   if (liveWS && liveWS.readyState === WebSocket.OPEN && liveReady) {
@@ -869,9 +883,29 @@ function showToast(msg) {
 }
 
 /* ── CIPHER GEMINI LIVE VOICE ENGINE ──────────────────────── */
-var DEPT_NAME     = 'CIPHER';
-var DEPT_IDLE     = 'Monitoring · 1 Urgent Action';
-var DEPT_GREETING = 'You are online. Give Anthony a brief two-sentence legal status update, prioritizing the Helix trademark.';
+var DEPT_NAME    = 'CIPHER';
+var DEPT_IDLE    = 'Monitoring · 1 Urgent Action';
+var USER_NAME    = localStorage.getItem('gr_copilot_user') || null;
+var awaitingName = false;
+var micActive    = true;
+
+function setUserName(n) {
+  USER_NAME = (n || '').trim();
+  if (USER_NAME) localStorage.setItem('gr_copilot_user', USER_NAME);
+}
+
+function getDeptSystemPrompt() {
+  var ctx = USER_NAME
+    ? 'The user is ' + USER_NAME + '. Address them by first name throughout.\n\n'
+    : 'The user has not introduced themselves. When they first speak, warmly ask their name and use it from that point on.\n\n';
+  return ctx + CIPHER_SYSTEM_PROMPT;
+}
+
+function getGreetingPrompt() {
+  return USER_NAME
+    ? 'You are online. The user is ' + USER_NAME + '. Give them a brief, friendly two-sentence legal status update starting with the Helix Suite™ trademark urgency, addressing them by name.'
+    : 'You are online. Warmly introduce yourself as CIPHER, the Legal CoPilot for Genesis Reserve. Ask the user their name before delivering the legal status update.';
+}
 
 var CIPHER_SYSTEM_PROMPT = [
   'You are CIPHER — the Legal CoPilot for Genesis Reserve, built on the Helix Suite platform.',
@@ -972,7 +1006,7 @@ function startCapture() {
     var src       = captureCtx.createMediaStreamSource(stream);
     captureProc   = captureCtx.createScriptProcessor(4096, 1, 1);
     captureProc.onaudioprocess = function(e) {
-      if (!liveWS || liveWS.readyState !== WebSocket.OPEN || !liveReady) return;
+      if (!liveWS || liveWS.readyState !== WebSocket.OPEN || !liveReady || !micActive) return;
       var f32 = e.inputBuffer.getChannelData(0);
       var ratio = captureCtx.sampleRate / 16000;
       var outLen = Math.floor(f32.length / ratio);
@@ -1031,7 +1065,7 @@ function processLiveMsg(rawData) {
     liveReady = true; startCapture(); setDeptCopilotState('idle');
     setTimeout(function() {
       if (liveWS && liveWS.readyState === WebSocket.OPEN)
-        liveWS.send(JSON.stringify({ clientContent: { turns: [{ role: 'user', parts: [{ text: DEPT_GREETING }] }], turnComplete: true } }));
+        liveWS.send(JSON.stringify({ clientContent: { turns: [{ role: 'user', parts: [{ text: getGreetingPrompt() }] }], turnComplete: true } }));
     }, 400);
     return;
   }
@@ -1077,7 +1111,7 @@ function initLive() {
         liveWS.send(JSON.stringify({
           setup: {
             model: 'models/gemini-3.1-flash-live-preview',
-            system_instruction: { parts: [{ text: CIPHER_SYSTEM_PROMPT }] },
+            system_instruction: { parts: [{ text: getDeptSystemPrompt() }] },
             generation_config: { response_modalities: ['AUDIO'] }
           }
         }));
@@ -1103,13 +1137,19 @@ function closeLive() {
 
 function activateVoiceManually() {
   permBlocked = false;
+  if (captureStream && liveReady) {
+    micActive = !micActive;
+    setDeptVoicePill(micActive ? 'active' : 'pending', micActive ? 'Listening…' : 'Mic paused · Tap to resume');
+    return;
+  }
   if (!liveWS || liveWS.readyState !== WebSocket.OPEN) initLive();
   else if (!captureStream) startCapture();
 }
 
 function pushToTalk() {
-  if (deptSpeaking) { stopPlayback(); setDeptCopilotState('idle'); setDeptVoicePill('active', 'Listening…'); return; }
-  if (!liveWS || liveWS.readyState !== WebSocket.OPEN) { initLive(); return; }
+  if (deptSpeaking) { stopPlayback(); setDeptCopilotState('idle'); micActive = true; setDeptVoicePill('active', 'Listening…'); return; }
+  if (!captureStream || !liveReady) { micActive = true; initLive(); return; }
+  micActive = true; setDeptVoicePill('active', 'Listening…');
 }
 </script>
 </body>

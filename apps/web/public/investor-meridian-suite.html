@@ -700,7 +700,13 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('kpiUpdated').textContent =
     'Updated: ' + now.toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
   setTimeout(function() {
-    addMsg('dept', 'Good morning. 11 days to Berlin. Two items need immediate action: the Helix Suite™ trademark must be filed this week through CIPHER, and the investment deck needs the May financials from LEDGER before the data room refresh. Lesley Harris LOI is ready to execute — send when you are ready. Two investor follow-up drafts are waiting for your approval in Hermes Studio.');
+    var name = localStorage.getItem('gr_copilot_user');
+    if (!name) {
+      awaitingName = true;
+      addMsg('dept', 'Welcome to MERIDIAN — your Investor Relations CoPilot for Genesis Reserve. I have your full pipeline and Berlin readiness dashboard ready. What\'s your name?');
+    } else {
+      addMsg('dept', 'Good morning, ' + name + '. 11 days to Berlin. Two urgent items: the Helix Suite™ trademark must be filed through CIPHER this week, and LEDGER\'s May financials are needed before the data room refresh. Lesley Harris LOI is ready to execute. Two Hermes Studio drafts await your approval.');
+    }
   }, 800);
 
   initLive();
@@ -763,6 +769,14 @@ function sendMsg() {
   var input = document.getElementById('copilotInput');
   var text = input.value.trim();
   if (!text) return;
+  if (awaitingName) {
+    awaitingName = false;
+    setUserName(text);
+    addMsg('user', text);
+    input.value = '';
+    addMsg('dept', 'Great to meet you, ' + USER_NAME + '! Here\'s where we stand — 11 days to Berlin, Lesley Harris LOI ready to sign, Helix™ trademark urgent. I\'m MERIDIAN and I\'m fully briefed. What would you like to tackle first?');
+    return;
+  }
   addMsg('user', text);
   input.value = '';
   if (liveWS && liveWS.readyState === WebSocket.OPEN && liveReady) {
@@ -803,9 +817,29 @@ function showToast(msg) {
 }
 
 /* ── MERIDIAN GEMINI LIVE VOICE ENGINE ────────────────────── */
-var DEPT_NAME     = 'MERIDIAN';
-var DEPT_IDLE     = 'Monitoring · Pipeline Active';
-var DEPT_GREETING = 'You are online. Give Anthony a brief two-sentence investor relations status update.';
+var DEPT_NAME    = 'MERIDIAN';
+var DEPT_IDLE    = 'Monitoring · Pipeline Active';
+var USER_NAME    = localStorage.getItem('gr_copilot_user') || null;
+var awaitingName = false;
+var micActive    = true;
+
+function setUserName(n) {
+  USER_NAME = (n || '').trim();
+  if (USER_NAME) localStorage.setItem('gr_copilot_user', USER_NAME);
+}
+
+function getDeptSystemPrompt() {
+  var ctx = USER_NAME
+    ? 'The user is ' + USER_NAME + '. Address them by first name throughout.\n\n'
+    : 'The user has not introduced themselves. When they first speak, warmly ask their name and use it from that point on.\n\n';
+  return ctx + MERIDIAN_SYSTEM_PROMPT;
+}
+
+function getGreetingPrompt() {
+  return USER_NAME
+    ? 'You are online. The user is ' + USER_NAME + '. Give them a brief, friendly two-sentence investor relations status update, addressing them by name.'
+    : 'You are online. Warmly introduce yourself as MERIDIAN, the Investor Relations CoPilot for Genesis Reserve. Ask the user their name before delivering a status update.';
+}
 
 var MERIDIAN_SYSTEM_PROMPT = [
   'You are MERIDIAN — the Investor Relations CoPilot for Genesis Reserve, built on the Helix Suite platform.',
@@ -900,7 +934,7 @@ function startCapture() {
     var src       = captureCtx.createMediaStreamSource(stream);
     captureProc   = captureCtx.createScriptProcessor(4096, 1, 1);
     captureProc.onaudioprocess = function(e) {
-      if (!liveWS || liveWS.readyState !== WebSocket.OPEN || !liveReady) return;
+      if (!liveWS || liveWS.readyState !== WebSocket.OPEN || !liveReady || !micActive) return;
       var f32 = e.inputBuffer.getChannelData(0);
       var ratio = captureCtx.sampleRate / 16000;
       var outLen = Math.floor(f32.length / ratio);
@@ -959,7 +993,7 @@ function processLiveMsg(rawData) {
     liveReady = true; startCapture(); setDeptCopilotState('idle');
     setTimeout(function() {
       if (liveWS && liveWS.readyState === WebSocket.OPEN)
-        liveWS.send(JSON.stringify({ clientContent: { turns: [{ role: 'user', parts: [{ text: DEPT_GREETING }] }], turnComplete: true } }));
+        liveWS.send(JSON.stringify({ clientContent: { turns: [{ role: 'user', parts: [{ text: getGreetingPrompt() }] }], turnComplete: true } }));
     }, 400);
     return;
   }
@@ -1005,7 +1039,7 @@ function initLive() {
         liveWS.send(JSON.stringify({
           setup: {
             model: 'models/gemini-3.1-flash-live-preview',
-            system_instruction: { parts: [{ text: MERIDIAN_SYSTEM_PROMPT }] },
+            system_instruction: { parts: [{ text: getDeptSystemPrompt() }] },
             generation_config: { response_modalities: ['AUDIO'] }
           }
         }));
@@ -1031,13 +1065,19 @@ function closeLive() {
 
 function activateVoiceManually() {
   permBlocked = false;
+  if (captureStream && liveReady) {
+    micActive = !micActive;
+    setDeptVoicePill(micActive ? 'active' : 'pending', micActive ? 'Listening…' : 'Mic paused · Tap to resume');
+    return;
+  }
   if (!liveWS || liveWS.readyState !== WebSocket.OPEN) initLive();
   else if (!captureStream) startCapture();
 }
 
 function pushToTalk() {
-  if (deptSpeaking) { stopPlayback(); setDeptCopilotState('idle'); setDeptVoicePill('active', 'Listening…'); return; }
-  if (!liveWS || liveWS.readyState !== WebSocket.OPEN) { initLive(); return; }
+  if (deptSpeaking) { stopPlayback(); setDeptCopilotState('idle'); micActive = true; setDeptVoicePill('active', 'Listening…'); return; }
+  if (!captureStream || !liveReady) { micActive = true; initLive(); return; }
+  micActive = true; setDeptVoicePill('active', 'Listening…');
 }
 </script>
 </body>

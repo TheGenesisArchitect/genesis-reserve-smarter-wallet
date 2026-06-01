@@ -724,9 +724,15 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('kpiUpdated').textContent =
     'Updated: ' + now.toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
 
-  // Morning brief
+  // Morning brief / intro
   setTimeout(function() {
-    addMsg('dept', 'Good morning. May month-end close is ready for your review. Burn rate is within target at $17,412. Cash position is $87,400 — below the $100K watch threshold. Runway stands at 142 days. MERIDIAN has requested the financial brief for the Berlin package. Three workflows need your attention in Hermes Studio.');
+    var name = localStorage.getItem('gr_copilot_user');
+    if (!name) {
+      awaitingName = true;
+      addMsg('dept', 'Welcome to LEDGER — your Finance CoPilot for Genesis Reserve. I have your full financial dashboard ready. Before we begin, what\'s your name?');
+    } else {
+      addMsg('dept', 'Good morning, ' + name + '. May month-end close is ready for your review. Burn rate $17,412, cash $87,400, runway 142 days. MERIDIAN has requested the Berlin financial brief. Three workflows are pending in Hermes Studio.');
+    }
   }, 800);
 
   // Voice engine
@@ -791,6 +797,14 @@ function sendMsg() {
   var input = document.getElementById('copilotInput');
   var text = input.value.trim();
   if (!text) return;
+  if (awaitingName) {
+    awaitingName = false;
+    setUserName(text);
+    addMsg('user', text);
+    input.value = '';
+    addMsg('dept', 'Great to meet you, ' + USER_NAME + '! Here\'s your snapshot — burn $17,412/mo, cash $87,400, runway 142 days. Three Hermes Studio workflows are pending. Just ask me anything about Finance.');
+    return;
+  }
   addMsg('user', text);
   input.value = '';
   if (liveWS && liveWS.readyState === WebSocket.OPEN && liveReady) {
@@ -843,7 +857,27 @@ function showToast(msg) {
 /* ── LEDGER GEMINI LIVE VOICE ENGINE ──────────────────────── */
 var DEPT_NAME    = 'LEDGER';
 var DEPT_IDLE    = 'Monitoring · All Systems Clear';
-var DEPT_GREETING = 'You are online. Give Anthony a brief two-sentence finance status update.';
+var USER_NAME    = localStorage.getItem('gr_copilot_user') || null;
+var awaitingName = false;
+var micActive    = true;
+
+function setUserName(n) {
+  USER_NAME = (n || '').trim();
+  if (USER_NAME) localStorage.setItem('gr_copilot_user', USER_NAME);
+}
+
+function getDeptSystemPrompt() {
+  var ctx = USER_NAME
+    ? 'The user is ' + USER_NAME + '. Address them by first name throughout.\n\n'
+    : 'The user has not introduced themselves. When they first speak, warmly ask their name and use it from that point on.\n\n';
+  return ctx + LEDGER_SYSTEM_PROMPT;
+}
+
+function getGreetingPrompt() {
+  return USER_NAME
+    ? 'You are online. The user is ' + USER_NAME + '. Give them a brief, friendly two-sentence finance status update, addressing them by name.'
+    : 'You are online. Warmly introduce yourself as LEDGER, the Finance CoPilot for Genesis Reserve. Ask the user their name before delivering a status update.';
+}
 
 var LEDGER_SYSTEM_PROMPT = [
   'You are LEDGER — the Finance CoPilot for Genesis Reserve, built on the Helix Suite platform.',
@@ -944,7 +978,7 @@ function startCapture() {
     var src       = captureCtx.createMediaStreamSource(stream);
     captureProc   = captureCtx.createScriptProcessor(4096, 1, 1);
     captureProc.onaudioprocess = function(e) {
-      if (!liveWS || liveWS.readyState !== WebSocket.OPEN || !liveReady) return;
+      if (!liveWS || liveWS.readyState !== WebSocket.OPEN || !liveReady || !micActive) return;
       var f32 = e.inputBuffer.getChannelData(0);
       var ratio = captureCtx.sampleRate / 16000;
       var outLen = Math.floor(f32.length / ratio);
@@ -1003,7 +1037,7 @@ function processLiveMsg(rawData) {
     liveReady = true; startCapture(); setDeptCopilotState('idle');
     setTimeout(function() {
       if (liveWS && liveWS.readyState === WebSocket.OPEN)
-        liveWS.send(JSON.stringify({ clientContent: { turns: [{ role: 'user', parts: [{ text: DEPT_GREETING }] }], turnComplete: true } }));
+        liveWS.send(JSON.stringify({ clientContent: { turns: [{ role: 'user', parts: [{ text: getGreetingPrompt() }] }], turnComplete: true } }));
     }, 400);
     return;
   }
@@ -1049,7 +1083,7 @@ function initLive() {
         liveWS.send(JSON.stringify({
           setup: {
             model: 'models/gemini-3.1-flash-live-preview',
-            system_instruction: { parts: [{ text: LEDGER_SYSTEM_PROMPT }] },
+            system_instruction: { parts: [{ text: getDeptSystemPrompt() }] },
             generation_config: { response_modalities: ['AUDIO'] }
           }
         }));
@@ -1075,13 +1109,19 @@ function closeLive() {
 
 function activateVoiceManually() {
   permBlocked = false;
+  if (captureStream && liveReady) {
+    micActive = !micActive;
+    setDeptVoicePill(micActive ? 'active' : 'pending', micActive ? 'Listening…' : 'Mic paused · Tap to resume');
+    return;
+  }
   if (!liveWS || liveWS.readyState !== WebSocket.OPEN) initLive();
   else if (!captureStream) startCapture();
 }
 
 function pushToTalk() {
-  if (deptSpeaking) { stopPlayback(); setDeptCopilotState('idle'); setDeptVoicePill('active', 'Listening…'); return; }
-  if (!liveWS || liveWS.readyState !== WebSocket.OPEN) { initLive(); return; }
+  if (deptSpeaking) { stopPlayback(); setDeptCopilotState('idle'); micActive = true; setDeptVoicePill('active', 'Listening…'); return; }
+  if (!captureStream || !liveReady) { micActive = true; initLive(); return; }
+  micActive = true; setDeptVoicePill('active', 'Listening…');
 }
 </script>
 </body>

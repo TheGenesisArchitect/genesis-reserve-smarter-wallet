@@ -968,6 +968,7 @@ var captureStream = null;   /* MediaStream from getUserMedia               */
 var playbackCtx   = null;   /* AudioContext for 24kHz output               */
 var nextPlayTime  = 0;      /* scheduled end of last audio chunk           */
 var atlasSpeaking = false;  /* ATLAS is playing audio                      */
+var micActive     = true;   /* mic streaming gate — toggle without muting system mic */
 var permBlocked   = false;  /* mic permission denied                       */
 var reconnTimer   = null;   /* auto-reconnect handle                       */
 var pendingIn     = '';     /* accumulated input transcription              */
@@ -1014,7 +1015,7 @@ function startCapture() {
     captureProc   = captureCtx.createScriptProcessor(4096, 1, 1);
 
     captureProc.onaudioprocess = function(e) {
-      if (!liveWS || liveWS.readyState !== WebSocket.OPEN || !liveReady) return;
+      if (!liveWS || liveWS.readyState !== WebSocket.OPEN || !liveReady || !micActive) return;
       var f32    = e.inputBuffer.getChannelData(0);
       var ratio  = captureCtx.sampleRate / 16000;
       var outLen = Math.floor(f32.length / ratio);
@@ -1211,6 +1212,11 @@ function activateVoiceManually() {
   permBlocked = false;
   var p = document.getElementById('wakePrompt');
   if (p) p.classList.remove('show');
+  if (captureStream && liveReady) {
+    micActive = !micActive;
+    setVoicePill(micActive ? 'active' : 'pending', micActive ? 'Listening…' : 'Mic paused · Tap to resume');
+    return;
+  }
   if (!liveWS || liveWS.readyState !== WebSocket.OPEN) initLive();
   else if (!captureStream) startCapture();
 }
