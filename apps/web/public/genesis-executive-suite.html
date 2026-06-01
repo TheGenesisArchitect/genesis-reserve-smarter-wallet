@@ -1051,8 +1051,6 @@ function processLiveMsg(rawData) {
     console.warn('[ATLAS Live] JSON parse failed:', e.message, '| raw:', String(rawData).slice(0, 120));
     return;
   }
-  console.log('[ATLAS Live] msg keys:', Object.keys(msg).join(', '), '| raw:', JSON.stringify(msg).slice(0, 200));
-
   /* Setup acknowledged — start mic and trigger greeting */
   if (msg.setupComplete !== undefined) {
     console.log('[ATLAS Live] setupComplete received — starting capture');
@@ -1095,8 +1093,8 @@ function processLiveMsg(rawData) {
   }
 
   /* Accumulate transcriptions */
-  if (sc.inputTranscription)  pendingIn  += sc.inputTranscription  + ' ';
-  if (sc.outputTranscription) pendingOut += sc.outputTranscription + ' ';
+  if (sc.inputTranscription && sc.inputTranscription.text)   pendingIn  += sc.inputTranscription.text  + ' ';
+  if (sc.outputTranscription && sc.outputTranscription.text) pendingOut += sc.outputTranscription.text + ' ';
 
   /* User barged in — stop playback immediately */
   if (sc.interrupted) {
@@ -1140,9 +1138,6 @@ function initLive() {
         };
         console.log('[ATLAS Live] setup payload:', JSON.stringify(setupMsg).slice(0, 300));
         liveWS.send(JSON.stringify(setupMsg));
-        setTimeout(function() {
-          if (!liveReady) console.warn('[ATLAS Live] 15s elapsed — setupComplete never received');
-        }, 15000);
       };
       liveWS.onmessage = handleLiveMsg;
       liveWS.onerror = function(e) {
