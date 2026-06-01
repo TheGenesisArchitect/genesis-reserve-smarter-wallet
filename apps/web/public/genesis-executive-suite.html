@@ -1037,8 +1037,20 @@ function stopPlayback() {
 
 /* ── WebSocket message handler ───────────────────────────── */
 function handleLiveMsg(event) {
+  /* Gemini sends binary Blobs over its gRPC-WebSocket bridge */
+  if (event.data instanceof Blob) {
+    event.data.text().then(function(text) { processLiveMsg(text); });
+    return;
+  }
+  processLiveMsg(event.data);
+}
+
+function processLiveMsg(rawData) {
   var msg;
-  try { msg = JSON.parse(event.data); } catch(_) { return; }
+  try { msg = JSON.parse(rawData); } catch(e) {
+    console.warn('[ATLAS Live] JSON parse failed:', e.message, '| raw:', String(rawData).slice(0, 120));
+    return;
+  }
   console.log('[ATLAS Live] msg keys:', Object.keys(msg).join(', '), '| raw:', JSON.stringify(msg).slice(0, 200));
 
   /* Setup acknowledged — start mic and trigger greeting */
