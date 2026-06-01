@@ -974,6 +974,20 @@ var reconnTimer   = null;   /* auto-reconnect handle                       */
 var pendingIn     = '';     /* accumulated input transcription              */
 var pendingOut    = '';     /* accumulated output transcription             */
 
+/* ── Single-instance enforcement: only one ATLAS tab speaks at a time ── */
+var _bc = ('BroadcastChannel' in window) ? new BroadcastChannel('gr_copilot_ATLAS') : null;
+if (_bc) {
+  _bc.onmessage = function(e) {
+    if (e.data !== 'takeover') return;
+    micActive = false; liveReady = false; atlasSpeaking = false;
+    if (liveWS) { try { liveWS.close(); } catch(x){} liveWS = null; }
+    if (captureProc) { try { captureProc.disconnect(); } catch(x){} captureProc = null; }
+    if (captureStream) { captureStream.getTracks().forEach(function(t){ t.stop(); }); captureStream = null; }
+    setVoicePill('off', 'Paused — another window is active');
+    addMsg('atlas', 'Another window opened ATLAS. Mic paused here — close the other window to resume.');
+  };
+}
+
 /* setAwaitCmd kept as no-op for any legacy call sites */
 function setAwaitCmd() {}
 
@@ -1159,6 +1173,7 @@ function processLiveMsg(rawData) {
 function initLive() {
   clearTimeout(reconnTimer);
   if (liveWS && liveWS.readyState === WebSocket.OPEN) return;
+  if (_bc) _bc.postMessage('takeover');
   setVoicePill('pending', 'Connecting…'); setAtlasState('thinking');
 
   fetch('/api/atlas/session')
