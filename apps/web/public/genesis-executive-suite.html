@@ -42,7 +42,8 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
   background:
     radial-gradient(ellipse 80% 60% at 15% 50%, rgba(201,168,76,.04) 0%, transparent 60%),
     radial-gradient(ellipse 60% 80% at 85% 30%, rgba(155,109,255,.04) 0%, transparent 60%),
-    var(--bg);
+    linear-gradient(rgba(2,3,5,.91),rgba(2,3,5,.91)),
+    url('/wood-texture.jpg') center/cover fixed;
 }
 
 /* ── HEADER ──────────────────────────────────────────────── */
@@ -218,6 +219,29 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
 @keyframes srb-pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
 .srb-close { margin-left:auto; background:none; border:none; color:rgba(245,240,232,.3); cursor:pointer; font-size:10px; padding:0 2px; font-family:inherit; }
 .srb-close:hover { color:rgba(245,240,232,.7); }
+/* ── AEE: Action Extraction Engine ── */
+.aee-live-section { padding:8px 12px 4px; }
+.aee-live-label { display:flex; align-items:center; gap:5px; font-size:9px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+.aee-live-dot { width:5px; height:5px; border-radius:50%; background:var(--gold); animation:srb-pulse 2s ease-in-out infinite; }
+.aee-cards-wrap { display:flex; flex-direction:column; gap:4px; }
+.aee-card { display:flex; align-items:flex-start; gap:7px; padding:7px 10px; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.07); border-left:2px solid; border-radius:8px; position:relative; font-size:11px; }
+.aee-card[data-type="CALENDAR"] { border-left-color:var(--blue); }
+.aee-card[data-type="TASK"] { border-left-color:var(--green); }
+.aee-card[data-type="DOCUMENT"] { border-left-color:var(--violet); }
+.aee-card[data-type="PRIORITY"] { border-left-color:var(--gold); }
+.aee-card[data-type="DEADLINE"] { border-left-color:var(--red); }
+.aee-card[data-type="DECISION"] { border-left-color:var(--teal); }
+.aee-card-icon { font-size:12px; flex-shrink:0; line-height:1.5; }
+.aee-card-body { flex:1; min-width:0; }
+.aee-card-title { font-weight:600; color:var(--text); line-height:1.3; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.aee-card-meta { font-size:9.5px; color:var(--muted); margin-top:1px; }
+.aee-card-dismiss { position:absolute; top:4px; right:6px; font-size:9px; color:var(--muted); cursor:pointer; opacity:0; transition:opacity .15s; background:none; border:none; padding:0; }
+.aee-card:hover .aee-card-dismiss { opacity:1; }
+.aee-badge { position:absolute; top:-4px; right:-4px; min-width:15px; height:15px; border-radius:8px; background:var(--gold); color:var(--bg); font-size:9px; font-weight:700; display:flex; align-items:center; justify-content:center; padding:0 3px; pointer-events:none; }
+.aee-suggested { animation:aee-pulse 1.5s ease-in-out 3; }
+@keyframes aee-pulse { 0%,100%{box-shadow:none} 50%{box-shadow:0 0 0 3px rgba(201,168,76,.4)} }
+@keyframes dl-pulse { 0%,100%{color:var(--text)} 50%{color:var(--red)} }
+.dl-pulse { animation:dl-pulse 1.2s ease-in-out infinite; }
 /* Input */
 .atlas-input-area { flex-shrink: 0; padding: 10px 12px 12px; border-top: 1px solid rgba(255,255,255,.06); background: rgba(4,6,8,.5); }
 .atlas-input-row {
@@ -706,24 +730,24 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
       <div class="content-section">
         <div class="section-hdr"><div><div class="section-title">Quick Actions</div></div></div>
         <div class="actions-grid">
-          <button class="action-btn" onclick="atlasRespond('loi')"><div class="action-icon" style="background:rgba(232,130,10,.1);color:var(--orange)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div><div class="action-label">Send LOI</div></button>
-          <button class="action-btn" onclick="atlasRespond('berlin')"><div class="action-icon" style="background:rgba(232,64,64,.1);color:var(--red)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9z"/></svg></div><div class="action-label">Berlin Brief</div></button>
-          <button class="action-btn" onclick="window.open('https://calendar.google.com','_blank','noopener,noreferrer')"><div class="action-icon" style="background:rgba(74,158,255,.1);color:var(--blue)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div class="action-label">Schedule</div></button>
-          <button class="action-btn" onclick="atlasRespond('compliance')"><div class="action-icon" style="background:rgba(0,212,170,.1);color:var(--teal)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div class="action-label">Compliance</div></button>
-          <button class="action-btn" onclick="atlasRespond('ip')"><div class="action-icon" style="background:rgba(201,168,76,.1);color:var(--gold)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg></div><div class="action-label">IP Report</div></button>
+          <button class="action-btn" data-action="action-doc" onclick="atlasRespond('loi')"><div class="action-icon" style="background:rgba(232,130,10,.1);color:var(--orange)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div><div class="action-label">Send LOI</div></button>
+          <button class="action-btn" data-action="action-deadline" onclick="atlasRespond('berlin')"><div class="action-icon" style="background:rgba(232,64,64,.1);color:var(--red)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9z"/></svg></div><div class="action-label">Berlin Brief</div></button>
+          <button class="action-btn" data-action="action-schedule" onclick="window.open('https://calendar.google.com','_blank','noopener,noreferrer')"><div class="action-icon" style="background:rgba(74,158,255,.1);color:var(--blue)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div class="action-label">Schedule</div></button>
+          <button class="action-btn" data-action="action-task" onclick="atlasRespond('compliance')"><div class="action-icon" style="background:rgba(0,212,170,.1);color:var(--teal)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div class="action-label">Compliance</div></button>
+          <button class="action-btn" data-action="action-priority" onclick="atlasRespond('ip')"><div class="action-icon" style="background:rgba(201,168,76,.1);color:var(--gold)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg></div><div class="action-label">IP Report</div></button>
           <button class="action-btn" onclick="window.open('https://notion.so','_blank','noopener,noreferrer')"><div class="action-icon" style="background:rgba(255,255,255,.06);color:var(--muted)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h4"/></svg></div><div class="action-label">Board Notes</div></button>
           <button class="action-btn" onclick="window.open('https://drive.google.com','_blank','noopener,noreferrer')"><div class="action-icon" style="background:rgba(74,158,255,.08);color:var(--blue)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div><div class="action-label">Drive Folder</div></button>
-          <button class="action-btn" onclick="atlasRespond('series_a')"><div class="action-icon" style="background:rgba(26,191,106,.1);color:var(--green)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div><div class="action-label">Series A</div></button>
+          <button class="action-btn" data-action="action-decide" onclick="atlasRespond('series_a')"><div class="action-icon" style="background:rgba(26,191,106,.1);color:var(--green)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div><div class="action-label">Series A</div></button>
         </div>
       </div>
 
       <div class="content-section">
         <div class="section-hdr"><div><div class="section-title">Toolstack</div></div></div>
         <div class="tools-strip">
-          <a class="tool-chip" href="https://www.docusign.com" target="_blank" rel="noopener noreferrer"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>DocuSign</a>
-          <a class="tool-chip" href="https://notion.so" target="_blank" rel="noopener noreferrer"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h4"/></svg>Notion</a>
-          <a class="tool-chip" href="https://drive.google.com" target="_blank" rel="noopener noreferrer"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>Google Drive</a>
-          <a class="tool-chip" href="https://calendar.google.com" target="_blank" rel="noopener noreferrer"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Calendar</a>
+          <a class="tool-chip" data-tool="tool-docusign" href="https://www.docusign.com" target="_blank" rel="noopener noreferrer"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>DocuSign</a>
+          <a class="tool-chip" data-tool="tool-notion" href="https://notion.so" target="_blank" rel="noopener noreferrer"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h4"/></svg>Notion</a>
+          <a class="tool-chip" data-tool="tool-drive" href="https://drive.google.com" target="_blank" rel="noopener noreferrer"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>Google Drive</a>
+          <a class="tool-chip" data-tool="tool-calendar" href="https://calendar.google.com" target="_blank" rel="noopener noreferrer"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Calendar</a>
           <a class="tool-chip" href="https://claude.ai" target="_blank" rel="noopener noreferrer"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.46 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.46 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/></svg>Claude AI</a>
           <a class="tool-chip" href="https://github.com/TheGenesisArchitect" target="_blank" rel="noopener noreferrer"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>GitHub</a>
         </div>
@@ -737,6 +761,10 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
         <div class="kpi-updated" id="kpiTime">Updated now</div>
       </div>
       <div class="kpi-scroll">
+        <div class="aee-live-section" id="aeeLiveSection" style="display:none">
+          <div class="aee-live-label"><span class="aee-live-dot"></span>Live Actions</div>
+          <div class="aee-cards-wrap"></div>
+        </div>
         <div class="kpi-card gold"><div class="kpi-card-label">Series A Progress</div><div class="kpi-val">$500K</div><div class="kpi-sub">of $2.5M · 20%</div><div class="kpi-bar-wrap"><div class="kpi-bar-track"><div class="kpi-bar-fill" style="width:20%"></div></div></div></div>
         <div class="kpi-card green"><div class="kpi-card-label">Compliance Score</div><div class="kpi-val">100%</div><div class="kpi-sub">All entities current</div><div class="kpi-bar-wrap"><div class="kpi-bar-track"><div class="kpi-bar-fill" style="width:100%"></div></div></div></div>
         <div class="kpi-card teal"><div class="kpi-card-label">Active Entities</div><div class="kpi-val">3</div><div class="kpi-sub">Delaware · All current</div></div>
@@ -747,10 +775,10 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
         <div style="margin-top:4px">
           <div style="font-size:9.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px">Deadlines</div>
           <div class="deadline-list">
-            <div class="dl-item"><div class="dl-dot" style="background:var(--red)"></div><div class="dl-name">Berlin Close</div><div class="dl-date">Jun 12</div></div>
-            <div class="dl-item"><div class="dl-dot" style="background:var(--orange)"></div><div class="dl-name">LOI Signature</div><div class="dl-date">ASAP</div></div>
-            <div class="dl-item"><div class="dl-dot" style="background:var(--blue)"></div><div class="dl-name">Security Audit</div><div class="dl-date">Wk 5–7</div></div>
-            <div class="dl-item"><div class="dl-dot" style="background:var(--violet)"></div><div class="dl-name">Helix™ Filing</div><div class="dl-date">Pre-Berlin</div></div>
+            <div class="dl-item" id="dl-berlin"><div class="dl-dot" style="background:var(--red)"></div><div class="dl-name">Berlin Close</div><div class="dl-date">Jun 12</div></div>
+            <div class="dl-item" id="dl-loi"><div class="dl-dot" style="background:var(--orange)"></div><div class="dl-name">LOI Signature</div><div class="dl-date">ASAP</div></div>
+            <div class="dl-item" id="dl-audit"><div class="dl-dot" style="background:var(--blue)"></div><div class="dl-name">Security Audit</div><div class="dl-date">Wk 5–7</div></div>
+            <div class="dl-item" id="dl-helix"><div class="dl-dot" style="background:var(--violet)"></div><div class="dl-name">Helix™ Filing</div><div class="dl-date">Pre-Berlin</div></div>
           </div>
         </div>
         <div style="margin-top:12px">
@@ -1040,6 +1068,7 @@ function _sessionRestore() {
       _session = s; _sessionKey = key; _sessionRestored = true;
       s.messages.forEach(function(m) { _renderMsg(m.role, m.text); });
       _showResumeBanner(s);
+      s.messages.slice(-8).forEach(function(m){ if(m.role==='atlas') aeeProcess(m.text||''); });
       return true;
     } catch(e) { continue; }
   }
@@ -1078,6 +1107,7 @@ function addMsg(role, text) {
   if (!safe.trim()) return;
   _renderMsg(role, safe);
   _sessionSave(role, safe);
+  if (role === 'atlas') aeeProcess(safe);
 }
 
 /* ── GEMINI LIVE — END-TO-END VOICE ENGINE ─────────────── */
@@ -1484,6 +1514,89 @@ function launchDesktopView() {
     var el = document.getElementById(id);
     if (el) el.classList.add('tab-active');
   });
+}
+
+/* ── AEE: Action Extraction Engine ────────────────────── */
+var _AEE_PATTERNS = [
+  { type:'CALENDAR', rx:/\b(schedule|meeting|call|sync|calendar|appointment|book|tomorrow|monday|tuesday|wednesday|thursday|friday|at \d+[ap]m)\b/i, icon:'📅' },
+  { type:'TASK',     rx:/\b(complete|finish|done|todo|assign|follow.?up|action item|need to|must|should)\b/i, icon:'✅' },
+  { type:'DOCUMENT', rx:/\b(draft|write|doc|memo|contract|agreement|letter|report|proposal|deck|update)\b/i, icon:'📝' },
+  { type:'PRIORITY', rx:/\b(urgent|asap|priority|critical|blocking|immediately|today)\b/i, icon:'🔥' },
+  { type:'DEADLINE', rx:/\b(deadline|due|by [a-z]+day|end of day|eod|by [a-z]+ \d+|june|july)\b/i, icon:'⏰' },
+  { type:'DECISION', rx:/\b(decide|decision|approve|go.?no.?go|confirm|sign.?off|agreed)\b/i, icon:'⚖️' }
+];
+var _aeeCards = [];
+
+function aeeProcess(text) {
+  _AEE_PATTERNS.forEach(function(p) {
+    if (!p.rx.test(text)) return;
+    var m = text.match(p.rx);
+    var start = m ? Math.max(0, text.indexOf(m[0]) - 8) : 0;
+    var snippet = text.substring(start, start + 65).replace(/[<>&]/g,'').trim();
+    var item = { type:p.type, icon:p.icon, title:snippet };
+    _aeeCards.unshift(item);
+    if (_aeeCards.length > 5) _aeeCards.pop();
+    _aeeRenderCard(item);
+    _aeeToolBadge(p.type);
+    _aeeHighlightAction(p.type);
+  });
+  if (/berlin|june 12/i.test(text)) { var e1=document.getElementById('dl-berlin'); if(e1) e1.classList.add('dl-pulse'); }
+  if (/loi|letter of intent/i.test(text)) { var e2=document.getElementById('dl-loi'); if(e2) e2.classList.add('dl-pulse'); }
+  if (/audit|security/i.test(text)) { var e3=document.getElementById('dl-audit'); if(e3) e3.classList.add('dl-pulse'); }
+  if (/helix|trademark|filing/i.test(text)) { var e4=document.getElementById('dl-helix'); if(e4) e4.classList.add('dl-pulse'); }
+}
+
+function _aeeRenderCard(item) {
+  var sec = document.getElementById('aeeLiveSection');
+  if (!sec) return;
+  sec.style.display = 'block';
+  var wrap = sec.querySelector('.aee-cards-wrap');
+  if (!wrap) return;
+  var card = document.createElement('div');
+  card.className = 'aee-card';
+  card.setAttribute('data-type', item.type);
+  card.innerHTML = '<span class="aee-card-icon">'+item.icon+'</span>'
+    +'<div class="aee-card-body"><div class="aee-card-title">'+item.title+'</div>'
+    +'<div class="aee-card-meta">'+item.type+'</div></div>'
+    +'<button class="aee-card-dismiss" onclick="aeeDismiss(this)">✕</button>';
+  wrap.insertBefore(card, wrap.firstChild);
+  while (wrap.children.length > 5) wrap.removeChild(wrap.lastChild);
+}
+
+function aeeDismiss(btn) {
+  var card = btn.closest ? btn.closest('.aee-card') : btn.parentNode;
+  if (!card) return;
+  card.style.cssText += ';opacity:0;transform:translateX(8px);transition:all .2s;';
+  setTimeout(function(){
+    if (card.parentNode) card.parentNode.removeChild(card);
+    var sec = document.getElementById('aeeLiveSection');
+    var wrap = sec && sec.querySelector('.aee-cards-wrap');
+    if (sec && wrap && !wrap.children.length) sec.style.display = 'none';
+  }, 200);
+}
+
+function _aeeToolBadge(type) {
+  var candidates = { CALENDAR:['tool-calendar','tool-calendly','tool-gusto'], TASK:['tool-notion','tool-quickbooks'], DOCUMENT:['tool-docusign','tool-docsend','tool-drive'], DEADLINE:['tool-docusign','tool-mercury'], PRIORITY:['tool-notion','tool-ramp','tool-uspto'], DECISION:['tool-docusign','tool-stripe'] };
+  var ids = candidates[type] || [];
+  for (var i = 0; i < ids.length; i++) {
+    var chip = document.querySelector('[data-tool="'+ids[i]+'"]');
+    if (!chip) continue;
+    chip.style.position = 'relative';
+    var badge = chip.querySelector('.aee-badge');
+    if (!badge) { badge = document.createElement('span'); badge.className = 'aee-badge'; chip.appendChild(badge); }
+    badge.textContent = String(parseInt(badge.textContent || '0', 10) + 1);
+    break;
+  }
+}
+
+function _aeeHighlightAction(type) {
+  var map = { CALENDAR:'action-schedule', TASK:'action-task', DOCUMENT:'action-doc', DEADLINE:'action-deadline', PRIORITY:'action-priority', DECISION:'action-decide' };
+  var actionId = map[type];
+  if (!actionId) return;
+  var btn = document.querySelector('[data-action="'+actionId+'"]');
+  if (!btn) return;
+  btn.classList.add('aee-suggested');
+  setTimeout(function(){ btn.classList.remove('aee-suggested'); }, 5000);
 }
 
 function returnToMobileView() {

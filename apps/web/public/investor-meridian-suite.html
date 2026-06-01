@@ -25,7 +25,9 @@ html,body { height:100%; overflow:hidden; background:var(--bg); color:var(--text
 
 .suite { display:flex; flex-direction:column; height:100vh; height:100dvh;
   background: radial-gradient(ellipse 80% 60% at 15% 50%, rgba(74,158,255,.04) 0%, transparent 60%),
-              radial-gradient(ellipse 60% 80% at 85% 30%, rgba(155,109,255,.04) 0%, transparent 60%), var(--bg); }
+              radial-gradient(ellipse 60% 80% at 85% 30%, rgba(155,109,255,.04) 0%, transparent 60%),
+              linear-gradient(rgba(2,3,5,.91),rgba(2,3,5,.91)),
+              url('/wood-texture.jpg') center/cover fixed; }
 
 .suite-header { flex-shrink:0; height:56px; display:flex; align-items:center; padding:0 20px;
   border-bottom:1px solid rgba(255,255,255,.06); background:rgba(4,6,8,.85); backdrop-filter:blur(20px);
@@ -108,6 +110,29 @@ html,body { height:100%; overflow:hidden; background:var(--bg); color:var(--text
 @keyframes srb-pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
 .srb-close { margin-left:auto; background:none; border:none; color:rgba(245,240,232,.3); cursor:pointer; font-size:10px; padding:0 2px; font-family:inherit; }
 .srb-close:hover { color:rgba(245,240,232,.7); }
+/* ── AEE: Action Extraction Engine ── */
+.aee-live-section { padding:8px 12px 4px; }
+.aee-live-label { display:flex; align-items:center; gap:5px; font-size:9px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+.aee-live-dot { width:5px; height:5px; border-radius:50%; background:var(--gold); animation:srb-pulse 2s ease-in-out infinite; }
+.aee-cards-wrap { display:flex; flex-direction:column; gap:4px; }
+.aee-card { display:flex; align-items:flex-start; gap:7px; padding:7px 10px; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.07); border-left:2px solid; border-radius:8px; position:relative; font-size:11px; }
+.aee-card[data-type="CALENDAR"] { border-left-color:var(--blue); }
+.aee-card[data-type="TASK"] { border-left-color:var(--green); }
+.aee-card[data-type="DOCUMENT"] { border-left-color:var(--violet); }
+.aee-card[data-type="PRIORITY"] { border-left-color:var(--gold); }
+.aee-card[data-type="DEADLINE"] { border-left-color:var(--red); }
+.aee-card[data-type="DECISION"] { border-left-color:var(--teal); }
+.aee-card-icon { font-size:12px; flex-shrink:0; line-height:1.5; }
+.aee-card-body { flex:1; min-width:0; }
+.aee-card-title { font-weight:600; color:var(--text); line-height:1.3; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.aee-card-meta { font-size:9.5px; color:var(--muted); margin-top:1px; }
+.aee-card-dismiss { position:absolute; top:4px; right:6px; font-size:9px; color:var(--muted); cursor:pointer; opacity:0; transition:opacity .15s; background:none; border:none; padding:0; }
+.aee-card:hover .aee-card-dismiss { opacity:1; }
+.aee-badge { position:absolute; top:-4px; right:-4px; min-width:15px; height:15px; border-radius:8px; background:var(--gold); color:var(--bg); font-size:9px; font-weight:700; display:flex; align-items:center; justify-content:center; padding:0 3px; pointer-events:none; }
+.aee-suggested { animation:aee-pulse 1.5s ease-in-out 3; }
+@keyframes aee-pulse { 0%,100%{box-shadow:none} 50%{box-shadow:0 0 0 3px rgba(201,168,76,.4)} }
+@keyframes dl-pulse { 0%,100%{color:var(--text)} 50%{color:var(--red)} }
+.dl-pulse { animation:dl-pulse 1.2s ease-in-out infinite; }
 .msg-bubble { padding:9px 12px; border-radius:12px; font-size:12px; line-height:1.55; }
 .msg.dept .msg-bubble { background:rgba(74,158,255,.06); border:1px solid rgba(74,158,255,.15); border-bottom-left-radius:4px; }
 .msg.user .msg-bubble { background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08); border-bottom-right-radius:4px; color:var(--muted); }
@@ -607,19 +632,19 @@ html,body { height:100%; overflow:hidden; background:var(--bg); color:var(--text
     <div class="content-section">
       <div class="section-hdr"><div><div class="section-title">Quick Actions</div></div></div>
       <div class="actions-grid">
-        <button class="action-btn" onclick="meridianRespond('lesley')">
+        <button class="action-btn" data-action="action-priority" onclick="meridianRespond('lesley')">
           <div class="action-icon" style="background:rgba(232,130,10,.1);color:var(--orange)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
           <div class="action-label">Send LOI</div>
         </button>
-        <button class="action-btn" onclick="meridianRespond('deck')">
+        <button class="action-btn" data-action="action-doc" onclick="meridianRespond('deck')">
           <div class="action-icon" style="background:rgba(74,158,255,.1);color:var(--blue)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
           <div class="action-label">Update Deck</div>
         </button>
-        <button class="action-btn" onclick="meridianRespond('dataroom')">
+        <button class="action-btn" data-action="action-doc" onclick="meridianRespond('dataroom')">
           <div class="action-icon" style="background:rgba(155,109,255,.1);color:var(--violet)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div>
           <div class="action-label">Data Room</div>
         </button>
-        <button class="action-btn" onclick="window.open('https://calendly.com','_blank','noopener')">
+        <button class="action-btn" data-action="action-schedule" onclick="window.open('https://calendly.com','_blank','noopener')">
           <div class="action-icon" style="background:rgba(26,191,106,.1);color:var(--green)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
           <div class="action-label">Schedule Call</div>
         </button>
@@ -630,11 +655,11 @@ html,body { height:100%; overflow:hidden; background:var(--bg); color:var(--text
     <div class="content-section">
       <div class="section-hdr"><div><div class="section-title">IR Tools</div></div></div>
       <div class="tools-strip">
-        <a class="tool-chip" href="https://notion.so" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h4"/></svg>Notion CRM</a>
-        <a class="tool-chip" href="https://www.docsend.com" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>Docsend</a>
-        <a class="tool-chip" href="https://calendly.com" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Calendly</a>
-        <a class="tool-chip" href="https://www.docusign.com" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>DocuSign</a>
-        <a class="tool-chip" href="https://loom.com" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>Loom</a>
+        <a class="tool-chip" data-tool="tool-notion" href="https://notion.so" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h4"/></svg>Notion CRM</a>
+        <a class="tool-chip" data-tool="tool-docsend" href="https://www.docsend.com" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>Docsend</a>
+        <a class="tool-chip" data-tool="tool-calendly" href="https://calendly.com" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Calendly</a>
+        <a class="tool-chip" data-tool="tool-docusign" href="https://www.docusign.com" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>DocuSign</a>
+        <a class="tool-chip" data-tool="tool-loom" href="https://loom.com" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>Loom</a>
       </div>
     </div>
 
@@ -647,6 +672,10 @@ html,body { height:100%; overflow:hidden; background:var(--bg); color:var(--text
       <div class="kpi-updated" id="kpiUpdated">Updated: Loading…</div>
     </div>
     <div class="kpi-scroll">
+      <div class="aee-live-section" id="aeeLiveSection" style="display:none">
+        <div class="aee-live-label"><span class="aee-live-dot"></span>Live Actions</div>
+        <div class="aee-cards-wrap"></div>
+      </div>
       <div class="kpi-card blue">
         <div class="kpi-card-label">Active Pipeline</div>
         <div class="kpi-val">$650K</div>
@@ -778,6 +807,85 @@ function launchDesktopView() {
   document.querySelectorAll('[data-panel]').forEach(function(p) { p.classList.add('tab-active'); });
 }
 
+/* ── AEE: Action Extraction Engine ────────────────────── */
+var _AEE_PATTERNS = [
+  { type:'CALENDAR', rx:/\b(schedule|meeting|call|sync|calendar|appointment|book|tomorrow|monday|tuesday|wednesday|thursday|friday|at \d+[ap]m)\b/i, icon:'📅' },
+  { type:'TASK',     rx:/\b(complete|finish|done|todo|assign|follow.?up|action item|need to|must|should)\b/i, icon:'✅' },
+  { type:'DOCUMENT', rx:/\b(draft|write|doc|memo|contract|agreement|letter|report|proposal|deck|update)\b/i, icon:'📝' },
+  { type:'PRIORITY', rx:/\b(urgent|asap|priority|critical|blocking|immediately|today)\b/i, icon:'🔥' },
+  { type:'DEADLINE', rx:/\b(deadline|due|by [a-z]+day|end of day|eod|by [a-z]+ \d+|june|july)\b/i, icon:'⏰' },
+  { type:'DECISION', rx:/\b(decide|decision|approve|go.?no.?go|confirm|sign.?off|agreed)\b/i, icon:'⚖️' }
+];
+var _aeeCards = [];
+
+function aeeProcess(text) {
+  _AEE_PATTERNS.forEach(function(p) {
+    if (!p.rx.test(text)) return;
+    var m = text.match(p.rx);
+    var start = m ? Math.max(0, text.indexOf(m[0]) - 8) : 0;
+    var snippet = text.substring(start, start + 65).replace(/[<>&]/g,'').trim();
+    var item = { type:p.type, icon:p.icon, title:snippet };
+    _aeeCards.unshift(item);
+    if (_aeeCards.length > 5) _aeeCards.pop();
+    _aeeRenderCard(item);
+    _aeeToolBadge(p.type);
+    _aeeHighlightAction(p.type);
+  });
+}
+
+function _aeeRenderCard(item) {
+  var sec = document.getElementById('aeeLiveSection');
+  if (!sec) return;
+  sec.style.display = 'block';
+  var wrap = sec.querySelector('.aee-cards-wrap');
+  if (!wrap) return;
+  var card = document.createElement('div');
+  card.className = 'aee-card';
+  card.setAttribute('data-type', item.type);
+  card.innerHTML = '<span class="aee-card-icon">'+item.icon+'</span>'
+    +'<div class="aee-card-body"><div class="aee-card-title">'+item.title+'</div>'
+    +'<div class="aee-card-meta">'+item.type+'</div></div>'
+    +'<button class="aee-card-dismiss" onclick="aeeDismiss(this)">✕</button>';
+  wrap.insertBefore(card, wrap.firstChild);
+  while (wrap.children.length > 5) wrap.removeChild(wrap.lastChild);
+}
+
+function aeeDismiss(btn) {
+  var card = btn.closest ? btn.closest('.aee-card') : btn.parentNode;
+  if (!card) return;
+  card.style.cssText += ';opacity:0;transform:translateX(8px);transition:all .2s;';
+  setTimeout(function(){
+    if (card.parentNode) card.parentNode.removeChild(card);
+    var sec = document.getElementById('aeeLiveSection');
+    var wrap = sec && sec.querySelector('.aee-cards-wrap');
+    if (sec && wrap && !wrap.children.length) sec.style.display = 'none';
+  }, 200);
+}
+
+function _aeeToolBadge(type) {
+  var candidates = { CALENDAR:['tool-calendar','tool-calendly','tool-gusto'], TASK:['tool-notion','tool-quickbooks'], DOCUMENT:['tool-docusign','tool-docsend','tool-drive'], DEADLINE:['tool-docusign','tool-mercury'], PRIORITY:['tool-notion','tool-ramp','tool-uspto'], DECISION:['tool-docusign','tool-stripe'] };
+  var ids = candidates[type] || [];
+  for (var i = 0; i < ids.length; i++) {
+    var chip = document.querySelector('[data-tool="'+ids[i]+'"]');
+    if (!chip) continue;
+    chip.style.position = 'relative';
+    var badge = chip.querySelector('.aee-badge');
+    if (!badge) { badge = document.createElement('span'); badge.className = 'aee-badge'; chip.appendChild(badge); }
+    badge.textContent = String(parseInt(badge.textContent || '0', 10) + 1);
+    break;
+  }
+}
+
+function _aeeHighlightAction(type) {
+  var map = { CALENDAR:'action-schedule', TASK:'action-task', DOCUMENT:'action-doc', DEADLINE:'action-deadline', PRIORITY:'action-priority', DECISION:'action-decide' };
+  var actionId = map[type];
+  if (!actionId) return;
+  var btn = document.querySelector('[data-action="'+actionId+'"]');
+  if (!btn) return;
+  btn.classList.add('aee-suggested');
+  setTimeout(function(){ btn.classList.remove('aee-suggested'); }, 5000);
+}
+
 function returnToMobileView() {
   var meta = document.querySelector('meta[name="viewport"]');
   if (meta) meta.content = 'width=device-width, initial-scale=1, viewport-fit=cover';
@@ -852,6 +960,7 @@ function _sessionRestore() {
       _session = s; _sessionKey = key; _sessionRestored = true;
       s.messages.forEach(function(m) { _renderMsg(m.role, m.text); });
       _showResumeBanner(s);
+      s.messages.slice(-8).forEach(function(m){ if(m.role==='dept') aeeProcess(m.text||''); });
       return true;
     } catch(e) { continue; }
   }
@@ -889,6 +998,7 @@ function addMsg(role, text) {
   if (!safe.trim()) return;
   _renderMsg(role, safe);
   _sessionSave(role, safe);
+  if (role === 'dept') aeeProcess(safe);
 }
 
 function meridianRespond(key) {
