@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>CIPHER · Legal Suite · Genesis Reserve</title>
+<script src="device.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ── TOKENS ── */
+:root {
+  --bg:#020305; --bg2:#040608; --bg3:#080B10; --panel:#0C1018;
+  --text:#E8E5DF; --muted:#7A7670; --gold:#C9A84C; --gold2:#E8CB6E;
+  --teal:#00D4AA; --green:#1ABF6A; --blue:#4A9EFF; --red:#E84040;
+  --orange:#E8820A; --violet:#9B6DFF;
+  --ease:cubic-bezier(.4,0,.2,1); --spring:cubic-bezier(.34,1.56,.64,1);
+  --tab-h:64px;
+  --dept:#00D4AA; --dept2:#E8820A;
+}
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+button { background:none; border:none; cursor:pointer; color:inherit; font:inherit; }
+html,body { height:100%; overflow:hidden; background:var(--bg); color:var(--text); font-family:'Sora',sans-serif; font-size:14px; -webkit-font-smoothing:antialiased; }
+
+.suite { display:flex; flex-direction:column; height:100vh; height:100dvh;
+  background: radial-gradient(ellipse 80% 60% at 15% 50%, rgba(0,212,170,.04) 0%, transparent 60%),
+              radial-gradient(ellipse 60% 80% at 85% 30%, rgba(232,130,10,.03) 0%, transparent 60%), var(--bg); }
+
+.suite-header { flex-shrink:0; height:56px; display:flex; align-items:center; padding:0 20px;
+  border-bottom:1px solid rgba(255,255,255,.06); background:rgba(4,6,8,.85); backdrop-filter:blur(20px);
+  gap:12px; position:relative; z-index:50; }
+.suite-header::after { content:''; position:absolute; bottom:0; left:0; right:0; height:1px;
+  background:linear-gradient(90deg, transparent, rgba(0,212,170,.35), transparent); }
+.hdr-back { display:flex; align-items:center; gap:5px; font-size:12px; color:var(--muted);
+  padding:6px 10px; border-radius:8px; transition:all .15s; text-decoration:none; white-space:nowrap; }
+.hdr-back:hover { background:rgba(255,255,255,.06); color:var(--text); }
+.hdr-divider { width:1px; height:20px; background:rgba(255,255,255,.1); flex-shrink:0; }
+.hdr-dept { font-family:'Cormorant Garamond',serif; font-size:18px; font-weight:300; letter-spacing:.04em; }
+.hdr-sub  { font-size:10px; font-weight:500; letter-spacing:.12em; text-transform:uppercase; color:var(--dept); }
+.hdr-spacer { flex:1; }
+.dept-status-pill { display:flex; align-items:center; gap:7px; padding:5px 12px;
+  background:rgba(0,212,170,.08); border:1px solid rgba(0,212,170,.2);
+  border-radius:20px; font-size:11px; font-weight:500; color:var(--teal); white-space:nowrap; }
+.status-dot { width:7px; height:7px; border-radius:50%; background:var(--teal);
+  box-shadow:0 0 6px var(--teal); animation:dot-pulse 2s ease-in-out infinite; }
+@keyframes dot-pulse { 0%,100%{opacity:1}50%{opacity:.35} }
+.hdr-head { display:flex; align-items:center; gap:8px; padding:4px 10px;
+  border:1px solid rgba(255,255,255,.07); border-radius:8px; font-size:12px; }
+.hdr-head-role { color:var(--muted); font-size:10px; margin-top:1px; }
+.head-avatar { width:28px; height:28px; border-radius:8px;
+  background:linear-gradient(135deg, var(--teal), var(--orange));
+  display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:var(--bg); }
+
+.suite-body { flex:1; display:flex; overflow:hidden; min-height:0; position:relative; }
+
+/* ── COPILOT PANEL ── */
+.copilot-panel { width:clamp(195px,17vw,252px); flex-shrink:0; display:flex; flex-direction:column;
+  border-right:1px solid rgba(255,255,255,.06); background:rgba(4,6,8,.6); }
+.copilot-avatar-wrap { flex-shrink:0; padding:16px 16px 10px; display:flex; flex-direction:column; align-items:center;
+  border-bottom:1px solid rgba(255,255,255,.05);
+  background:radial-gradient(ellipse 100% 80% at 50% 0%, rgba(0,212,170,.07) 0%, transparent 70%); }
+.avatar-ring-wrap { position:relative; width:110px; height:110px; margin-bottom:10px; }
+.avatar-ring { position:absolute; inset:0; border-radius:50%;
+  background:conic-gradient(from 0deg, #00D4AA 0%, #E8820A 40%, #00D4AA 70%, #C9A84C 90%, #00D4AA 100%);
+  animation:ring-spin 7s linear infinite; }
+@keyframes ring-spin { to{transform:rotate(360deg)} }
+.avatar-face-wrap { position:absolute; inset:3px; border-radius:50%; overflow:hidden; }
+.avatar-face { width:100%; height:100%; border-radius:50%;
+  background:radial-gradient(circle at 42% 38%, #0c1018, #040608);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; position:relative; }
+.avatar-face::before { content:'CIPHER'; position:absolute; top:12px; font-size:7px; font-weight:700;
+  letter-spacing:.3em; color:rgba(0,212,170,.4); font-family:'JetBrains Mono',monospace; }
+.copilot-eyes { display:flex; gap:14px; align-items:center; margin-top:6px; }
+.copilot-eye { width:22px; height:3px; background:var(--dept); border-radius:2px;
+  box-shadow:0 0 8px var(--dept); animation:eye-blink 7s ease-in-out infinite, eye-glow 2.5s ease-in-out infinite alternate; }
+@keyframes eye-blink { 0%,88%,100%{transform:scaleY(1)}92%{transform:scaleY(.05)} }
+@keyframes eye-glow { from{box-shadow:0 0 6px var(--dept)} to{box-shadow:0 0 14px var(--dept),0 0 24px rgba(0,212,170,.35)} }
+.copilot-wave { display:flex; align-items:flex-end; gap:3px; height:18px; opacity:0; transition:opacity .3s; }
+.copilot-wave .wbar { width:3px; border-radius:1.5px; background:var(--dept); min-height:3px; animation:wave-bar 1.1s ease-in-out infinite; }
+.wbar:nth-child(1){animation-delay:.00s;height:6px}.wbar:nth-child(2){animation-delay:.10s;height:12px}
+.wbar:nth-child(3){animation-delay:.20s;height:17px}.wbar:nth-child(4){animation-delay:.15s;height:13px}
+.wbar:nth-child(5){animation-delay:.05s;height:8px}.wbar:nth-child(6){animation-delay:.22s;height:15px}
+@keyframes wave-bar { 0%,100%{transform:scaleY(.3);opacity:.6}50%{transform:scaleY(1);opacity:1} }
+.avatar-pulse { position:absolute; inset:-8px; border-radius:50%;
+  border:1px solid rgba(0,212,170,.2); animation:pulse-ring 2.5s ease-out infinite; opacity:0; }
+@keyframes pulse-ring { 0%{transform:scale(.9);opacity:.6}100%{transform:scale(1.15);opacity:0} }
+.copilot-speaking .copilot-wave { opacity:1; }
+.copilot-speaking .avatar-pulse { opacity:1; animation-duration:1.5s; }
+.copilot-thinking .avatar-ring { animation-duration:2s; background:conic-gradient(from 0deg,#E8820A,#00D4AA,#E8820A); }
+.copilot-name  { font-family:'Cormorant Garamond',serif; font-size:17px; font-weight:300; letter-spacing:.1em; }
+.copilot-role  { font-size:8.5px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; color:var(--dept); margin-top:2px; }
+.copilot-state { font-size:9.5px; color:var(--muted); margin-top:3px; font-family:'JetBrains Mono',monospace; }
+.copilot-pill  { display:flex; align-items:center; gap:6px; margin-top:8px; padding:4px 10px;
+  border-radius:20px; font-size:9.5px; font-weight:500; border:1px solid rgba(0,212,170,.2);
+  background:rgba(0,212,170,.08); color:var(--teal); }
+.pill-dot { width:6px; height:6px; border-radius:50%; background:currentColor; animation:dot-pulse 1.5s infinite; }
+.convo-area { flex:1; overflow-y:auto; padding:12px 14px; scrollbar-width:thin;
+  scrollbar-color:rgba(0,212,170,.15) transparent; display:flex; flex-direction:column; gap:10px; min-height:0; }
+.msg { display:flex; flex-direction:column; max-width:90%; gap:3px; animation:msg-in .2s var(--ease) both; }
+@keyframes msg-in { from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none} }
+.msg.dept { align-self:flex-start; }
+.msg.user { align-self:flex-end; align-items:flex-end; }
+.msg-sender { font-size:9.5px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); padding:0 2px; }
+.msg.dept .msg-sender { color:var(--dept); }
+.msg-bubble { padding:9px 12px; border-radius:12px; font-size:12px; line-height:1.55; }
+.msg.dept .msg-bubble { background:rgba(0,212,170,.06); border:1px solid rgba(0,212,170,.15); border-bottom-left-radius:4px; }
+.msg.user .msg-bubble { background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08); border-bottom-right-radius:4px; color:var(--muted); }
+.copilot-input-area { flex-shrink:0; padding:10px 12px 12px; border-top:1px solid rgba(255,255,255,.06); background:rgba(4,6,8,.5); }
+.copilot-input-row { display:flex; align-items:center; gap:8px; background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08); border-radius:12px; padding:8px 10px; transition:border-color .2s; }
+.copilot-input-row:focus-within { border-color:rgba(0,212,170,.3); }
+.copilot-text-input { flex:1; background:none; border:none; outline:none; color:var(--text); font-family:'Sora',sans-serif; font-size:12.5px; }
+.copilot-text-input::placeholder { color:var(--muted); }
+.send-btn { width:30px; height:30px; border-radius:8px; display:flex; align-items:center; justify-content:center;
+  transition:all .15s; flex-shrink:0; color:var(--muted); }
+.send-btn:hover { background:rgba(0,212,170,.15); color:var(--dept); }
+.copilot-hint { text-align:center; font-size:9px; color:var(--muted); margin-top:5px; letter-spacing:.04em; }
+
+/* ── MAIN CONTENT ── */
+.main-content { flex:1; overflow-y:auto; padding:18px 22px; scrollbar-width:thin; scrollbar-color:rgba(255,255,255,.08) transparent; min-width:0; }
+.content-section { margin-bottom:26px; }
+.section-hdr { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+.section-title { font-family:'Cormorant Garamond',serif; font-size:17px; font-weight:300; letter-spacing:.04em; }
+.section-sub { font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-top:2px; }
+.section-action { font-size:11px; font-weight:500; color:var(--dept); padding:4px 10px;
+  border:1px solid rgba(0,212,170,.22); border-radius:6px; cursor:pointer; transition:all .15s; }
+.section-action:hover { background:rgba(0,212,170,.08); }
+
+/* Contract Queue */
+.contracts-table { background:rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.06); border-radius:14px; overflow:hidden; }
+.ct-header,.ct-row { display:grid; grid-template-columns:2fr 1fr 1fr 90px; align-items:center; padding:9px 14px; gap:10px; }
+.ct-header { background:rgba(255,255,255,.03); border-bottom:1px solid rgba(255,255,255,.06); }
+.ct-header span { font-size:9.5px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+.ct-row { border-bottom:1px solid rgba(255,255,255,.04); transition:background .15s; }
+.ct-row:last-child { border-bottom:none; }
+.ct-row:hover { background:rgba(255,255,255,.03); }
+.ct-name  { font-size:12px; font-weight:500; }
+.ct-party { font-size:11px; color:var(--muted); }
+.ct-age   { font-size:11px; color:var(--muted); font-family:'JetBrains Mono',monospace; }
+.ct-action-btn { font-size:10px; font-weight:500; padding:4px 9px; border-radius:6px; cursor:pointer; transition:all .15s; }
+.ct-urgent { background:rgba(232,64,64,.1); color:var(--red); border:1px solid rgba(232,64,64,.2); }
+.ct-urgent:hover { background:rgba(232,64,64,.2); }
+.ct-review { background:rgba(232,130,10,.1); color:var(--orange); border:1px solid rgba(232,130,10,.2); }
+.ct-review:hover { background:rgba(232,130,10,.2); }
+.ct-draft  { background:rgba(74,158,255,.06); color:var(--blue); border:1px solid rgba(74,158,255,.15); }
+.ct-view   { background:rgba(255,255,255,.04); color:var(--muted); border:1px solid rgba(255,255,255,.07); }
+.ct-view:hover { background:rgba(255,255,255,.08); color:var(--text); }
+
+/* IP Grid */
+.ip-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
+.ip-card { background:rgba(255,255,255,.024); border:1px solid rgba(255,255,255,.06); border-radius:12px;
+  padding:12px; display:flex; align-items:flex-start; gap:10px; transition:border-color .2s; }
+.ip-card:hover { border-color:rgba(255,255,255,.12); }
+.ip-card.urgent-border { border-color:rgba(232,64,64,.25); background:rgba(232,64,64,.02); }
+.ip-icon { width:34px; height:34px; border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.ip-name   { font-size:12px; font-weight:600; }
+.ip-type   { font-size:10px; color:var(--muted); margin-top:2px; }
+.ip-status { font-size:10px; font-weight:600; margin-top:4px; }
+
+/* Compliance Calendar */
+.compliance-list { display:flex; flex-direction:column; gap:7px; }
+.comp-item { display:flex; align-items:center; gap:10px; padding:9px 12px;
+  background:rgba(255,255,255,.024); border:1px solid rgba(255,255,255,.05); border-radius:10px; }
+.comp-item.due-soon { border-color:rgba(232,130,10,.2); background:rgba(232,130,10,.03); }
+.comp-item.overdue  { border-color:rgba(232,64,64,.25); background:rgba(232,64,64,.04); }
+.comp-item.clear    { border-color:rgba(26,191,106,.12); }
+.comp-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.comp-dot.clear    { background:var(--green); }
+.comp-dot.due-soon { background:var(--orange); box-shadow:0 0 6px rgba(232,130,10,.4); }
+.comp-dot.overdue  { background:var(--red); box-shadow:0 0 6px rgba(232,64,64,.5); }
+.comp-name { flex:1; font-size:11.5px; font-weight:500; }
+.comp-date { font-size:10px; color:var(--muted); font-family:'JetBrains Mono',monospace; white-space:nowrap; }
+.comp-dept { font-size:9px; color:var(--muted); display:block; margin-top:2px; }
+
+/* Hermes Studio */
+.studio-section { background:rgba(201,168,76,.03); border:1px solid rgba(201,168,76,.15); border-radius:18px; padding:16px; }
+.studio-hdr { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
+.studio-logo { width:32px; height:32px; border-radius:10px; background:rgba(201,168,76,.1);
+  border:1px solid rgba(201,168,76,.2); display:flex; align-items:center; justify-content:center; }
+.studio-title { font-family:'Cormorant Garamond',serif; font-size:16px; font-weight:300; letter-spacing:.06em; }
+.studio-badge { font-size:9px; font-weight:600; letter-spacing:.1em; text-transform:uppercase;
+  padding:2px 8px; border-radius:20px; background:rgba(232,64,64,.1); border:1px solid rgba(232,64,64,.2); color:var(--red); margin-left:auto; }
+.workflow-list { display:flex; flex-direction:column; gap:10px; }
+.wf-card { background:rgba(255,255,255,.025); border:1px solid rgba(255,255,255,.07); border-radius:12px; padding:12px; transition:border-color .2s; }
+.wf-card:hover { border-color:rgba(201,168,76,.2); }
+.wf-card-hdr { display:flex; align-items:flex-start; gap:10px; margin-bottom:8px; }
+.wf-info { flex:1; min-width:0; }
+.wf-name    { font-size:12.5px; font-weight:600; margin-bottom:2px; }
+.wf-trigger { font-size:10px; color:var(--muted); }
+.wf-status  { flex-shrink:0; font-size:9px; font-weight:600; letter-spacing:.08em; text-transform:uppercase;
+  padding:3px 8px; border-radius:20px; white-space:nowrap; }
+.wf-status.review   { background:rgba(232,130,10,.1); border:1px solid rgba(232,130,10,.2); color:var(--orange); }
+.wf-status.approved { background:rgba(74,158,255,.1);  border:1px solid rgba(74,158,255,.2);  color:var(--blue); }
+.wf-status.urgent   { background:rgba(232,64,64,.1);   border:1px solid rgba(232,64,64,.2);   color:var(--red); }
+.wf-status.pending  { background:rgba(155,109,255,.1); border:1px solid rgba(155,109,255,.2); color:var(--violet); }
+.wf-preview { font-size:11px; color:var(--muted); line-height:1.5; padding:8px 10px;
+  background:rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.04); border-radius:8px; margin-bottom:10px; }
+.wf-actions { display:flex; gap:6px; flex-wrap:wrap; }
+.sa-btn { font-size:10px; font-weight:600; letter-spacing:.06em; text-transform:uppercase;
+  padding:5px 12px; border-radius:7px; transition:all .15s; cursor:pointer; }
+.sa-btn.review  { background:rgba(232,130,10,.08); border:1px solid rgba(232,130,10,.2); color:var(--orange); }
+.sa-btn.approve { background:rgba(26,191,106,.08); border:1px solid rgba(26,191,106,.2); color:var(--green); }
+.sa-btn.modify  { background:rgba(74,158,255,.08);  border:1px solid rgba(74,158,255,.2);  color:var(--blue); }
+.sa-btn.assign  { background:rgba(155,109,255,.08); border:1px solid rgba(155,109,255,.2); color:var(--violet); }
+.sa-btn:hover   { opacity:.8; transform:translateY(-1px); }
+
+/* Actions & Tools */
+.actions-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+.action-btn { display:flex; flex-direction:column; align-items:center; gap:7px; padding:12px 8px;
+  background:rgba(255,255,255,.028); border:1px solid rgba(255,255,255,.07); border-radius:14px;
+  cursor:pointer; transition:all .2s var(--spring); text-align:center; }
+.action-btn:hover { background:rgba(255,255,255,.055); transform:translateY(-2px); border-color:rgba(255,255,255,.12); }
+.action-icon  { width:38px; height:38px; border-radius:12px; display:flex; align-items:center; justify-content:center; }
+.action-label { font-size:10.5px; font-weight:500; line-height:1.3; }
+.tools-strip { display:flex; gap:8px; flex-wrap:wrap; }
+.tool-chip { display:flex; align-items:center; gap:7px; padding:7px 12px;
+  background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); border-radius:8px;
+  font-size:12px; font-weight:500; cursor:pointer; transition:all .15s; text-decoration:none; color:var(--text); }
+.tool-chip:hover { background:rgba(255,255,255,.09); border-color:rgba(255,255,255,.14); }
+
+/* ── KPI PANEL ── */
+.kpi-panel { width:clamp(230px,21vw,295px); flex-shrink:0; border-left:1px solid rgba(255,255,255,.06);
+  display:flex; flex-direction:column; overflow:hidden; }
+.kpi-header { flex-shrink:0; padding:14px 16px 10px; border-bottom:1px solid rgba(255,255,255,.06); }
+.kpi-title { font-family:'Cormorant Garamond',serif; font-size:16px; font-weight:300; letter-spacing:.04em; }
+.kpi-updated { font-size:9px; color:var(--muted); margin-top:2px; font-family:'JetBrains Mono',monospace; }
+.kpi-scroll { flex:1; overflow-y:auto; padding:10px 12px; scrollbar-width:none; display:flex; flex-direction:column; gap:8px; }
+.kpi-scroll::-webkit-scrollbar { display:none; }
+.kpi-card { background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); border-radius:10px; padding:10px; position:relative; overflow:hidden; }
+.kpi-card::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; }
+.kpi-card.teal::before   { background:linear-gradient(90deg,transparent,rgba(0,212,170,.6),transparent); }
+.kpi-card.green::before  { background:linear-gradient(90deg,transparent,rgba(26,191,106,.6),transparent); }
+.kpi-card.orange::before { background:linear-gradient(90deg,transparent,rgba(232,130,10,.6),transparent); }
+.kpi-card.red::before    { background:linear-gradient(90deg,transparent,rgba(232,64,64,.6),transparent); }
+.kpi-card.gold::before   { background:linear-gradient(90deg,transparent,rgba(201,168,76,.6),transparent); }
+.kpi-card.blue::before   { background:linear-gradient(90deg,transparent,rgba(74,158,255,.6),transparent); }
+.kpi-card.violet::before { background:linear-gradient(90deg,transparent,rgba(155,109,255,.6),transparent); }
+.kpi-card-label { font-size:8.5px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:4px; }
+.kpi-val { font-family:'JetBrains Mono',monospace; font-size:20px; font-weight:500; line-height:1; }
+.kpi-card.teal .kpi-val   { color:var(--teal); }
+.kpi-card.green .kpi-val  { color:var(--green); }
+.kpi-card.orange .kpi-val { color:var(--orange); }
+.kpi-card.red .kpi-val    { color:var(--red); }
+.kpi-card.gold .kpi-val   { color:var(--gold2); }
+.kpi-card.blue .kpi-val   { color:var(--blue); }
+.kpi-card.violet .kpi-val { color:var(--violet); }
+.kpi-sub { font-size:9.5px; color:var(--muted); margin-top:3px; }
+.kpi-bar-wrap { margin-top:7px; }
+.kpi-bar-track { height:4px; background:rgba(255,255,255,.07); border-radius:2px; overflow:hidden; }
+.kpi-bar-fill  { height:100%; border-radius:2px; }
+.kpi-card.teal .kpi-bar-fill   { background:var(--teal); box-shadow:0 0 6px rgba(0,212,170,.4); }
+.kpi-card.green .kpi-bar-fill  { background:var(--green); }
+.kpi-card.orange .kpi-bar-fill { background:var(--orange); }
+.kpi-card.red .kpi-bar-fill    { background:var(--red); }
+.signal-feed { flex-shrink:0; padding:10px 12px 14px; border-top:1px solid rgba(255,255,255,.06); }
+.signal-feed-title { font-size:9.5px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+.signal-list { display:flex; flex-direction:column; gap:1px; }
+.sig-item { display:flex; gap:8px; padding:6px 0; border-bottom:1px solid rgba(255,255,255,.04); align-items:flex-start; }
+.sig-item:last-child { border-bottom:none; }
+.sig-type { font-size:8px; font-weight:700; letter-spacing:.1em; padding:2px 6px; border-radius:4px; white-space:nowrap; margin-top:1px; }
+.sig-milestone { background:rgba(26,191,106,.1); color:var(--green); border:1px solid rgba(26,191,106,.2); }
+.sig-alert  { background:rgba(232,64,64,.1); color:var(--red); border:1px solid rgba(232,64,64,.2); }
+.sig-report { background:rgba(74,158,255,.1); color:var(--blue); border:1px solid rgba(74,158,255,.2); }
+.sig-request{ background:rgba(232,130,10,.1); color:var(--orange); border:1px solid rgba(232,130,10,.2); }
+.sig-approval{ background:rgba(0,212,170,.1); color:var(--teal); border:1px solid rgba(0,212,170,.2); }
+.sig-text { font-size:10.5px; line-height:1.4; flex:1; }
+.sig-time { font-size:9px; color:var(--muted); display:block; margin-top:2px; }
+
+.desktop-launch { position:fixed; bottom:20px; right:20px; z-index:200; display:flex; align-items:center; gap:8px;
+  padding:9px 16px; background:rgba(0,212,170,.08); border:1px solid rgba(0,212,170,.25); border-radius:24px;
+  font-size:11.5px; font-weight:500; color:var(--dept); cursor:pointer; transition:all .2s var(--spring);
+  backdrop-filter:blur(12px); box-shadow:0 8px 24px rgba(0,0,0,.4); }
+.desktop-launch:hover { background:rgba(0,212,170,.18); transform:translateY(-2px); }
+.is-desktop:not(.is-iframe) .desktop-launch { display:none; }
+
+.mobile-tab-nav { display:none; flex-shrink:0; background:rgba(4,6,8,.96);
+  backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);
+  border-top:1px solid rgba(255,255,255,.08); position:relative; z-index:60; }
+.tab-nav-inner { display:flex; height:100%; }
+.tab-btn { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:4px; color:var(--muted); font-size:9px; font-weight:500; letter-spacing:.04em;
+  transition:color .2s; position:relative; -webkit-tap-highlight-color:transparent; }
+.tab-btn.active { color:var(--dept); }
+.tab-btn::after { content:''; position:absolute; top:0; left:20%; right:20%; height:2px;
+  background:var(--dept); border-radius:0 0 2px 2px; opacity:0; transition:opacity .2s; }
+.tab-btn.active::after { opacity:1; }
+
+@media (max-width:767px) {
+  .mobile-tab-nav { display:flex; height:calc(var(--tab-h) + env(safe-area-inset-bottom,0px)); padding-bottom:env(safe-area-inset-bottom,0px); }
+  .tab-nav-inner { align-items:flex-start; padding-top:2px; }
+  .desktop-launch { display:none !important; }
+  .copilot-panel,.main-content,.kpi-panel { position:absolute; inset:0; width:100%; height:100%; border:none;
+    opacity:0; pointer-events:none; transform:translateX(14px); transition:opacity .22s var(--ease),transform .22s var(--ease); overflow-y:auto; }
+  .copilot-panel.tab-active,.main-content.tab-active,.kpi-panel.tab-active { opacity:1; pointer-events:all; transform:none; }
+  .copilot-panel { display:flex; flex-direction:column; overflow:hidden; }
+  .avatar-ring-wrap { width:88px; height:88px; margin-bottom:7px; }
+  .copilot-avatar-wrap { padding:12px 14px 9px; }
+  .ip-grid { grid-template-columns:1fr; }
+  .actions-grid { grid-template-columns:repeat(2,1fr); }
+  .kpi-panel { width:100%; border-left:none; }
+  .kpi-val { font-size:22px; }
+  .main-content { padding:14px 14px calc(14px + env(safe-area-inset-bottom,0px)); }
+  .ct-header,.ct-row { grid-template-columns:2fr 1fr 90px; }
+  .ct-age { display:none; }
+}
+@media (min-width:768px) and (max-width:1099px) {
+  .copilot-panel { width:clamp(180px,21vw,225px); }
+  .kpi-panel     { width:clamp(195px,23vw,245px); }
+  .actions-grid  { grid-template-columns:repeat(2,1fr); }
+  .ip-grid       { grid-template-columns:1fr; }
+  .avatar-ring-wrap { width:96px; height:96px; }
+}
+@media (min-width:1100px) and (max-width:1400px) {
+  .copilot-panel { width:clamp(195px,16vw,238px); }
+  .kpi-panel     { width:clamp(225px,20vw,272px); }
+}
+.toast { position:fixed; bottom:80px; right:20px; z-index:300; padding:10px 16px;
+  background:rgba(8,12,16,.95); border:1px solid rgba(0,212,170,.3); border-radius:12px;
+  font-size:12px; font-weight:500; backdrop-filter:blur(20px);
+  box-shadow:0 8px 32px rgba(0,0,0,.5); transform:translateY(10px); opacity:0;
+  transition:all .3s var(--spring); pointer-events:none; }
+.toast.show { transform:none; opacity:1; }
+</style>
+</head>
+<body>
+<div class="suite" id="suite">
+
+<!-- HEADER -->
+<header class="suite-header">
+  <a class="hdr-back" href="genesis-reserve-dashboard.html">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+    <span>Dashboard</span>
+  </a>
+  <div class="hdr-divider"></div>
+  <div>
+    <div class="hdr-dept">Legal · CIPHER</div>
+    <div class="hdr-sub">Genesis Reserve · Powered by Hermes</div>
+  </div>
+  <div class="hdr-spacer"></div>
+  <div class="dept-status-pill"><div class="status-dot"></div>CIPHER Online</div>
+  <div class="hdr-head">
+    <div class="head-avatar">GC</div>
+    <div>
+      <div style="font-size:12px;font-weight:500">General Counsel</div>
+      <div class="hdr-head-role">Legal Department</div>
+    </div>
+  </div>
+</header>
+
+<div class="suite-body">
+
+  <!-- COPILOT PANEL -->
+  <div class="copilot-panel tab-active" id="panelCopilot" data-panel="copilot">
+    <div class="copilot-avatar-wrap">
+      <div class="avatar-ring-wrap">
+        <div class="avatar-pulse"></div>
+        <div class="avatar-ring"></div>
+        <div class="avatar-face-wrap">
+          <div class="avatar-face" id="copilotFace">
+            <div class="copilot-eyes"><div class="copilot-eye"></div><div class="copilot-eye"></div></div>
+            <div class="copilot-wave" id="copilotWave">
+              <div class="wbar"></div><div class="wbar"></div><div class="wbar"></div>
+              <div class="wbar"></div><div class="wbar"></div><div class="wbar"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="copilot-name">CIPHER</div>
+      <div class="copilot-role">Legal CoPilot</div>
+      <div class="copilot-state" id="copilotState">Monitoring · 1 Urgent Action</div>
+      <div class="copilot-pill"><div class="pill-dot"></div><span>Legal Intelligence Active</span></div>
+    </div>
+    <div class="convo-area" id="convoArea"></div>
+    <div class="copilot-input-area">
+      <div class="copilot-input-row">
+        <input class="copilot-text-input" id="copilotInput" placeholder="Ask CIPHER about legal matters…" type="text">
+        <button class="send-btn" onclick="sendMsg()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+      <div class="copilot-hint">Legal scope · Genesis AI · Confidential</div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content" id="panelOps" data-panel="ops">
+
+    <!-- Contract Queue -->
+    <div class="content-section">
+      <div class="section-hdr">
+        <div><div class="section-title">Contract Queue</div><div class="section-sub">4 Open · 1 Urgent · Avg 6 Day Cycle</div></div>
+        <button class="section-action" onclick="window.open('https://www.docusign.com','_blank','noopener')">DocuSign ↗</button>
+      </div>
+      <div class="contracts-table">
+        <div class="ct-header"><span>Contract</span><span>Party</span><span>Age</span><span>Action</span></div>
+        <div class="ct-row">
+          <div class="ct-name">LOI · Seed Investment</div>
+          <div class="ct-party">Lesley Harris</div>
+          <div class="ct-age">2d</div>
+          <button class="ct-action-btn ct-urgent" onclick="cipherRespond('loi')">Execute Now</button>
+        </div>
+        <div class="ct-row">
+          <div class="ct-name">Helix Suite™ License Template</div>
+          <div class="ct-party">B2B Clients (future)</div>
+          <div class="ct-age">Draft</div>
+          <button class="ct-action-btn ct-draft" onclick="cipherRespond('helix')">Edit Draft</button>
+        </div>
+        <div class="ct-row">
+          <div class="ct-name">NDA · Berlin Attendees</div>
+          <div class="ct-party">June 12 Investors</div>
+          <div class="ct-age">5d</div>
+          <button class="ct-action-btn ct-view" onclick="cipherRespond('nda')">View</button>
+        </div>
+        <div class="ct-row">
+          <div class="ct-name">YFLPP Agent Agreement Template</div>
+          <div class="ct-party">IMO / FMO Agents</div>
+          <div class="ct-age">Draft</div>
+          <button class="ct-action-btn ct-review" onclick="cipherRespond('agent')">Review</button>
+        </div>
+        <div class="ct-row">
+          <div class="ct-name">Vendor Services Agreement</div>
+          <div class="ct-party">Technology Vendors</div>
+          <div class="ct-age">Active</div>
+          <button class="ct-action-btn ct-view">View</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- IP Tracker -->
+    <div class="content-section">
+      <div class="section-hdr">
+        <div><div class="section-title">IP &amp; Trademark Portfolio</div><div class="section-sub">1 Urgent · 2 Pending · 1 Protected</div></div>
+        <button class="section-action" onclick="cipherRespond('ip')">File New</button>
+      </div>
+      <div class="ip-grid">
+        <div class="ip-card urgent-border">
+          <div class="ip-icon" style="background:rgba(232,64,64,.1);color:var(--red)">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+          </div>
+          <div>
+            <div class="ip-name">Helix Suite™</div>
+            <div class="ip-type">Trademark · USPTO</div>
+            <div class="ip-status" style="color:var(--red)">FILE BEFORE BERLIN — URGENT</div>
+          </div>
+        </div>
+        <div class="ip-card">
+          <div class="ip-icon" style="background:rgba(201,168,76,.1);color:var(--gold)">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+          </div>
+          <div>
+            <div class="ip-name">Genesis Reserve™</div>
+            <div class="ip-type">Trademark · USPTO</div>
+            <div class="ip-status" style="color:var(--orange)">Pending · Filed</div>
+          </div>
+        </div>
+        <div class="ip-card">
+          <div class="ip-icon" style="background:rgba(26,191,106,.1);color:var(--green)">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div>
+            <div class="ip-name">GR Sacred Emblem</div>
+            <div class="ip-type">Design Mark · Filed</div>
+            <div class="ip-status" style="color:var(--green)">Protected</div>
+          </div>
+        </div>
+        <div class="ip-card">
+          <div class="ip-icon" style="background:rgba(0,212,170,.1);color:var(--teal)">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div>
+            <div class="ip-name">YFLPP™</div>
+            <div class="ip-type">Trademark · USPTO</div>
+            <div class="ip-status" style="color:var(--orange)">Pending · Filed</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hermes Studio -->
+    <div class="content-section">
+      <div class="section-hdr">
+        <div><div class="section-title">Hermes Studio</div><div class="section-sub">Workflow Queue · 1 Urgent · 2 Pending</div></div>
+      </div>
+      <div class="studio-section">
+        <div class="studio-hdr">
+          <div class="studio-logo">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          </div>
+          <div>
+            <div class="studio-title">Hermes Studio · Legal</div>
+            <div style="font-size:9.5px;color:var(--muted);margin-top:1px;">All contract submissions require GC approval</div>
+          </div>
+          <div class="studio-badge">1 URGENT</div>
+        </div>
+        <div class="workflow-list">
+
+          <div class="wf-card" id="wf-helix-tm">
+            <div class="wf-card-hdr">
+              <div class="wf-info">
+                <div class="wf-name">Helix Suite™ Trademark Filing</div>
+                <div class="wf-trigger">Priority: URGENT · Berlin deadline June 12 · 11 days</div>
+              </div>
+              <div class="wf-status urgent">URGENT — APPROVE</div>
+            </div>
+            <div class="wf-preview">USPTO application prepared. Mark: "Helix Suite" — goods and services class 42 (Software as a Service, AI-powered business management platform). TEAS Plus application ready. Filing fee: $250. Serial number will be assigned upon submission. Recommend filing this week to have pending status confirmed before Berlin meeting.</div>
+            <div class="wf-actions">
+              <button class="sa-btn review"  onclick="studioAction('wf-helix-tm','review')">Review</button>
+              <button class="sa-btn approve" onclick="studioAction('wf-helix-tm','approve')">Approve &amp; File</button>
+              <button class="sa-btn modify"  onclick="studioAction('wf-helix-tm','modify')">Modify</button>
+              <button class="sa-btn assign"  onclick="studioAction('wf-helix-tm','assign')">Assign</button>
+            </div>
+          </div>
+
+          <div class="wf-card" id="wf-loi-review">
+            <div class="wf-card-hdr">
+              <div class="wf-info">
+                <div class="wf-name">LOI Review · Lesley Harris $500K</div>
+                <div class="wf-trigger">Triggered: MERIDIAN LOI_ACTIVE signal · May 30</div>
+              </div>
+              <div class="wf-status review">REVIEW NEEDED</div>
+            </div>
+            <div class="wf-preview">LOI document reviewed. Key terms: $500,000 Convertible SAFE, 20% discount rate, $5M valuation cap. Non-standard clause noted: investor requests right of first refusal on Series A up to 15% pro-rata. All other terms match Genesis Reserve baseline. Recommend approval with ROFR clause noted to executive team.</div>
+            <div class="wf-actions">
+              <button class="sa-btn review"  onclick="studioAction('wf-loi-review','review')">Review</button>
+              <button class="sa-btn approve" onclick="studioAction('wf-loi-review','approve')">Approve for Exec</button>
+              <button class="sa-btn modify"  onclick="studioAction('wf-loi-review','modify')">Modify</button>
+              <button class="sa-btn assign"  onclick="studioAction('wf-loi-review','assign')">Assign</button>
+            </div>
+          </div>
+
+          <div class="wf-card" id="wf-agent-agreements">
+            <div class="wf-card-hdr">
+              <div class="wf-info">
+                <div class="wf-name">YFLPP Agent Agreement Template</div>
+                <div class="wf-trigger">Triggered: SHIELD REQUEST · Agent onboarding pipeline</div>
+              </div>
+              <div class="wf-status pending">GC REVIEW PENDING</div>
+            </div>
+            <div class="wf-preview">Template drafted for IMO/FMO agent onboarding. Covers: state insurance licensing verification requirement, E&O minimum $1M per occurrence, commission structure (subject to product-level override), non-solicitation (12-month), and dispute resolution via arbitration. Ready for GC review before SHIELD begins agent outreach.</div>
+            <div class="wf-actions">
+              <button class="sa-btn review"  onclick="studioAction('wf-agent-agreements','review')">Review</button>
+              <button class="sa-btn approve" onclick="studioAction('wf-agent-agreements','approve')">Approve Template</button>
+              <button class="sa-btn modify"  onclick="studioAction('wf-agent-agreements','modify')">Modify</button>
+              <button class="sa-btn assign"  onclick="studioAction('wf-agent-agreements','assign')">Assign</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Compliance Calendar -->
+    <div class="content-section">
+      <div class="section-hdr">
+        <div><div class="section-title">Compliance Calendar</div><div class="section-sub">Next 30 Days</div></div>
+        <button class="section-action" onclick="cipherRespond('compliance')">Full Calendar</button>
+      </div>
+      <div class="compliance-list">
+        <div class="comp-item due-soon">
+          <div class="comp-dot due-soon"></div>
+          <div><div class="comp-name">Helix Suite™ Trademark Filing</div><span class="comp-dept">CIPHER · Urgent before Berlin June 12</span></div>
+          <div class="comp-date">ASAP</div>
+        </div>
+        <div class="comp-item due-soon">
+          <div class="comp-dot due-soon"></div>
+          <div><div class="comp-name">LOI Execution — Lesley Harris</div><span class="comp-dept">CIPHER → MERIDIAN · Execute this week</span></div>
+          <div class="comp-date">June 6</div>
+        </div>
+        <div class="comp-item clear">
+          <div class="comp-dot clear"></div>
+          <div><div class="comp-name">Delaware Annual Report — AMB Trust Fund</div><span class="comp-dept">LEDGER → CIPHER · Annual filing</span></div>
+          <div class="comp-date">June 15</div>
+        </div>
+        <div class="comp-item clear">
+          <div class="comp-dot clear"></div>
+          <div><div class="comp-name">Member Agreement Annual Review</div><span class="comp-dept">CIPHER · Last reviewed: March 2026</span></div>
+          <div class="comp-date">June 30</div>
+        </div>
+        <div class="comp-item clear">
+          <div class="comp-dot clear"></div>
+          <div><div class="comp-name">Q2 Privacy &amp; Data Compliance Audit</div><span class="comp-dept">CIPHER · Internal audit cycle</span></div>
+          <div class="comp-date">June 30</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="content-section">
+      <div class="section-hdr"><div><div class="section-title">Quick Actions</div></div></div>
+      <div class="actions-grid">
+        <button class="action-btn" onclick="cipherRespond('helix')">
+          <div class="action-icon" style="background:rgba(232,64,64,.1);color:var(--red)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></div>
+          <div class="action-label">File Helix™</div>
+        </button>
+        <button class="action-btn" onclick="cipherRespond('loi')">
+          <div class="action-icon" style="background:rgba(232,130,10,.1);color:var(--orange)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
+          <div class="action-label">Execute LOI</div>
+        </button>
+        <button class="action-btn" onclick="cipherRespond('compliance')">
+          <div class="action-icon" style="background:rgba(0,212,170,.1);color:var(--teal)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          <div class="action-label">Compliance Check</div>
+        </button>
+        <button class="action-btn" onclick="cipherRespond('ip')">
+          <div class="action-icon" style="background:rgba(201,168,76,.1);color:var(--gold)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg></div>
+          <div class="action-label">IP Report</div>
+        </button>
+      </div>
+    </div>
+
+    <!-- Tools -->
+    <div class="content-section">
+      <div class="section-hdr"><div><div class="section-title">Legal Tools</div></div></div>
+      <div class="tools-strip">
+        <a class="tool-chip" href="https://www.docusign.com" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>DocuSign</a>
+        <a class="tool-chip" href="https://www.uspto.gov" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>USPTO Portal</a>
+        <a class="tool-chip" href="https://notion.so" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h4"/></svg>Matter Tracker</a>
+        <a class="tool-chip" href="https://www.termly.io" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Termly Privacy</a>
+        <a class="tool-chip" href="https://drive.google.com" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>Contract Vault</a>
+      </div>
+    </div>
+
+  </div><!-- /main-content -->
+
+  <!-- KPI PANEL -->
+  <div class="kpi-panel" id="panelKpi" data-panel="kpi">
+    <div class="kpi-header">
+      <div class="kpi-title">Legal KPIs</div>
+      <div class="kpi-updated" id="kpiUpdated">Updated: Loading…</div>
+    </div>
+    <div class="kpi-scroll">
+      <div class="kpi-card red">
+        <div class="kpi-card-label">Helix Suite™ Filing</div>
+        <div class="kpi-val" style="font-size:14px;padding-top:4px">FILE NOW</div>
+        <div class="kpi-sub">Berlin June 12 · USPTO pending</div>
+      </div>
+      <div class="kpi-card teal">
+        <div class="kpi-card-label">Compliance Score</div>
+        <div class="kpi-val">100%</div>
+        <div class="kpi-sub">Target: 100% · Fully compliant</div>
+        <div class="kpi-bar-wrap"><div class="kpi-bar-track"><div class="kpi-bar-fill teal" style="width:100%"></div></div></div>
+      </div>
+      <div class="kpi-card orange">
+        <div class="kpi-card-label">Open Contracts</div>
+        <div class="kpi-val">4</div>
+        <div class="kpi-sub">Target: &lt; 5 · LOI is priority</div>
+        <div class="kpi-bar-wrap"><div class="kpi-bar-track"><div class="kpi-bar-fill orange" style="width:80%"></div></div></div>
+      </div>
+      <div class="kpi-card green">
+        <div class="kpi-card-label">Contract Cycle Time</div>
+        <div class="kpi-val">6d</div>
+        <div class="kpi-sub">Target: &lt; 7 days · On track</div>
+        <div class="kpi-bar-wrap"><div class="kpi-bar-track"><div class="kpi-bar-fill green" style="width:85%"></div></div></div>
+      </div>
+      <div class="kpi-card teal">
+        <div class="kpi-card-label">Active IP Filings</div>
+        <div class="kpi-val">3</div>
+        <div class="kpi-sub">2 pending · 1 protected · +1 needed</div>
+      </div>
+      <div class="kpi-card green">
+        <div class="kpi-card-label">Regulatory Misses</div>
+        <div class="kpi-val">0</div>
+        <div class="kpi-sub">Zero tolerance · All deadlines met</div>
+      </div>
+      <div class="kpi-card gold">
+        <div class="kpi-card-label">Legal Spend</div>
+        <div class="kpi-val">$3.2K</div>
+        <div class="kpi-sub">vs $4K budget · 80% utilization</div>
+        <div class="kpi-bar-wrap"><div class="kpi-bar-track"><div class="kpi-bar-fill" style="width:80%;background:var(--gold);box-shadow:0 0 6px rgba(201,168,76,.4)"></div></div></div>
+      </div>
+      <div class="kpi-card green">
+        <div class="kpi-card-label">Privacy Incidents</div>
+        <div class="kpi-val">0</div>
+        <div class="kpi-sub">Zero tolerance maintained · All clear</div>
+      </div>
+    </div>
+    <div class="signal-feed">
+      <div class="signal-feed-title">Signal Feed</div>
+      <div class="signal-list">
+        <div class="sig-item">
+          <span class="sig-type sig-alert">ALERT</span>
+          <div><div class="sig-text">Helix Suite™ trademark not yet filed — Berlin risk</div><span class="sig-time">Today · 7:00am</span></div>
+        </div>
+        <div class="sig-item">
+          <span class="sig-type sig-request">REQUEST</span>
+          <div><div class="sig-text">MERIDIAN: LOI review for Lesley Harris $500K</div><span class="sig-time">May 30 · 2d ago</span></div>
+        </div>
+        <div class="sig-item">
+          <span class="sig-type sig-request">REQUEST</span>
+          <div><div class="sig-text">SHIELD: YFLPP agent agreement template needed</div><span class="sig-time">May 29 · 3d ago</span></div>
+        </div>
+        <div class="sig-item">
+          <span class="sig-type sig-approval">APPROVAL</span>
+          <div><div class="sig-text">Berlin NDAs executed — all attendees cleared</div><span class="sig-time">May 28 · 4d ago</span></div>
+        </div>
+        <div class="sig-item">
+          <span class="sig-type sig-milestone">MILESTONE</span>
+          <div><div class="sig-text">GR Sacred Emblem design mark protected</div><span class="sig-time">May 15 · Active</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /suite-body -->
+
+<nav class="mobile-tab-nav">
+  <div class="tab-nav-inner">
+    <button class="tab-btn active" data-target="copilot" onclick="switchTab(this)">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>CIPHER
+    </button>
+    <button class="tab-btn" data-target="ops" onclick="switchTab(this)">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Legal
+    </button>
+    <button class="tab-btn" data-target="kpi" onclick="switchTab(this)">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>KPIs
+    </button>
+  </div>
+</nav>
+
+<button class="desktop-launch" onclick="window.open(location.href,'_blank','noopener')">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+  Full Desktop
+</button>
+
+<div class="toast" id="toast"></div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var suite = document.getElementById('suite');
+  if (window !== window.top) suite.classList.add('is-iframe');
+  if (window.DEVICE && !window.DEVICE.isMobile) suite.classList.add('is-desktop');
+  var now = new Date();
+  document.getElementById('kpiUpdated').textContent =
+    'Updated: ' + now.toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
+  setTimeout(function() {
+    addMsg('dept', 'Good morning. One urgent action requires your attention: the Helix Suite™ trademark application must be filed with the USPTO before the Berlin meeting on June 12. Filing this week ensures pending status is confirmed before the investor meeting. The Lesley Harris LOI has been reviewed — one non-standard clause noted for your consideration. YFLPP agent agreement template is ready for your review.');
+  }, 800);
+});
+
+function switchTab(btn) {
+  document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+  var target = btn.dataset.target;
+  document.querySelectorAll('[data-panel]').forEach(function(p) {
+    p.classList.toggle('tab-active', p.dataset.panel === target);
+  });
+}
+
+var responses = {
+  helix:      'Helix Suite™ USPTO filing: Application is complete under TEAS Plus. Class 42 — computer software as a service (SaaS), AI-powered business intelligence and department management platform. Filing fee: $250. Once submitted, USPTO assigns a serial number immediately. The "filing pending" status is legitimate IP protection that can be represented to investors in Berlin. Recommend filing today.',
+  loi:        'LOI review complete. Document is investor-standard with one non-standard clause: investor requests right of first refusal on Series A up to 15% pro-rata. This is common for lead seed investors. All other terms match Genesis Reserve baseline: $500K Convertible SAFE, 20% discount, $5M cap. My recommendation: approve with ROFR noted. Execute via DocuSign this week.',
+  nda:        'Berlin NDAs are executed. All June 12 attendees have signed — including Ashley Bell network contacts. NDAs cover: confidential information, IP protection, 24-month non-disclosure period, and arbitration clause. All executed copies are stored in the contract vault. No outstanding signatories.',
+  compliance: 'Compliance status: 100% — all current obligations are met. Upcoming: Helix Suite™ filing (urgent, this week), LOI execution (June 6 target), Delaware annual report (June 15), member agreement review (June 30), Q2 privacy audit (June 30). No regulatory deadlines have been missed. Zero privacy incidents recorded.',
+  agent:      'YFLPP agent agreement template covers: (1) state insurance license verification required before any client-facing activity, (2) E&O insurance minimum $1M per occurrence, (3) commission structure tied to product-level agreements, (4) 12-month non-solicitation clause, (5) dispute resolution via arbitration. This template gates SHIELD's entire agent onboarding pipeline — recommend prioritizing review.',
+  ip:         'IP portfolio: Genesis Reserve™ — pending at USPTO. GR Sacred Emblem — protected. YFLPP™ — pending at USPTO. Helix Suite™ — NOT YET FILED — urgent. Total filings: 3 active, 1 pending urgent action. Recommendation: file Helix Suite™ immediately, then conduct quarterly IP audit after Berlin trip to identify any additional marks needing protection.',
+  default:    'I can help with contract review, IP filing status, compliance calendar, LOI execution, regulatory requirements, and privacy obligations. What matter requires attention?'
+};
+
+function addMsg(role, text) {
+  var convo = document.getElementById('convoArea');
+  var safe = typeof text === 'string' ? text : '';
+  if (!safe.trim()) return;
+  var msg = document.createElement('div');
+  msg.className = 'msg ' + role;
+  var sender = document.createElement('div');
+  sender.className = 'msg-sender';
+  sender.textContent = role === 'dept' ? 'CIPHER' : 'You';
+  var bubble = document.createElement('div');
+  bubble.className = 'msg-bubble';
+  bubble.textContent = safe;
+  msg.appendChild(sender);
+  msg.appendChild(bubble);
+  convo.appendChild(msg);
+  convo.scrollTop = convo.scrollHeight;
+}
+
+function cipherRespond(key) {
+  var face = document.getElementById('copilotFace');
+  var wrap = face.parentElement.parentElement.parentElement;
+  document.getElementById('copilotState').textContent = 'Reviewing legal data…';
+  wrap.classList.add('copilot-thinking');
+  setTimeout(function() {
+    wrap.classList.remove('copilot-thinking');
+    wrap.classList.add('copilot-speaking');
+    document.getElementById('copilotState').textContent = 'Responding…';
+    setTimeout(function() {
+      wrap.classList.remove('copilot-speaking');
+      document.getElementById('copilotState').textContent = 'Monitoring · 1 Urgent Action';
+    }, 2500);
+    addMsg('dept', responses[key] || responses.default);
+  }, 900);
+}
+
+function sendMsg() {
+  var input = document.getElementById('copilotInput');
+  var text = input.value.trim();
+  if (!text) return;
+  addMsg('user', text);
+  input.value = '';
+  var lower = text.toLowerCase();
+  var key = Object.keys(responses).find(function(k) { return lower.includes(k); }) || 'default';
+  cipherRespond(key);
+}
+
+document.getElementById('copilotInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') sendMsg();
+});
+
+function studioAction(wfId, action) {
+  var messages = {
+    review:  'Document opened for full review. Examine all clauses before proceeding.',
+    approve: '✓ Approved. Executing and recording to CIPHER_GOVERNANCE on Base.',
+    modify:  '✎ Modify mode active. Edit the document before resubmitting for approval.',
+    assign:  '→ Assigned. Task routed to the designated handler.'
+  };
+  var card = document.getElementById(wfId);
+  if (action === 'approve' && card) {
+    var statusEl = card.querySelector('.wf-status');
+    if (statusEl) { statusEl.textContent = 'APPROVED'; statusEl.className = 'wf-status approved'; }
+    if (wfId === 'wf-helix-tm') {
+      document.getElementById('copilotState').textContent = 'Monitoring · Helix™ Filed';
+      setTimeout(function() { addMsg('dept', 'Helix Suite™ trademark application submitted to USPTO. Serial number will be assigned within 24 hours. MILESTONE signal sent to ATLAS and MERIDIAN — add to Berlin data room.'); }, 400);
+    }
+  }
+  showToast(messages[action]);
+}
+
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function() { t.classList.remove('show'); }, 2800);
+}
+</script>
+</body>
+</html>

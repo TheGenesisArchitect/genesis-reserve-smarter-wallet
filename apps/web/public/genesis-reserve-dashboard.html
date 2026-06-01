@@ -1206,7 +1206,10 @@ var APPS = {
   'pitch-seed':          {title:'Seed Pitch',        url:'pitch-seed.html',                      icon:'chart',        cat:'icon-green'},
   'pitch-institutional': {title:'Institutional',     url:'pitch-institutional.html',             icon:'briefcase',    cat:'icon-blue'},
   'pitch-retail':        {title:'Retail Pitch',      url:'pitch-retail.html',                    icon:'users',        cat:'icon-teal'},
-  'executive-suite': {title:'Executive Suite', url:'genesis-executive-suite.html', icon:'briefcase', cat:'icon-finance'},
+  'executive-suite':   {title:'Executive Suite',  url:'genesis-executive-suite.html',  icon:'briefcase', cat:'icon-finance'},
+  'finance-ledger':    {title:'Finance · LEDGER', url:'finance-ledger-suite.html',      icon:'chart',     cat:'icon-green'},
+  'investor-meridian': {title:'IR · MERIDIAN',    url:'investor-meridian-suite.html',   icon:'target',    cat:'icon-blue'},
+  'legal-cipher':      {title:'Legal · CIPHER',   url:'legal-cipher-suite.html',        icon:'shield',    cat:'icon-teal'},
   'claude':    {title:'Claude AI', url:'https://claude.ai',                     icon:'brain',    cat:'icon-violet', external:true},
   'grok':      {title:'Grok',      url:'https://grok.com',                      icon:'zap',      cat:'icon-dark',   external:true},
   'slack':     {title:'Slack',     url:'https://slack.com',                     icon:'hash',     cat:'icon-green',  external:true},
@@ -1222,24 +1225,28 @@ var APPS = {
 /* ── PAGE CONFIG ─────────────────────────────────────────── */
 var PAGES = [
   ['executive-suite','growth-model','investor-deck','loi-lesley','berlin-brief','claude'],
+  ['executive-suite','finance-ledger','investor-meridian','legal-cipher'],
   ['growth-model','investor-deck','loi-lesley','berlin-brief','ppm','share-cert','investor-brief','whitepaper'],
   ['claude','grok','slack','gmail','gcal','github','vercel','docusign','notion','linkedin'],
   ['wallet-demo','wallet-demo2','treasury-demo','reel-ad','logo-export','whitepaper-v1','keynote','keynote-script'],
   ['pitch-deck','pitch-seed','pitch-institutional','pitch-retail','keynote','whitepaper','investor-brief'],
 ];
-var PAGE_TITLES = ['Home','Investor Relations','AI & Tools','Product','Presentations'];
+var PAGE_TITLES = ['Home','Helix Suite','Investor Relations','AI & Tools','Product','Presentations'];
 
 /* ── NOTIFICATIONS ───────────────────────────────────────── */
 var NOTIFICATIONS = {
-  'executive-suite': {count:2, type:'urgent',  label:'2 Actions Required · ATLAS'},
-  'loi-lesley':      {count:1, type:'urgent',  label:'Signature Required'},
-  'berlin-brief':    {count:1, type:'warn',    label:'Jun 12 Deadline'},
-  'growth-model':    {count:1, type:'success', label:'v2.1 Live'},
-  'investor-deck':   {count:1, type:'info',    label:'Review Ready'},
+  'executive-suite':   {count:2, type:'urgent',  label:'2 Actions Required · ATLAS'},
+  'finance-ledger':    {count:3, type:'urgent',  label:'3 Workflows Pending · LEDGER'},
+  'investor-meridian': {count:2, type:'urgent',  label:'Berlin -11d · LOI Ready'},
+  'legal-cipher':      {count:1, type:'urgent',  label:'Helix Suite™ File Now'},
+  'loi-lesley':        {count:1, type:'urgent',  label:'Signature Required'},
+  'berlin-brief':      {count:1, type:'warn',    label:'Jun 12 Deadline'},
+  'growth-model':      {count:1, type:'success', label:'v2.1 Live'},
+  'investor-deck':     {count:1, type:'info',    label:'Review Ready'},
 };
 
 /* ── NAVIGATION ──────────────────────────────────────────── */
-var currentPage = 0, totalPages = 5, phoneW = 390, tiltTimer;
+var currentPage = 0, totalPages = 6, phoneW = 390, tiltTimer;
 
 function setTransform(tx, ry, dur, ease) {
   var t = document.getElementById('pagesTrack');

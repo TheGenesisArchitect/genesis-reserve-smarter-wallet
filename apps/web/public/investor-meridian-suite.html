@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>MERIDIAN · Investor Relations · Genesis Reserve</title>
+<script src="device.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ── TOKENS ── */
+:root {
+  --bg:#020305; --bg2:#040608; --bg3:#080B10; --panel:#0C1018;
+  --text:#E8E5DF; --muted:#7A7670; --gold:#C9A84C; --gold2:#E8CB6E;
+  --teal:#00D4AA; --green:#1ABF6A; --blue:#4A9EFF; --red:#E84040;
+  --orange:#E8820A; --violet:#9B6DFF;
+  --ease:cubic-bezier(.4,0,.2,1); --spring:cubic-bezier(.34,1.56,.64,1);
+  --tab-h:64px;
+  --dept:#4A9EFF; --dept2:#9B6DFF;
+}
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+button { background:none; border:none; cursor:pointer; color:inherit; font:inherit; }
+html,body { height:100%; overflow:hidden; background:var(--bg); color:var(--text); font-family:'Sora',sans-serif; font-size:14px; -webkit-font-smoothing:antialiased; }
+
+.suite { display:flex; flex-direction:column; height:100vh; height:100dvh;
+  background: radial-gradient(ellipse 80% 60% at 15% 50%, rgba(74,158,255,.04) 0%, transparent 60%),
+              radial-gradient(ellipse 60% 80% at 85% 30%, rgba(155,109,255,.04) 0%, transparent 60%), var(--bg); }
+
+.suite-header { flex-shrink:0; height:56px; display:flex; align-items:center; padding:0 20px;
+  border-bottom:1px solid rgba(255,255,255,.06); background:rgba(4,6,8,.85); backdrop-filter:blur(20px);
+  gap:12px; position:relative; z-index:50; }
+.suite-header::after { content:''; position:absolute; bottom:0; left:0; right:0; height:1px;
+  background:linear-gradient(90deg, transparent, rgba(74,158,255,.35), transparent); }
+.hdr-back { display:flex; align-items:center; gap:5px; font-size:12px; color:var(--muted);
+  padding:6px 10px; border-radius:8px; transition:all .15s; text-decoration:none; white-space:nowrap; }
+.hdr-back:hover { background:rgba(255,255,255,.06); color:var(--text); }
+.hdr-divider { width:1px; height:20px; background:rgba(255,255,255,.1); flex-shrink:0; }
+.hdr-dept { font-family:'Cormorant Garamond',serif; font-size:18px; font-weight:300; letter-spacing:.04em; }
+.hdr-sub  { font-size:10px; font-weight:500; letter-spacing:.12em; text-transform:uppercase; color:var(--dept); }
+.hdr-spacer { flex:1; }
+.dept-status-pill { display:flex; align-items:center; gap:7px; padding:5px 12px;
+  background:rgba(74,158,255,.08); border:1px solid rgba(74,158,255,.2);
+  border-radius:20px; font-size:11px; font-weight:500; color:var(--blue); white-space:nowrap; }
+.status-dot { width:7px; height:7px; border-radius:50%; background:var(--blue);
+  box-shadow:0 0 6px var(--blue); animation:dot-pulse 2s ease-in-out infinite; }
+@keyframes dot-pulse { 0%,100%{opacity:1}50%{opacity:.35} }
+.hdr-head { display:flex; align-items:center; gap:8px; padding:4px 10px;
+  border:1px solid rgba(255,255,255,.07); border-radius:8px; font-size:12px; }
+.hdr-head-role { color:var(--muted); font-size:10px; margin-top:1px; }
+.head-avatar { width:28px; height:28px; border-radius:8px;
+  background:linear-gradient(135deg, var(--blue), var(--violet));
+  display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:var(--bg); }
+
+.suite-body { flex:1; display:flex; overflow:hidden; min-height:0; position:relative; }
+
+/* ── COPILOT PANEL ── */
+.copilot-panel { width:clamp(195px,17vw,252px); flex-shrink:0; display:flex; flex-direction:column;
+  border-right:1px solid rgba(255,255,255,.06); background:rgba(4,6,8,.6); }
+.copilot-avatar-wrap { flex-shrink:0; padding:16px 16px 10px; display:flex; flex-direction:column; align-items:center;
+  border-bottom:1px solid rgba(255,255,255,.05);
+  background:radial-gradient(ellipse 100% 80% at 50% 0%, rgba(74,158,255,.07) 0%, transparent 70%); }
+.avatar-ring-wrap { position:relative; width:110px; height:110px; margin-bottom:10px; }
+.avatar-ring { position:absolute; inset:0; border-radius:50%;
+  background:conic-gradient(from 0deg, #4A9EFF 0%, #9B6DFF 35%, #4A9EFF 65%, #C9A84C 85%, #4A9EFF 100%);
+  animation:ring-spin 6s linear infinite; }
+@keyframes ring-spin { to{transform:rotate(360deg)} }
+.avatar-face-wrap { position:absolute; inset:3px; border-radius:50%; overflow:hidden; }
+.avatar-face { width:100%; height:100%; border-radius:50%;
+  background:radial-gradient(circle at 42% 38%, #0c1018, #040608);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; position:relative; }
+.avatar-face::before { content:'MERIDIAN'; position:absolute; top:11px; font-size:6.5px; font-weight:700;
+  letter-spacing:.25em; color:rgba(74,158,255,.4); font-family:'JetBrains Mono',monospace; }
+.copilot-eyes { display:flex; gap:14px; align-items:center; margin-top:6px; }
+.copilot-eye { width:22px; height:3px; background:var(--dept); border-radius:2px;
+  box-shadow:0 0 8px var(--dept); animation:eye-blink 6s ease-in-out infinite, eye-glow 2s ease-in-out infinite alternate; }
+@keyframes eye-blink { 0%,88%,100%{transform:scaleY(1)}92%{transform:scaleY(.05)} }
+@keyframes eye-glow { from{box-shadow:0 0 6px var(--dept)} to{box-shadow:0 0 14px var(--dept),0 0 24px rgba(74,158,255,.4)} }
+.copilot-wave { display:flex; align-items:flex-end; gap:3px; height:18px; opacity:0; transition:opacity .3s; }
+.copilot-wave .wbar { width:3px; border-radius:1.5px; background:var(--dept); min-height:3px; animation:wave-bar 1.1s ease-in-out infinite; }
+.wbar:nth-child(1){animation-delay:.00s;height:6px}.wbar:nth-child(2){animation-delay:.10s;height:12px}
+.wbar:nth-child(3){animation-delay:.20s;height:17px}.wbar:nth-child(4){animation-delay:.15s;height:13px}
+.wbar:nth-child(5){animation-delay:.05s;height:8px}.wbar:nth-child(6){animation-delay:.22s;height:15px}
+@keyframes wave-bar { 0%,100%{transform:scaleY(.3);opacity:.6}50%{transform:scaleY(1);opacity:1} }
+.avatar-pulse { position:absolute; inset:-8px; border-radius:50%;
+  border:1px solid rgba(74,158,255,.2); animation:pulse-ring 2.5s ease-out infinite; opacity:0; }
+@keyframes pulse-ring { 0%{transform:scale(.9);opacity:.6}100%{transform:scale(1.15);opacity:0} }
+.copilot-speaking .copilot-wave { opacity:1; }
+.copilot-speaking .avatar-pulse { opacity:1; animation-duration:1.5s; }
+.copilot-thinking .avatar-ring { animation-duration:2s; background:conic-gradient(from 0deg,#9B6DFF,#4A9EFF,#9B6DFF); }
+.copilot-name  { font-family:'Cormorant Garamond',serif; font-size:17px; font-weight:300; letter-spacing:.1em; }
+.copilot-role  { font-size:8.5px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; color:var(--dept); margin-top:2px; }
+.copilot-state { font-size:9.5px; color:var(--muted); margin-top:3px; font-family:'JetBrains Mono',monospace; }
+.copilot-pill  { display:flex; align-items:center; gap:6px; margin-top:8px; padding:4px 10px;
+  border-radius:20px; font-size:9.5px; font-weight:500; border:1px solid rgba(74,158,255,.2);
+  background:rgba(74,158,255,.08); color:var(--blue); }
+.pill-dot { width:6px; height:6px; border-radius:50%; background:currentColor; animation:dot-pulse 1.5s infinite; }
+.convo-area { flex:1; overflow-y:auto; padding:12px 14px; scrollbar-width:thin;
+  scrollbar-color:rgba(74,158,255,.15) transparent; display:flex; flex-direction:column; gap:10px; min-height:0; }
+.msg { display:flex; flex-direction:column; max-width:90%; gap:3px; animation:msg-in .2s var(--ease) both; }
+@keyframes msg-in { from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none} }
+.msg.dept { align-self:flex-start; }
+.msg.user { align-self:flex-end; align-items:flex-end; }
+.msg-sender { font-size:9.5px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); padding:0 2px; }
+.msg.dept .msg-sender { color:var(--dept); }
+.msg-bubble { padding:9px 12px; border-radius:12px; font-size:12px; line-height:1.55; }
+.msg.dept .msg-bubble { background:rgba(74,158,255,.06); border:1px solid rgba(74,158,255,.15); border-bottom-left-radius:4px; }
+.msg.user .msg-bubble { background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08); border-bottom-right-radius:4px; color:var(--muted); }
+.copilot-input-area { flex-shrink:0; padding:10px 12px 12px; border-top:1px solid rgba(255,255,255,.06); background:rgba(4,6,8,.5); }
+.copilot-input-row { display:flex; align-items:center; gap:8px; background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08); border-radius:12px; padding:8px 10px; transition:border-color .2s; }
+.copilot-input-row:focus-within { border-color:rgba(74,158,255,.3); }
+.copilot-text-input { flex:1; background:none; border:none; outline:none; color:var(--text); font-family:'Sora',sans-serif; font-size:12.5px; }
+.copilot-text-input::placeholder { color:var(--muted); }
+.send-btn { width:30px; height:30px; border-radius:8px; display:flex; align-items:center; justify-content:center;
+  transition:all .15s; flex-shrink:0; color:var(--muted); }
+.send-btn:hover { background:rgba(74,158,255,.15); color:var(--dept); }
+.copilot-hint { text-align:center; font-size:9px; color:var(--muted); margin-top:5px; letter-spacing:.04em; }
+
+/* ── MAIN CONTENT ── */
+.main-content { flex:1; overflow-y:auto; padding:18px 22px; scrollbar-width:thin; scrollbar-color:rgba(255,255,255,.08) transparent; min-width:0; }
+.content-section { margin-bottom:26px; }
+.section-hdr { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+.section-title { font-family:'Cormorant Garamond',serif; font-size:17px; font-weight:300; letter-spacing:.04em; }
+.section-sub { font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-top:2px; }
+.section-action { font-size:11px; font-weight:500; color:var(--dept); padding:4px 10px;
+  border:1px solid rgba(74,158,255,.22); border-radius:6px; cursor:pointer; transition:all .15s; }
+.section-action:hover { background:rgba(74,158,255,.08); }
+
+/* Berlin Countdown */
+.berlin-card { background:rgba(232,130,10,.04); border:1px solid rgba(232,130,10,.2); border-radius:16px; padding:16px; margin-bottom:12px; }
+.berlin-hdr  { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
+.berlin-countdown { font-family:'JetBrains Mono',monospace; font-size:28px; font-weight:500; color:var(--orange); }
+.berlin-label { font-size:10px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--orange); }
+.berlin-date  { font-size:12px; color:var(--muted); margin-top:2px; }
+.berlin-checklist { display:flex; flex-direction:column; gap:7px; }
+.berlin-item { display:flex; align-items:center; gap:10px; padding:8px 10px;
+  background:rgba(255,255,255,.025); border:1px solid rgba(255,255,255,.05); border-radius:9px; }
+.berlin-item.done { border-color:rgba(26,191,106,.15); background:rgba(26,191,106,.04); }
+.berlin-item.warn { border-color:rgba(232,130,10,.15); }
+.berlin-item.urgent { border-color:rgba(232,64,64,.2); background:rgba(232,64,64,.03); }
+.check-ico { width:20px; height:20px; border-radius:6px; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:11px; }
+.check-ico.done   { background:rgba(26,191,106,.15); color:var(--green); }
+.check-ico.warn   { background:rgba(232,130,10,.12); color:var(--orange); }
+.check-ico.urgent { background:rgba(232,64,64,.12); color:var(--red); }
+.check-ico.pend   { background:rgba(255,255,255,.06); color:var(--muted); }
+.berlin-item-text { flex:1; font-size:11.5px; font-weight:500; }
+.berlin-item.done .berlin-item-text { color:var(--muted); text-decoration:line-through; }
+.berlin-item-dept { font-size:9px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+
+/* Pipeline */
+.pipeline-list { display:flex; flex-direction:column; gap:10px; }
+.investor-card { background:rgba(255,255,255,.028); border:1px solid rgba(255,255,255,.07); border-radius:14px;
+  padding:14px; display:grid; grid-template-columns:1fr auto; gap:10px; align-items:start;
+  transition:border-color .2s; }
+.investor-card:hover { border-color:rgba(74,158,255,.2); }
+.inv-name  { font-size:13px; font-weight:600; margin-bottom:2px; }
+.inv-type  { font-size:10px; color:var(--muted); margin-bottom:8px; }
+.inv-meta  { display:flex; flex-direction:column; gap:4px; }
+.inv-row   { display:flex; justify-content:space-between; align-items:center; }
+.inv-key   { font-size:10px; color:var(--muted); }
+.inv-val   { font-size:11px; font-weight:500; font-family:'JetBrains Mono',monospace; }
+.stage-badge { font-size:9px; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+  padding:4px 10px; border-radius:20px; white-space:nowrap; }
+.stage-loi   { background:rgba(232,130,10,.1); border:1px solid rgba(232,130,10,.2); color:var(--orange); }
+.stage-warm  { background:rgba(74,158,255,.1); border:1px solid rgba(74,158,255,.2); color:var(--blue); }
+.stage-active{ background:rgba(201,168,76,.1); border:1px solid rgba(201,168,76,.2); color:var(--gold); }
+.stage-new   { background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); color:var(--muted); }
+.last-touch  { font-size:9px; color:var(--muted); margin-top:6px; font-family:'JetBrains Mono',monospace; }
+
+/* Hermes Studio */
+.studio-section { background:rgba(201,168,76,.03); border:1px solid rgba(201,168,76,.15); border-radius:18px; padding:16px; }
+.studio-hdr { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
+.studio-logo { width:32px; height:32px; border-radius:10px; background:rgba(201,168,76,.1);
+  border:1px solid rgba(201,168,76,.2); display:flex; align-items:center; justify-content:center; }
+.studio-title { font-family:'Cormorant Garamond',serif; font-size:16px; font-weight:300; letter-spacing:.06em; }
+.studio-badge { font-size:9px; font-weight:600; letter-spacing:.1em; text-transform:uppercase;
+  padding:2px 8px; border-radius:20px; background:rgba(201,168,76,.1); border:1px solid rgba(201,168,76,.2); color:var(--gold); margin-left:auto; }
+.workflow-list { display:flex; flex-direction:column; gap:10px; }
+.wf-card { background:rgba(255,255,255,.025); border:1px solid rgba(255,255,255,.07); border-radius:12px; padding:12px; transition:border-color .2s; }
+.wf-card:hover { border-color:rgba(201,168,76,.2); }
+.wf-card-hdr { display:flex; align-items:flex-start; gap:10px; margin-bottom:8px; }
+.wf-info { flex:1; min-width:0; }
+.wf-name    { font-size:12.5px; font-weight:600; margin-bottom:2px; }
+.wf-trigger { font-size:10px; color:var(--muted); }
+.wf-status  { flex-shrink:0; font-size:9px; font-weight:600; letter-spacing:.08em; text-transform:uppercase;
+  padding:3px 8px; border-radius:20px; white-space:nowrap; }
+.wf-status.review  { background:rgba(232,130,10,.1); border:1px solid rgba(232,130,10,.2); color:var(--orange); }
+.wf-status.approved{ background:rgba(74,158,255,.1); border:1px solid rgba(74,158,255,.2); color:var(--blue); }
+.wf-status.urgent  { background:rgba(232,64,64,.1);  border:1px solid rgba(232,64,64,.2);  color:var(--red); }
+.wf-status.pending { background:rgba(155,109,255,.1);border:1px solid rgba(155,109,255,.2);color:var(--violet); }
+.wf-preview { font-size:11px; color:var(--muted); line-height:1.5; padding:8px 10px;
+  background:rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.04); border-radius:8px; margin-bottom:10px; }
+.wf-actions { display:flex; gap:6px; flex-wrap:wrap; }
+.sa-btn { font-size:10px; font-weight:600; letter-spacing:.06em; text-transform:uppercase;
+  padding:5px 12px; border-radius:7px; transition:all .15s; cursor:pointer; }
+.sa-btn.review  { background:rgba(232,130,10,.08); border:1px solid rgba(232,130,10,.2); color:var(--orange); }
+.sa-btn.approve { background:rgba(26,191,106,.08); border:1px solid rgba(26,191,106,.2); color:var(--green); }
+.sa-btn.modify  { background:rgba(74,158,255,.08);  border:1px solid rgba(74,158,255,.2);  color:var(--blue); }
+.sa-btn.assign  { background:rgba(155,109,255,.08); border:1px solid rgba(155,109,255,.2); color:var(--violet); }
+.sa-btn:hover   { opacity:.8; transform:translateY(-1px); }
+
+/* Actions & Tools */
+.actions-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+.action-btn { display:flex; flex-direction:column; align-items:center; gap:7px; padding:12px 8px;
+  background:rgba(255,255,255,.028); border:1px solid rgba(255,255,255,.07); border-radius:14px;
+  cursor:pointer; transition:all .2s var(--spring); text-align:center; }
+.action-btn:hover { background:rgba(255,255,255,.055); transform:translateY(-2px); border-color:rgba(255,255,255,.12); }
+.action-icon  { width:38px; height:38px; border-radius:12px; display:flex; align-items:center; justify-content:center; }
+.action-label { font-size:10.5px; font-weight:500; line-height:1.3; }
+.tools-strip { display:flex; gap:8px; flex-wrap:wrap; }
+.tool-chip { display:flex; align-items:center; gap:7px; padding:7px 12px;
+  background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); border-radius:8px;
+  font-size:12px; font-weight:500; cursor:pointer; transition:all .15s; text-decoration:none; color:var(--text); }
+.tool-chip:hover { background:rgba(255,255,255,.09); border-color:rgba(255,255,255,.14); }
+
+/* ── KPI PANEL ── */
+.kpi-panel { width:clamp(230px,21vw,295px); flex-shrink:0; border-left:1px solid rgba(255,255,255,.06);
+  display:flex; flex-direction:column; overflow:hidden; }
+.kpi-header { flex-shrink:0; padding:14px 16px 10px; border-bottom:1px solid rgba(255,255,255,.06); }
+.kpi-title { font-family:'Cormorant Garamond',serif; font-size:16px; font-weight:300; letter-spacing:.04em; }
+.kpi-updated { font-size:9px; color:var(--muted); margin-top:2px; font-family:'JetBrains Mono',monospace; }
+.kpi-scroll { flex:1; overflow-y:auto; padding:10px 12px; scrollbar-width:none; display:flex; flex-direction:column; gap:8px; }
+.kpi-scroll::-webkit-scrollbar { display:none; }
+.kpi-card { background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); border-radius:10px; padding:10px; position:relative; overflow:hidden; }
+.kpi-card::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; }
+.kpi-card.blue::before   { background:linear-gradient(90deg,transparent,rgba(74,158,255,.6),transparent); }
+.kpi-card.violet::before { background:linear-gradient(90deg,transparent,rgba(155,109,255,.6),transparent); }
+.kpi-card.gold::before   { background:linear-gradient(90deg,transparent,rgba(201,168,76,.6),transparent); }
+.kpi-card.green::before  { background:linear-gradient(90deg,transparent,rgba(26,191,106,.6),transparent); }
+.kpi-card.orange::before { background:linear-gradient(90deg,transparent,rgba(232,130,10,.6),transparent); }
+.kpi-card.teal::before   { background:linear-gradient(90deg,transparent,rgba(0,212,170,.6),transparent); }
+.kpi-card.red::before    { background:linear-gradient(90deg,transparent,rgba(232,64,64,.6),transparent); }
+.kpi-card-label { font-size:8.5px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:4px; }
+.kpi-val { font-family:'JetBrains Mono',monospace; font-size:20px; font-weight:500; line-height:1; }
+.kpi-card.blue .kpi-val   { color:var(--blue); }
+.kpi-card.violet .kpi-val { color:var(--violet); }
+.kpi-card.gold .kpi-val   { color:var(--gold2); }
+.kpi-card.green .kpi-val  { color:var(--green); }
+.kpi-card.orange .kpi-val { color:var(--orange); }
+.kpi-card.teal .kpi-val   { color:var(--teal); }
+.kpi-card.red .kpi-val    { color:var(--red); }
+.kpi-sub { font-size:9.5px; color:var(--muted); margin-top:3px; }
+.kpi-bar-wrap { margin-top:7px; }
+.kpi-bar-track { height:4px; background:rgba(255,255,255,.07); border-radius:2px; overflow:hidden; }
+.kpi-bar-fill  { height:100%; border-radius:2px; }
+.kpi-card.blue .kpi-bar-fill   { background:var(--blue); box-shadow:0 0 6px rgba(74,158,255,.4); }
+.kpi-card.green .kpi-bar-fill  { background:var(--green); }
+.kpi-card.orange .kpi-bar-fill { background:var(--orange); }
+.signal-feed { flex-shrink:0; padding:10px 12px 14px; border-top:1px solid rgba(255,255,255,.06); }
+.signal-feed-title { font-size:9.5px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+.signal-list { display:flex; flex-direction:column; gap:1px; }
+.sig-item { display:flex; gap:8px; padding:6px 0; border-bottom:1px solid rgba(255,255,255,.04); align-items:flex-start; }
+.sig-item:last-child { border-bottom:none; }
+.sig-type { font-size:8px; font-weight:700; letter-spacing:.1em; padding:2px 6px; border-radius:4px; white-space:nowrap; margin-top:1px; }
+.sig-milestone { background:rgba(26,191,106,.1); color:var(--green); border:1px solid rgba(26,191,106,.2); }
+.sig-alert  { background:rgba(232,64,64,.1); color:var(--red); border:1px solid rgba(232,64,64,.2); }
+.sig-report { background:rgba(74,158,255,.1); color:var(--blue); border:1px solid rgba(74,158,255,.2); }
+.sig-request{ background:rgba(232,130,10,.1); color:var(--orange); border:1px solid rgba(232,130,10,.2); }
+.sig-text { font-size:10.5px; line-height:1.4; flex:1; }
+.sig-time { font-size:9px; color:var(--muted); display:block; margin-top:2px; }
+
+/* Desktop launch */
+.desktop-launch { position:fixed; bottom:20px; right:20px; z-index:200; display:flex; align-items:center; gap:8px;
+  padding:9px 16px; background:rgba(74,158,255,.1); border:1px solid rgba(74,158,255,.28); border-radius:24px;
+  font-size:11.5px; font-weight:500; color:var(--dept); cursor:pointer; transition:all .2s var(--spring);
+  backdrop-filter:blur(12px); box-shadow:0 8px 24px rgba(0,0,0,.4); }
+.desktop-launch:hover { background:rgba(74,158,255,.2); transform:translateY(-2px); }
+.is-desktop:not(.is-iframe) .desktop-launch { display:none; }
+
+/* Mobile */
+.mobile-tab-nav { display:none; flex-shrink:0; background:rgba(4,6,8,.96);
+  backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);
+  border-top:1px solid rgba(255,255,255,.08); position:relative; z-index:60; }
+.tab-nav-inner { display:flex; height:100%; }
+.tab-btn { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:4px; color:var(--muted); font-size:9px; font-weight:500; letter-spacing:.04em;
+  transition:color .2s; position:relative; -webkit-tap-highlight-color:transparent; }
+.tab-btn.active { color:var(--dept); }
+.tab-btn::after { content:''; position:absolute; top:0; left:20%; right:20%; height:2px;
+  background:var(--dept); border-radius:0 0 2px 2px; opacity:0; transition:opacity .2s; }
+.tab-btn.active::after { opacity:1; }
+
+@media (max-width:767px) {
+  .mobile-tab-nav { display:flex; height:calc(var(--tab-h) + env(safe-area-inset-bottom,0px)); padding-bottom:env(safe-area-inset-bottom,0px); }
+  .tab-nav-inner { align-items:flex-start; padding-top:2px; }
+  .desktop-launch { display:none !important; }
+  .copilot-panel,.main-content,.kpi-panel { position:absolute; inset:0; width:100%; height:100%; border:none;
+    opacity:0; pointer-events:none; transform:translateX(14px); transition:opacity .22s var(--ease),transform .22s var(--ease); overflow-y:auto; }
+  .copilot-panel.tab-active,.main-content.tab-active,.kpi-panel.tab-active { opacity:1; pointer-events:all; transform:none; }
+  .copilot-panel { display:flex; flex-direction:column; overflow:hidden; }
+  .avatar-ring-wrap { width:88px; height:88px; margin-bottom:7px; }
+  .copilot-avatar-wrap { padding:12px 14px 9px; }
+  .actions-grid { grid-template-columns:repeat(2,1fr); }
+  .kpi-panel { width:100%; border-left:none; }
+  .kpi-val { font-size:22px; }
+  .main-content { padding:14px 14px calc(14px + env(safe-area-inset-bottom,0px)); }
+  .pipeline-list .investor-card { grid-template-columns:1fr; }
+}
+@media (min-width:768px) and (max-width:1099px) {
+  .copilot-panel { width:clamp(180px,21vw,225px); }
+  .kpi-panel     { width:clamp(195px,23vw,245px); }
+  .actions-grid  { grid-template-columns:repeat(2,1fr); }
+  .avatar-ring-wrap { width:96px; height:96px; }
+}
+@media (min-width:1100px) and (max-width:1400px) {
+  .copilot-panel { width:clamp(195px,16vw,238px); }
+  .kpi-panel     { width:clamp(225px,20vw,272px); }
+}
+.toast { position:fixed; bottom:80px; right:20px; z-index:300; padding:10px 16px;
+  background:rgba(8,12,16,.95); border:1px solid rgba(74,158,255,.3); border-radius:12px;
+  font-size:12px; font-weight:500; backdrop-filter:blur(20px);
+  box-shadow:0 8px 32px rgba(0,0,0,.5); transform:translateY(10px); opacity:0;
+  transition:all .3s var(--spring); pointer-events:none; }
+.toast.show { transform:none; opacity:1; }
+</style>
+</head>
+<body>
+<div class="suite" id="suite">
+
+<!-- HEADER -->
+<header class="suite-header">
+  <a class="hdr-back" href="genesis-reserve-dashboard.html">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+    <span>Dashboard</span>
+  </a>
+  <div class="hdr-divider"></div>
+  <div>
+    <div class="hdr-dept">Investor Relations · MERIDIAN</div>
+    <div class="hdr-sub">Genesis Reserve · Powered by Hermes</div>
+  </div>
+  <div class="hdr-spacer"></div>
+  <div class="dept-status-pill"><div class="status-dot"></div>MERIDIAN Online</div>
+  <div class="hdr-head">
+    <div class="head-avatar">IR</div>
+    <div>
+      <div style="font-size:12px;font-weight:500">Head of IR</div>
+      <div class="hdr-head-role">Investor Relations</div>
+    </div>
+  </div>
+</header>
+
+<div class="suite-body">
+
+  <!-- COPILOT PANEL -->
+  <div class="copilot-panel tab-active" id="panelCopilot" data-panel="copilot">
+    <div class="copilot-avatar-wrap">
+      <div class="avatar-ring-wrap">
+        <div class="avatar-pulse"></div>
+        <div class="avatar-ring"></div>
+        <div class="avatar-face-wrap">
+          <div class="avatar-face" id="copilotFace">
+            <div class="copilot-eyes"><div class="copilot-eye"></div><div class="copilot-eye"></div></div>
+            <div class="copilot-wave" id="copilotWave">
+              <div class="wbar"></div><div class="wbar"></div><div class="wbar"></div>
+              <div class="wbar"></div><div class="wbar"></div><div class="wbar"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="copilot-name">MERIDIAN</div>
+      <div class="copilot-role">Investor Relations CoPilot</div>
+      <div class="copilot-state" id="copilotState">Monitoring · Pipeline Active</div>
+      <div class="copilot-pill"><div class="pill-dot"></div><span>Capital Intelligence Active</span></div>
+    </div>
+    <div class="convo-area" id="convoArea"></div>
+    <div class="copilot-input-area">
+      <div class="copilot-input-row">
+        <input class="copilot-text-input" id="copilotInput" placeholder="Ask MERIDIAN about investors…" type="text">
+        <button class="send-btn" onclick="sendMsg()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+      <div class="copilot-hint">Investor Relations scope · Genesis AI</div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content" id="panelOps" data-panel="ops">
+
+    <!-- Berlin Readiness -->
+    <div class="content-section">
+      <div class="section-hdr">
+        <div><div class="section-title">Berlin Readiness</div><div class="section-sub">June 12, 2026 · 11 Days Out</div></div>
+        <button class="section-action" onclick="meridianRespond('berlin')">Full Brief</button>
+      </div>
+      <div class="berlin-card">
+        <div class="berlin-hdr">
+          <div>
+            <div class="berlin-countdown">11</div>
+            <div class="berlin-label">Days to Berlin</div>
+            <div class="berlin-date">June 12, 2026 · Investor Meeting</div>
+          </div>
+        </div>
+        <div class="berlin-checklist">
+          <div class="berlin-item done"><div class="check-ico done">✓</div><div><div class="berlin-item-text">Lesley Harris LOI verbal commitment confirmed</div><div class="berlin-item-dept">MERIDIAN · Completed May 30</div></div></div>
+          <div class="berlin-item warn"><div class="check-ico warn">!</div><div><div class="berlin-item-text">Investment deck updated with May financials</div><div class="berlin-item-dept">LEDGER → MERIDIAN · Pending approval</div></div></div>
+          <div class="berlin-item urgent"><div class="check-ico urgent">⚠</div><div><div class="berlin-item-text">Helix Suite™ trademark filed with USPTO</div><div class="berlin-item-dept">CIPHER · Action required now</div></div></div>
+          <div class="berlin-item warn"><div class="check-ico warn">!</div><div><div class="berlin-item-text">Data room updated and access links sent</div><div class="berlin-item-dept">MERIDIAN · In progress</div></div></div>
+          <div class="berlin-item done"><div class="check-ico done">✓</div><div><div class="berlin-item-text">NDA executed with all Berlin attendees</div><div class="berlin-item-dept">CIPHER · Completed</div></div></div>
+          <div class="berlin-item done"><div class="check-ico done">✓</div><div><div class="berlin-item-text">Bernice King / Ashley Bell intro confirmed</div><div class="berlin-item-dept">Network · Redemption pipeline</div></div></div>
+          <div class="berlin-item"><div class="check-ico pend">○</div><div><div class="berlin-item-text">Travel logistics and hotel confirmed</div><div class="berlin-item-dept">Operations · Pending</div></div></div>
+          <div class="berlin-item"><div class="check-ico pend">○</div><div><div class="berlin-item-text">Capital table and SAFE docs prepared</div><div class="berlin-item-dept">CIPHER → MERIDIAN · Pending</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Investor Pipeline -->
+    <div class="content-section">
+      <div class="section-hdr">
+        <div><div class="section-title">Investor Pipeline</div><div class="section-sub">3 Active · $650K in View</div></div>
+        <button class="section-action" onclick="meridianRespond('pipeline')">Pipeline Report</button>
+      </div>
+      <div class="pipeline-list">
+        <div class="investor-card">
+          <div>
+            <div class="inv-name">Lesley Harris</div>
+            <div class="inv-type">Seed Lead · $500K committed · Redemption Network</div>
+            <div class="inv-meta">
+              <div class="inv-row"><span class="inv-key">Amount</span><span class="inv-val" style="color:var(--gold2)">$500,000</span></div>
+              <div class="inv-row"><span class="inv-key">Vehicle</span><span class="inv-val">Convertible SAFE</span></div>
+              <div class="inv-row"><span class="inv-key">Next Step</span><span class="inv-val" style="color:var(--orange)">LOI Execution</span></div>
+            </div>
+            <div class="last-touch">Last contact: May 30 · 2 days ago</div>
+          </div>
+          <div class="stage-badge stage-loi">LOI READY</div>
+        </div>
+        <div class="investor-card">
+          <div>
+            <div class="inv-name">Berlin Pipeline · TBD</div>
+            <div class="inv-type">Warm Intro · Ashley Bell Network</div>
+            <div class="inv-meta">
+              <div class="inv-row"><span class="inv-key">Est. Range</span><span class="inv-val">$100–150K</span></div>
+              <div class="inv-row"><span class="inv-key">Meeting</span><span class="inv-val">June 12, Berlin</span></div>
+              <div class="inv-row"><span class="inv-key">Introduced By</span><span class="inv-val">Ashley Bell</span></div>
+            </div>
+            <div class="last-touch">Meeting scheduled · June 12</div>
+          </div>
+          <div class="stage-badge stage-warm">WARM</div>
+        </div>
+        <div class="investor-card">
+          <div>
+            <div class="inv-name">Strategic LP · Fintech Focus</div>
+            <div class="inv-type">Community Development · Exploration</div>
+            <div class="inv-meta">
+              <div class="inv-row"><span class="inv-key">Est. Range</span><span class="inv-val">$50–100K</span></div>
+              <div class="inv-row"><span class="inv-key">Fit</span><span class="inv-val" style="color:var(--teal)">Strong</span></div>
+              <div class="inv-row"><span class="inv-key">Status</span><span class="inv-val">Intro call pending</span></div>
+            </div>
+            <div class="last-touch">Introduced: May 28 · 4 days ago</div>
+          </div>
+          <div class="stage-badge stage-active">ACTIVE</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hermes Studio -->
+    <div class="content-section">
+      <div class="section-hdr">
+        <div><div class="section-title">Hermes Studio</div><div class="section-sub">Workflow Queue · 3 Items Pending</div></div>
+      </div>
+      <div class="studio-section">
+        <div class="studio-hdr">
+          <div class="studio-logo">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          </div>
+          <div>
+            <div class="studio-title">Hermes Studio · Investor Relations</div>
+            <div style="font-size:9.5px;color:var(--muted);margin-top:1px;">Human-in-the-Loop · All outbound requires approval</div>
+          </div>
+          <div class="studio-badge">3 PENDING</div>
+        </div>
+        <div class="workflow-list">
+
+          <div class="wf-card" id="wf-berlin">
+            <div class="wf-card-hdr">
+              <div class="wf-info">
+                <div class="wf-name">Berlin Readiness Daily Check</div>
+                <div class="wf-trigger">Triggered: Today 7:00am · 11 days remaining</div>
+              </div>
+              <div class="wf-status urgent">ACTION NEEDED</div>
+            </div>
+            <div class="wf-preview">2 of 8 items require immediate action: (1) Helix Suite™ USPTO filing has not been submitted — CIPHER must act this week. (2) Investment deck is pending May financial data from LEDGER. Data room links need to be refreshed and resent to Berlin attendees before June 9.</div>
+            <div class="wf-actions">
+              <button class="sa-btn review"  onclick="studioAction('wf-berlin','review')">Review</button>
+              <button class="sa-btn approve" onclick="studioAction('wf-berlin','approve')">Approve</button>
+              <button class="sa-btn modify"  onclick="studioAction('wf-berlin','modify')">Modify</button>
+              <button class="sa-btn assign"  onclick="studioAction('wf-berlin','assign')">Assign</button>
+            </div>
+          </div>
+
+          <div class="wf-card" id="wf-lp-update">
+            <div class="wf-card-hdr">
+              <div class="wf-info">
+                <div class="wf-name">LP Monthly Update · May 2026</div>
+                <div class="wf-trigger">Triggered: LEDGER month-end REPORT signal</div>
+              </div>
+              <div class="wf-status review">REVIEW NEEDED</div>
+            </div>
+            <div class="wf-preview">Monthly brief drafted. Highlights: Cash $87.4K, runway 142 days, burn $17.4K (on target). Product: Hermes Studio Phase 1 launched across 3 departments. Berlin trip confirmed June 12. Ready to distribute to active LPs via preferred channel. 2 recipients.</div>
+            <div class="wf-actions">
+              <button class="sa-btn review"  onclick="studioAction('wf-lp-update','review')">Review</button>
+              <button class="sa-btn approve" onclick="studioAction('wf-lp-update','approve')">Approve</button>
+              <button class="sa-btn modify"  onclick="studioAction('wf-lp-update','modify')">Modify</button>
+              <button class="sa-btn assign"  onclick="studioAction('wf-lp-update','assign')">Assign</button>
+            </div>
+          </div>
+
+          <div class="wf-card" id="wf-followup">
+            <div class="wf-card-hdr">
+              <div class="wf-info">
+                <div class="wf-name">Investor Follow-Up Drafts · 2 Leads</div>
+                <div class="wf-trigger">Triggered: Pipeline check · 5+ days no contact</div>
+              </div>
+              <div class="wf-status pending">ASSIGN TO SEND</div>
+            </div>
+            <div class="wf-preview">2 personalized re-engagement drafts prepared. (1) Berlin Pipeline contact — warm intro message referencing Ashley Bell and June 12 meeting logistics. (2) Strategic LP exploration — proposal for 30-min discovery call this week. Both ready to send pending approval.</div>
+            <div class="wf-actions">
+              <button class="sa-btn review"  onclick="studioAction('wf-followup','review')">Review</button>
+              <button class="sa-btn approve" onclick="studioAction('wf-followup','approve')">Approve &amp; Send</button>
+              <button class="sa-btn modify"  onclick="studioAction('wf-followup','modify')">Modify</button>
+              <button class="sa-btn assign"  onclick="studioAction('wf-followup','assign')">Assign</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="content-section">
+      <div class="section-hdr"><div><div class="section-title">Quick Actions</div></div></div>
+      <div class="actions-grid">
+        <button class="action-btn" onclick="meridianRespond('lesley')">
+          <div class="action-icon" style="background:rgba(232,130,10,.1);color:var(--orange)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
+          <div class="action-label">Send LOI</div>
+        </button>
+        <button class="action-btn" onclick="meridianRespond('deck')">
+          <div class="action-icon" style="background:rgba(74,158,255,.1);color:var(--blue)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+          <div class="action-label">Update Deck</div>
+        </button>
+        <button class="action-btn" onclick="meridianRespond('dataroom')">
+          <div class="action-icon" style="background:rgba(155,109,255,.1);color:var(--violet)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div>
+          <div class="action-label">Data Room</div>
+        </button>
+        <button class="action-btn" onclick="window.open('https://calendly.com','_blank','noopener')">
+          <div class="action-icon" style="background:rgba(26,191,106,.1);color:var(--green)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+          <div class="action-label">Schedule Call</div>
+        </button>
+      </div>
+    </div>
+
+    <!-- Tools -->
+    <div class="content-section">
+      <div class="section-hdr"><div><div class="section-title">IR Tools</div></div></div>
+      <div class="tools-strip">
+        <a class="tool-chip" href="https://notion.so" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h4"/></svg>Notion CRM</a>
+        <a class="tool-chip" href="https://www.docsend.com" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>Docsend</a>
+        <a class="tool-chip" href="https://calendly.com" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Calendly</a>
+        <a class="tool-chip" href="https://www.docusign.com" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>DocuSign</a>
+        <a class="tool-chip" href="https://loom.com" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>Loom</a>
+      </div>
+    </div>
+
+  </div><!-- /main-content -->
+
+  <!-- KPI PANEL -->
+  <div class="kpi-panel" id="panelKpi" data-panel="kpi">
+    <div class="kpi-header">
+      <div class="kpi-title">Pipeline KPIs</div>
+      <div class="kpi-updated" id="kpiUpdated">Updated: Loading…</div>
+    </div>
+    <div class="kpi-scroll">
+      <div class="kpi-card blue">
+        <div class="kpi-card-label">Active Pipeline</div>
+        <div class="kpi-val">$650K</div>
+        <div class="kpi-sub">3 active leads · Lesley leads at $500K</div>
+        <div class="kpi-bar-wrap"><div class="kpi-bar-track"><div class="kpi-bar-fill blue" style="width:65%"></div></div></div>
+      </div>
+      <div class="kpi-card orange">
+        <div class="kpi-card-label">Berlin Countdown</div>
+        <div class="kpi-val">11d</div>
+        <div class="kpi-sub">June 12, 2026 · 2 items urgent</div>
+      </div>
+      <div class="kpi-card gold">
+        <div class="kpi-card-label">Capital Committed</div>
+        <div class="kpi-val">$500K</div>
+        <div class="kpi-sub">Lesley Harris · Verbal LOI</div>
+        <div class="kpi-bar-wrap"><div class="kpi-bar-track"><div class="kpi-bar-fill" style="width:50%;background:var(--gold);box-shadow:0 0 8px rgba(201,168,76,.4)"></div></div></div>
+      </div>
+      <div class="kpi-card violet">
+        <div class="kpi-card-label">LOI Conversion</div>
+        <div class="kpi-val">—</div>
+        <div class="kpi-sub">Target: &gt; 35% · Pending first close</div>
+      </div>
+      <div class="kpi-card green">
+        <div class="kpi-card-label">Data Room Status</div>
+        <div class="kpi-val" style="font-size:14px;padding-top:4px">Needs Update</div>
+        <div class="kpi-sub">May financials pending · Berlin -11d</div>
+      </div>
+      <div class="kpi-card teal">
+        <div class="kpi-card-label">LP Response Rate</div>
+        <div class="kpi-val">100%</div>
+        <div class="kpi-sub">All active LPs · within 48h</div>
+      </div>
+      <div class="kpi-card blue">
+        <div class="kpi-card-label">Investor NPS</div>
+        <div class="kpi-val">+82</div>
+        <div class="kpi-sub">Target: &gt; 70 · Exceeding</div>
+        <div class="kpi-bar-wrap"><div class="kpi-bar-track"><div class="kpi-bar-fill blue" style="width:82%"></div></div></div>
+      </div>
+      <div class="kpi-card orange">
+        <div class="kpi-card-label">Deck Last Updated</div>
+        <div class="kpi-val">12d</div>
+        <div class="kpi-sub">Target: &lt; 14 days · Update now</div>
+        <div class="kpi-bar-wrap"><div class="kpi-bar-track"><div class="kpi-bar-fill orange" style="width:80%"></div></div></div>
+      </div>
+    </div>
+    <div class="signal-feed">
+      <div class="signal-feed-title">Signal Feed</div>
+      <div class="signal-list">
+        <div class="sig-item">
+          <span class="sig-type sig-milestone">MILESTONE</span>
+          <div><div class="sig-text">Lesley Harris LOI verbal commitment</div><span class="sig-time">May 30 · 2 days ago</span></div>
+        </div>
+        <div class="sig-item">
+          <span class="sig-type sig-alert">ALERT</span>
+          <div><div class="sig-text">Helix Suite™ trademark — CIPHER action required</div><span class="sig-time">Today · 7:00am</span></div>
+        </div>
+        <div class="sig-item">
+          <span class="sig-type sig-report">REPORT</span>
+          <div><div class="sig-text">LEDGER financial brief received for Berlin deck</div><span class="sig-time">Yesterday · 4:18pm</span></div>
+        </div>
+        <div class="sig-item">
+          <span class="sig-type sig-request">REQUEST</span>
+          <div><div class="sig-text">Data room refresh needed before June 9</div><span class="sig-time">Today · 7:00am</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /suite-body -->
+
+<nav class="mobile-tab-nav">
+  <div class="tab-nav-inner">
+    <button class="tab-btn active" data-target="copilot" onclick="switchTab(this)">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M12 14c-5 0-8 2-8 3v1h16v-1c0-1-3-3-8-3z"/></svg>MERIDIAN
+    </button>
+    <button class="tab-btn" data-target="ops" onclick="switchTab(this)">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>Pipeline
+    </button>
+    <button class="tab-btn" data-target="kpi" onclick="switchTab(this)">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>KPIs
+    </button>
+  </div>
+</nav>
+
+<button class="desktop-launch" onclick="window.open(location.href,'_blank','noopener')">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+  Full Desktop
+</button>
+
+<div class="toast" id="toast"></div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var suite = document.getElementById('suite');
+  if (window !== window.top) suite.classList.add('is-iframe');
+  if (window.DEVICE && !window.DEVICE.isMobile) suite.classList.add('is-desktop');
+  var now = new Date();
+  document.getElementById('kpiUpdated').textContent =
+    'Updated: ' + now.toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
+  setTimeout(function() {
+    addMsg('dept', 'Good morning. 11 days to Berlin. Two items need immediate action: the Helix Suite™ trademark must be filed this week through CIPHER, and the investment deck needs the May financials from LEDGER before the data room refresh. Lesley Harris LOI is ready to execute — send when you are ready. Two investor follow-up drafts are waiting for your approval in Hermes Studio.');
+  }, 800);
+});
+
+function switchTab(btn) {
+  document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+  var target = btn.dataset.target;
+  document.querySelectorAll('[data-panel]').forEach(function(p) {
+    p.classList.toggle('tab-active', p.dataset.panel === target);
+  });
+}
+
+var responses = {
+  berlin:   'Berlin readiness: 11 days out. Critical path: (1) Helix Suite trademark — CIPHER must file this week. (2) Deck refresh with May financials — awaiting LEDGER approval, then update Docsend. (3) Data room access links to all Berlin attendees by June 9. Lesley Harris LOI can execute anytime — recommend this week to show momentum before the trip.',
+  pipeline: 'Active pipeline: $650K total in view. Lesley Harris at $500K is in LOI stage — highest priority. Berlin pipeline at $100-150K is a warm intro via Ashley Bell, meeting confirmed June 12. Strategic LP at $50-100K — intro call needs to be scheduled this week. Combined potential: $650-750K seed close.',
+  lesley:   'Lesley Harris LOI: Verbal commitment of $500K via Convertible SAFE. LOI document is ready in CIPHER. Recommend sending the DocuSign link today — executing before Berlin signals confidence and locks the lead. Her network connection through the Redemption org is also a relationship asset worth maintaining closely.',
+  deck:     'Investment deck last updated 12 days ago. Needs: May financial snapshot from LEDGER (runway 142 days, burn $17.4K), Hermes Studio Phase 1 launch as a product milestone, and Berlin meeting confirmation as traction evidence. Deck refresh should take 30 minutes once LEDGER data is approved.',
+  dataroom: 'Data room current gaps: May financials not yet updated (pending LEDGER approval), Berlin attendee access links need to be sent. Recommend refreshing Docsend links by June 9 — 3 days before the trip. Current data room has NDAs, cap table, executive summary, and product demo.',
+  default:  'I can help with pipeline management, investor communications, Berlin readiness, LOI execution, deck updates, and data room management. What would you like to work on?'
+};
+
+function addMsg(role, text) {
+  var convo = document.getElementById('convoArea');
+  var safe = typeof text === 'string' ? text : '';
+  if (!safe.trim()) return;
+  var msg = document.createElement('div');
+  msg.className = 'msg ' + role;
+  var sender = document.createElement('div');
+  sender.className = 'msg-sender';
+  sender.textContent = role === 'dept' ? 'MERIDIAN' : 'You';
+  var bubble = document.createElement('div');
+  bubble.className = 'msg-bubble';
+  bubble.textContent = safe;
+  msg.appendChild(sender);
+  msg.appendChild(bubble);
+  convo.appendChild(msg);
+  convo.scrollTop = convo.scrollHeight;
+}
+
+function meridianRespond(key) {
+  var face = document.getElementById('copilotFace');
+  var wrap = face.parentElement.parentElement.parentElement;
+  document.getElementById('copilotState').textContent = 'Analyzing pipeline…';
+  wrap.classList.add('copilot-thinking');
+  setTimeout(function() {
+    wrap.classList.remove('copilot-thinking');
+    wrap.classList.add('copilot-speaking');
+    document.getElementById('copilotState').textContent = 'Responding…';
+    setTimeout(function() {
+      wrap.classList.remove('copilot-speaking');
+      document.getElementById('copilotState').textContent = 'Monitoring · Pipeline Active';
+    }, 2500);
+    addMsg('dept', responses[key] || responses.default);
+  }, 900);
+}
+
+function sendMsg() {
+  var input = document.getElementById('copilotInput');
+  var text = input.value.trim();
+  if (!text) return;
+  addMsg('user', text);
+  input.value = '';
+  var lower = text.toLowerCase();
+  var key = Object.keys(responses).find(function(k) { return lower.includes(k); }) || 'default';
+  meridianRespond(key);
+}
+
+document.getElementById('copilotInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') sendMsg();
+});
+
+function studioAction(wfId, action) {
+  var messages = {
+    review:  'Workflow opened for detailed review.',
+    approve: '✓ Approved. Executing workflow and logging activity.',
+    modify:  '✎ Modify mode active. Adjust the draft before resubmitting.',
+    assign:  '→ Assigned. Routing to the appropriate team member.'
+  };
+  var card = document.getElementById(wfId);
+  if (action === 'approve' && card) {
+    var statusEl = card.querySelector('.wf-status');
+    if (statusEl) { statusEl.textContent = 'APPROVED'; statusEl.className = 'wf-status approved'; }
+  }
+  showToast(messages[action]);
+  addMsg('dept', 'Hermes Studio: ' + messages[action]);
+}
+
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function() { t.classList.remove('show'); }, 2800);
+}
+</script>
+</body>
+</html>
