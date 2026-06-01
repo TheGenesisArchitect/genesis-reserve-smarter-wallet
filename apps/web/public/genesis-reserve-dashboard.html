@@ -413,6 +413,8 @@ body {
 .icon-red     { background: linear-gradient(145deg,#1c0404,#2c0606); color: var(--red);    border: 1px solid rgba(232,64,64,.15); }
 .icon-orange  { background: linear-gradient(145deg,#1c0b04,#2c1206); color: var(--orange); border: 1px solid rgba(232,130,10,.15); }
 .icon-dark    { background: rgba(255,255,255,.05); color: var(--muted); border: 1px solid rgba(255,255,255,.07); }
+.icon-genesis { background: linear-gradient(145deg,#0f0b02,#1e1505); border: 1px solid rgba(201,168,76,.35); box-shadow: 0 0 14px rgba(201,168,76,.12) inset; }
+.icon-genesis img { width: 40px; height: 40px; object-fit: contain; filter: drop-shadow(0 0 5px rgba(201,168,76,.45)); }
 
 /* ── NOTIFICATION BADGE ──────────────────────────────────── */
 .notif {
@@ -1124,11 +1126,11 @@ body {
               </div>
               <div class="dock-label">Finance</div>
             </button>
-            <button class="dock-app" onclick="openApp('claude')" aria-label="Claude AI">
-              <div class="dock-icon-box icon-violet">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.46 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.46 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/></svg>
+            <button class="dock-app" data-app="smarter-wallet" onclick="openApp('smarter-wallet')" aria-label="Smarter Wallet">
+              <div class="dock-icon-box icon-genesis">
+                <img src="genesis-emblem.png" alt="Genesis Emblem">
               </div>
-              <div class="dock-label">Claude</div>
+              <div class="dock-label">Wallet</div>
             </button>
             <button class="dock-app" onclick="goToPage(2)" aria-label="Investors">
               <div class="dock-icon-box icon-teal">
@@ -1289,6 +1291,7 @@ var APPS = {
   'pitch-seed':          {title:'Seed Pitch',        url:'pitch-seed.html',                      icon:'chart',        cat:'icon-green'},
   'pitch-institutional': {title:'Institutional',     url:'pitch-institutional.html',             icon:'briefcase',    cat:'icon-blue'},
   'pitch-retail':        {title:'Retail Pitch',      url:'pitch-retail.html',                    icon:'users',        cat:'icon-teal'},
+  'smarter-wallet':    {title:'Genesis Wallet',   url:'/',                             icon:'wallet',    cat:'icon-genesis'},
   'executive-suite':   {title:'Executive Suite',  url:'genesis-executive-suite.html',  icon:'briefcase', cat:'icon-finance'},
   'finance-ledger':    {title:'Finance · LEDGER', url:'finance-ledger-suite.html',      icon:'chart',     cat:'icon-green'},
   'investor-meridian': {title:'IR · MERIDIAN',    url:'investor-meridian-suite.html',   icon:'target',    cat:'icon-blue'},
