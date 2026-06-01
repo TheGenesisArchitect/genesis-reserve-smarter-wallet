@@ -103,6 +103,11 @@ html,body { height:100%; overflow:hidden; background:var(--bg); color:var(--text
 .msg.user { align-self:flex-end; align-items:flex-end; }
 .msg-sender { font-size:9.5px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); padding:0 2px; }
 .msg.dept .msg-sender { color:var(--dept); }
+.session-resume-banner { display:flex; align-items:center; gap:8px; margin:0 0 14px; padding:8px 12px; border-radius:10px; background:rgba(201,168,76,.07); border:1px solid rgba(201,168,76,.2); font-size:10.5px; color:rgba(245,240,232,.55); font-family:'Tenor Sans',sans-serif; letter-spacing:.04em; }
+.srb-dot { width:6px; height:6px; border-radius:50%; background:#c9a84c; flex-shrink:0; animation:srb-pulse 2s ease-in-out infinite; }
+@keyframes srb-pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
+.srb-close { margin-left:auto; background:none; border:none; color:rgba(245,240,232,.3); cursor:pointer; font-size:10px; padding:0 2px; font-family:inherit; }
+.srb-close:hover { color:rgba(245,240,232,.7); }
 .msg-bubble { padding:9px 12px; border-radius:12px; font-size:12px; line-height:1.55; }
 .msg.dept .msg-bubble { background:rgba(74,158,255,.06); border:1px solid rgba(74,158,255,.15); border-bottom-left-radius:4px; }
 .msg.user .msg-bubble { background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08); border-bottom-right-radius:4px; color:var(--muted); }
@@ -739,21 +744,28 @@ html,body { height:100%; overflow:hidden; background:var(--bg); color:var(--text
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+  _autoArchiveYesterday();
+  var _restored = _sessionRestore();
+
   var suite = document.getElementById('suite');
   if (window !== window.top) suite.classList.add('is-iframe');
   if (window.DEVICE && !window.DEVICE.isMobile) suite.classList.add('is-desktop');
   var now = new Date();
   document.getElementById('kpiUpdated').textContent =
     'Updated: ' + now.toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
-  setTimeout(function() {
-    var name = localStorage.getItem('gr_copilot_user');
-    if (!name) {
-      awaitingName = true;
-      addMsg('dept', 'Welcome to MERIDIAN — your Investor Relations CoPilot for Genesis Reserve. I have your full pipeline and Berlin readiness dashboard ready. What\'s your name?');
-    } else {
-      addMsg('dept', 'Good morning, ' + name + '. 11 days to Berlin. Two urgent items: the Helix Suite™ trademark must be filed through CIPHER this week, and LEDGER\'s May financials are needed before the data room refresh. Lesley Harris LOI is ready to execute. Two Hermes Studio drafts await your approval.');
-    }
-  }, 800);
+
+  // Morning brief — skipped when resuming an existing session
+  if (!_restored) {
+    setTimeout(function() {
+      var name = localStorage.getItem('gr_copilot_user');
+      if (!name) {
+        awaitingName = true;
+        addMsg('dept', 'Welcome to MERIDIAN — your Investor Relations CoPilot for Genesis Reserve. I have your full pipeline and Berlin readiness dashboard ready. What\'s your name?');
+      } else {
+        addMsg('dept', 'Good morning, ' + name + '. 11 days to Berlin. Two urgent items: the Helix Suite™ trademark must be filed through CIPHER this week, and LEDGER\'s May financials are needed before the data room refresh. Lesley Harris LOI is ready to execute. Two Hermes Studio drafts await your approval.');
+      }
+    }, 800);
+  }
 
   initLive();
 });
@@ -794,22 +806,89 @@ var responses = {
   default:  'I can help with pipeline management, investor communications, Berlin readiness, LOI execution, deck updates, and data room management. What would you like to work on?'
 };
 
-function addMsg(role, text) {
-  var convo = document.getElementById('convoArea');
-  var safe = typeof text === 'string' ? text : '';
-  if (!safe.trim()) return;
+/* ── SESSION PERSISTENCE ─────────────────────────────────── */
+var _DEPT_KEY    = 'MERIDIAN';
+var _CONVO_ID    = 'convoArea';
+var _DEPT_LABEL  = 'MERIDIAN';
+var _SESSION_TTL = 12 * 60 * 60 * 1000;
+var _sessionDate = new Date().toISOString().slice(0, 10);
+var _sessionKey  = 'gr_session_' + _DEPT_KEY + '_' + _sessionDate;
+var _session     = { dept:_DEPT_KEY, date:_sessionDate, startedAt:Date.now(), lastActiveAt:Date.now(), messages:[] };
+var _sessionRestored = false;
+
+function _renderMsg(role, text) {
+  var convo = document.getElementById(_CONVO_ID);
+  if (!convo || !text) return;
   var msg = document.createElement('div');
   msg.className = 'msg ' + role;
-  var sender = document.createElement('div');
-  sender.className = 'msg-sender';
-  sender.textContent = role === 'dept' ? 'MERIDIAN' : 'You';
-  var bubble = document.createElement('div');
-  bubble.className = 'msg-bubble';
-  bubble.textContent = safe;
-  msg.appendChild(sender);
-  msg.appendChild(bubble);
+  var sndr = document.createElement('div');
+  sndr.className = 'msg-sender';
+  sndr.textContent = role !== 'user' ? _DEPT_LABEL : 'You';
+  var bbl = document.createElement('div');
+  bbl.className = 'msg-bubble';
+  bbl.textContent = text;
+  msg.appendChild(sndr);
+  msg.appendChild(bbl);
   convo.appendChild(msg);
   convo.scrollTop = convo.scrollHeight;
+}
+
+function _sessionSave(role, text) {
+  _session.messages.push({ role:role, text:text, ts:Date.now() });
+  _session.lastActiveAt = Date.now();
+  try { localStorage.setItem(_sessionKey, JSON.stringify(_session)); } catch(e) {}
+}
+
+function _sessionRestore() {
+  var dates = [_sessionDate, new Date(Date.now() - 86400000).toISOString().slice(0, 10)];
+  for (var i = 0; i < dates.length; i++) {
+    var key = 'gr_session_' + _DEPT_KEY + '_' + dates[i];
+    try {
+      var raw = localStorage.getItem(key);
+      if (!raw) continue;
+      var s = JSON.parse(raw);
+      if (!s || !s.messages || !s.messages.length) continue;
+      if (Date.now() - s.lastActiveAt > _SESSION_TTL) continue;
+      _session = s; _sessionKey = key; _sessionRestored = true;
+      s.messages.forEach(function(m) { _renderMsg(m.role, m.text); });
+      _showResumeBanner(s);
+      return true;
+    } catch(e) { continue; }
+  }
+  return false;
+}
+
+function _showResumeBanner(s) {
+  var convo = document.getElementById(_CONVO_ID);
+  if (!convo) return;
+  var mins = Math.round((Date.now() - s.startedAt) / 60000);
+  var ago  = mins < 60 ? mins + 'm ago' : Math.floor(mins/60) + 'h ' + (mins%60) + 'm ago';
+  var b = document.createElement('div');
+  b.className = 'session-resume-banner';
+  b.innerHTML = '<span class="srb-dot"></span><span>Session resumed · started ' + ago + ' · ' + s.messages.length + ' messages</span><button class="srb-close" onclick="this.parentNode.remove()">✕</button>';
+  convo.insertBefore(b, convo.firstChild);
+}
+
+function _autoArchiveYesterday() {
+  var yDate = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+  var yKey  = 'gr_session_' + _DEPT_KEY + '_' + yDate;
+  var aKey  = 'gr_archive_'  + _DEPT_KEY + '_' + yDate;
+  try {
+    if (localStorage.getItem(aKey)) return;
+    var raw = localStorage.getItem(yKey);
+    if (!raw) return;
+    var s = JSON.parse(raw);
+    if (s && s.messages && s.messages.length) {
+      localStorage.setItem(aKey, JSON.stringify({ dept:_DEPT_KEY, date:yDate, archivedAt:Date.now(), messages:s.messages }));
+    }
+  } catch(e) {}
+}
+
+function addMsg(role, text) {
+  var safe = typeof text === 'string' ? text : '';
+  if (!safe.trim()) return;
+  _renderMsg(role, safe);
+  _sessionSave(role, safe);
 }
 
 function meridianRespond(key) {
