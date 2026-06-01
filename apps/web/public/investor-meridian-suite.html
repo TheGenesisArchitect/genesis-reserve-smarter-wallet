@@ -281,6 +281,28 @@ html,body { height:100%; overflow:hidden; background:var(--bg); color:var(--text
   background:var(--dept); border-radius:0 0 2px 2px; opacity:0; transition:opacity .2s; }
 .tab-btn.active::after { opacity:1; }
 
+/* ── VOICE PILL & MIC ─────────────────────── */
+.voice-on-pill {
+  display:inline-flex; align-items:center; gap:6px;
+  padding:4px 10px; border-radius:20px;
+  font-size:9.5px; font-weight:600; letter-spacing:.04em;
+  cursor:pointer; transition:all .2s; margin-top:4px; border:1px solid;
+}
+.voice-on-pill.active  { background:rgba(74,158,255,.08);  border-color:rgba(74,158,255,.2);  color:var(--dept); }
+.voice-on-pill.pending { background:rgba(232,130,10,.08);  border-color:rgba(232,130,10,.2);  color:#E8820A; }
+.voice-on-pill.off     { background:rgba(255,255,255,.04); border-color:rgba(255,255,255,.08); color:var(--muted); }
+.voice-on-dot { width:6px; height:6px; border-radius:50%; background:currentColor; flex-shrink:0; }
+.voice-on-pill.active .voice-on-dot { animation:dot-pulse 1.5s ease-in-out infinite; }
+@keyframes dot-pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+.mic-btn {
+  width:30px; height:30px; border-radius:8px;
+  display:flex; align-items:center; justify-content:center;
+  transition:all .15s; flex-shrink:0; color:var(--muted);
+  background:none; border:none; cursor:pointer;
+}
+.mic-btn:hover  { background:rgba(255,255,255,.08); color:var(--dept); }
+.mic-btn.push-active { background:rgba(74,158,255,.15); color:var(--dept); }
+
 @media (max-width:767px) {
   .mobile-tab-nav { display:flex; height:calc(var(--tab-h) + env(safe-area-inset-bottom,0px)); padding-bottom:env(safe-area-inset-bottom,0px); }
   .tab-nav-inner { align-items:flex-start; padding-top:2px; }
@@ -362,16 +384,23 @@ html,body { height:100%; overflow:hidden; background:var(--bg); color:var(--text
       <div class="copilot-role">Investor Relations CoPilot</div>
       <div class="copilot-state" id="copilotState">Monitoring · Pipeline Active</div>
       <div class="copilot-pill"><div class="pill-dot"></div><span>Capital Intelligence Active</span></div>
+      <div class="voice-on-pill off" id="voicePill" onclick="activateVoiceManually()">
+        <div class="voice-on-dot"></div>
+        <span id="voicePillText">Voice initializing…</span>
+      </div>
     </div>
     <div class="convo-area" id="convoArea"></div>
     <div class="copilot-input-area">
       <div class="copilot-input-row">
         <input class="copilot-text-input" id="copilotInput" placeholder="Ask MERIDIAN about investors…" type="text">
+        <button class="mic-btn" id="micBtn" onclick="pushToTalk()" aria-label="Push to talk">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
+        </button>
         <button class="send-btn" onclick="sendMsg()">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
         </button>
       </div>
-      <div class="copilot-hint">Investor Relations scope · Genesis AI</div>
+      <div class="copilot-hint">Investor Relations scope · Genesis AI · Voice enabled</div>
     </div>
   </div>
 
@@ -673,6 +702,8 @@ document.addEventListener('DOMContentLoaded', function() {
   setTimeout(function() {
     addMsg('dept', 'Good morning. 11 days to Berlin. Two items need immediate action: the Helix Suite™ trademark must be filed this week through CIPHER, and the investment deck needs the May financials from LEDGER before the data room refresh. Lesley Harris LOI is ready to execute — send when you are ready. Two investor follow-up drafts are waiting for your approval in Hermes Studio.');
   }, 800);
+
+  initLive();
 });
 
 function switchTab(btn) {
@@ -734,6 +765,11 @@ function sendMsg() {
   if (!text) return;
   addMsg('user', text);
   input.value = '';
+  if (liveWS && liveWS.readyState === WebSocket.OPEN && liveReady) {
+    setDeptVoicePill('active', 'Thinking…');
+    liveWS.send(JSON.stringify({ clientContent: { turns: [{ role: 'user', parts: [{ text: text }] }], turnComplete: true } }));
+    return;
+  }
   var lower = text.toLowerCase();
   var key = Object.keys(responses).find(function(k) { return lower.includes(k); }) || 'default';
   meridianRespond(key);
@@ -764,6 +800,244 @@ function showToast(msg) {
   t.textContent = msg;
   t.classList.add('show');
   setTimeout(function() { t.classList.remove('show'); }, 2800);
+}
+
+/* ── MERIDIAN GEMINI LIVE VOICE ENGINE ────────────────────── */
+var DEPT_NAME     = 'MERIDIAN';
+var DEPT_IDLE     = 'Monitoring · Pipeline Active';
+var DEPT_GREETING = 'You are online. Give Anthony a brief two-sentence investor relations status update.';
+
+var MERIDIAN_SYSTEM_PROMPT = [
+  'You are MERIDIAN — the Investor Relations CoPilot for Genesis Reserve, built on the Helix Suite platform.',
+  'You serve Anthony M. Beedles (Founder & CEO) with real-time investor intelligence and capital strategy.',
+  '',
+  '## YOUR ROLE',
+  'You govern the Investor Relations Department. You own the investor pipeline, capital raise strategy,',
+  'LOI tracking, cap table, due diligence data room, pitch narrative, LP communications, and Berlin readiness.',
+  '',
+  '## CURRENT IR STATUS (June 1, 2026)',
+  '- Lead investor: Lesley Harris — $500K seed committed verbally May 30. LOI ready for signature NOW.',
+  '- Berlin deadline: June 12, 2026 — 11 days away. European institutional investor meeting.',
+  '- Berlin pipeline: $100-150K warm conversation, $50-100K strategic LP prospect.',
+  '- Total addressable raise: $2.5M Series A. $500K committed. $650K in pipeline.',
+  '- Investor deck v3: Ready. Investor brief: Ready. Growth model v2.1: Live.',
+  '- Data room: Needs refresh before Berlin — May financials from LEDGER pending.',
+  '',
+  '## BERLIN READINESS CHECKLIST',
+  '✓ Lesley Harris LOI verbal commitment confirmed (May 30)',
+  '! Investment deck needs May financials (LEDGER → MERIDIAN, pending)',
+  '⚠ Helix Suite™ trademark must be filed before Berlin (CIPHER — URGENT)',
+  '! Data room access links to be sent (in progress)',
+  '○ Berlin brief final review (pending)',
+  '○ LP outreach — Bernice King, Ashley Bell, Ambassador network',
+  '○ Strategic VC friend NDA template',
+  '○ Redemption connection investor intro',
+  '',
+  '## KEY RELATIONSHIPS',
+  '- Lesley Harris: Lead seed investor, $500K, Redemption/Bernice King connection',
+  '- Bernice King: Warm network prospect via Redemption',
+  '- Ashley Bell: Network prospect',
+  '- Berlin VCs: June 12 institutional meeting',
+  '',
+  '## RESPONSE RULES',
+  '- VOICE: Maximum 2-3 sentences, under 55 words, no bullets, conversational.',
+  '- CHAT: Action-first. Answer → context → next step.',
+  '- Always reference the June 12 Berlin deadline when relevant.',
+  '- Name other CoPilots when routing (CIPHER for trademark, LEDGER for financials).',
+  '- Address Anthony as "Anthony".',
+].join('\n');
+
+var liveWS        = null;
+var liveReady     = false;
+var captureCtx    = null;
+var captureProc   = null;
+var captureStream = null;
+var playbackCtx   = null;
+var nextPlayTime  = 0;
+var deptSpeaking  = false;
+var permBlocked   = false;
+var reconnTimer   = null;
+var pendingIn     = '';
+var pendingOut    = '';
+
+function setDeptVoicePill(state, text) {
+  var pill = document.getElementById('voicePill');
+  var span = document.getElementById('voicePillText');
+  if (!pill) return;
+  pill.className = 'voice-on-pill ' + state;
+  if (span && text !== undefined) span.textContent = text;
+}
+
+function setDeptCopilotState(s) {
+  var el = document.getElementById('copilotState');
+  if (!el) return;
+  if (s === 'thinking')  el.textContent = 'Processing…';
+  else if (s === 'speaking') el.textContent = 'Speaking…';
+  else el.textContent = DEPT_IDLE;
+}
+
+function extractTranscript(val) {
+  if (!val) return '';
+  if (typeof val === 'string') return val;
+  if (typeof val.text === 'string') return val.text;
+  return '';
+}
+
+function float32ToPCM16B64(f32) {
+  var buf = new Int16Array(f32.length);
+  for (var i = 0; i < f32.length; i++) buf[i] = Math.max(-32768, Math.min(32767, Math.round(f32[i] * 32768)));
+  var bytes = new Uint8Array(buf.buffer), bin = '';
+  for (var j = 0; j < bytes.length; j++) bin += String.fromCharCode(bytes[j]);
+  return btoa(bin);
+}
+
+function startCapture() {
+  if (captureStream) return;
+  navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, channelCount: 1 } })
+  .then(function(stream) {
+    captureStream = stream;
+    captureCtx    = new AudioContext();
+    var src       = captureCtx.createMediaStreamSource(stream);
+    captureProc   = captureCtx.createScriptProcessor(4096, 1, 1);
+    captureProc.onaudioprocess = function(e) {
+      if (!liveWS || liveWS.readyState !== WebSocket.OPEN || !liveReady) return;
+      var f32 = e.inputBuffer.getChannelData(0);
+      var ratio = captureCtx.sampleRate / 16000;
+      var outLen = Math.floor(f32.length / ratio);
+      var out = new Float32Array(outLen);
+      for (var i = 0; i < outLen; i++) out[i] = f32[Math.floor(i * ratio)];
+      liveWS.send(JSON.stringify({ realtimeInput: { audio: { data: float32ToPCM16B64(out), mimeType: 'audio/pcm;rate=16000' } } }));
+    };
+    src.connect(captureProc);
+    captureProc.connect(captureCtx.destination);
+    setDeptVoicePill('active', 'Listening…');
+  }).catch(function() {
+    permBlocked = true;
+    setDeptVoicePill('pending', 'Tap mic to enable voice');
+  });
+}
+
+function stopCapture() {
+  if (captureProc)   { try { captureProc.disconnect(); } catch(_) {} captureProc = null; }
+  if (captureCtx)    { captureCtx.close().catch(function(){}); captureCtx = null; }
+  if (captureStream) { captureStream.getTracks().forEach(function(t){ t.stop(); }); captureStream = null; }
+}
+
+function ensurePlayback() {
+  if (!playbackCtx || playbackCtx.state === 'closed') { playbackCtx = new AudioContext({ sampleRate: 24000 }); nextPlayTime = 0; }
+}
+
+function playPCMChunk(b64) {
+  ensurePlayback();
+  var bin = atob(b64), bytes = new Uint8Array(bin.length);
+  for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  var int16 = new Int16Array(bytes.buffer);
+  var f32   = new Float32Array(int16.length);
+  for (var i = 0; i < int16.length; i++) f32[i] = int16[i] / 32768;
+  var buf = playbackCtx.createBuffer(1, f32.length, 24000);
+  buf.copyToChannel(f32, 0);
+  var src = playbackCtx.createBufferSource();
+  src.buffer = buf; src.connect(playbackCtx.destination);
+  var at = Math.max(playbackCtx.currentTime + 0.01, nextPlayTime);
+  src.start(at); nextPlayTime = at + buf.duration;
+}
+
+function stopPlayback() {
+  if (playbackCtx) { playbackCtx.close().catch(function(){}); playbackCtx = null; nextPlayTime = 0; }
+  deptSpeaking = false;
+}
+
+function handleLiveMsg(event) {
+  if (event.data instanceof Blob) { event.data.text().then(function(t) { processLiveMsg(t); }); return; }
+  processLiveMsg(event.data);
+}
+
+function processLiveMsg(rawData) {
+  var msg;
+  try { msg = JSON.parse(rawData); } catch(e) { return; }
+  if (msg.setupComplete !== undefined) {
+    liveReady = true; startCapture(); setDeptCopilotState('idle');
+    setTimeout(function() {
+      if (liveWS && liveWS.readyState === WebSocket.OPEN)
+        liveWS.send(JSON.stringify({ clientContent: { turns: [{ role: 'user', parts: [{ text: DEPT_GREETING }] }], turnComplete: true } }));
+    }, 400);
+    return;
+  }
+  if (msg.error) { setDeptVoicePill('off', 'Voice error'); setDeptCopilotState('idle'); liveReady = false; return; }
+  var sc = msg.serverContent;
+  if (!sc) return;
+  if (sc.modelTurn && sc.modelTurn.parts) {
+    sc.modelTurn.parts.forEach(function(part) {
+      if (part.inlineData && part.inlineData.data) {
+        if (!deptSpeaking) { deptSpeaking = true; setDeptCopilotState('speaking'); setDeptVoicePill('off', DEPT_NAME + ' speaking…'); }
+        playPCMChunk(part.inlineData.data);
+      }
+    });
+  }
+  var inText  = extractTranscript(sc.inputTranscription);
+  var outText = extractTranscript(sc.outputTranscription);
+  if (inText)  pendingIn  += inText  + ' ';
+  if (outText) pendingOut += outText + ' ';
+  if (sc.interrupted) {
+    stopPlayback();
+    if (pendingOut.trim()) addMsg('dept', pendingOut.trim() + '…');
+    pendingOut = '';
+    setDeptCopilotState('idle'); setDeptVoicePill('active', 'Listening…');
+  }
+  if (sc.turnComplete) {
+    if (pendingIn.trim())  { addMsg('user', pendingIn.trim());  pendingIn  = ''; }
+    if (pendingOut.trim()) { addMsg('dept', pendingOut.trim()); pendingOut = ''; }
+    deptSpeaking = false;
+    setTimeout(function() { if (!deptSpeaking) { setDeptCopilotState('idle'); setDeptVoicePill('active', 'Listening…'); } }, 600);
+  }
+}
+
+function initLive() {
+  clearTimeout(reconnTimer);
+  if (liveWS && liveWS.readyState === WebSocket.OPEN) return;
+  setDeptVoicePill('pending', 'Connecting…'); setDeptCopilotState('thinking');
+  fetch('/api/atlas/session')
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (!d.wsUrl) throw new Error('No wsUrl');
+      liveWS = new WebSocket(d.wsUrl);
+      liveWS.onopen = function() {
+        liveWS.send(JSON.stringify({
+          setup: {
+            model: 'models/gemini-3.1-flash-live-preview',
+            system_instruction: { parts: [{ text: MERIDIAN_SYSTEM_PROMPT }] },
+            generation_config: { response_modalities: ['AUDIO'] }
+          }
+        }));
+      };
+      liveWS.onmessage = handleLiveMsg;
+      liveWS.onerror = function(e) { console.error('[MERIDIAN Live] WS error:', e); };
+      liveWS.onclose = function(ev) {
+        liveReady = false; deptSpeaking = false; stopPlayback();
+        if (!permBlocked && ev.code !== 1000) {
+          setDeptVoicePill('pending', 'Reconnecting…');
+          reconnTimer = setTimeout(initLive, 8000);
+        }
+      };
+    })
+    .catch(function() { setDeptVoicePill('off', 'Voice unavailable — use text'); setDeptCopilotState('idle'); });
+}
+
+function closeLive() {
+  clearTimeout(reconnTimer); liveReady = false;
+  stopCapture(); stopPlayback();
+  if (liveWS) { liveWS.close(1000, 'closed'); liveWS = null; }
+}
+
+function activateVoiceManually() {
+  permBlocked = false;
+  if (!liveWS || liveWS.readyState !== WebSocket.OPEN) initLive();
+  else if (!captureStream) startCapture();
+}
+
+function pushToTalk() {
+  if (deptSpeaking) { stopPlayback(); setDeptCopilotState('idle'); setDeptVoicePill('active', 'Listening…'); return; }
+  if (!liveWS || liveWS.readyState !== WebSocket.OPEN) { initLive(); return; }
 }
 </script>
 </body>

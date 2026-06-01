@@ -163,6 +163,10 @@ body {
   color: var(--muted);
   letter-spacing: .03em;
   transition: color .3s, opacity .3s;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 .page-title.home { opacity: 0; }
 
@@ -174,7 +178,7 @@ body {
 }
 .pages-track {
   display: flex;
-  width: calc(5 * 390px);
+  width: calc(6 * 390px);
   height: 100%;
   will-change: transform;
 }
@@ -394,7 +398,10 @@ body {
   color: rgba(232,229,223,.9);
   line-height: 1.25;
   max-width: 78px;
-  word-break: break-word;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
 /* Icon category colors */
@@ -470,7 +477,7 @@ body {
   border-radius: 30px;
   padding: 10px 14px;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-evenly;
   align-items: center;
   box-shadow: 0 8px 32px rgba(0,0,0,.5), inset 0 1px 0 rgba(201,168,76,.12);
 }
@@ -509,6 +516,10 @@ body {
   font-weight: 500;
   color: rgba(232,229,223,.85);
   letter-spacing: .02em;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 58px;
 }
 
 /* ── APP OVERLAY ─────────────────────────────────────────── */
@@ -804,6 +815,64 @@ body {
   cursor: pointer;
 }
 
+/* ── HELIX SUITE PAGE ────────────────────────────────────── */
+.helix-suite-hdr {
+  padding: 14px 0 16px;
+  text-align: center;
+}
+.helix-suite-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px;
+  font-weight: 300;
+  color: var(--text);
+  letter-spacing: .07em;
+}
+.helix-suite-sub {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-top: 5px;
+  opacity: .8;
+}
+.helix-suite-line {
+  width: 52px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201,168,76,.6), transparent);
+  margin: 9px auto;
+}
+#page-1 {
+  background:
+    radial-gradient(ellipse 110% 38% at 50% 0%, rgba(201,168,76,.058) 0%, transparent 68%);
+}
+#page-1 .app-grid {
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  padding: 0 6px 20px;
+}
+#page-1 .app {
+  padding: 22px 14px 18px;
+  border-radius: 22px;
+  background: rgba(255,255,255,.033);
+  border: 1px solid rgba(255,255,255,.08);
+  gap: 11px;
+  box-shadow: 0 4px 24px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.07);
+}
+#page-1 .app:active { transform: scale(.91); }
+#page-1 .app-icon-box {
+  width: 72px;
+  height: 72px;
+  border-radius: 22px;
+}
+#page-1 .app-label {
+  font-size: 12px;
+  font-weight: 600;
+  max-width: 100%;
+  letter-spacing: .01em;
+  -webkit-line-clamp: 2;
+}
+
 /* ── RESPONSIVE ──────────────────────────────────────────── */
 @media (max-width: 900px) {
   .drawer { display: none; }
@@ -992,28 +1061,39 @@ body {
               <div class="app-grid-home" id="page-grid-0"></div>
             </div>
 
-            <!-- PAGE 1 · INVESTOR RELATIONS -->
-            <div class="page" id="page-1" style="padding-top:4px">
-              <div class="section-hdr">Investor Relations</div>
+            <!-- PAGE 1 · HELIX SUITE -->
+            <div class="page" id="page-1" style="padding-top:6px">
+              <div class="helix-suite-hdr">
+                <div class="helix-suite-line"></div>
+                <div class="helix-suite-title">Helix Suite</div>
+                <div class="helix-suite-sub">Department Intelligence</div>
+                <div class="helix-suite-line"></div>
+              </div>
               <div class="app-grid" id="page-grid-1"></div>
             </div>
 
-            <!-- PAGE 2 · AI & TOOLS -->
+            <!-- PAGE 2 · INVESTOR RELATIONS -->
             <div class="page" id="page-2" style="padding-top:4px">
-              <div class="section-hdr">AI &amp; Agentic Tools</div>
+              <div class="section-hdr">Investor Relations</div>
               <div class="app-grid" id="page-grid-2"></div>
             </div>
 
-            <!-- PAGE 3 · PRODUCT -->
+            <!-- PAGE 3 · AI & TOOLS -->
             <div class="page" id="page-3" style="padding-top:4px">
-              <div class="section-hdr">Product</div>
+              <div class="section-hdr">AI &amp; Tools</div>
               <div class="app-grid" id="page-grid-3"></div>
             </div>
 
-            <!-- PAGE 4 · PRESENTATIONS -->
+            <!-- PAGE 4 · PRODUCT -->
             <div class="page" id="page-4" style="padding-top:4px">
-              <div class="section-hdr">Presentations</div>
+              <div class="section-hdr">Product</div>
               <div class="app-grid" id="page-grid-4"></div>
+            </div>
+
+            <!-- PAGE 5 · PRESENTATIONS -->
+            <div class="page" id="page-5" style="padding-top:4px">
+              <div class="section-hdr">Presentations</div>
+              <div class="app-grid" id="page-grid-5"></div>
             </div>
 
           </div>
@@ -1026,6 +1106,7 @@ body {
           <div class="dot" onclick="goToPage(2)"></div>
           <div class="dot" onclick="goToPage(3)"></div>
           <div class="dot" onclick="goToPage(4)"></div>
+          <div class="dot" onclick="goToPage(5)"></div>
         </div>
 
         <!-- Dock -->
@@ -1049,7 +1130,7 @@ body {
               </div>
               <div class="dock-label">Claude</div>
             </button>
-            <button class="dock-app" onclick="goToPage(1)" aria-label="Investors">
+            <button class="dock-app" onclick="goToPage(2)" aria-label="Investors">
               <div class="dock-icon-box icon-teal">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
               </div>
@@ -1177,6 +1258,8 @@ var ICONS = {
   scroll:       '<path d="M8 21h12a2 2 0 0 0 2-2v-2H10v2a2 2 0 0 1-2 2zm0 0a2 2 0 0 1-2-2v-14a2 2 0 0 1 2-2h12v14"/>',
   notion:       '<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h4"/>',
   image:        '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>',
+  shield:       '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+  gem:          '<polygon points="12 2 14.5 9.5 22 12 14.5 14.5 12 22 9.5 14.5 2 12 9.5 9.5 12 2"/>',
 };
 
 function mkIcon(name, sz) {
