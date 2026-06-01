@@ -310,16 +310,15 @@ html,body { height:100%; overflow:hidden; background:var(--bg); color:var(--text
 
 @media (max-width:767px) {
   .mobile-tab-nav { display:flex; height:calc(var(--tab-h) + env(safe-area-inset-bottom,0px)); padding-bottom:env(safe-area-inset-bottom,0px); }
-  .tab-nav-inner { align-items:flex-start; padding-top:2px; }
-  .desktop-launch { display:none !important; }
-  /* header: prevent subtitle from wrapping + trim badge to avatar-only */
-  .suite-header { padding:0 10px; gap:6px; }
-  .hdr-sub { display:none; }
-  .hdr-head { padding:4px 6px; }
-  .hdr-head > div:last-child { display:none; }
-  /* tab labels */
-  .tab-btn { gap:3px; font-size:9.5px; letter-spacing:.02em; }
+  /* Remove double header */
+  .suite-header { display:none; }
+  /* Spread tabs evenly */
+  .tab-nav-inner { width:100%; align-items:stretch; padding-top:0; }
+  .tab-btn { gap:5px; font-size:10px; font-weight:600; letter-spacing:.03em; }
   .tab-btn svg { width:22px; height:22px; }
+  .tab-btn-expand { color:rgba(0,212,170,.55); }
+  .tab-btn-expand:hover { color:var(--dept); }
+  .desktop-launch { display:none !important; }
   .copilot-panel,.main-content,.kpi-panel { position:absolute; inset:0; width:100%; height:100%; border:none;
     opacity:0; pointer-events:none; transform:translateX(14px); transition:opacity .22s var(--ease),transform .22s var(--ease); overflow-y:auto; }
   .copilot-panel.tab-active,.main-content.tab-active,.kpi-panel.tab-active { opacity:1; pointer-events:all; transform:none; }
@@ -351,6 +350,29 @@ html,body { height:100%; overflow:hidden; background:var(--bg); color:var(--text
   box-shadow:0 8px 32px rgba(0,0,0,.5); transform:translateY(10px); opacity:0;
   transition:all .3s var(--spring); pointer-events:none; }
 .toast.show { transform:none; opacity:1; }
+
+/* ── IN-PLACE DESKTOP MODE ── */
+.suite.desktop-mode .suite-header  { display:flex !important; }
+.suite.desktop-mode .mobile-tab-nav { display:none !important; }
+.suite.desktop-mode .suite-body { overflow-x:auto; }
+.suite.desktop-mode .copilot-panel,
+.suite.desktop-mode .main-content,
+.suite.desktop-mode .kpi-panel {
+  position:relative !important; opacity:1 !important;
+  transform:none !important; pointer-events:all !important;
+  width:auto !important; height:auto !important;
+  inset:auto !important; overflow-y:auto !important; border:revert !important;
+}
+.suite.desktop-mode .copilot-panel {
+  display:flex !important; flex-direction:column !important;
+  width:clamp(185px,15vw,225px) !important; flex-shrink:0 !important;
+  border-right:1px solid rgba(255,255,255,.06) !important;
+}
+.suite.desktop-mode .kpi-panel {
+  width:clamp(255px,22vw,330px) !important; flex-shrink:0 !important;
+  border-left:1px solid rgba(255,255,255,.06) !important;
+}
+.suite.desktop-mode .main-content { flex:1 !important; display:block !important; }
 </style>
 </head>
 <body>
@@ -751,11 +773,15 @@ html,body { height:100%; overflow:hidden; background:var(--bg); color:var(--text
     <button class="tab-btn" data-target="kpi" onclick="switchTab(this)">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>KPIs
     </button>
+    <button class="tab-btn tab-btn-expand" onclick="launchDesktopView()" aria-label="Switch to desktop view">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      Desktop
+    </button>
   </div>
 </nav>
 
-<button class="desktop-launch" onclick="window.open(location.href,'_blank','noopener')">
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+<button class="desktop-launch" onclick="launchDesktopView()">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
   Full Desktop
 </button>
 
@@ -781,6 +807,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
   initLive();
 });
+
+function launchDesktopView() {
+  var scale = Math.min(1, +(window.screen.width / 1200).toFixed(3));
+  var meta = document.querySelector('meta[name="viewport"]');
+  if (meta) meta.content = 'width=1200, initial-scale=' + scale + ', minimum-scale=0.1, maximum-scale=5';
+  document.getElementById('suite').classList.add('desktop-mode');
+  document.querySelectorAll('[data-panel]').forEach(function(p) { p.classList.add('tab-active'); });
+}
 
 function switchTab(btn) {
   document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });

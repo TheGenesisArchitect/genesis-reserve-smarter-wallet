@@ -420,15 +420,23 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
 
 /* ── MOBILE RESPONSIVE ───────────────────────────────────── */
 @media (max-width: 767px) {
+  /* Remove double header — browser chrome already shows title + back */
+  .suite-header { display: none; }
+
   /* Tab nav with iOS safe-area */
   .mobile-tab-nav {
     display: flex;
     height: calc(var(--tab-h) + env(safe-area-inset-bottom, 0px));
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
-  .tab-nav-inner { align-items: flex-start; padding-top: 2px; }
+  /* Fix: tab buttons were cramped left — width:100% spreads them evenly */
+  .tab-nav-inner { width: 100%; align-items: stretch; padding-top: 0; }
+  .tab-btn { gap: 5px; font-size: 10px; font-weight: 600; letter-spacing: .03em; }
+  .tab-btn svg { width: 22px; height: 22px; }
+  .tab-btn-expand { color: rgba(201,168,76,.55); }
+  .tab-btn-expand:hover { color: var(--gold); }
 
-  /* Hide Full Desktop on phones */
+  /* Hide the old floating Full Desktop button — tab nav has Desktop tab now */
   .desktop-launch { display: none !important; }
 
   /* Stack panels, only active shown */
@@ -505,6 +513,29 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
   .atlas-panel { width: clamp(185px, 15vw, 225px); }
   .kpi-panel   { width: clamp(255px, 22vw, 330px); }
 }
+
+/* ── IN-PLACE DESKTOP MODE (triggered from mobile "Desktop" tab) ─── */
+.suite.desktop-mode .suite-header  { display: flex !important; }
+.suite.desktop-mode .mobile-tab-nav { display: none !important; }
+.suite.desktop-mode .suite-body { overflow-x: auto; }
+.suite.desktop-mode .atlas-panel,
+.suite.desktop-mode .main-content,
+.suite.desktop-mode .kpi-panel {
+  position: relative !important; opacity: 1 !important;
+  transform: none !important; pointer-events: all !important;
+  width: auto !important; height: auto !important;
+  inset: auto !important; overflow-y: auto !important; border: revert !important;
+}
+.suite.desktop-mode .atlas-panel {
+  display: flex !important; flex-direction: column !important;
+  width: clamp(185px, 15vw, 225px) !important; flex-shrink: 0 !important;
+  border-right: 1px solid rgba(255,255,255,.06) !important;
+}
+.suite.desktop-mode .kpi-panel {
+  width: clamp(255px, 22vw, 330px) !important; flex-shrink: 0 !important;
+  border-left: 1px solid rgba(255,255,255,.06) !important;
+}
+.suite.desktop-mode .main-content { flex: 1 !important; display: block !important; }
 </style>
 </head>
 <body>
@@ -730,6 +761,10 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
       <button class="tab-btn" id="tab-kpi" onclick="switchTab('kpi')">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
         KPIs
+      </button>
+      <button class="tab-btn tab-btn-expand" id="tab-expand" onclick="launchDesktopView()" aria-label="Switch to desktop view">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        Desktop
       </button>
     </div>
   </nav>
@@ -1354,22 +1389,28 @@ function switchTab(tab) {
 }
 
 /* ── DESKTOP LAUNCH ──────────────────────────────────────── */
+function launchDesktopView() {
+  /* Expand viewport so @media(max-width:767px) no longer fires */
+  var scale = Math.min(1, +(window.screen.width / 1200).toFixed(3));
+  var meta = document.querySelector('meta[name="viewport"]');
+  if (meta) meta.content = 'width=1200, initial-scale=' + scale + ', minimum-scale=0.1, maximum-scale=5';
+  /* Activate desktop-mode CSS class */
+  document.getElementById('suite').classList.add('desktop-mode');
+  /* Ensure all three panels are active */
+  ['panelAtlas','panelOps','panelKpi'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.classList.add('tab-active');
+  });
+}
+
 function launchDesktop() {
-  var url = window.location.href.split('?')[0];
-  /* If inside dashboard iframe, tell parent to enter desktop mode */
+  /* If inside dashboard iframe, delegate to parent */
   if (window !== window.top) {
+    var url = window.location.href.split('?')[0];
     window.parent.postMessage({ action: 'genesisDesktopMode', url: url, title: 'Executive Suite · ATLAS' }, '*');
     return;
   }
-  /* If on mobile and not iframe, open fullscreen / new tab */
-  if (window.DEVICE && window.DEVICE.isMobile) {
-    window.open(url + '?desktop=1', '_blank', 'noopener,noreferrer');
-    return;
-  }
-  /* Desktop standalone: request fullscreen */
-  var el = document.documentElement;
-  if (el.requestFullscreen) el.requestFullscreen();
-  else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+  launchDesktopView();
 }
 
 /* ── KPI TIMESTAMP ───────────────────────────────────────── */
