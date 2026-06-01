@@ -1039,9 +1039,11 @@ function stopPlayback() {
 function handleLiveMsg(event) {
   var msg;
   try { msg = JSON.parse(event.data); } catch(_) { return; }
+  console.log('[ATLAS Live] msg keys:', Object.keys(msg).join(', '), '| raw:', JSON.stringify(msg).slice(0, 200));
 
   /* Setup acknowledged — start mic and trigger greeting */
   if (msg.setupComplete) {
+    console.log('[ATLAS Live] setupComplete received — starting capture');
     liveReady = true;
     startCapture();
     setAtlasState('idle');
@@ -1114,6 +1116,7 @@ function initLive() {
       liveWS = new WebSocket(d.wsUrl);
 
       liveWS.onopen = function() {
+        console.log('[ATLAS Live] WS open — sending setup');
         liveWS.send(JSON.stringify({
           setup: {
             model: 'models/gemini-2.5-flash-native-audio-latest',
