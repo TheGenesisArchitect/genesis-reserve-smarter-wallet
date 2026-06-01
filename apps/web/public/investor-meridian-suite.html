@@ -343,6 +343,14 @@ html,body { height:100%; overflow:hidden; background:var(--bg); color:var(--text
   transition:all .3s var(--spring); pointer-events:none; }
 .toast.show { transform:none; opacity:1; }
 
+/* ── RETURN-TO-MOBILE BUTTON ── */
+.return-mobile-btn { display:none; align-items:center; gap:6px; padding:5px 11px;
+  border-radius:8px; font-size:11px; font-weight:500; color:var(--muted);
+  border:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,.04);
+  cursor:pointer; transition:all .15s; white-space:nowrap; }
+.return-mobile-btn:hover { background:rgba(255,255,255,.09); color:var(--text); }
+.suite.desktop-mode .return-mobile-btn { display:flex; }
+
 /* ── IN-PLACE DESKTOP MODE ── */
 .suite.desktop-mode .suite-header  { display:flex !important; }
 .suite.desktop-mode .mobile-tab-nav { display:none !important; }
@@ -382,6 +390,10 @@ html,body { height:100%; overflow:hidden; background:var(--bg); color:var(--text
     <div class="hdr-sub">Genesis Reserve · Powered by Hermes</div>
   </div>
   <div class="hdr-spacer"></div>
+  <button class="return-mobile-btn" onclick="returnToMobileView()">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+    Mobile View
+  </button>
   <div class="dept-status-pill"><div class="status-dot"></div>MERIDIAN Online</div>
   <div class="hdr-head">
     <div class="head-avatar">IR</div>
@@ -752,6 +764,16 @@ function launchDesktopView() {
   if (meta) meta.content = 'width=1200, initial-scale=' + scale + ', minimum-scale=0.1, maximum-scale=5';
   document.getElementById('suite').classList.add('desktop-mode');
   document.querySelectorAll('[data-panel]').forEach(function(p) { p.classList.add('tab-active'); });
+}
+
+function returnToMobileView() {
+  var meta = document.querySelector('meta[name="viewport"]');
+  if (meta) meta.content = 'width=device-width, initial-scale=1, viewport-fit=cover';
+  document.getElementById('suite').classList.remove('desktop-mode');
+  document.querySelectorAll('[data-panel]').forEach(function(p) { p.classList.remove('tab-active'); });
+  document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+  var first = document.querySelector('[data-target="copilot"]');
+  if (first) { first.classList.add('active'); document.getElementById('panelCopilot').classList.add('tab-active'); }
 }
 
 function switchTab(btn) {

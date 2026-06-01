@@ -514,6 +514,15 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
   .kpi-panel   { width: clamp(255px, 22vw, 330px); }
 }
 
+/* ── RETURN-TO-MOBILE BUTTON (only visible in desktop-mode) ── */
+.return-mobile-btn { display: none; align-items: center; gap: 6px;
+  padding: 5px 11px; border-radius: 8px; font-size: 11px; font-weight: 500;
+  color: var(--muted); border: 1px solid rgba(255,255,255,.1);
+  background: rgba(255,255,255,.04); cursor: pointer; transition: all .15s;
+  white-space: nowrap; }
+.return-mobile-btn:hover { background: rgba(255,255,255,.09); color: var(--text); }
+.suite.desktop-mode .return-mobile-btn { display: flex; }
+
 /* ── IN-PLACE DESKTOP MODE (triggered from mobile "Desktop" tab) ─── */
 .suite.desktop-mode .suite-header  { display: flex !important; }
 .suite.desktop-mode .mobile-tab-nav { display: none !important; }
@@ -553,6 +562,10 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
       <div class="hdr-sub">Genesis Reserve · Powered by ATLAS</div>
     </div>
     <div class="hdr-spacer"></div>
+    <button class="return-mobile-btn" onclick="returnToMobileView()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+      Mobile View
+    </button>
     <div class="atlas-status-pill"><div class="status-dot"></div>ATLAS Online</div>
     <div class="hdr-head">
       <div class="head-avatar">AB</div>
@@ -1390,17 +1403,26 @@ function switchTab(tab) {
 
 /* ── DESKTOP LAUNCH ──────────────────────────────────────── */
 function launchDesktopView() {
-  /* Expand viewport so @media(max-width:767px) no longer fires */
   var scale = Math.min(1, +(window.screen.width / 1200).toFixed(3));
   var meta = document.querySelector('meta[name="viewport"]');
   if (meta) meta.content = 'width=1200, initial-scale=' + scale + ', minimum-scale=0.1, maximum-scale=5';
-  /* Activate desktop-mode CSS class */
   document.getElementById('suite').classList.add('desktop-mode');
-  /* Ensure all three panels are active */
   ['panelAtlas','panelOps','panelKpi'].forEach(function(id) {
     var el = document.getElementById(id);
     if (el) el.classList.add('tab-active');
   });
+}
+
+function returnToMobileView() {
+  var meta = document.querySelector('meta[name="viewport"]');
+  if (meta) meta.content = 'width=device-width, initial-scale=1, viewport-fit=cover';
+  document.getElementById('suite').classList.remove('desktop-mode');
+  /* Restore single-panel mobile state — ATLAS tab active */
+  document.querySelectorAll('[data-panel]').forEach(function(p) { p.classList.remove('tab-active'); });
+  var atlas = document.getElementById('panelAtlas');
+  if (atlas) atlas.classList.add('tab-active');
+  var atlasBtn = document.getElementById('tab-atlas');
+  if (atlasBtn) { document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); }); atlasBtn.classList.add('active'); }
 }
 
 function launchDesktop() {
